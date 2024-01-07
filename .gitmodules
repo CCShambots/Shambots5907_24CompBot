@@ -1,0 +1,3 @@
+[submodule "src/main/java/frc/robot/ShamLib"]
+	path = src/main/java/frc/robot/ShamLib
+	url = https://github.com/CCShambots/ShamLib.git
