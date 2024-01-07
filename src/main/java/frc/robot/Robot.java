@@ -4,18 +4,97 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import static frc.robot.Constants.currentBuildMode;
+
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.ShamLib.ShamLibConstants;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.LoggedRobot;
 
 public class Robot extends LoggedRobot {
-  private Command m_autonomousCommand;
+  private RobotContainer robotContainer;
 
-  private RobotContainer m_robotContainer;
+  @AutoLogOutput private Pose3d[] componentPositions = new Pose3d[0];
+
+  @AutoLogOutput private Pose3d[] componentPositionTargets = new Pose3d[0];
 
   @Override
   public void robotInit() {
-    m_robotContainer = new RobotContainer();
+    if (isReal()) currentBuildMode = ShamLibConstants.BuildMode.REAL;
+
+    /*Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        Logger.recordMetadata("GitDirty", "All changes committed");
+        break;
+      case 1:
+        Logger.recordMetadata("GitDirty", "Uncomitted changes");
+        break;
+      default:
+        Logger.recordMetadata("GitDirty", "Unknown");
+        break;
+    }
+
+    switch (Constants.currentBuildMode) {
+      case REAL:
+        Logger.addDataReceiver(
+            new WPILOGWriter("/home/lvuser/logs")); // Log to a USB stick ("/U/logs")
+        Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+        // TODO: Deal with this
+        new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+        break;
+      case SIM:
+        // Running a physics simulator, log to NT
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
+      case REPLAY:
+        setUseTiming(false); // Run as fast as possible
+        String logPath =
+            LogFileUtil
+                .findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+        Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+        Logger.addDataReceiver(
+            new WPILOGWriter(
+                LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+        break;
+    }
+
+    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
+    // be added.
+
+    robotContainer = new RobotContainer();
+
+    SubsystemManagerFactory.getInstance().registerSubsystem(robotContainer, false);
+    SubsystemManagerFactory.getInstance().disableAllSubsystems();
+
+    // TODO: What happened to the pathplanner server
+    // if(!Constants.AT_COMP) {
+    // PathPlannerLogging.startServer(5811);
+    // }
+
+    // Check the alliance from FMS when the bot turns on
+    Constants.pullAllianceFromFMS(robotContainer);
+
+    // TODO: Figure out how to add another periodic thing
+    // Update the event loop for misaligned modules once every 10 seconds
+    // addPeriodic(checkModulesLoop::poll, 10);
+
+    new WaitCommand(2).andThen(robotContainer.syncAlliance()).schedule();*/
+
+    // addPeriodic(() -> {if(!robotContainer.arm().isTransitioning())
+    // robotContainer.arm().pullAbsoluteAngles();}, 2);
+
+    // Logging
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   @Override
@@ -33,13 +112,7 @@ public class Robot extends LoggedRobot {
   public void disabledExit() {}
 
   @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
+  public void autonomousInit() {}
 
   @Override
   public void autonomousPeriodic() {}
@@ -48,11 +121,7 @@ public class Robot extends LoggedRobot {
   public void autonomousExit() {}
 
   @Override
-  public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
+  public void teleopInit() {}
 
   @Override
   public void teleopPeriodic() {}
