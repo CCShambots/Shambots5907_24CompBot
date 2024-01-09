@@ -9,10 +9,18 @@ import static frc.robot.Constants.currentBuildMode;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
@@ -25,7 +33,7 @@ public class Robot extends LoggedRobot {
   public void robotInit() {
     if (isReal()) currentBuildMode = ShamLibConstants.BuildMode.REAL;
 
-    /*Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
     Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
@@ -87,7 +95,7 @@ public class Robot extends LoggedRobot {
     // Update the event loop for misaligned modules once every 10 seconds
     // addPeriodic(checkModulesLoop::poll, 10);
 
-    new WaitCommand(2).andThen(robotContainer.syncAlliance()).schedule();*/
+    //new WaitCommand(2).andThen(robotContainer.syncAlliance()).schedule();
 
     // addPeriodic(() -> {if(!robotContainer.arm().isTransitioning())
     // robotContainer.arm().pullAbsoluteAngles();}, 2);
