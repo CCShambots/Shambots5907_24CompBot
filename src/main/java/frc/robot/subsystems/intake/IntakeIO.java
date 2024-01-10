@@ -19,6 +19,9 @@ public interface IntakeIO {
 
   public void setArmTargetPosition(double position);
 
+  public void stopBelt();
+  public void stopArm();
+
   public void syncToAbsoluteEncoder();
 
   public void updateInputs(IntakeIOInputs inputs);

@@ -50,6 +50,16 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
+  public void stopBelt() {
+    beltMotor.stopMotor();
+  }
+
+  @Override
+  public void stopArm() {
+    armMotor.stopMotor();
+  }
+
+  @Override
   public void syncToAbsoluteEncoder() {
     armMotor.resetPosition(getAbsoluteAngle());
   }

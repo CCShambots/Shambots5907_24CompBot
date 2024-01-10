@@ -4,44 +4,117 @@ import static frc.robot.Constants.Intake.Settings.*;
 import static frc.robot.Constants.doubleEqual;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class Intake extends StateMachine<Intake.State> {
   private final IntakeIO io;
+  private final Timer syncTimeout = new Timer();
 
-  private Timer syncTimeout = new Timer();
-  private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-  public Intake(IntakeIO io) {
+  public Intake(IntakeIO io, Trigger manualControlBeltToggle) {
     super("Intake", State.UNDETERMINED, State.class);
 
     this.io = io;
 
     io.updateInputs(inputs);
 
-    registerStateCommands();
+    registerStateCommands(manualControlBeltToggle);
     registerTransitions();
   }
 
-  private void registerStateCommands() {
-    registerStateCommand(State.SEEKING_STOWED, new SequentialCommandGroup());
+  private void registerStateCommands(Trigger beltToggle) {
+    registerStateCommand(State.SEEKING_STOWED_EXPEL, new SequentialCommandGroup(
+            goToAngleCommand(STOW_ANGLE),
+            transitionCommand(State.STOWED)
+    ));
+
+    registerStateCommand(State.SEEKING_STOWED_NO_EXPEL, new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                    goToAngleCommand(STOW_ANGLE),
+                    runBeltsCommand(-BELT_SPEED)
+                            .withTimeout(STOW_EXPEL_DURATION)
+            ),
+            transitionCommand(State.STOWED)
+    ));
+
+    registerStateCommand(State.SEEKING_DEPLOYED, new SequentialCommandGroup(
+            goToAngleCommand(DEPLOY_ANGLE),
+            transitionCommand(State.DEPLOYED)
+    ));
+
+    registerStateCommand(State.DEPLOYED, runBeltsCommand(BELT_SPEED));
+
+    registerStateCommand(State.SOFT_E_STOP, new InstantCommand(() -> {
+      io.stopArm();
+      io.stopBelt();
+    }));
+
+    registerStateCommand(State.MANUAL_CONTROL, manualControlCommand(beltToggle));
   }
 
-  private void registerTransitions() {}
+  private void registerTransitions() {
+    addTransition(State.SEEKING_STOWED_EXPEL, State.STOWED);
+    addTransition(State.SEEKING_STOWED_NO_EXPEL, State.STOWED);
+
+    addOmniTransition(State.SEEKING_STOWED_NO_EXPEL);
+    addOmniTransition(State.SEEKING_DEPLOYED);
+
+    addTransition(State.DEPLOYED, State.SEEKING_STOWED_EXPEL);
+
+    addTransition(State.SEEKING_DEPLOYED, State.DEPLOYED);
+
+    addOmniTransition(State.SOFT_E_STOP);
+    addOmniTransition(State.MANUAL_CONTROL);
+  }
+
+  private Command manualControlCommand(Trigger beltTrigger) {
+    AtomicBoolean runBelt = new AtomicBoolean(false);
+
+    //i know this isnt atomic, i cant for the life of me figure out a simple way to atomically negate an atomic boolean in java
+    beltTrigger.onTrue(new InstantCommand(() -> runBelt.set(!runBelt.get())));
+
+    return new FunctionalCommand(
+            () -> {},
+            () -> {
+              if (runBelt.get() && !doubleEqual(inputs.beltTargetVelocity, BELT_SPEED)) {
+                io.setBeltTargetVelocity(BELT_SPEED);
+              }
+              else if (!runBelt.get() && !doubleEqual(inputs.beltTargetVelocity, 0)) {
+                io.setBeltTargetVelocity(0);
+              }
+            },
+            (interrupted) -> io.setBeltTargetVelocity(0),
+            () -> false
+    );
+  }
+
+  private Command runBeltsCommand(double velocity) {
+    return new FunctionalCommand(
+            () -> io.setBeltTargetVelocity(velocity),
+            () -> {},
+            (interrupted) -> io.setBeltTargetVelocity(0),
+            () -> false
+    );
+  }
+
+  private Command goToAngleCommand(double state) {
+    return new FunctionalCommand(
+            () -> io.setArmTargetPosition(state),
+            () -> {},
+            (interrupted) -> {},
+            () -> doubleEqual(inputs.armPosition, state, ANGLE_SETPOINT_TOLERANCE)
+    );
+  }
 
   private boolean needsSync() {
     //arm motor position and abs encoder position are outside of tolerance as well as making sure the arm isn't moving very fast
     return !doubleEqual(inputs.armPosition, inputs.absoluteEncoderPosition, AUTO_SYNC_TOLERANCE) && doubleEqual(inputs.armVelocity, 0.0, 1.0);
-  }
-
-  public IntakeIO getIO() {
-    return io;
-  }
-
-  public IntakeIO.IntakeIOInputs getInputs() {
-    return inputs;
   }
 
   @Override
@@ -59,14 +132,20 @@ public class Intake extends StateMachine<Intake.State> {
 
   @Override
   protected void determineSelf() {
-    // TODO: MAKE THIS ACTUALLY DO THE THING
+    //wait for rc to orchestrate things
     setState(State.SOFT_E_STOP);
+  }
+
+  @Override
+  protected void onEnable() {
+    io.syncToAbsoluteEncoder();
   }
 
   public enum State {
     UNDETERMINED,
     STOWED,
-    SEEKING_STOWED,
+    SEEKING_STOWED_EXPEL,
+    SEEKING_STOWED_NO_EXPEL,
     DEPLOYED,
     SEEKING_DEPLOYED,
     SOFT_E_STOP,
