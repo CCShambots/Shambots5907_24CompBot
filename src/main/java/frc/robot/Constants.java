@@ -39,6 +39,13 @@ public class Constants {
       public static final PIDSVGains BELT_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
     }
 
+    public static final class Sim {
+      public static final double ARM_INERTIA = 0.0001;
+      public static final double BELT_INERTIA = 0.00001;
+
+      public static final double ARM_START_ANGLE = (Settings.DEPLOY_ANGLE + Settings.STOW_ANGLE)/2.0;
+    }
+
     public static final class Settings {
       public static final double STOW_ANGLE = 0.0; // DEG
       public static final double DEPLOY_ANGLE = 0.0; // DEG

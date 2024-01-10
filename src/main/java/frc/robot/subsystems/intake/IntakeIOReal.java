@@ -8,17 +8,21 @@ import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 import frc.robot.ShamLib.sensor.ThroughBoreEncoder;
 
 public class IntakeIOReal implements IntakeIO {
-  private final MotionMagicTalonFX armMotor =
+  protected final MotionMagicTalonFX armMotor =
       new MotionMagicTalonFX(
           ARM_ID, ARM_GAINS, ARM_RATIO, ARM_VELOCITY, ARM_ACCELERATION, ARM_JERK);
-  ;
-  private final VelocityTalonFX beltMotor = new VelocityTalonFX(BELT_ID, BELT_GAINS, BELT_RATIO);
-  ;
+  protected final VelocityTalonFX beltMotor = new VelocityTalonFX(BELT_ID, BELT_GAINS, BELT_RATIO);
 
   private final ThroughBoreEncoder armEncoder =
       new ThroughBoreEncoder(ARM_ENCODER_ID, ARM_ENCODER_OFFSET);
 
   public IntakeIOReal() {
+    this(false);
+  }
+
+  public IntakeIOReal(boolean sim) {
+    if (!sim) configureCurrentLimits();
+
     configureHardware();
     syncToAbsoluteEncoder();
   }
@@ -27,10 +31,12 @@ public class IntakeIOReal implements IntakeIO {
     return armEncoder.getDegrees() * ARM_ENCODER_RATIO;
   }
 
-  private void configureHardware() {
+  private void configureCurrentLimits() {
     armMotor.getConfigurator().apply(ARM_CURRENT_LIMIT);
     beltMotor.getConfigurator().apply(BELT_CURRENT_LIMIT);
+  }
 
+  private void configureHardware() {
     armMotor.setNeutralMode(ARM_NEUTRAL_MODE);
     beltMotor.setNeutralMode(BELT_NEUTRAL_MODE);
 
