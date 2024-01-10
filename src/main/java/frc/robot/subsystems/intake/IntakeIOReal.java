@@ -1,36 +1,33 @@
 package frc.robot.subsystems.intake;
 
+import static frc.robot.Constants.Intake.*;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import frc.robot.ShamLib.motors.talonfx.MotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class IntakeIOReal implements IntakeIO {
-    private final PIDSVGains armGains;
-    private final PIDSVGains beltGains;
-
     private final MotionMagicTalonFX armMotor;
     private final VelocityTalonFX beltMotor;
 
     public IntakeIOReal(
-            int armID,
-            PIDSVGains armGains,
-            double armRatio,
-            double armMaxVelo,
-            double armMaxAccel,
-            double armMaxJerk,
-            int beltID,
-            PIDSVGains beltGains,
-            double beltRatio,
             CurrentLimitsConfigs currentLimitsConfigs
     ) {
-        this.armGains = armGains;
-        this.beltGains = beltGains;
+        armMotor = new MotionMagicTalonFX(
+                ARM_ID,
+                ARM_GAINS,
+                ARM_RATIO,
+                ARM_MAX_VELOCITY,
+                ARM_MAX_ACCELERATION,
+                ARM_MAX_JERK
+        );
 
-        armMotor = new MotionMagicTalonFX(armID, armGains, armRatio, armMaxVelo, armMaxAccel, armMaxJerk);
-        beltMotor = new VelocityTalonFX(beltID, beltGains, beltRatio);
-
-
+        beltMotor = new VelocityTalonFX(
+                BELT_ID,
+                BELT_GAINS,
+                BELT_RATIO
+        );
     }
 
     @Override
