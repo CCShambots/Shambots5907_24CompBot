@@ -65,6 +65,7 @@ public class Intake extends StateMachine<Intake.State> {
     addOmniTransition(State.SEEKING_STOWED_NO_EXPEL);
     addOmniTransition(State.SEEKING_DEPLOYED);
 
+    //avoid expelling whenever
     addTransition(State.DEPLOYED, State.SEEKING_STOWED_EXPEL);
 
     addTransition(State.SEEKING_DEPLOYED, State.DEPLOYED);
