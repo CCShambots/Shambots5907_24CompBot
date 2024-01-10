@@ -43,7 +43,8 @@ public class Constants {
       public static final double ARM_INERTIA = 0.0001;
       public static final double BELT_INERTIA = 0.00001;
 
-      public static final double ARM_START_ANGLE = (Settings.DEPLOY_ANGLE + Settings.STOW_ANGLE)/2.0;
+      public static final double ARM_START_ANGLE =
+          (Settings.DEPLOY_ANGLE + Settings.STOW_ANGLE) / 2.0;
     }
 
     public static final class Settings {
@@ -63,8 +64,8 @@ public class Constants {
       public static final double ANGLE_SETPOINT_TOLERANCE = 0.0; // DEG
 
       public static boolean USE_AUTO_SYNC = false;
-      public static double AUTO_SYNC_TOLERANCE = 0.0; //DEG
-      public static double MINIMUM_TIME_BETWEEN_SYNC_ATTEMPTS = 2.0; //SECONDS
+      public static double AUTO_SYNC_TOLERANCE = 0.0; // DEG
+      public static double MINIMUM_TIME_BETWEEN_SYNC_ATTEMPTS = 2.0; // SECONDS
     }
   }
 

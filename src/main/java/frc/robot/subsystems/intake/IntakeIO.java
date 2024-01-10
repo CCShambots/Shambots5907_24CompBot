@@ -10,7 +10,7 @@ public interface IntakeIO {
 
     public double armPosition = 0.0; // DEG
     public double armTargetPosition = 0.0; // DEG
-    public double armVelocity = 0.0; //DEG/s
+    public double armVelocity = 0.0; // DEG/s
 
     public double absoluteEncoderPosition = 0.0; // DEG
   }
@@ -20,6 +20,7 @@ public interface IntakeIO {
   public void setArmTargetPosition(double position);
 
   public void stopBelt();
+
   public void stopArm();
 
   public void syncToAbsoluteEncoder();
