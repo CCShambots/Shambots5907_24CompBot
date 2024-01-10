@@ -8,13 +8,17 @@ public interface IntakeIO {
     public double beltVelocity = 0.0; // RPM
     public double beltTargetVelocity = 0.0; // RPM
 
-    public double armPosition = 0.0; // RAD
-    public double armTargetPosition = 0.0; // RAD
+    public double armPosition = 0.0; // DEG
+    public double armTargetPosition = 0.0; // DEG
+
+    public double absoluteEncoderPosition = 0.0; // DEG
   }
 
   public void setBeltTargetVelocity(double velocity);
 
-  public void setArmTargetVelocity(double velocity);
+  public void setArmTargetPosition(double position);
+
+  public void syncToAbsoluteEncoder();
 
   public void updateInputs(IntakeIOInputs inputs);
 }

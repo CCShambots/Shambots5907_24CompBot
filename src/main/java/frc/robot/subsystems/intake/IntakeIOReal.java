@@ -1,49 +1,67 @@
 package frc.robot.subsystems.intake;
 
-import static frc.robot.Constants.Intake.*;
+import static frc.robot.Constants.Intake.Hardware.*;
+import static frc.robot.Constants.Intake.Settings.*;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import frc.robot.ShamLib.motors.talonfx.MotionMagicTalonFX;
-import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
+import frc.robot.ShamLib.sensor.ThroughBoreEncoder;
 
 public class IntakeIOReal implements IntakeIO {
-    private final MotionMagicTalonFX armMotor;
-    private final VelocityTalonFX beltMotor;
+  private final MotionMagicTalonFX armMotor =
+      new MotionMagicTalonFX(
+          ARM_ID, ARM_GAINS, ARM_RATIO, ARM_VELOCITY, ARM_ACCELERATION, ARM_JERK);
+  ;
+  private final VelocityTalonFX beltMotor = new VelocityTalonFX(BELT_ID, BELT_GAINS, BELT_RATIO);
+  ;
 
-    public IntakeIOReal(
-            CurrentLimitsConfigs currentLimitsConfigs
-    ) {
-        armMotor = new MotionMagicTalonFX(
-                ARM_ID,
-                ARM_GAINS,
-                ARM_RATIO,
-                ARM_MAX_VELOCITY,
-                ARM_MAX_ACCELERATION,
-                ARM_MAX_JERK
-        );
+  private final ThroughBoreEncoder armEncoder =
+      new ThroughBoreEncoder(ARM_ENCODER_ID, ARM_ENCODER_OFFSET);
 
-        beltMotor = new VelocityTalonFX(
-                BELT_ID,
-                BELT_GAINS,
-                BELT_RATIO
-        );
-    }
+  public IntakeIOReal() {
+    configureHardware();
+    syncToAbsoluteEncoder();
+  }
 
-    @Override
-    public void setBeltTargetVelocity(double velocity) {
+  private double getAbsoluteAngle() {
+    return armEncoder.getDegrees() * ARM_ENCODER_RATIO;
+  }
 
-    }
+  private void configureHardware() {
+    armMotor.getConfigurator().apply(ARM_CURRENT_LIMIT);
+    beltMotor.getConfigurator().apply(BELT_CURRENT_LIMIT);
 
-    @Override
-    public void setArmTargetVelocity(double velocity) {
+    armMotor.setNeutralMode(ARM_NEUTRAL_MODE);
+    beltMotor.setNeutralMode(BELT_NEUTRAL_MODE);
 
-    }
+    armMotor.setInverted(ARM_INVERTED);
+    beltMotor.setInverted(BELT_INVERTED);
+    armEncoder.setInverted(ARM_ENCODER_INVERTED);
+  }
 
-    @Override
-    public void updateInputs(IntakeIOInputs inputs) {
+  @Override
+  public void setBeltTargetVelocity(double velocity) {
+    beltMotor.setTarget(velocity);
+  }
 
-    }
+  @Override
+  public void setArmTargetPosition(double position) {
+    armMotor.setTarget(position);
+  }
 
-    private void applyCurrentConfig(CurrentLimitsConfigs current, )
+  @Override
+  public void syncToAbsoluteEncoder() {
+    armMotor.resetPosition(getAbsoluteAngle());
+  }
+
+  @Override
+  public void updateInputs(IntakeIOInputs inputs) {
+    inputs.armPosition = armMotor.getEncoderPosition();
+    inputs.armTargetPosition = armMotor.getTarget();
+
+    inputs.beltVelocity = beltMotor.getEncoderVelocity();
+    inputs.beltTargetVelocity = beltMotor.getTarget();
+
+    inputs.absoluteEncoderPosition = getAbsoluteAngle();
+  }
 }
