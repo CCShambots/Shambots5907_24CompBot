@@ -53,7 +53,11 @@ public class Constants {
 
       public static final double STOW_EXPEL_DURATION = 0.0; // SECONDS
 
-      public static final double ANGLE_SETPOINT_TOLERANCE = 0.0; // DEGREES
+      public static final double ANGLE_SETPOINT_TOLERANCE = 0.0; // DEG
+
+      public static boolean USE_AUTO_SYNC = false;
+      public static double AUTO_SYNC_TOLERANCE = 0.0; //DEG
+      public static double MINIMUM_TIME_BETWEEN_SYNC_ATTEMPTS = 2.0; //SECONDS
     }
   }
 

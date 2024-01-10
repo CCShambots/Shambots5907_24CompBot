@@ -58,6 +58,7 @@ public class IntakeIOReal implements IntakeIO {
   public void updateInputs(IntakeIOInputs inputs) {
     inputs.armPosition = armMotor.getEncoderPosition();
     inputs.armTargetPosition = armMotor.getTarget();
+    inputs.armVelocity = armMotor.getEncoderVelocity();
 
     inputs.beltVelocity = beltMotor.getEncoderVelocity();
     inputs.beltTargetVelocity = beltMotor.getTarget();

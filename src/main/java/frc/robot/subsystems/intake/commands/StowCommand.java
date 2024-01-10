@@ -22,11 +22,11 @@ public class StowCommand extends Command {
     expelTimer.restart();
 
     if (expel) {
-      intake.getIO().setBeltTargetVelocity(-BELT_SPEED); // TODO: add configuration for this
+      intake.getIO().setBeltTargetVelocity(-BELT_SPEED);
     } else {
       intake
           .getIO()
-          .setBeltTargetVelocity(0); // TODO: change this to cut power instead of set setpoint
+          .setBeltTargetVelocity(0);
     }
 
     intake.getIO().setArmTargetPosition(STOW_ANGLE);
@@ -40,14 +40,8 @@ public class StowCommand extends Command {
         && doubleEqual(0, intake.getInputs().beltTargetVelocity)) {
       intake
           .getIO()
-          .setBeltTargetVelocity(0); // TODO: change this to cut power instead of set setpoint
+          .setBeltTargetVelocity(0);
       expelTimer.stop();
-    }
-
-    // resync motor to absolute encoder if needed
-    if (motorAtSetpoint()
-        != encoderAtSetpoint() /* && intake.getInputs().armvelocity < whatever*/) {
-      intake.getIO().syncToAbsoluteEncoder();
     }
   }
 
@@ -55,16 +49,15 @@ public class StowCommand extends Command {
     return doubleEqual(intake.getInputs().armPosition, STOW_ANGLE, ANGLE_SETPOINT_TOLERANCE);
   }
 
-  private boolean encoderAtSetpoint() {
-    return doubleEqual(
-        intake.getInputs().absoluteEncoderPosition, STOW_ANGLE, ANGLE_SETPOINT_TOLERANCE);
+  @Override
+  public void end(boolean interrupted) {
+    expelTimer.stop();
+    intake.getIO().setBeltTargetVelocity(0);
   }
 
   @Override
-  public void end(boolean interrupted) {}
-
-  @Override
   public boolean isFinished() {
-    return motorAtSetpoint() && encoderAtSetpoint();
+    //arm made it to top and expelling is done
+    return motorAtSetpoint() && doubleEqual(intake.getInputs().beltTargetVelocity, 0);
   }
 }

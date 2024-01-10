@@ -10,6 +10,7 @@ public interface IntakeIO {
 
     public double armPosition = 0.0; // DEG
     public double armTargetPosition = 0.0; // DEG
+    public double armVelocity = 0.0; //DEG/s
 
     public double absoluteEncoderPosition = 0.0; // DEG
   }
