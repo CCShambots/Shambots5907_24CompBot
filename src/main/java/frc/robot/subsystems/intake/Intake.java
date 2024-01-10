@@ -11,52 +11,50 @@ public class Intake extends StateMachine<Intake.State> {
 
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-    public Intake(IntakeIO io) {
-        super("Intake", State.UNDETERMINED, State.class);
+  public Intake(IntakeIO io) {
+    super("Intake", State.UNDETERMINED, State.class);
 
-        this.io = io;
+    this.io = io;
 
-        io.updateInputs(inputs);
+    io.updateInputs(inputs);
 
-        registerStateCommands();
-        registerTransitions();
-    }
+    registerStateCommands();
+    registerTransitions();
+  }
 
-    private void registerStateCommands() {
-        registerStateCommand(State.SEEKING_STOWED, new SequentialCommandGroup());
-    }
+  private void registerStateCommands() {
+    registerStateCommand(State.SEEKING_STOWED, new SequentialCommandGroup());
+  }
 
-    private void registerTransitions() {
+  private void registerTransitions() {}
 
-    }
+  public IntakeIO getIO() {
+    return io;
+  }
 
-    public IntakeIO getIO() {
-        return io;
-    }
+  public IntakeIO.IntakeIOInputs getInputs() {
+    return inputs;
+  }
 
-    public IntakeIO.IntakeIOInputs getInputs() {
-        return inputs;
-    }
+  @Override
+  protected void update() {
+    io.updateInputs(inputs);
+    Logger.processInputs(getName(), inputs);
+  }
 
-    @Override
-    protected void update() {
-        io.updateInputs(inputs);
-        Logger.processInputs(getName(), inputs);
-    }
+  @Override
+  protected void determineSelf() {
+    // TODO: MAKE THIS ACTUALLY DO THE THING
+    setState(State.SOFT_E_STOP);
+  }
 
-    @Override
-    protected void determineSelf() {
-        //TODO: MAKE THIS ACTUALLY DO THE THING
-        setState(State.SOFT_E_STOP);
-    }
-
-    public enum State {
-        UNDETERMINED,
-        STOWED,
-        SEEKING_STOWED,
-        DEPLOYED,
-        SEEKING_DEPLOYED,
-        SOFT_E_STOP,
-        MANUAL_CONTROL
-    }
+  public enum State {
+    UNDETERMINED,
+    STOWED,
+    SEEKING_STOWED,
+    DEPLOYED,
+    SEEKING_DEPLOYED,
+    SOFT_E_STOP,
+    MANUAL_CONTROL
+  }
 }

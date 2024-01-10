@@ -51,9 +51,9 @@ public class Constants {
 
       public static final double ARM_ENCODER_OFFSET = 0.0; // DEG
 
-      public static final double STOW_EXPEL_DURATION = 0.0; //SECONDS
+      public static final double STOW_EXPEL_DURATION = 0.0; // SECONDS
 
-      public static final double ANGLE_SETPOINT_TOLERANCE = 0.0; //DEGREES
+      public static final double ANGLE_SETPOINT_TOLERANCE = 0.0; // DEGREES
     }
   }
 
@@ -76,6 +76,6 @@ public class Constants {
   }
 
   public static boolean doubleEqual(double a, double b) {
-    return doubleEqual(a, b, 0.00001); //TODO: idk if this is fine or not
+    return doubleEqual(a, b, 0.00001); // TODO: idk if this is fine or not
   }
 }
