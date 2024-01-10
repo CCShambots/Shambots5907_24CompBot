@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -95,7 +94,7 @@ public class Robot extends LoggedRobot {
     // Update the event loop for misaligned modules once every 10 seconds
     // addPeriodic(checkModulesLoop::poll, 10);
 
-    //new WaitCommand(2).andThen(robotContainer.syncAlliance()).schedule();
+    // new WaitCommand(2).andThen(robotContainer.syncAlliance()).schedule();
 
     // addPeriodic(() -> {if(!robotContainer.arm().isTransitioning())
     // robotContainer.arm().pullAbsoluteAngles();}, 2);
