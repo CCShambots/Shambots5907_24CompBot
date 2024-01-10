@@ -8,17 +8,17 @@ import frc.robot.ShamLib.SMF.StateMachine;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer() {
-      super("Robot Container", State.UNDETERMINED, State.class);
+    super("Robot Container", State.UNDETERMINED, State.class);
   }
 
   @Override
   protected void determineSelf() {
-    //placeholder
+    // placeholder
     setState(State.IDLE);
   }
 
   public enum State {
     UNDETERMINED,
-    IDLE //placeholder
+    IDLE // placeholder
   }
 }
