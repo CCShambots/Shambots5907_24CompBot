@@ -32,11 +32,11 @@ public class Intake extends StateMachine<Intake.State> {
 
   private void registerStateCommands(Trigger beltToggle) {
     registerStateCommand(
-        State.SEEKING_STOWED_EXPEL,
+        State.SEEKING_STOWED_NO_EXPEL,
         new SequentialCommandGroup(goToAngleCommand(STOW_ANGLE), transitionCommand(State.STOWED)));
 
     registerStateCommand(
-        State.SEEKING_STOWED_NO_EXPEL,
+        State.SEEKING_STOWED_EXPEL,
         new SequentialCommandGroup(
             new ParallelCommandGroup(
                 goToAngleCommand(STOW_ANGLE),
@@ -78,14 +78,14 @@ public class Intake extends StateMachine<Intake.State> {
   }
 
   private Command manualControlCommand(Trigger beltTrigger) {
-    AtomicBoolean runBelt = new AtomicBoolean(false);
+    AtomicBoolean runBelt = new AtomicBoolean(true);
 
     // i know this isnt atomic, i cant for the life of me figure out a simple way to atomically
     // negate an atomic boolean in java
     beltTrigger.onTrue(new InstantCommand(() -> runBelt.set(!runBelt.get())));
 
     return new FunctionalCommand(
-        () -> {},
+        () -> runBelt.set(false),
         () -> {
           if (runBelt.get() && !doubleEqual(inputs.beltTargetVelocity, BELT_SPEED)) {
             io.setBeltTargetVelocity(BELT_SPEED);
@@ -135,9 +135,9 @@ public class Intake extends StateMachine<Intake.State> {
     return new Pose3d(
         new Translation3d(
             0,
-            0.3 * Math.cos(inputs.armPosition) * (Math.PI / 180.0),
-            0.3 * Math.sin(inputs.armPosition)),
-        new Rotation3d(inputs.armPosition * (Math.PI / 180.0), 0, 0));
+            0.3 * Math.cos(inputs.armPosition * (Math.PI / 180.0)),
+            0.3 * Math.sin(inputs.armPosition * (Math.PI / 180.0))),
+        new Rotation3d(inputs.beltPosition * (Math.PI * 2), 0, 0));
   }
 
   public Pose3d getBeltTargetPose() {

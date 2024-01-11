@@ -25,5 +25,6 @@ public class IntakeIOSim extends IntakeIOReal {
 
     inputs.beltVelocity = beltMotor.getEncoderVelocity();
     inputs.beltTargetVelocity = beltMotor.getTarget();
+    inputs.beltPosition = beltMotor.getEncoderPosition();
   }
 }

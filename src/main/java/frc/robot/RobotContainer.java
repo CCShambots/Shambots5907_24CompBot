@@ -30,11 +30,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void configureBindings() {
-    operatorController.a().onTrue(intake.transitionCommand(Intake.State.SEEKING_STOWED_NO_EXPEL));
-    operatorController.b().onTrue(intake.transitionCommand(Intake.State.SEEKING_DEPLOYED));
-    operatorController.y().onTrue(intake.transitionCommand(Intake.State.SOFT_E_STOP));
-    operatorController.x().onTrue(intake.transitionCommand(Intake.State.SEEKING_STOWED_EXPEL));
-    operatorController.povUp().onTrue(intake.transitionCommand(Intake.State.MANUAL_CONTROL));
+    operatorController
+        .a()
+        .onTrue(intake.transitionCommand(Intake.State.SEEKING_STOWED_NO_EXPEL, false));
+    operatorController.b().onTrue(intake.transitionCommand(Intake.State.SEEKING_DEPLOYED, false));
+    operatorController.y().onTrue(intake.transitionCommand(Intake.State.SOFT_E_STOP, false));
+    operatorController
+        .x()
+        .onTrue(intake.transitionCommand(Intake.State.SEEKING_STOWED_EXPEL, false));
+    operatorController.povUp().onTrue(intake.transitionCommand(Intake.State.MANUAL_CONTROL, false));
   }
 
   private IntakeIO getIntakeIO() {

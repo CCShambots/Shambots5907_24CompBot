@@ -78,6 +78,7 @@ public class IntakeIOReal implements IntakeIO {
 
     inputs.beltVelocity = beltMotor.getEncoderVelocity();
     inputs.beltTargetVelocity = beltMotor.getTarget();
+    inputs.beltPosition = beltMotor.getEncoderPosition();
 
     inputs.absoluteEncoderPosition = getAbsoluteAngle();
   }

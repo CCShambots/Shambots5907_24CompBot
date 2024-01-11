@@ -7,6 +7,7 @@ public interface IntakeIO {
   public static class IntakeIOInputs {
     public double beltVelocity = 0.0; // RPM
     public double beltTargetVelocity = 0.0; // RPM
+    public double beltPosition = 0.0; // ROTATIONS
 
     public double armPosition = 0.0; // DEG
     public double armTargetPosition = 0.0; // DEG
