@@ -15,15 +15,21 @@ public interface IntakeIO {
     public double absoluteEncoderPosition = 0.0; // DEG
   }
 
-  public void setBeltTargetVelocity(double velocity);
+  public default void setBeltTargetVelocity(double velocity) {}
+  ;
 
-  public void setArmTargetPosition(double position);
+  public default void setArmTargetPosition(double position) {}
+  ;
 
-  public void stopBelt();
+  public default void stopBelt() {}
+  ;
 
-  public void stopArm();
+  public default void stopArm() {}
+  ;
 
-  public void syncToAbsoluteEncoder();
+  public default void syncToAbsoluteEncoder() {}
+  ;
 
-  public void updateInputs(IntakeIOInputs inputs);
+  public default void updateInputs(IntakeIOInputs inputs) {}
+  ;
 }

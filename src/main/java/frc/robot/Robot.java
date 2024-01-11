@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
+import frc.robot.ShamLib.motors.talonfx.sim.PhysicsSim;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -107,6 +108,9 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    componentPositions = robotContainer.getComponentPositions();
+    componentPositionTargets = robotContainer.getComponentTargetPositions();
   }
 
   @Override
@@ -119,7 +123,9 @@ public class Robot extends LoggedRobot {
   public void disabledExit() {}
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    SubsystemManagerFactory.getInstance().notifyAutonomousStart();
+  }
 
   @Override
   public void autonomousPeriodic() {}
@@ -128,7 +134,9 @@ public class Robot extends LoggedRobot {
   public void autonomousExit() {}
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    SubsystemManagerFactory.getInstance().notifyTeleopStart();
+  }
 
   @Override
   public void teleopPeriodic() {}
@@ -146,4 +154,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testExit() {}
+
+  @Override
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+  }
 }

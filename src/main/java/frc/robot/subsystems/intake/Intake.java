@@ -3,6 +3,9 @@ package frc.robot.subsystems.intake;
 import static frc.robot.Constants.Intake.Settings.*;
 import static frc.robot.Constants.doubleEqual;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -115,6 +118,35 @@ public class Intake extends StateMachine<Intake.State> {
     // the arm isn't moving very fast
     return !doubleEqual(inputs.armPosition, inputs.absoluteEncoderPosition, AUTO_SYNC_TOLERANCE)
         && doubleEqual(inputs.armVelocity, 0.0, 1.0);
+  }
+
+  public Pose3d getArmPose() {
+    return new Pose3d(
+        new Translation3d(0, 0, 0), new Rotation3d(inputs.armPosition * (Math.PI / 180.0), 0, 0));
+  }
+
+  public Pose3d getArmTargetPose() {
+    return new Pose3d(
+        new Translation3d(0, 0, 0),
+        new Rotation3d(inputs.armTargetPosition * (Math.PI / 180.0), 0, 0));
+  }
+
+  public Pose3d getBeltPose() {
+    return new Pose3d(
+        new Translation3d(
+            0,
+            0.3 * Math.cos(inputs.armPosition) * (Math.PI / 180.0),
+            0.3 * Math.sin(inputs.armPosition)),
+        new Rotation3d(inputs.armPosition * (Math.PI / 180.0), 0, 0));
+  }
+
+  public Pose3d getBeltTargetPose() {
+    return new Pose3d(
+        new Translation3d(
+            0,
+            0.3 * Math.cos(inputs.armTargetPosition) * (Math.PI / 180.0),
+            0.3 * Math.sin(inputs.armTargetPosition)),
+        new Rotation3d(inputs.armPosition * (Math.PI / 180.0), 0, 0));
   }
 
   @Override
