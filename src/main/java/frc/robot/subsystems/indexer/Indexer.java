@@ -1,4 +1,4 @@
-package frc.robot.subsystem.indexer;
+package frc.robot.subsystems.indexer;
 
 import frc.robot.ShamLib.SMF.StateMachine;
 import org.littletonrobotics.junction.Logger;
