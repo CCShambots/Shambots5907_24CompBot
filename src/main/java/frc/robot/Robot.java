@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
+import frc.robot.ShamLib.motors.talonfx.sim.PhysicsSim;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -53,7 +54,7 @@ public class Robot extends LoggedRobot {
     switch (Constants.currentBuildMode) {
       case REAL:
         Logger.addDataReceiver(
-            new WPILOGWriter("/home/lvuser/logs")); // Log to a USB stick ("/U/logs")
+                new WPILOGWriter("/home/lvuser/logs")); // Log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
         // TODO: Deal with this
         new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
@@ -65,12 +66,12 @@ public class Robot extends LoggedRobot {
       case REPLAY:
         setUseTiming(false); // Run as fast as possible
         String logPath =
-            LogFileUtil
-                .findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+                LogFileUtil
+                        .findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
         Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
         Logger.addDataReceiver(
-            new WPILOGWriter(
-                LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+                new WPILOGWriter(
+                        LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
         break;
     }
 
@@ -107,10 +108,16 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    Pose3d[][] poses = robotContainer.getComponentPositions();
+
+    componentPositions = poses[0];
+    componentPositionTargets = poses[1];
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    SubsystemManagerFactory.getInstance().disableAllSubsystems();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -119,7 +126,9 @@ public class Robot extends LoggedRobot {
   public void disabledExit() {}
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    SubsystemManagerFactory.getInstance().notifyAutonomousStart();
+  }
 
   @Override
   public void autonomousPeriodic() {}
@@ -128,7 +137,9 @@ public class Robot extends LoggedRobot {
   public void autonomousExit() {}
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    SubsystemManagerFactory.getInstance().notifyTeleopStart();
+  }
 
   @Override
   public void teleopPeriodic() {}
@@ -146,4 +157,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testExit() {}
+
+  @Override
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+  }
 }
