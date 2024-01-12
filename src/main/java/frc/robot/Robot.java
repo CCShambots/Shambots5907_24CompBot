@@ -54,7 +54,7 @@ public class Robot extends LoggedRobot {
     switch (Constants.currentBuildMode) {
       case REAL:
         Logger.addDataReceiver(
-                new WPILOGWriter("/home/lvuser/logs")); // Log to a USB stick ("/U/logs")
+            new WPILOGWriter("/home/lvuser/logs")); // Log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
         // TODO: Deal with this
         new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
@@ -66,12 +66,12 @@ public class Robot extends LoggedRobot {
       case REPLAY:
         setUseTiming(false); // Run as fast as possible
         String logPath =
-                LogFileUtil
-                        .findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+            LogFileUtil
+                .findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
         Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
         Logger.addDataReceiver(
-                new WPILOGWriter(
-                        LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+            new WPILOGWriter(
+                LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
         break;
     }
 

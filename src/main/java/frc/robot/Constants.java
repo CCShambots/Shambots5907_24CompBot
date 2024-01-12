@@ -9,30 +9,14 @@ public class Constants {
   public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REPLAY;
 
   public static final class PhysicalConstants {
-    //METERS
-    public static final Translation3d CHASSIS_TO_INTAKE = new Translation3d(
-            0,
-            0,
-            0
-    );
+    // METERS
+    public static final Translation3d CHASSIS_TO_INTAKE = new Translation3d(0, 0, 0);
 
-    public static final Translation3d CHASSIS_TO_SHOOTER = new Translation3d(
-            0,
-            0,
-            0
-    );
+    public static final Translation3d CHASSIS_TO_SHOOTER = new Translation3d(0, 0, 0);
 
-    public static Translation3d SHOOTER_TO_ELEVATOR = new Translation3d(
-            0,
-            0,
-            0
-    );
+    public static Translation3d SHOOTER_TO_ELEVATOR = new Translation3d(0, 0, 0);
 
-    public static Translation3d ELEVATOR_TO_CLAW = new Translation3d(
-            0,
-            0,
-            0
-    );
+    public static Translation3d ELEVATOR_TO_CLAW = new Translation3d(0, 0, 0);
   }
 
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;

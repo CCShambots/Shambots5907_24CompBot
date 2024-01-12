@@ -25,35 +25,35 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     setState(State.IDLE);
   }
 
-  //for the get _ angles/poses/extensions, the first entry is actual and the second is target
+  // for the get _ angles/poses/extensions, the first entry is actual and the second is target
   private void updateIntakeAngles() {
-    //TODO: make this do the thing
-    //idx 0 in the pose/motions arrays
+    // TODO: make this do the thing
+    // idx 0 in the pose/motions arrays
   }
 
   private void updateShooterAngles() {
-    //TODO: make this do the thing
-    //idx 1 in the pose/motions arrays
+    // TODO: make this do the thing
+    // idx 1 in the pose/motions arrays
   }
 
   private void updateElevatorExtensions() {
-    //TODO: make this do the thing
-    //idx 2 in the pose/motions arrays
+    // TODO: make this do the thing
+    // idx 2 in the pose/motions arrays
   }
 
   private void getClawAngles() {
-    //TODO: make this do the thing
-    //idx 3, 4 in the pose/motions arrays
+    // TODO: make this do the thing
+    // idx 3, 4 in the pose/motions arrays
   }
 
   private void updateIntakePoses() {
     for (int i = 0; i < 2; i++) {
       componentPoses[i][0] = new Pose3d();
 
-      componentPoses[i][0].transformBy(new Transform3d(
+      componentPoses[i][0].transformBy(
+          new Transform3d(
               Constants.PhysicalConstants.CHASSIS_TO_INTAKE,
-              new Rotation3d(0, componentRelativeMotions[i][0], 0)
-      ));
+              new Rotation3d(0, componentRelativeMotions[i][0], 0)));
     }
   }
 
@@ -61,10 +61,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     for (int i = 0; i < 2; i++) {
       componentPoses[i][1] = new Pose3d();
 
-      componentPoses[i][1].transformBy(new Transform3d(
+      componentPoses[i][1].transformBy(
+          new Transform3d(
               Constants.PhysicalConstants.CHASSIS_TO_SHOOTER,
-              new Rotation3d(0, componentRelativeMotions[i][1], 0)
-      ));
+              new Rotation3d(0, componentRelativeMotions[i][1], 0)));
     }
   }
 
@@ -72,50 +72,46 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     for (int i = 0; i < 2; i++) {
       componentPoses[i][2] = new Pose3d();
 
-      //move origin of elevator to origin of shooter
-      componentPoses[i][2].transformBy(new Transform3d(
+      // move origin of elevator to origin of shooter
+      componentPoses[i][2].transformBy(
+          new Transform3d(
               new Pose3d(),
-              new Pose3d(Constants.PhysicalConstants.SHOOTER_TO_ELEVATOR, new Rotation3d())
-      ));
+              new Pose3d(Constants.PhysicalConstants.SHOOTER_TO_ELEVATOR, new Rotation3d())));
 
-      //rotate elevator to shooter angle
-      componentPoses[i][2].transformBy(new Transform3d(
-              new Pose3d(),
-              componentPoses[i][1]
-      ));
+      // rotate elevator to shooter angle
+      componentPoses[i][2].transformBy(new Transform3d(new Pose3d(), componentPoses[i][1]));
 
-      //move elevator to it's extension
-      componentPoses[i][2].transformBy(new Transform3d(
+      // move elevator to it's extension
+      componentPoses[i][2].transformBy(
+          new Transform3d(
               new Pose3d(),
               new Pose3d(
-                      new Translation3d(0, componentRelativeMotions[i][2], 0),
-                      new Rotation3d()
-              )
-      ));
+                  new Translation3d(0, componentRelativeMotions[i][2], 0), new Rotation3d())));
     }
   }
 
   private void updateClawPoses() {
     for (int i = 0; i < 4; i++) {
-      //stupid, but it will give (0, 3) (1, 3) (0, 4) (1, 4) so it gets both claws in both target and actual poses
-      //type is target or actual
-      //clawidx is for which part of the claw
+      // stupid, but it will give (0, 3) (1, 3) (0, 4) (1, 4) so it gets both claws in both target
+      // and actual poses
+      // type is target or actual
+      // clawidx is for which part of the claw
       int typeIdx = i % 2;
       int clawIdx = (i / 2) + 3;
 
       componentPoses[typeIdx][clawIdx] = new Pose3d();
 
-      //move origin of claw part to origin of elevator
-      componentPoses[typeIdx][clawIdx].transformBy(new Transform3d(
-              new Pose3d(),
-              componentPoses[typeIdx][2]
-      ));
+      // move origin of claw part to origin of elevator
+      componentPoses[typeIdx][clawIdx].transformBy(
+          new Transform3d(new Pose3d(), componentPoses[typeIdx][2]));
 
-      //rotate the claw to it's angle
-      componentPoses[typeIdx][clawIdx].transformBy(new Transform3d(new Pose3d(), new Pose3d(
-              new Translation3d(),
-              new Rotation3d(0, componentRelativeMotions[typeIdx][clawIdx], 0)
-      )));
+      // rotate the claw to it's angle
+      componentPoses[typeIdx][clawIdx].transformBy(
+          new Transform3d(
+              new Pose3d(),
+              new Pose3d(
+                  new Translation3d(),
+                  new Rotation3d(0, componentRelativeMotions[typeIdx][clawIdx], 0))));
     }
   }
 
@@ -133,8 +129,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     updateClawPoses();
   }
 
-  //ik this is kinda stupid, i dont really care
-  //im doing it with the arrays n stuff instead of returning to avoid extra allocations cause loop overruns (yippee)
+  // ik this is kinda stupid, i dont really care
+  // im doing it with the arrays n stuff instead of returning to avoid extra allocations cause loop
+  // overruns (yippee)
   public Pose3d[][] getComponentPositions() {
     updateAllRelative();
     updateAllPoses();
