@@ -41,7 +41,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     // idx 2 in the pose/motions arrays
   }
 
-  private void getClawAngles() {
+  private void updateClawAngles() {
     // TODO: make this do the thing
     // idx 3, 4 in the pose/motions arrays
   }
@@ -119,7 +119,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     updateIntakeAngles();
     updateShooterAngles();
     updateElevatorExtensions();
-    updateClawPoses();
+    updateClawAngles();
   }
 
   private void updateAllPoses() {
