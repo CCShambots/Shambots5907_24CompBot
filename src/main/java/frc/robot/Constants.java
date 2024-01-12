@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.ShamLibConstants;
@@ -15,12 +16,14 @@ public class Constants {
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
   public static final class PhysicalConstants {
-    //METERS
-    public static final Translation3d INTAKE_OFFSET = new Translation3d(
-            0,
-            0,
-            0
-    );
+    // METERS
+    public static final Translation3d CHASSIS_TO_INTAKE = new Translation3d(0, 0, 0);
+
+    public static final Translation3d CHASSIS_TO_SHOOTER = new Translation3d(0, 0, 0);
+
+    public static Translation3d SHOOTER_TO_ELEVATOR = new Translation3d(0, 0, 0);
+
+    public static Translation3d ELEVATOR_TO_CLAW = new Translation3d(0, 0, 0);
   }
 
   // TODO: UPDATE INTAKE CONSTANTS

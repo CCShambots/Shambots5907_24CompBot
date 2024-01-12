@@ -108,9 +108,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    Pose3d[][] poses = robotContainer.getComponentPositions();
 
-    componentPositions = robotContainer.getComponentPositions();
-    componentPositionTargets = robotContainer.getComponentTargetPositions();
+    componentPositions = poses[0];
+    componentPositionTargets = poses[1];
   }
 
   @Override
