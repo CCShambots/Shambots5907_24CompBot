@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
@@ -87,12 +88,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private void updateIntakePoses() {
     for (int i = 0; i < 2; i++) {
-      componentPoses[i][0] = new Pose3d();
-
-      componentPoses[i][0].transformBy(
+      componentPoses[i][0] = new Pose3d().transformBy(
           new Transform3d(
               Constants.PhysicalConstants.CHASSIS_TO_INTAKE,
-              new Rotation3d(0, componentRelativeMotions[i][0], 0)));
+              new Rotation3d(0, Units.degreesToRadians(componentRelativeMotions[i][0]), 0)));
     }
   }
 
