@@ -120,33 +120,12 @@ public class Intake extends StateMachine<Intake.State> {
         && doubleEqual(inputs.armVelocity, 0.0, 1.0);
   }
 
-  public Pose3d getArmPose() {
-    return new Pose3d(
-        new Translation3d(0, 0, 0), new Rotation3d(inputs.armPosition * (Math.PI / 180.0), 0, 0));
+  public double getArmPosition() {
+    return inputs.armPosition;
   }
 
-  public Pose3d getArmTargetPose() {
-    return new Pose3d(
-        new Translation3d(0, 0, 0),
-        new Rotation3d(inputs.armTargetPosition * (Math.PI / 180.0), 0, 0));
-  }
-
-  public Pose3d getBeltPose() {
-    return new Pose3d(
-        new Translation3d(
-            0,
-            0.3 * Math.cos(inputs.armPosition * (Math.PI / 180.0)),
-            0.3 * Math.sin(inputs.armPosition * (Math.PI / 180.0))),
-        new Rotation3d(inputs.beltPosition * (Math.PI * 2), 0, 0));
-  }
-
-  public Pose3d getBeltTargetPose() {
-    return new Pose3d(
-        new Translation3d(
-            0,
-            0.3 * Math.cos(inputs.armTargetPosition) * (Math.PI / 180.0),
-            0.3 * Math.sin(inputs.armTargetPosition)),
-        new Rotation3d(inputs.armPosition * (Math.PI / 180.0), 0, 0));
+  public double getArmTargetPosition() {
+    return inputs.armTargetPosition;
   }
 
   @Override

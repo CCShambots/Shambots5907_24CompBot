@@ -26,7 +26,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    //TODO: make this not just ignore manual control :()
+    // TODO: make this not just ignore manual control :()
     intake = new Intake(getIntakeIO(), new Trigger(() -> false));
 
     addChildSubsystem(intake);
@@ -36,9 +36,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     configureBindings();
   }
 
-  private void configureBindings() {
-
-  }
+  private void configureBindings() {}
 
   private IntakeIO getIntakeIO() {
     switch (Constants.currentBuildMode) {
@@ -67,8 +65,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   // for the get _ angles/poses/extensions, the first entry is actual and the second is target
   private void updateIntakeAngles() {
-    // TODO: make this do the thing
     // idx 0 in the pose/motions arrays
+    componentRelativeMotions[0][0] = intake.getArmPosition();
+    componentRelativeMotions[1][0] = intake.getArmTargetPosition();
   }
 
   private void updateShooterAngles() {
