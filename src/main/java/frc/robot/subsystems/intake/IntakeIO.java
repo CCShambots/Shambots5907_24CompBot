@@ -17,20 +17,20 @@ public interface IntakeIO {
   }
 
   public default void setBeltTargetVelocity(double velocity) {}
-  ;
 
   public default void setArmTargetPosition(double position) {}
-  ;
 
   public default void stopBelt() {}
-  ;
 
   public default void stopArm() {}
-  ;
 
   public default void syncToAbsoluteEncoder() {}
-  ;
+
+  public default void setArmVoltage() {}
+
+  public default void setBeltVoltage() {
+
+  }
 
   public default void updateInputs(IntakeIOInputs inputs) {}
-  ;
 }
