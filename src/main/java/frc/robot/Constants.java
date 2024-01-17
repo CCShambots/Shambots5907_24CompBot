@@ -2,11 +2,17 @@ package frc.robot;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
+
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 public class Constants {
   public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REPLAY;
@@ -23,6 +29,25 @@ public class Constants {
     public static Translation3d SHOOTER_TO_ELEVATOR = new Translation3d(0, 0, 0);
 
     public static Translation3d ELEVATOR_TO_CLAW = new Translation3d(0, 0, 0);
+
+    public static Pose3d SPEAKER_POSE = new Pose3d(new Translation3d(0, 0, 0), new Rotation3d());
+  }
+
+  public static final class Shooter {
+    public static final class Sim {}
+
+    public static final class Hardware {}
+
+    public static final class Settings {
+
+      public static final NavigableMap<Double, Double> FLYWHEEL_DISTANCE_LUT = new TreeMap<>(Map.of(
+        0.0, 0.0
+      ));
+
+      public static final NavigableMap<Double, Double> ARM_DISTANCE_LUT = new TreeMap<>(Map.of(
+        0.0, 0.0
+      ));
+    }
   }
 
   public static final class Arm {
@@ -117,5 +142,10 @@ public class Constants {
 
   public static boolean doubleEqual(double a, double b) {
     return doubleEqual(a, b, 0.00001); // TODO: idk if this is fine or not
+  }
+
+  public static double lerp(double a, double b, double t) {
+    //found this on wiki
+    return (1 - t) * a + t * b;
   }
 }

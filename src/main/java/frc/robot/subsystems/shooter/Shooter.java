@@ -1,6 +1,8 @@
 package frc.robot.subsystems.shooter;
 
-import edu.wpi.first.math.geometry.Pose3d;
+import static frc.robot.Constants.Shooter.Settings.*;
+
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -11,28 +13,36 @@ import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class Shooter extends StateMachine<Shooter.State> {
   private final Arm arm;
   private final Flywheel flywheel;
 
-  private final Supplier<Pose3d> botPoseProvider;
+  //x and y determined by odom, z determined by climber height,
+  private final Supplier<Translation3d> botTranslationProvider;
 
-  public Shooter(ArmIO armIO, FlywheelIO flywheelIO, Supplier<Pose3d> botPoseProvider) {
+  //angle about x axis from gyro
+  private final DoubleSupplier botXAngleProvider;
+
+  public Shooter(ArmIO armIO, FlywheelIO flywheelIO, Supplier<Translation3d> botTranslationProvider, DoubleSupplier botXAngleProvider) {
     super("Shooter", State.UNDETERMINED, State.class);
 
-    this.botPoseProvider = botPoseProvider;
+    this.botTranslationProvider = botTranslationProvider;
+    this.botXAngleProvider = botXAngleProvider;
 
     arm = new Arm(
             armIO,
-            this::armDistanceAA,
+            () -> distanceAA(ARM_DISTANCE_LUT),
             this::armTrapAA
     );
 
     flywheel = new Flywheel(
             flywheelIO,
-            this::flywheelDistanceAA
+            () -> distanceAA(FLYWHEEL_DISTANCE_LUT)
     );
 
     addChildSubsystem(arm);
@@ -113,14 +123,19 @@ public class Shooter extends StateMachine<Shooter.State> {
     return Constants.Arm.Settings.TRAP_PREP_POSITION;
   }
 
-  private double armDistanceAA() {
-    //TODO: do math probably
-    return Constants.Arm.Settings.BASE_SHOT_POSITION;
-  }
+  private double distanceAA(NavigableMap<Double, Double> map) {
+    double distance = Constants.PhysicalConstants.SPEAKER_POSE.getTranslation().getDistance(botTranslationProvider.get());
 
-  private double flywheelDistanceAA() {
-    //TODO: maybe do math???
-    return Constants.Flywheel.Settings.BASE_SHOT_VELOCITY;
+    Map.Entry<Double, Double> lower = map.floorEntry(distance);
+    Map.Entry<Double, Double> higher = map.ceilingEntry(distance);
+    double interpolation = (distance - lower.getKey()) / (higher.getKey() - lower.getKey());
+
+    //TODO: check this math
+    return Constants.lerp(
+            lower.getValue(),
+            higher.getValue(),
+            interpolation
+    );
   }
 
   @Override
