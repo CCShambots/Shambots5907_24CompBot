@@ -5,11 +5,11 @@ import org.littletonrobotics.junction.AutoLog;
 public interface FlywheelIO {
   @AutoLog
   public class FlywheelInputs {
-    public double topVelocity = 0.0; //RPS
-    public double topTargetVelocity = 0.0; //RPS
+    public double topVelocity = 0.0; // RPS
+    public double topTargetVelocity = 0.0; // RPS
 
-    public double bottomVelocity = 0.0; //RPS
-    public double bottomTargetVelocity = 0.0; //RPS
+    public double bottomVelocity = 0.0; // RPS
+    public double bottomTargetVelocity = 0.0; // RPS
   }
 
   public default void setFlywheelTarget(double target) {}

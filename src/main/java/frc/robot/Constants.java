@@ -46,19 +46,22 @@ public class Constants {
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
 
-      public static final PIDSVGains GAINS = new PIDSVGains(
-              0,
-              0,
-              0,
-              0,
-              0
-      );
+      public static final PIDSVGains GAINS = new PIDSVGains(0, 0, 0, 0, 0);
     }
 
     public static final class Settings {
       public static final double VELOCITY = 0;
       public static final double ACCELERATION = 0;
       public static final double JERK = 0;
+
+      public static final double POSITION_READY_TOLERANCE = 0;
+
+      public static final double BASE_SHOT_POSITION = 0;
+      public static final double AMP_POSITION = 0;
+      public static final double TRAP_PREP_POSITION = 0;
+      public static final double FULL_STOW_POSITION = 0;
+      public static final double PARTIAL_STOW_POSITION = 0;
+      public static final double CHUTE_INTAKE_POSITION = 0;
     }
   }
 
@@ -85,12 +88,12 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BASE_SHOT_VELOCITY = 0.0; //RPS
-      public static final double SPIN_UP_READY_TOLERANCE = 1; //RPS
+      public static final double BASE_SHOT_VELOCITY = 0.0; // RPS
+      public static final double SPIN_UP_READY_TOLERANCE = 1; // RPS
 
-      public static final double PASS_THROUGH_SPEED = 0.0; //RPS
+      public static final double PASS_THROUGH_SPEED = 0.0; // RPS
 
-      public static final double CHUTE_INTAKE_SPEED = 0.0; //RPS
+      public static final double CHUTE_INTAKE_SPEED = 0.0; // RPS
     }
   }
 
