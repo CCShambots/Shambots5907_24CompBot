@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.shooter.arm.Arm;
@@ -35,7 +36,11 @@ public class Shooter extends StateMachine<Shooter.State> {
       FlywheelIO flywheelIO,
       Supplier<Translation3d> botTranslationProvider,
       DoubleSupplier botXAngleProvider,
-      DoubleSupplier climberExtensionSupplier) {
+      DoubleSupplier climberExtensionSupplier,
+      Trigger tuningInc,
+      Trigger tuningDec,
+      Trigger tuningStop
+      ) {
     super("Shooter", State.UNDETERMINED, State.class);
 
     this.botTranslationProvider = botTranslationProvider;
@@ -46,13 +51,18 @@ public class Shooter extends StateMachine<Shooter.State> {
         new Arm(
             armIO,
             () -> distanceAA(ARM_DISTANCE_LUT, Constants.Arm.Settings.BASE_SHOT_POSITION),
-            this::armTrapAA);
+            this::armTrapAA,
+            tuningInc,
+            tuningDec,
+            tuningStop);
 
     flywheel =
         new Flywheel(
             flywheelIO,
-            () ->
-                distanceAA(FLYWHEEL_DISTANCE_LUT, Constants.Flywheel.Settings.BASE_SHOT_VELOCITY));
+            () -> distanceAA(FLYWHEEL_DISTANCE_LUT, Constants.Flywheel.Settings.BASE_SHOT_VELOCITY),
+            tuningInc,
+            tuningDec,
+            tuningStop);
 
     addChildSubsystem(arm);
     addChildSubsystem(flywheel);

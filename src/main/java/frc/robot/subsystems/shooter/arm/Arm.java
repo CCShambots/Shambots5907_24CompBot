@@ -3,30 +3,38 @@ package frc.robot.subsystems.shooter.arm;
 import static frc.robot.Constants.Arm.Settings.*;
 import static frc.robot.Constants.doubleEqual;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
 import java.util.function.DoubleSupplier;
+
+import frc.robot.ShamLib.motors.tuning.LinearTuningCommand;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends StateMachine<Arm.State> {
   private final ArmIO io;
   private final ArmInputsAutoLogged inputs = new ArmInputsAutoLogged();
+  private final Timer syncTimeout = new Timer();
 
   // AA stands for active adjust :)
   private final DoubleSupplier distanceAAProvider;
   private final DoubleSupplier trapAAProvider;
 
-  public Arm(ArmIO io, DoubleSupplier distanceAAProvider, DoubleSupplier trapAAProvider) {
+  public Arm(ArmIO io, DoubleSupplier distanceAAProvider, DoubleSupplier trapAAProvider, Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     super("Shooter Arm", State.UNDETERMINED, State.class);
 
     this.io = io;
     this.distanceAAProvider = distanceAAProvider;
     this.trapAAProvider = trapAAProvider;
+
+    registerStateCommands(tuningInc, tuningDec, tuningStop);
+    registerTransitions();
   }
 
-  private void registerStateCommands() {
+  private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     registerStateCommand(State.SOFT_E_STOP, io::stop);
 
     registerStateCommand(State.AMP, holdPositionCommand(() -> AMP_POSITION));
@@ -38,10 +46,22 @@ public class Arm extends StateMachine<Arm.State> {
 
     registerStateCommand(State.TRAP_ACTIVE_ADJUST, holdPositionCommand(trapAAProvider));
     registerStateCommand(State.SHOT_ACTIVE_ADJUST, holdPositionCommand(distanceAAProvider));
+
+    registerStateCommand(State.VOLTAGE_CALC, new LinearTuningCommand(
+            tuningStop,
+            tuningInc,
+            tuningDec,
+            io::setVoltage,
+            () -> inputs.motorVelocity,
+            () -> inputs.motorVoltage,
+            VOLTAGE_INCREMENT
+    ));
   }
 
   private void registerTransitions() {
     addOmniTransition(State.SOFT_E_STOP);
+
+    addTransition(State.SOFT_E_STOP, State.VOLTAGE_CALC);
 
     // it going from one to the other wont conflict with anything within the arm subsystem
     addOmniTransition(State.AMP);
@@ -52,6 +72,11 @@ public class Arm extends StateMachine<Arm.State> {
     addOmniTransition(State.TRAP_PREP);
     addOmniTransition(State.TRAP_ACTIVE_ADJUST);
     addOmniTransition(State.SHOT_ACTIVE_ADJUST);
+  }
+
+  private boolean needsSync() {
+    return !doubleEqual(inputs.motorPosition, inputs.encoderPosition, AUTO_SYNC_TOLERANCE)
+            && doubleEqual(inputs.motorVelocity, 0.0, AUTO_SYNC_MAX_VELOCITY);
   }
 
   private Command holdPositionCommand(DoubleSupplier positionProvider) {
@@ -84,6 +109,11 @@ public class Arm extends StateMachine<Arm.State> {
   protected void update() {
     io.updateInputs(inputs);
     Logger.processInputs(getName(), inputs);
+
+    if (needsSync() && ENABLE_AUTO_SYNC && syncTimeout.hasElapsed(MIN_TIME_BETWEEN_SYNC)) {
+      io.syncToAbsoluteEncoder();
+      syncTimeout.restart();
+    }
   }
 
   @Override
@@ -102,6 +132,7 @@ public class Arm extends StateMachine<Arm.State> {
     SHOT_ACTIVE_ADJUST,
     PARTIAL_STOW,
     FULL_STOW,
+    VOLTAGE_CALC,
     // flags
     AT_TARGET
   }

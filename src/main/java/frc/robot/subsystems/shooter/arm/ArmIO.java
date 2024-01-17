@@ -10,6 +10,7 @@ public interface ArmIO {
     public double encoderPosition = 0.0; // DEG
 
     public double motorVelocity = 0.0; // DEG/s
+    public double motorVoltage = 0.0;
   }
 
   public default void updateInputs(ArmInputs inputs) {}

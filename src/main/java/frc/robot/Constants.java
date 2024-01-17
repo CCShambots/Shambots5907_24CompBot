@@ -95,6 +95,14 @@ public class Constants {
       public static final double FULL_STOW_POSITION = 0;
       public static final double PARTIAL_STOW_POSITION = 0;
       public static final double CHUTE_INTAKE_POSITION = 0;
+
+      public static final double AUTO_SYNC_TOLERANCE = 0;
+      public static final double AUTO_SYNC_MAX_VELOCITY = 0;
+
+      public static final boolean ENABLE_AUTO_SYNC = false;
+      public static final double MIN_TIME_BETWEEN_SYNC = 2.0;
+
+      public static final double VOLTAGE_INCREMENT = 0.25;
     }
   }
 
@@ -127,6 +135,8 @@ public class Constants {
       public static final double PASS_THROUGH_SPEED = 0.0; // RPS
 
       public static final double CHUTE_INTAKE_SPEED = 0.0; // RPS
+
+      public static final double VOLTAGE_INCREMENT = 0.25;
     }
   }
 
@@ -158,16 +168,14 @@ public class Constants {
   }
 
   public static double[] getTrapOffsetFromBot(double climberExtension, double botAngle) {
-    // TODO: THESE MATHS ARE PROBABLY WRONG
     double trapToChainX = PhysicalConstants.TRAP_TO_CHAIN_X;
     double trapToChainY = PhysicalConstants.TRAP_TO_CHAIN_Y;
     double chainToBotX = PhysicalConstants.CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT;
     double chainToBotY = PhysicalConstants.CLIMBER_Y_DISTANCE_FROM_SHOOTER_PIVOT + climberExtension;
 
-    double x = chainToBotX * Math.cos(botAngle) + chainToBotY * Math.sin(botAngle) - trapToChainX;
-    double y = chainToBotY * Math.cos(botAngle) + chainToBotX * Math.sin(botAngle) - trapToChainY;
+    double x = chainToBotX * Math.cos(botAngle) - chainToBotY * Math.sin(botAngle) + trapToChainX;
+    double y = chainToBotY * Math.cos(botAngle) + chainToBotX * Math.sin(botAngle) + trapToChainY;
 
-    // negate cause it is currently bot offset from trap
-    return new double[] {-x, -y};
+    return new double[] {x, y};
   }
 }

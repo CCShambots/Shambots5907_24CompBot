@@ -10,6 +10,9 @@ public interface FlywheelIO {
 
     public double bottomVelocity = 0.0; // RPS
     public double bottomTargetVelocity = 0.0; // RPS
+
+    public double topVoltage = 0;
+    public double bottomVoltage = 0;
   }
 
   public default void setFlywheelTarget(double target) {}

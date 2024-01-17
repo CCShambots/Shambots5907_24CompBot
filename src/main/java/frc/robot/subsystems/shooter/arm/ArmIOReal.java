@@ -33,6 +33,7 @@ public class ArmIOReal implements ArmIO {
     inputs.motorPosition = leaderMotor.getEncoderPosition();
     inputs.targetPosition = leaderMotor.getTarget();
     inputs.motorVelocity = leaderMotor.getEncoderVelocity();
+    inputs.motorVoltage = leaderMotor.getMotorVoltage().getValueAsDouble();
   }
 
   @Override
