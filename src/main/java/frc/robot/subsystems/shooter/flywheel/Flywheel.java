@@ -35,10 +35,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
                     atSpeedCommand(() -> BASE_SHOT_VELOCITY, SPIN_UP_READY_TOLERANCE)
             ));
 
-    registerStateCommand(
-        State.IDLE,
-            () -> io.setFlywheelVoltage(0)
-    );
+    registerStateCommand(State.IDLE, io::stop);
 
     registerStateCommand(State.DISTANCE_AWARE_SPIN, new ParallelCommandGroup(
             new RunCommand(() -> io.setFlywheelTarget(distanceSpeedProvider.getAsDouble())),
@@ -61,7 +58,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
 
   private Command atSpeedCommand(DoubleSupplier speedProvider, double accuracy) {
     return new RunCommand(() -> {
-      if (doubleEqual(inputs.velocity, speedProvider.getAsDouble(), accuracy)) {
+      if (doubleEqual(inputs.topVelocity, speedProvider.getAsDouble(), accuracy) && doubleEqual(inputs.bottomVelocity, speedProvider.getAsDouble(), accuracy)) {
         setFlag(State.AT_SPEED);
       }
       else {

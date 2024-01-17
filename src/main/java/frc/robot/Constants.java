@@ -25,12 +25,49 @@ public class Constants {
     public static Translation3d ELEVATOR_TO_CLAW = new Translation3d(0, 0, 0);
   }
 
+  public static final class Arm {
+    public static final class Sim {}
+
+    public static final class Hardware {
+      public static final int LEADER_ID = 0;
+      public static final int FOLLOWER_ID = 0;
+      public static final int ENCODER_ID = 0;
+
+      public static final double ENCODER_RATIO = 0;
+      public static final double MOTOR_RATIO = 0;
+
+      public static final boolean ENCODER_INVERTED = false;
+      public static final boolean LEADER_INVERTED = false;
+      public static final boolean FOLLOWER_INVERTED = false;
+
+      public static final double ENCODER_OFFSET = 0.0;
+
+      public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
+
+      public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
+
+      public static final PIDSVGains GAINS = new PIDSVGains(
+              0,
+              0,
+              0,
+              0,
+              0
+      );
+    }
+
+    public static final class Settings {
+      public static final double VELOCITY = 0;
+      public static final double ACCELERATION = 0;
+      public static final double JERK = 0;
+    }
+  }
+
   public static final class Flywheel {
     public static final class Sim {}
 
     public static final class Hardware {
-      public static int TOP_MOTOR_ID = 0;
-      public static int BOTTOM_MOTOR_ID = 0;
+      public static final int TOP_MOTOR_ID = 0;
+      public static final int BOTTOM_MOTOR_ID = 0;
 
       public static final double TOP_MOTOR_RATIO = 0.0;
       public static final double BOTTOM_MOTOR_RATIO = 0.0;

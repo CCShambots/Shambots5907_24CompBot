@@ -6,32 +6,43 @@ import com.ctre.phoenix6.controls.StrictFollower;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class FlywheelIOReal implements FlywheelIO {
-  private final VelocityTalonFX topMotor;
-  private final VelocityTalonFX bottomMotor;
+  private final VelocityTalonFX topMotor = new VelocityTalonFX(TOP_MOTOR_ID, TOP_MOTOR_GAINS, TOP_MOTOR_RATIO);
+  private final VelocityTalonFX bottomMotor = new VelocityTalonFX(BOTTOM_MOTOR_ID, BOTTOM_MOTOR_GAINS, BOTTOM_MOTOR_RATIO);
 
   public FlywheelIOReal() {
-    topMotor = new VelocityTalonFX(TOP_MOTOR_ID, TOP_MOTOR_GAINS, TOP_MOTOR_RATIO);
-
-    bottomMotor = new VelocityTalonFX(BOTTOM_MOTOR_ID, BOTTOM_MOTOR_GAINS, BOTTOM_MOTOR_RATIO);
-
     configureCurrentLimits();
     configureHardware();
   }
 
   @Override
   public void updateInputs(FlywheelInputs inputs) {
-    inputs.targetVelocity = topMotor.getTarget();
-    inputs.velocity = topMotor.getEncoderVelocity();
+    inputs.topTargetVelocity = topMotor.getTarget();
+    inputs.topVelocity = topMotor.getEncoderVelocity();
+
+    inputs.bottomTargetVelocity = bottomMotor.getTarget();
+    inputs.bottomVelocity = bottomMotor.getEncoderVelocity();
   }
 
   @Override
   public void setFlywheelTarget(double target) {
     topMotor.setTarget(target);
+    bottomMotor.setTarget(target);
   }
 
   @Override
-  public void setFlywheelVoltage(double voltage) {
+  public void setBottomVoltage(double voltage) {
+    bottomMotor.setVoltage(voltage);
+  }
+
+  @Override
+  public void setTopVoltage(double voltage) {
     topMotor.setVoltage(voltage);
+  }
+
+  @Override
+  public void stop() {
+    topMotor.stopMotor();
+    bottomMotor.stopMotor();
   }
 
   private void configureHardware() {
@@ -40,9 +51,6 @@ public class FlywheelIOReal implements FlywheelIO {
 
     topMotor.setInverted(TOP_MOTOR_INVERTED);
     bottomMotor.setInverted(BOTTOM_MOTOR_INVERTED);
-
-    // I don't know if this would ignore the motor's own motion magic gains
-    bottomMotor.setControl(new StrictFollower(TOP_MOTOR_ID));
   }
 
   private void configureCurrentLimits() {
