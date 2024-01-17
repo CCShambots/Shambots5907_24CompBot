@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
-
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -31,6 +30,17 @@ public class Constants {
     public static Translation3d ELEVATOR_TO_CLAW = new Translation3d(0, 0, 0);
 
     public static Pose3d SPEAKER_POSE = new Pose3d(new Translation3d(0, 0, 0), new Rotation3d());
+
+    public static double TRAP_HEIGHT = 0.0;
+
+    // how much taller climber is than shooter pivot when stowed
+    public static double CLIMBER_Y_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
+
+    // how far away climber is from shooter pivot on front/back axis
+    public static double CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
+
+    public static double TRAP_TO_CHAIN_X = 0.0;
+    public static double TRAP_TO_CHAIN_Y = 0.0;
   }
 
   public static final class Shooter {
@@ -40,13 +50,11 @@ public class Constants {
 
     public static final class Settings {
 
-      public static final NavigableMap<Double, Double> FLYWHEEL_DISTANCE_LUT = new TreeMap<>(Map.of(
-        0.0, 0.0
-      ));
+      public static final NavigableMap<Double, Double> FLYWHEEL_DISTANCE_LUT =
+          new TreeMap<>(Map.of(0.0, 0.0));
 
-      public static final NavigableMap<Double, Double> ARM_DISTANCE_LUT = new TreeMap<>(Map.of(
-        0.0, 0.0
-      ));
+      public static final NavigableMap<Double, Double> ARM_DISTANCE_LUT =
+          new TreeMap<>(Map.of(0.0, 0.0));
     }
   }
 
@@ -145,7 +153,21 @@ public class Constants {
   }
 
   public static double lerp(double a, double b, double t) {
-    //found this on wiki
+    // found this on wiki
     return (1 - t) * a + t * b;
+  }
+
+  public static double[] getTrapOffsetFromBot(double climberExtension, double botAngle) {
+    // TODO: THESE MATHS ARE PROBABLY WRONG
+    double trapToChainX = PhysicalConstants.TRAP_TO_CHAIN_X;
+    double trapToChainY = PhysicalConstants.TRAP_TO_CHAIN_Y;
+    double chainToBotX = PhysicalConstants.CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT;
+    double chainToBotY = PhysicalConstants.CLIMBER_Y_DISTANCE_FROM_SHOOTER_PIVOT + climberExtension;
+
+    double x = chainToBotX * Math.cos(botAngle) + chainToBotY * Math.sin(botAngle) - trapToChainX;
+    double y = chainToBotY * Math.cos(botAngle) + chainToBotX * Math.sin(botAngle) - trapToChainY;
+
+    // negate cause it is currently bot offset from bot
+    return new double[] {-x, -y};
   }
 }
