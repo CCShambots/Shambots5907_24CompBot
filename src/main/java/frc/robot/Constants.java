@@ -167,7 +167,7 @@ public class Constants {
     double x = chainToBotX * Math.cos(botAngle) + chainToBotY * Math.sin(botAngle) - trapToChainX;
     double y = chainToBotY * Math.cos(botAngle) + chainToBotX * Math.sin(botAngle) - trapToChainY;
 
-    // negate cause it is currently bot offset from bot
+    // negate cause it is currently bot offset from trap
     return new double[] {-x, -y};
   }
 }
