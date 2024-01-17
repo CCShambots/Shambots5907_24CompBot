@@ -7,15 +7,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.ShamLib.SMF.StateMachine;
-import org.littletonrobotics.junction.Logger;
-
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class Arm extends StateMachine<Arm.State> {
   private final ArmIO io;
   private final ArmInputsAutoLogged inputs = new ArmInputsAutoLogged();
 
-  //AA stands for active adjust :)
+  // AA stands for active adjust :)
   private final DoubleSupplier distanceAAProvider;
   private final DoubleSupplier trapAAProvider;
 
@@ -44,7 +43,7 @@ public class Arm extends StateMachine<Arm.State> {
   private void registerTransitions() {
     addOmniTransition(State.SOFT_E_STOP);
 
-    //it going from one to the other wont conflict with anything within the arm subsystem
+    // it going from one to the other wont conflict with anything within the arm subsystem
     addOmniTransition(State.AMP);
     addOmniTransition(State.BASE_SHOT);
     addOmniTransition(State.CHUTE_INTAKE);
@@ -57,27 +56,28 @@ public class Arm extends StateMachine<Arm.State> {
 
   private Command holdPositionCommand(DoubleSupplier positionProvider) {
     return new ParallelCommandGroup(
-            new RunCommand(() -> {
+        new RunCommand(
+            () -> {
               double target = positionProvider.getAsDouble();
 
-              //avoid spamming can network :)
+              // avoid spamming can network :)
               if (!doubleEqual(target, inputs.targetPosition)) {
                 io.setTargetPosition(target);
               }
             }),
-            atTargetCommand(positionProvider)
-    );
+        atTargetCommand(positionProvider));
   }
 
   private Command atTargetCommand(DoubleSupplier positionProvider) {
-    return new RunCommand(() -> {
-      if (doubleEqual(inputs.motorPosition, positionProvider.getAsDouble(), POSITION_READY_TOLERANCE)) {
-        setFlag(State.AT_TARGET);
-      }
-      else {
-        clearFlag(State.AT_TARGET);
-      }
-    });
+    return new RunCommand(
+        () -> {
+          if (doubleEqual(
+              inputs.motorPosition, positionProvider.getAsDouble(), POSITION_READY_TOLERANCE)) {
+            setFlag(State.AT_TARGET);
+          } else {
+            clearFlag(State.AT_TARGET);
+          }
+        });
   }
 
   @Override
@@ -102,7 +102,7 @@ public class Arm extends StateMachine<Arm.State> {
     SHOT_ACTIVE_ADJUST,
     PARTIAL_STOW,
     FULL_STOW,
-    //flags
+    // flags
     AT_TARGET
   }
 }

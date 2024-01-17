@@ -34,7 +34,10 @@ public class Flywheel extends StateMachine<Flywheel.State> {
             new InstantCommand(() -> io.setFlywheelTarget(BASE_SHOT_VELOCITY)),
             atSpeedCommand(() -> BASE_SHOT_VELOCITY, SPIN_UP_READY_TOLERANCE)));
 
-    registerStateCommand(State.IDLE, io::stop);
+    registerStateCommand(State.IDLE, () -> {
+      io.stop();
+      setFlag(State.AT_SPEED);
+    });
 
     registerStateCommand(
         State.ACTIVE_ADJUST_SPIN,
