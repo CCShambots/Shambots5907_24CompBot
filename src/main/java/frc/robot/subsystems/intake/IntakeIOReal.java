@@ -1,20 +1,13 @@
 package frc.robot.subsystems.intake;
 
 import static frc.robot.Constants.Intake.Hardware.*;
-import static frc.robot.Constants.Intake.Settings.*;
 
-import frc.robot.ShamLib.motors.talonfx.MotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
-import frc.robot.ShamLib.sensor.ThroughBoreEncoder;
 
 public class IntakeIOReal implements IntakeIO {
-  protected final MotionMagicTalonFX armMotor =
-      new MotionMagicTalonFX(
-          ARM_ID, ARM_GAINS, ARM_RATIO, ARM_VELOCITY, ARM_ACCELERATION, ARM_JERK);
-  protected final VelocityTalonFX beltMotor = new VelocityTalonFX(BELT_ID, BELT_GAINS, BELT_RATIO);
-
-  private final ThroughBoreEncoder armEncoder =
-      new ThroughBoreEncoder(ARM_ENCODER_ID, ARM_ENCODER_OFFSET);
+  protected final VelocityTalonFX topMotor = new VelocityTalonFX(TOP_ID, TOP_GAINS, TOP_RATIO);
+  protected final VelocityTalonFX bottomMotor =
+      new VelocityTalonFX(BOTTOM_ID, BOTTOM_GAINS, BOTTOM_RATIO);
 
   public IntakeIOReal() {
     this(false);
@@ -24,62 +17,40 @@ public class IntakeIOReal implements IntakeIO {
     if (!sim) configureCurrentLimits();
 
     configureHardware();
-    syncToAbsoluteEncoder();
-  }
-
-  private double getAbsoluteAngle() {
-    return armEncoder.getDegrees() * ARM_ENCODER_RATIO;
   }
 
   private void configureCurrentLimits() {
-    armMotor.getConfigurator().apply(ARM_CURRENT_LIMIT);
-    beltMotor.getConfigurator().apply(BELT_CURRENT_LIMIT);
+    bottomMotor.getConfigurator().apply(CURRENT_LIMIT);
+    topMotor.getConfigurator().apply(CURRENT_LIMIT);
   }
 
   private void configureHardware() {
-    armMotor.setNeutralMode(ARM_NEUTRAL_MODE);
-    beltMotor.setNeutralMode(BELT_NEUTRAL_MODE);
+    topMotor.setNeutralMode(NEUTRAL_MODE);
 
-    armMotor.setInverted(ARM_INVERTED);
-    beltMotor.setInverted(BELT_INVERTED);
-    armEncoder.setInverted(ARM_ENCODER_INVERTED);
+    topMotor.setInverted(TOP_INVERTED);
+    bottomMotor.setInverted(BOTTOM_INVERTED);
   }
 
   @Override
   public void setBeltTargetVelocity(double velocity) {
-    beltMotor.setTarget(velocity);
+    topMotor.setTarget(velocity);
+    bottomMotor.setTarget(velocity);
   }
 
   @Override
-  public void setArmTargetPosition(double position) {
-    armMotor.setTarget(position);
-  }
-
-  @Override
-  public void stopBelt() {
-    beltMotor.stopMotor();
-  }
-
-  @Override
-  public void stopArm() {
-    armMotor.stopMotor();
-  }
-
-  @Override
-  public void syncToAbsoluteEncoder() {
-    armMotor.resetPosition(getAbsoluteAngle());
+  public void stop() {
+    topMotor.stopMotor();
+    bottomMotor.stopMotor();
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.armPosition = armMotor.getEncoderPosition();
-    inputs.armTargetPosition = armMotor.getTarget();
-    inputs.armVelocity = armMotor.getEncoderVelocity();
+    inputs.topVelocity = topMotor.getEncoderVelocity();
+    inputs.topTargetVelocity = topMotor.getTarget();
+    inputs.topVoltage = topMotor.getMotorVoltage().getValueAsDouble();
 
-    inputs.beltVelocity = beltMotor.getEncoderVelocity();
-    inputs.beltTargetVelocity = beltMotor.getTarget();
-    inputs.beltPosition = beltMotor.getEncoderPosition();
-
-    inputs.absoluteEncoderPosition = getAbsoluteAngle();
+    inputs.bottomVelocity = bottomMotor.getEncoderVelocity();
+    inputs.bottomTargetVelocity = bottomMotor.getTarget();
+    inputs.bottomVoltage = bottomMotor.getMotorVoltage().getValueAsDouble();
   }
 }

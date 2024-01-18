@@ -8,9 +8,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -18,17 +16,16 @@ import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
-  private final Pose3d[][] componentPoses = new Pose3d[2][5];
+  private final Pose3d[][] componentPoses = new Pose3d[2][4];
 
-  private final double[][] componentRelativeMotions = new double[2][5];
+  private final double[][] componentRelativeMotions = new double[2][4];
 
   private final Intake intake;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    // TODO: make this not just ignore manual control :()
-    intake = new Intake(getIntakeIO(), new Trigger(() -> false));
+    intake = new Intake(getIntakeIO());
 
     addChildSubsystem(intake);
 
@@ -55,7 +52,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   @Override
   protected void onEnable() {
-    intake.requestTransition(Intake.State.SEEKING_STOWED_NO_EXPEL);
+    intake.requestTransition(Intake.State.IDLE);
   }
 
   @Override
@@ -65,66 +62,51 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   // for the get _ angles/poses/extensions, the first entry is actual and the second is target
-  private void updateIntakeAngles() {
-    // idx 0 in the pose/motions arrays
-    componentRelativeMotions[0][0] = intake.getArmPosition();
-    componentRelativeMotions[1][0] = intake.getArmTargetPosition();
-  }
-
   private void updateShooterAngles() {
     // TODO: make this do the thing
-    // idx 1 in the pose/motions arrays
+    // idx 0 in the pose/motions arrays
   }
 
   private void updateElevatorExtensions() {
     // TODO: make this do the thing
-    // idx 2 in the pose/motions arrays
+    // idx 1 in the pose/motions arrays
   }
 
   private void updateClawAngles() {
     // TODO: make this do the thing
-    // idx 3, 4 in the pose/motions arrays
-  }
-
-  private void updateIntakePoses() {
-    for (int i = 0; i < 2; i++) {
-      componentPoses[i][0] = new Pose3d().transformBy(
-          new Transform3d(
-              Constants.PhysicalConstants.CHASSIS_TO_INTAKE,
-              new Rotation3d(0, Units.degreesToRadians(componentRelativeMotions[i][0]), 0)));
-    }
+    // idx 2, 3 in the pose/motions arrays
   }
 
   private void updateShooterPoses() {
     for (int i = 0; i < 2; i++) {
-      componentPoses[i][1] = new Pose3d();
+      componentPoses[i][0] = new Pose3d();
 
-      componentPoses[i][1].transformBy(
+      componentPoses[i][0].transformBy(
           new Transform3d(
               Constants.PhysicalConstants.CHASSIS_TO_SHOOTER,
-              new Rotation3d(0, componentRelativeMotions[i][1], 0)));
+              new Rotation3d(0, componentRelativeMotions[i][0], 0)));
     }
   }
 
   private void updateElevatorPoses() {
     for (int i = 0; i < 2; i++) {
-      componentPoses[i][2] = new Pose3d();
+      componentPoses[i][1] = new Pose3d();
 
       // move origin of elevator to origin of shooter
-      componentPoses[i][2].transformBy(
+      componentPoses[i][1].transformBy(
           new Transform3d(
               new Pose3d(),
               new Pose3d(Constants.PhysicalConstants.SHOOTER_TO_ELEVATOR, new Rotation3d())));
 
       // rotate elevator to shooter angle
-      componentPoses[i][2].transformBy(new Transform3d(new Pose3d(), componentPoses[i][1]));
+      componentPoses[i][1].transformBy(new Transform3d(new Pose3d(), componentPoses[i][0]));
 
       // move elevator to it's extension
-      componentPoses[i][2].transformBy(
+      componentPoses[i][1].transformBy(
           new Transform3d(
               new Pose3d(),
               new Pose3d(
-                  new Translation3d(0, componentRelativeMotions[i][2], 0), new Rotation3d())));
+                  new Translation3d(0, componentRelativeMotions[i][1], 0), new Rotation3d())));
     }
   }
 
@@ -135,13 +117,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       // type is target or actual
       // clawidx is for which part of the claw
       int typeIdx = i % 2;
-      int clawIdx = (i / 2) + 3;
+      int clawIdx = (i / 2) + 2;
 
       componentPoses[typeIdx][clawIdx] = new Pose3d();
 
       // move origin of claw part to origin of elevator
       componentPoses[typeIdx][clawIdx].transformBy(
-          new Transform3d(new Pose3d(), componentPoses[typeIdx][2]));
+          new Transform3d(new Pose3d(), componentPoses[typeIdx][1]));
 
       // rotate the claw to it's angle
       componentPoses[typeIdx][clawIdx].transformBy(
@@ -154,14 +136,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void updateAllRelative() {
-    updateIntakeAngles();
     updateShooterAngles();
     updateElevatorExtensions();
     updateClawAngles();
   }
 
   private void updateAllPoses() {
-    updateIntakePoses();
     updateShooterPoses();
     updateElevatorPoses();
     updateClawPoses();

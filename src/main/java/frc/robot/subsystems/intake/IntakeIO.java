@@ -5,32 +5,22 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IntakeIO {
   @AutoLog
   public static class IntakeIOInputs {
-    public double beltVelocity = 0.0; // RPM
-    public double beltTargetVelocity = 0.0; // RPM
-    public double beltPosition = 0.0; // ROTATIONS
+    public double topVelocity = 0.0; // RPM
+    public double topTargetVelocity = 0.0; // RPM
+    public double topVoltage = 0.0;
 
-    public double armPosition = 0.0; // DEG
-    public double armTargetPosition = 0.0; // DEG
-    public double armVelocity = 0.0; // DEG/s
-
-    public double absoluteEncoderPosition = 0.0; // DEG
+    public double bottomVelocity = 0.0;
+    public double bottomTargetVelocity = 0.0;
+    public double bottomVoltage = 0.0;
   }
 
   public default void setBeltTargetVelocity(double velocity) {}
 
-  public default void setArmTargetPosition(double position) {}
+  public default void stop() {}
 
-  public default void stopBelt() {}
+  public default void setTopVoltage() {}
 
-  public default void stopArm() {}
-
-  public default void syncToAbsoluteEncoder() {}
-
-  public default void setArmVoltage() {}
-
-  public default void setBeltVoltage() {
-
-  }
+  public default void setBottomVoltage() {}
 
   public default void updateInputs(IntakeIOInputs inputs) {}
 }
