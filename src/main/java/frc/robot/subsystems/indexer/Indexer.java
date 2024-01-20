@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Indexer extends StateMachine<Indexer.State> {
   private final IndexerIO io;
-  private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
+  private final IndexerInputsAutoLogged inputs = new IndexerInputsAutoLogged();
 
   public Indexer(IndexerIO io) {
     super("Indexer", State.UNDETERMINED, State.class);
@@ -14,7 +14,9 @@ public class Indexer extends StateMachine<Indexer.State> {
   }
 
   @Override
-  protected void determineSelf() {}
+  protected void determineSelf() {
+    setState(State.IDLE);
+  }
 
   @Override
   protected void update() {

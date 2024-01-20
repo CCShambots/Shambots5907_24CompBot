@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class IndexerIOReal implements IndexerIO {
-  private final VelocityTalonFX beltMotor =
+  protected final VelocityTalonFX beltMotor =
       new VelocityTalonFX(BELT_MOTOR_ID, BELT_GAINS, BELT_RATIO);
 
   private final DigitalInput[] proxSensors = {
@@ -45,7 +45,12 @@ public class IndexerIOReal implements IndexerIO {
   }
 
   @Override
-  public void updateInputs(IndexerIOInputs inputs) {
+  public void setVoltage(double voltage) {
+    beltMotor.setVoltage(voltage);
+  }
+
+  @Override
+  public void updateInputs(IndexerInputs inputs) {
     for (int i = 0; i < proxSensors.length; i++) {
       inputs.proximitySensors[i] = proxSensors[i].get();
     }
