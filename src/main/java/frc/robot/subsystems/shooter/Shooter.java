@@ -39,8 +39,7 @@ public class Shooter extends StateMachine<Shooter.State> {
       DoubleSupplier climberExtensionSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
-      Trigger tuningStop
-      ) {
+      Trigger tuningStop) {
     super("Shooter", State.UNDETERMINED, State.class);
 
     this.botTranslationProvider = botTranslationProvider;
