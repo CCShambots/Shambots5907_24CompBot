@@ -3,10 +3,7 @@ package frc.robot.subsystems.shooter.flywheel;
 import static frc.robot.Constants.Flywheel.Settings.*;
 import static frc.robot.Constants.doubleEqual;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.motors.tuning.LinearTuningCommand;
@@ -37,25 +34,29 @@ public class Flywheel extends StateMachine<Flywheel.State> {
   private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     registerStateCommand(
         State.VOLTAGE_CALC_BOTTOM,
-        new LinearTuningCommand(
-            tuningStop,
-            tuningInc,
-            tuningDec,
-            io::setBottomVoltage,
-            () -> inputs.bottomVelocity,
-            () -> inputs.bottomVoltage,
-            VOLTAGE_INCREMENT));
+        new SequentialCommandGroup(
+            new LinearTuningCommand(
+                tuningStop,
+                tuningInc,
+                tuningDec,
+                io::setBottomVoltage,
+                () -> inputs.bottomVelocity,
+                () -> inputs.bottomVoltage,
+                VOLTAGE_INCREMENT),
+            transitionCommand(State.IDLE)));
 
     registerStateCommand(
         State.VOLTAGE_CALC_TOP,
-        new LinearTuningCommand(
-            tuningStop,
-            tuningInc,
-            tuningDec,
-            io::setTopVoltage,
-            () -> inputs.topVelocity,
-            () -> inputs.topVoltage,
-            VOLTAGE_INCREMENT));
+        new SequentialCommandGroup(
+            new LinearTuningCommand(
+                tuningStop,
+                tuningInc,
+                tuningDec,
+                io::setTopVoltage,
+                () -> inputs.topVelocity,
+                () -> inputs.topVoltage,
+                VOLTAGE_INCREMENT),
+            transitionCommand(State.IDLE)));
 
     registerStateCommand(
         State.BASE_SHOT_SPIN,
@@ -63,12 +64,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
             new InstantCommand(() -> io.setFlywheelTarget(BASE_SHOT_VELOCITY)),
             atSpeedCommand(() -> BASE_SHOT_VELOCITY, SPIN_UP_READY_TOLERANCE)));
 
-    registerStateCommand(
-        State.IDLE,
-        () -> {
-          io.stop();
-          setFlag(State.AT_SPEED);
-        });
+    registerStateCommand(State.IDLE, io::stop);
 
     registerStateCommand(
         State.ACTIVE_ADJUST_SPIN,
@@ -88,6 +84,11 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.ACTIVE_ADJUST_SPIN);
     addOmniTransition(State.PASS_THROUGH);
     addOmniTransition(State.CHUTE_INTAKE);
+
+    addTransition(State.IDLE, State.VOLTAGE_CALC_TOP);
+    addTransition(State.IDLE, State.VOLTAGE_CALC_BOTTOM);
+    addCommutativeTransition(
+        State.VOLTAGE_CALC_BOTTOM, State.VOLTAGE_CALC_TOP, new InstantCommand());
   }
 
   private Command atSpeedCommand(DoubleSupplier speedProvider, double accuracy) {

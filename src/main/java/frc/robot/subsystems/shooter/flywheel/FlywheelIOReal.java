@@ -5,13 +5,17 @@ import static frc.robot.Constants.Flywheel.Hardware.*;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class FlywheelIOReal implements FlywheelIO {
-  private final VelocityTalonFX topMotor =
+  protected final VelocityTalonFX topMotor =
       new VelocityTalonFX(TOP_MOTOR_ID, TOP_MOTOR_GAINS, TOP_MOTOR_RATIO);
-  private final VelocityTalonFX bottomMotor =
+  protected final VelocityTalonFX bottomMotor =
       new VelocityTalonFX(BOTTOM_MOTOR_ID, BOTTOM_MOTOR_GAINS, BOTTOM_MOTOR_RATIO);
 
   public FlywheelIOReal() {
-    configureCurrentLimits();
+    this(false);
+  }
+
+  public FlywheelIOReal(boolean sim) {
+    if (!sim) configureCurrentLimits();
     configureHardware();
   }
 

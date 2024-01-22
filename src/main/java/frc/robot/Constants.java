@@ -14,7 +14,7 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class Constants {
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REPLAY;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
 
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
@@ -59,7 +59,10 @@ public class Constants {
   }
 
   public static final class Arm {
-    public static final class Sim {}
+    public static final class Sim {
+      public static final double LEADER_INERTIA = 0.001;
+      public static final double FOLLOWER_INERTIA = 0.001;
+    }
 
     public static final class Hardware {
       public static final int LEADER_ID = 0;
@@ -107,7 +110,10 @@ public class Constants {
   }
 
   public static final class Flywheel {
-    public static final class Sim {}
+    public static final class Sim {
+      public static final double TOP_INERTIA = 0.0001;
+      public static final double BOTTOM_INERTIA = 0.0001;
+    }
 
     public static final class Hardware {
       public static final int TOP_MOTOR_ID = 0;

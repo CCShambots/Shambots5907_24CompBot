@@ -118,6 +118,30 @@ public class Shooter extends StateMachine<Shooter.State> {
             arm.transitionCommand(Arm.State.PARTIAL_STOW),
             flywheel.transitionCommand(Flywheel.State.IDLE),
             watchReadyCommand()));
+
+    registerStateCommand(
+        State.ARM_VOLTAGE_CALC,
+        new ParallelCommandGroup(
+                flywheel.transitionCommand(Flywheel.State.IDLE),
+                arm.transitionCommand(Arm.State.VOLTAGE_CALC))
+            .andThen(arm.waitForState(Arm.State.SOFT_E_STOP))
+            .andThen(transitionCommand(State.SOFT_E_STOP)));
+
+    registerStateCommand(
+        State.BOTTOM_FLYWHEEL_VOLTAGE_CALC,
+        new ParallelCommandGroup(
+                arm.transitionCommand(Arm.State.SOFT_E_STOP),
+                flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC_BOTTOM))
+            .andThen(flywheel.waitForState(Flywheel.State.IDLE))
+            .andThen(transitionCommand(State.SOFT_E_STOP)));
+
+    registerStateCommand(
+        State.TOP_FLYWHEEL_VOLTAGE_CALC,
+        new ParallelCommandGroup(
+                arm.transitionCommand(Arm.State.SOFT_E_STOP),
+                flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC_TOP))
+            .andThen(flywheel.waitForState(Flywheel.State.IDLE))
+            .andThen(transitionCommand(State.SOFT_E_STOP)));
   }
 
   private void registerTransitions() {
@@ -130,6 +154,10 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.TRAP);
     addOmniTransition(State.TRAP_PREP);
     addOmniTransition(State.CHUTE_INTAKE);
+
+    addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
+    addTransition(State.SOFT_E_STOP, State.TOP_FLYWHEEL_VOLTAGE_CALC);
+    addTransition(State.SOFT_E_STOP, State.ARM_VOLTAGE_CALC);
   }
 
   private Command watchReadyCommand() {
@@ -187,6 +215,9 @@ public class Shooter extends StateMachine<Shooter.State> {
     CHUTE_INTAKE,
     TRAP,
     TRAP_PREP,
+    TOP_FLYWHEEL_VOLTAGE_CALC,
+    BOTTOM_FLYWHEEL_VOLTAGE_CALC,
+    ARM_VOLTAGE_CALC,
     // flags
     READY
   }
