@@ -65,14 +65,14 @@ public class Constants {
     }
 
     public static final class Hardware {
-      public static final int LEADER_ID = 0;
-      public static final int FOLLOWER_ID = 0;
+      public static final int LEADER_ID = 20;
+      public static final int FOLLOWER_ID = 21;
       public static final int ENCODER_ID = 0;
 
-      public static final double ENCODER_RATIO = 0;
-      public static final double MOTOR_RATIO = 0;
+      public static final double ENCODER_RATIO = 1 * 360.0;
+      public static final double MOTOR_RATIO = 1 * 360.0;
 
-      public static final boolean ENCODER_INVERTED = false;
+      public static final boolean ENCODER_INVERTED = true;
       public static final boolean LEADER_INVERTED = false;
       public static final boolean FOLLOWER_INVERTED = false;
 
@@ -86,21 +86,21 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double VELOCITY = 0;
-      public static final double ACCELERATION = 0;
-      public static final double JERK = 0;
+      public static final double VELOCITY = (10/60.0) * 360; // DEG/s
+      public static final double ACCELERATION = (0.25/60.0) * 360.0; // DEG/s/s
+      public static final double JERK = 10_000; // DEG/s/s/s
 
-      public static final double POSITION_READY_TOLERANCE = 0;
+      public static final double POSITION_READY_TOLERANCE = 5; // DEG
 
-      public static final double BASE_SHOT_POSITION = 0;
-      public static final double AMP_POSITION = 0;
-      public static final double TRAP_PREP_POSITION = 0;
-      public static final double FULL_STOW_POSITION = 0;
-      public static final double PARTIAL_STOW_POSITION = 0;
-      public static final double CHUTE_INTAKE_POSITION = 0;
+      public static final double BASE_SHOT_POSITION = 65; //DEG
+      public static final double AMP_POSITION = 50; //DEG
+      public static final double TRAP_PREP_POSITION = 50; //DEG
+      public static final double FULL_STOW_POSITION = 0; //DEG
+      public static final double PARTIAL_STOW_POSITION = 50; //DEG
+      public static final double CHUTE_INTAKE_POSITION = 60; //DEG
 
-      public static final double AUTO_SYNC_TOLERANCE = 0;
-      public static final double AUTO_SYNC_MAX_VELOCITY = 0;
+      public static final double AUTO_SYNC_TOLERANCE = 5;
+      public static final double AUTO_SYNC_MAX_VELOCITY = 1; // DEG/s
 
       public static final boolean ENABLE_AUTO_SYNC = false;
       public static final double MIN_TIME_BETWEEN_SYNC = 2.0;
@@ -116,11 +116,11 @@ public class Constants {
     }
 
     public static final class Hardware {
-      public static final int TOP_MOTOR_ID = 0;
-      public static final int BOTTOM_MOTOR_ID = 0;
+      public static final int TOP_MOTOR_ID = 10;
+      public static final int BOTTOM_MOTOR_ID = 11;
 
-      public static final double TOP_MOTOR_RATIO = 0.0;
-      public static final double BOTTOM_MOTOR_RATIO = 0.0;
+      public static final double TOP_MOTOR_RATIO = 1;
+      public static final double BOTTOM_MOTOR_RATIO = 1;
 
       public static final boolean TOP_MOTOR_INVERTED = false;
       public static final boolean BOTTOM_MOTOR_INVERTED = false;
@@ -135,12 +135,12 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BASE_SHOT_VELOCITY = 0.0; // RPS
-      public static final double SPIN_UP_READY_TOLERANCE = 1; // RPS
+      public static final double BASE_SHOT_VELOCITY = 4000/60.0; //RPS
+      public static final double SPIN_UP_READY_TOLERANCE = 60/60.0; // RPS
 
-      public static final double PASS_THROUGH_SPEED = 0.0; // RPS
+      public static final double PASS_THROUGH_SPEED = 5/60.0; //RPS
 
-      public static final double CHUTE_INTAKE_SPEED = 0.0; // RPS
+      public static final double CHUTE_INTAKE_SPEED = 600/60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
@@ -149,8 +149,8 @@ public class Constants {
   // TODO: UPDATE INTAKE CONSTANTS
   public static final class Intake {
     public static final class Hardware {
-      public static final int TOP_ID = 1;
-      public static final int BOTTOM_ID = 0;
+      public static final int TOP_ID = 0;
+      public static final int BOTTOM_ID = 1;
 
       public static final double TOP_RATIO = 1;
       public static final double BOTTOM_RATIO = 1;
@@ -172,9 +172,9 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BELT_SPEED = 1;
+      public static final double BELT_SPEED = 2000/60.0; //RPS
 
-      public static final double VOLTAGE_INC = 0.125;
+      public static final double VOLTAGE_INC = 0.25;
     }
   }
 
