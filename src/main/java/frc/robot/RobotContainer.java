@@ -8,11 +8,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.robot.ShamLib.SMF.StateMachine;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.arm.ArmIOSim;
-import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Pose3d[][] componentPoses = new Pose3d[2][5];
