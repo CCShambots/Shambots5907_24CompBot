@@ -25,13 +25,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    //Give actual tuning binds
-    intake = new Intake(
+    // Give actual tuning binds
+    intake =
+        new Intake(
             getIntakeIO(),
             new Trigger(() -> false),
             new Trigger(() -> false),
-            new Trigger(() -> false)
-    );
+            new Trigger(() -> false));
 
     addChildSubsystem(intake);
 
