@@ -18,9 +18,9 @@ public interface IntakeIO {
 
   public default void stop() {}
 
-  public default void setTopVoltage() {}
+  public default void setTopVoltage(double voltage) {}
 
-  public default void setBottomVoltage() {}
+  public default void setBottomVoltage(double voltage) {}
 
   public default void updateInputs(IntakeIOInputs inputs) {}
 }

@@ -32,6 +32,16 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
+  public void setTopVoltage(double voltage) {
+    topMotor.setVoltage(voltage);
+  }
+
+  @Override
+  public void setBottomVoltage(double voltage) {
+    bottomMotor.setVoltage(voltage);
+  }
+
+  @Override
   public void setBeltTargetVelocity(double velocity) {
     topMotor.setTarget(velocity);
     bottomMotor.setTarget(velocity);

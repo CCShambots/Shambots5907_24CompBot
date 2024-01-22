@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -20,16 +21,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private final double[][] componentRelativeMotions = new double[2][4];
 
-  private final Intake intake;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
-
-    intake = new Intake(getIntakeIO());
-
-    addChildSubsystem(intake);
-
-    SmartDashboard.putData("intake", intake);
 
     configureBindings();
   }
@@ -52,7 +46,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   @Override
   protected void onEnable() {
-    intake.requestTransition(Intake.State.IDLE);
+
   }
 
   @Override

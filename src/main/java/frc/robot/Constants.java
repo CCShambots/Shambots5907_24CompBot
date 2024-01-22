@@ -28,14 +28,14 @@ public class Constants {
   // TODO: UPDATE INTAKE CONSTANTS
   public static final class Intake {
     public static final class Hardware {
-      public static final int TOP_ID = 0;
+      public static final int TOP_ID = 1;
       public static final int BOTTOM_ID = 0;
 
       public static final double TOP_RATIO = 1;
       public static final double BOTTOM_RATIO = 1;
 
-      public static final boolean TOP_INVERTED = true;
-      public static final boolean BOTTOM_INVERTED = true;
+      public static final boolean TOP_INVERTED = false;
+      public static final boolean BOTTOM_INVERTED = false;
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
@@ -52,6 +52,8 @@ public class Constants {
 
     public static final class Settings {
       public static final double BELT_SPEED = 1;
+
+      public static final double VOLTAGE_INC = 0.125;
     }
   }
 

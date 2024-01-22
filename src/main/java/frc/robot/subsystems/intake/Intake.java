@@ -2,9 +2,10 @@ package frc.robot.subsystems.intake;
 
 import static frc.robot.Constants.Intake.Settings.*;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.ShamLib.motors.tuning.LinearTuningCommand;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends StateMachine<Intake.State> {
@@ -12,27 +13,56 @@ public class Intake extends StateMachine<Intake.State> {
 
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-  public Intake(IntakeIO io) {
+  public Intake(IntakeIO io, Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     super("Intake", State.UNDETERMINED, State.class);
 
     this.io = io;
 
     io.updateInputs(inputs);
 
-    registerStateCommands();
+    registerStateCommands(tuningInc, tuningDec, tuningStop);
     registerTransitions();
   }
 
-  private void registerStateCommands() {
+  private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     registerStateCommand(State.IDLE, io::stop);
     registerStateCommand(State.INTAKE, () -> io.setBeltTargetVelocity(BELT_SPEED));
     registerStateCommand(State.EXPEL, () -> io.setBeltTargetVelocity(-BELT_SPEED));
+
+    registerStateCommand(
+        State.VOLTAGE_CALC_TOP,
+        new SequentialCommandGroup(
+            new LinearTuningCommand(
+                tuningStop,
+                tuningInc,
+                tuningDec,
+                io::setTopVoltage,
+                () -> inputs.topVelocity,
+                () -> inputs.topVoltage,
+                VOLTAGE_INC),
+            transitionCommand(State.IDLE)));
+
+    registerStateCommand(
+        State.VOLTAGE_CALC_BOTTOM,
+        new SequentialCommandGroup(
+            new LinearTuningCommand(
+                tuningStop,
+                tuningInc,
+                tuningDec,
+                io::setBottomVoltage,
+                () -> inputs.bottomVelocity,
+                () -> inputs.bottomVoltage,
+                VOLTAGE_INC),
+            transitionCommand(State.IDLE)));
   }
 
   private void registerTransitions() {
     addOmniTransition(State.IDLE);
     addOmniTransition(State.INTAKE);
     addOmniTransition(State.EXPEL);
+
+    addTransition(State.IDLE, State.VOLTAGE_CALC_BOTTOM);
+    addTransition(State.IDLE, State.VOLTAGE_CALC_TOP);
   }
 
   @Override
@@ -51,6 +81,8 @@ public class Intake extends StateMachine<Intake.State> {
     UNDETERMINED,
     IDLE,
     INTAKE,
-    EXPEL
+    EXPEL,
+    VOLTAGE_CALC_TOP,
+    VOLTAGE_CALC_BOTTOM
   }
 }
