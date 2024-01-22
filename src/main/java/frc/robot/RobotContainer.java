@@ -14,6 +14,13 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.arm.ArmIO;
+import frc.robot.subsystems.shooter.arm.ArmIOReal;
+import frc.robot.subsystems.shooter.arm.ArmIOSim;
+import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
+import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
+import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Pose3d[][] componentPoses = new Pose3d[2][4];
@@ -21,14 +28,26 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final double[][] componentRelativeMotions = new double[2][4];
 
   private final Intake intake;
+  private final Shooter shooter;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    // Give actual tuning binds
+    // TODO: Give actual tuning binds
     intake =
         new Intake(
             getIntakeIO(),
+            new Trigger(() -> false),
+            new Trigger(() -> false),
+            new Trigger(() -> false));
+
+    shooter =
+        new Shooter(
+            getArmIO(),
+            getFlywheelIO(),
+            Translation3d::new,
+            () -> 0,
+            () -> 0,
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false));
@@ -50,6 +69,34 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       }
       default -> {
         return new IntakeIO() {};
+      }
+    }
+  }
+
+  private FlywheelIO getFlywheelIO() {
+    switch (Constants.currentBuildMode) {
+      case REAL -> {
+        return new FlywheelIOReal();
+      }
+      case SIM -> {
+        return new FlywheelIOSim();
+      }
+      default -> {
+        return new FlywheelIO() {};
+      }
+    }
+  }
+
+  private ArmIO getArmIO() {
+    switch (Constants.currentBuildMode) {
+      case REAL -> {
+        return new ArmIOReal();
+      }
+      case SIM -> {
+        return new ArmIOSim();
+      }
+      default -> {
+        return new ArmIO() {};
       }
     }
   }
