@@ -4,6 +4,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -146,10 +148,42 @@ public class Constants {
     }
   }
 
+  // TODO: UPDATE INTAKE CONSTANTS
+  public static final class Intake {
+    public static final class Hardware {
+      public static final int TOP_ID = 1;
+      public static final int BOTTOM_ID = 0;
+
+      public static final double TOP_RATIO = 1;
+      public static final double BOTTOM_RATIO = 1;
+
+      public static final boolean TOP_INVERTED = false;
+      public static final boolean BOTTOM_INVERTED = false;
+
+      public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
+
+      public static final CurrentLimitsConfigs CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
+
+      public static final PIDSVGains BOTTOM_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
+
+      public static final PIDSVGains TOP_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
+    }
+
+    public static final class Sim {
+      public static final double BELT_INERTIA = 0.001;
+    }
+
+    public static final class Settings {
+      public static final double BELT_SPEED = 1;
+
+      public static final double VOLTAGE_INC = 0.125;
+    }
+  }
+
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
   public static boolean overrideAlliance = false;
 
-  public static void pullAllianceFromFMS(RobotContainer rc) {
+  public static void pullAllianceFromFMS() {
     boolean isRedAlliance =
         NetworkTableInstance.getDefault()
             .getTable("FMSInfo")
