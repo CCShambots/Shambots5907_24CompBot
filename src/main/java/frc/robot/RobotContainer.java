@@ -8,7 +8,9 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -18,8 +20,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private final double[][] componentRelativeMotions = new double[2][4];
 
+  private final Intake intake;
+
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
+
+    //Give actual tuning binds
+    intake = new Intake(
+            getIntakeIO(),
+            new Trigger(() -> false),
+            new Trigger(() -> false),
+            new Trigger(() -> false)
+    );
+
+    addChildSubsystem(intake);
 
     configureBindings();
   }
@@ -46,7 +60,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   @Override
   protected void determineSelf() {
     // placeholder
-    setState(State.IDLE);
+    setState(State.SOFT_E_STOP);
   }
 
   // for the get _ angles/poses/extensions, the first entry is actual and the second is target
@@ -147,6 +161,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   public enum State {
     UNDETERMINED,
-    IDLE // placeholder
+    SOFT_E_STOP // placeholder
   }
 }
