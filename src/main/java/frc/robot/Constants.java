@@ -198,7 +198,12 @@ public class Constants {
     }
 
     public static final class Settings {
+      public static final double EXPECT_SPEED = 0.0;
+      public static final double PASS_THROUGH_SPEED = 0.0;
+      public static final double INDEX_SPEED = 0.0;
+      public static final double FEED_SPEED = 0.0;
 
+      public static final double INDEX_TIMEOUT = 0.0;
     }
 
     public static final class Sim {}
