@@ -9,7 +9,8 @@ public interface IndexerIO {
     public double beltTargetVelocity = 0.0; // DEG/s
     public double beltVoltage = 0.0;
 
-    public boolean[] proximitySensors = {false, false, false};
+    public boolean prox1 = false;
+    public boolean prox2 = false;
   }
 
   public void stop();

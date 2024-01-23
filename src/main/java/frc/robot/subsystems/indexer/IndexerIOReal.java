@@ -9,9 +9,8 @@ public class IndexerIOReal implements IndexerIO {
   protected final VelocityTalonFX beltMotor =
       new VelocityTalonFX(BELT_MOTOR_ID, BELT_GAINS, BELT_RATIO);
 
-  private final DigitalInput[] proxSensors = {
-    new DigitalInput(PROX_1_ID), new DigitalInput(PROX_2_ID), new DigitalInput(PROX_3_ID)
-  };
+  private final DigitalInput prox1 = new DigitalInput(PROX_1_ID);
+  private final DigitalInput prox2 = new DigitalInput(PROX_2_ID);
 
   public IndexerIOReal() {
     this(false);
@@ -51,9 +50,8 @@ public class IndexerIOReal implements IndexerIO {
 
   @Override
   public void updateInputs(IndexerInputs inputs) {
-    for (int i = 0; i < proxSensors.length; i++) {
-      inputs.proximitySensors[i] = proxSensors[i].get();
-    }
+    inputs.prox1 = prox1.get();
+    inputs.prox2 = prox2.get();
 
     inputs.beltVelocity = beltMotor.getEncoderVelocity();
     inputs.beltTargetVelocity = beltMotor.getTarget();

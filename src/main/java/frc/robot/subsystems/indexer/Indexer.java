@@ -32,6 +32,7 @@ public class Indexer extends StateMachine<Indexer.State> {
     EXPECT_RING_BACK,
     PASS_THROUGH,
     SOFT_E_STOP,
+    FEED_TO_SHOOTER,
     MANUAL_CONTROL
   }
 }

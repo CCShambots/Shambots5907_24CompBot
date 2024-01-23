@@ -12,7 +12,6 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 
 public class Constants {
   public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REPLAY;
@@ -191,7 +190,6 @@ public class Constants {
 
       public static final int PROX_1_ID = 0;
       public static final int PROX_2_ID = 0;
-      public static final int PROX_3_ID = 0;
 
       public static final CurrentLimitsConfigs BELT_MOTOR_CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
       public static final NeutralModeValue BELT_MOTOR_NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -199,7 +197,9 @@ public class Constants {
       public static final PIDSVGains BELT_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
     }
 
-    public static final class Settings {}
+    public static final class Settings {
+
+    }
 
     public static final class Sim {}
   }
