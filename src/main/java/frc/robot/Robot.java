@@ -89,7 +89,7 @@ public class Robot extends LoggedRobot {
     // }
 
     // Check the alliance from FMS when the bot turns on
-    Constants.pullAllianceFromFMS(robotContainer);
+    Constants.pullAllianceFromFMS();
 
     // TODO: Figure out how to add another periodic thing
     // Update the event loop for misaligned modules once every 10 seconds
