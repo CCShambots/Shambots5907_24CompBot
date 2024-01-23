@@ -24,23 +24,25 @@ public class Indexer extends StateMachine<Indexer.State> {
     registerStateCommand(
         State.EXPECT_RING_BACK,
         new SequentialCommandGroup(
-            new InstantCommand(() -> io.setTargetVelocity(EXPECT_SPEED)),
-            new WaitUntilCommand(() -> inputs.prox1),
-            transitionCommand(State.INDEXING)));
+            new InstantCommand(() -> io.setTargetVelocity(EXPECT_SPEED)), // Spin up
+            new WaitUntilCommand(() -> inputs.prox1), // Wait for back prox to be tripped
+            transitionCommand(State.INDEXING))); // Start indexing
 
     registerStateCommand(
         State.EXPECT_RING_FRONT,
         new SequentialCommandGroup(
-            new InstantCommand(() -> io.setTargetVelocity(-EXPECT_SPEED)),
-            new WaitUntilCommand(() -> inputs.prox2),
-            transitionCommand(State.INDEXING)));
+            new InstantCommand(() -> io.setTargetVelocity(-EXPECT_SPEED)), // Spin up in reverse
+            new WaitUntilCommand(() -> inputs.prox2), // Wait for front prox to be tripped
+            transitionCommand(State.INDEXING))); // Start indexing
 
     registerStateCommand(
         State.INDEXING,
-        indexCommand()
-            .withTimeout(INDEX_TIMEOUT)
+        indexCommand() // index
+            .withTimeout(
+                INDEX_TIMEOUT) // Stop it after some time in case it oscillates or something
             .andThen(
-                new ConditionalCommand(
+                new ConditionalCommand( // transition to holding ring or lost ring depending on if
+                    // both prox sensors are tripped or not
                     transitionCommand(State.HOLDING_RING),
                     transitionCommand(State.LOST_RING),
                     () -> inputs.prox1 && inputs.prox2)));
@@ -48,18 +50,21 @@ public class Indexer extends StateMachine<Indexer.State> {
     registerStateCommand(
         State.PASS_THROUGH,
         new SequentialCommandGroup(
-            new InstantCommand(() -> io.setTargetVelocity(PASS_THROUGH_SPEED)),
-            new WaitUntilCommand(() -> !(inputs.prox1 || inputs.prox2)),
-            transitionCommand(State.IDLE)));
+            new InstantCommand(() -> io.setTargetVelocity(PASS_THROUGH_SPEED)), // spin up
+            new WaitUntilCommand(
+                () -> !(inputs.prox1 || inputs.prox2)), // wait for both prox to be untripped
+            new InstantCommand(io::stop), // stop motor
+            transitionCommand(State.IDLE))); // go to idle
 
     registerStateCommand(State.IDLE, io::stop);
 
     registerStateCommand(
         State.FEED_TO_SHOOTER,
         new SequentialCommandGroup(
-            new InstantCommand(() -> io.setTargetVelocity(FEED_SPEED)),
-            new WaitUntilCommand(() -> !(inputs.prox1 || inputs.prox2)),
-            transitionCommand(State.IDLE)));
+            new InstantCommand(() -> io.setTargetVelocity(FEED_SPEED)), // spin up
+            new WaitUntilCommand(
+                () -> !(inputs.prox1 || inputs.prox2)), // wait for neither prox to be tripped
+            transitionCommand(State.IDLE))); // go to idle
 
     registerStateCommand(State.CLEANSE, () -> io.setTargetVelocity(PASS_THROUGH_SPEED));
   }
