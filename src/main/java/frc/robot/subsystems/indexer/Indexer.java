@@ -3,7 +3,9 @@ package frc.robot.subsystems.indexer;
 import static frc.robot.Constants.Indexer.Settings.*;
 
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.ShamLib.motors.tuning.LinearTuningCommand;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.littletonrobotics.junction.Logger;
 
@@ -11,16 +13,16 @@ public class Indexer extends StateMachine<Indexer.State> {
   private final IndexerIO io;
   private final IndexerInputsAutoLogged inputs = new IndexerInputsAutoLogged();
 
-  public Indexer(IndexerIO io) {
+  public Indexer(IndexerIO io, Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     super("Indexer", State.UNDETERMINED, State.class);
 
     this.io = io;
 
-    registerStateCommands();
+    registerStateCommands(tuningInc, tuningDec, tuningStop);
     registerTransitions();
   }
 
-  private void registerStateCommands() {
+  private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     registerStateCommand(
         State.EXPECT_RING_BACK,
         new SequentialCommandGroup(
@@ -67,6 +69,17 @@ public class Indexer extends StateMachine<Indexer.State> {
             transitionCommand(State.IDLE))); // go to idle
 
     registerStateCommand(State.CLEANSE, () -> io.setTargetVelocity(PASS_THROUGH_SPEED));
+
+    registerStateCommand(
+        State.VOLTAGE_CALC,
+        new LinearTuningCommand(
+            tuningStop,
+            tuningInc,
+            tuningDec,
+            io::setVoltage,
+            () -> inputs.beltVelocity,
+            () -> inputs.beltVoltage,
+            VOLTAGE_INCREMENT));
   }
 
   private void registerTransitions() {
@@ -81,6 +94,8 @@ public class Indexer extends StateMachine<Indexer.State> {
 
     addTransition(State.EXPECT_RING_BACK, State.INDEXING);
     addTransition(State.EXPECT_RING_FRONT, State.INDEXING);
+
+    addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
 
   private Command indexCommand() {
@@ -123,6 +138,7 @@ public class Indexer extends StateMachine<Indexer.State> {
     PASS_THROUGH,
     FEED_TO_SHOOTER,
     CLEANSE,
-    LOST_RING
+    LOST_RING,
+    VOLTAGE_CALC
   }
 }

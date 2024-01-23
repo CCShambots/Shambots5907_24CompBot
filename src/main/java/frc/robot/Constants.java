@@ -204,6 +204,8 @@ public class Constants {
       public static final double FEED_SPEED = 0.0;
 
       public static final double INDEX_TIMEOUT = 0.0;
+
+      public static final double VOLTAGE_INCREMENT = 0.0;
     }
 
     public static final class Sim {}
