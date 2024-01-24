@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -23,17 +24,10 @@ public class Constants {
 
   public static final class PhysicalConstants {
     // METERS
-    public static final Translation3d CHASSIS_TO_INTAKE = new Translation3d(0, 0, 0);
 
-    public static final Translation3d CHASSIS_TO_SHOOTER = new Translation3d(0, 0, 0);
-
-    public static Translation3d SHOOTER_TO_ELEVATOR = new Translation3d(0, 0, 0);
-
-    public static Translation3d ELEVATOR_TO_CLAW = new Translation3d(0, 0, 0);
+    public static final Pose3d CHASSIS_TO_SHOOTER = new Pose3d(new Translation3d(), new Rotation3d());
 
     public static Pose3d SPEAKER_POSE = new Pose3d(new Translation3d(0, 0, 0), new Rotation3d());
-
-    public static double TRAP_HEIGHT = 0.0;
 
     // how much taller climber is than shooter pivot when stowed
     public static double CLIMBER_Y_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
