@@ -6,26 +6,20 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IntakeIO {
   @AutoLog
   public static class IntakeIOInputs {
-    public double topVelocity = 0.0; // RPM
-    public double topTargetVelocity = 0.0; // RPM
-    public double topVoltage = 0.0;
-
-    public double bottomVelocity = 0.0;
-    public double bottomTargetVelocity = 0.0;
-    public double bottomVoltage = 0.0;
+    public double velocity = 0.0; // RPM
+    public double targetVelocity = 0.0; // RPM
+    public double voltage = 0.0;
   }
+
+  public default void resetFollower() {}
 
   public default void setBeltTargetVelocity(double velocity) {}
 
   public default void stop() {}
 
-  public default void setTopVoltage(double voltage) {}
+  public default void setVoltage(double voltage) {}
 
-  public default void setBottomVoltage(double voltage) {}
-
-  public default void setTopGains(PIDSVGains gains) {}
-
-  public default void setBottomGains(PIDSVGains gains) {}
+  public default void setGains(PIDSVGains gains) {}
 
   public default void updateInputs(IntakeIOInputs inputs) {}
 }

@@ -177,14 +177,8 @@ public class Constants {
 
       public static final CurrentLimitsConfigs CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
 
-      public static final LoggedTunablePIDSV BOTTOM_GAINS = new LoggedTunablePIDSV(
-              "Bottom Intake Belt Gains",
-              new PIDSVGains(0, 0, 0, 0, 0),
-              () -> ALLOW_TUNING
-      );
-
       public static final LoggedTunablePIDSV TOP_GAINS = new LoggedTunablePIDSV(
-              "Top Intake Belt Gains",
+              "Intake Belt Gains",
               new PIDSVGains(0, 0, 0, 0, 0),
               () -> ALLOW_TUNING
       );

@@ -30,28 +30,15 @@ public class Intake extends StateMachine<Intake.State> {
     registerStateCommand(State.EXPEL, () -> io.setBeltTargetVelocity(-BELT_SPEED));
 
     registerStateCommand(
-        State.VOLTAGE_CALC_TOP,
+        State.VOLTAGE_CALC,
         new SequentialCommandGroup(
             new LinearTuningCommand(
                 tuningStop,
                 tuningInc,
                 tuningDec,
-                io::setTopVoltage,
-                () -> inputs.topVelocity,
-                () -> inputs.topVoltage,
-                VOLTAGE_INC),
-            transitionCommand(State.IDLE)));
-
-    registerStateCommand(
-        State.VOLTAGE_CALC_BOTTOM,
-        new SequentialCommandGroup(
-            new LinearTuningCommand(
-                tuningStop,
-                tuningInc,
-                tuningDec,
-                io::setBottomVoltage,
-                () -> inputs.bottomVelocity,
-                () -> inputs.bottomVoltage,
+                io::setVoltage,
+                () -> inputs.velocity,
+                () -> inputs.voltage,
                 VOLTAGE_INC),
             transitionCommand(State.IDLE)));
   }
@@ -61,8 +48,7 @@ public class Intake extends StateMachine<Intake.State> {
     addOmniTransition(State.INTAKE);
     addOmniTransition(State.EXPEL);
 
-    addTransition(State.IDLE, State.VOLTAGE_CALC_BOTTOM);
-    addTransition(State.IDLE, State.VOLTAGE_CALC_TOP);
+    addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
 
   @Override
@@ -74,6 +60,7 @@ public class Intake extends StateMachine<Intake.State> {
   @Override
   protected void determineSelf() {
     // wait for rc to orchestrate things
+    io.resetFollower();
     setState(State.IDLE);
   }
 
@@ -82,7 +69,6 @@ public class Intake extends StateMachine<Intake.State> {
     IDLE,
     INTAKE,
     EXPEL,
-    VOLTAGE_CALC_TOP,
-    VOLTAGE_CALC_BOTTOM
+    VOLTAGE_CALC
   }
 }

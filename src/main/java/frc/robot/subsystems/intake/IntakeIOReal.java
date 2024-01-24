@@ -3,13 +3,14 @@ package frc.robot.subsystems.intake;
 import static frc.robot.Constants.Intake.Hardware.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.Follower;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class IntakeIOReal implements IntakeIO {
   protected final VelocityTalonFX topMotor = new VelocityTalonFX(TOP_ID, TOP_GAINS.get(), TOP_RATIO);
   protected final VelocityTalonFX bottomMotor =
-      new VelocityTalonFX(BOTTOM_ID, BOTTOM_GAINS.get(), BOTTOM_RATIO);
+      new VelocityTalonFX(BOTTOM_ID, TOP_GAINS.get(), BOTTOM_RATIO);
 
   public IntakeIOReal() {
     this(false);
@@ -20,8 +21,7 @@ public class IntakeIOReal implements IntakeIO {
 
     configureHardware();
 
-    TOP_GAINS.setOnChange(this::setTopGains);
-    BOTTOM_GAINS.setOnChange(this::setBottomGains);
+    TOP_GAINS.setOnChange(this::setGains);
   }
 
   private void configureCurrentLimits() {
@@ -31,25 +31,25 @@ public class IntakeIOReal implements IntakeIO {
 
   private void configureHardware() {
     topMotor.setNeutralMode(NEUTRAL_MODE);
+    bottomMotor.setNeutralMode(NEUTRAL_MODE);
 
     topMotor.setInverted(TOP_INVERTED);
-    bottomMotor.setInverted(BOTTOM_INVERTED);
   }
 
   @Override
-  public void setTopVoltage(double voltage) {
+  public void setVoltage(double voltage) {
     topMotor.setVoltage(voltage);
   }
 
-  @Override
-  public void setBottomVoltage(double voltage) {
-    bottomMotor.setVoltage(voltage);
-  }
 
   @Override
   public void setBeltTargetVelocity(double velocity) {
     topMotor.setTarget(velocity);
-    bottomMotor.setTarget(velocity);
+  }
+
+  @Override
+  public void resetFollower() {
+    bottomMotor.setControl(new Follower(TOP_ID, BOTTOM_INVERTED));
   }
 
   @Override
@@ -59,37 +59,22 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void setTopGains(PIDSVGains gains) {
-    topMotor.getConfigurator().apply(
-            new Slot0Configs()
-                    .withKP(gains.getP())
-                    .withKI(gains.getI())
-                    .withKD(gains.getD())
-                    .withKS(gains.getS())
-                    .withKV(gains.getV())
-    );
-  }
+  public void setGains(PIDSVGains gains) {
+    Slot0Configs configs = new Slot0Configs()
+            .withKP(gains.getP())
+            .withKI(gains.getI())
+            .withKD(gains.getD())
+            .withKS(gains.getS())
+            .withKV(gains.getV());
 
-  @Override
-  public void setBottomGains(PIDSVGains gains) {
-    bottomMotor.getConfigurator().apply(
-            new Slot0Configs()
-                    .withKP(gains.getP())
-                    .withKI(gains.getI())
-                    .withKD(gains.getD())
-                    .withKS(gains.getS())
-                    .withKV(gains.getV())
-    );
+    topMotor.getConfigurator().apply(configs);
+    bottomMotor.getConfigurator().apply(configs);
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.topVelocity = topMotor.getEncoderVelocity();
-    inputs.topTargetVelocity = topMotor.getTarget();
-    inputs.topVoltage = topMotor.getMotorVoltage().getValueAsDouble();
-
-    inputs.bottomVelocity = bottomMotor.getEncoderVelocity();
-    inputs.bottomTargetVelocity = bottomMotor.getTarget();
-    inputs.bottomVoltage = bottomMotor.getMotorVoltage().getValueAsDouble();
+    inputs.velocity = topMotor.getEncoderVelocity();
+    inputs.targetVelocity = topMotor.getTarget();
+    inputs.voltage = topMotor.getMotorVoltage().getValueAsDouble();
   }
 }
