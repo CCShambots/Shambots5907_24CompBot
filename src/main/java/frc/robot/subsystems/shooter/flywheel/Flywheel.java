@@ -33,28 +33,15 @@ public class Flywheel extends StateMachine<Flywheel.State> {
 
   private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     registerStateCommand(
-        State.VOLTAGE_CALC_BOTTOM,
+        State.VOLTAGE_CALC,
         new SequentialCommandGroup(
             new LinearTuningCommand(
                 tuningStop,
                 tuningInc,
                 tuningDec,
-                io::setBottomVoltage,
-                () -> inputs.bottomVelocity,
-                () -> inputs.bottomVoltage,
-                VOLTAGE_INCREMENT),
-            transitionCommand(State.IDLE)));
-
-    registerStateCommand(
-        State.VOLTAGE_CALC_TOP,
-        new SequentialCommandGroup(
-            new LinearTuningCommand(
-                tuningStop,
-                tuningInc,
-                tuningDec,
-                io::setTopVoltage,
-                () -> inputs.topVelocity,
-                () -> inputs.topVoltage,
+                io::setVoltage,
+                () -> inputs.velocity,
+                () -> inputs.voltage,
                 VOLTAGE_INCREMENT),
             transitionCommand(State.IDLE)));
 
@@ -85,17 +72,13 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.PASS_THROUGH);
     addOmniTransition(State.CHUTE_INTAKE);
 
-    addTransition(State.IDLE, State.VOLTAGE_CALC_TOP);
-    addTransition(State.IDLE, State.VOLTAGE_CALC_BOTTOM);
-    addCommutativeTransition(
-        State.VOLTAGE_CALC_BOTTOM, State.VOLTAGE_CALC_TOP, new InstantCommand());
+    addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
 
   private Command atSpeedCommand(DoubleSupplier speedProvider, double accuracy) {
     return new RunCommand(
         () -> {
-          if (doubleEqual(inputs.topVelocity, speedProvider.getAsDouble(), accuracy)
-              && doubleEqual(inputs.bottomVelocity, speedProvider.getAsDouble(), accuracy)) {
+          if (doubleEqual(inputs.velocity, speedProvider.getAsDouble(), accuracy)) {
             setFlag(State.AT_SPEED);
           } else {
             clearFlag(State.AT_SPEED);
@@ -112,6 +95,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
   @Override
   protected void determineSelf() {
     // await control from shooter
+    io.resetFollower();
     setState(State.IDLE);
   }
 
@@ -122,9 +106,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     ACTIVE_ADJUST_SPIN,
     PASS_THROUGH,
     CHUTE_INTAKE,
-
-    VOLTAGE_CALC_BOTTOM,
-    VOLTAGE_CALC_TOP,
+    VOLTAGE_CALC,
 
     // flags
     AT_SPEED

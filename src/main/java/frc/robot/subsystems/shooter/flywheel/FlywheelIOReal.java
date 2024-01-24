@@ -3,14 +3,15 @@ package frc.robot.subsystems.shooter.flywheel;
 import static frc.robot.Constants.Flywheel.Hardware.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.Follower;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class FlywheelIOReal implements FlywheelIO {
   protected final VelocityTalonFX topMotor =
-      new VelocityTalonFX(TOP_MOTOR_ID, TOP_MOTOR_GAINS.get(), TOP_MOTOR_RATIO);
+      new VelocityTalonFX(TOP_MOTOR_ID, GAINS.get(), TOP_MOTOR_RATIO);
   protected final VelocityTalonFX bottomMotor =
-      new VelocityTalonFX(BOTTOM_MOTOR_ID, BOTTOM_MOTOR_GAINS.get(), BOTTOM_MOTOR_RATIO);
+      new VelocityTalonFX(BOTTOM_MOTOR_ID, GAINS.get(), BOTTOM_MOTOR_RATIO);
 
   public FlywheelIOReal() {
     this(false);
@@ -20,20 +21,14 @@ public class FlywheelIOReal implements FlywheelIO {
     if (!sim) configureCurrentLimits();
     configureHardware();
 
-    TOP_MOTOR_GAINS.setOnChange(this::setTopGains);
-    BOTTOM_MOTOR_GAINS.setOnChange(this::setBottomGains);
+    GAINS.setOnChange(this::setGains);
   }
 
   @Override
   public void updateInputs(FlywheelInputs inputs) {
-    inputs.topTargetVelocity = topMotor.getTarget();
-    inputs.topVelocity = topMotor.getEncoderVelocity();
-
-    inputs.bottomTargetVelocity = bottomMotor.getTarget();
-    inputs.bottomVelocity = bottomMotor.getEncoderVelocity();
-
-    inputs.topVoltage = topMotor.getMotorVoltage().getValueAsDouble();
-    inputs.bottomVelocity = bottomMotor.getMotorVoltage().getValueAsDouble();
+    inputs.targetVelocity = topMotor.getTarget();
+    inputs.velocity = topMotor.getEncoderVelocity();
+    inputs.voltage = topMotor.getMotorVoltage().getValueAsDouble();
   }
 
   @Override
@@ -43,12 +38,7 @@ public class FlywheelIOReal implements FlywheelIO {
   }
 
   @Override
-  public void setBottomVoltage(double voltage) {
-    bottomMotor.setVoltage(voltage);
-  }
-
-  @Override
-  public void setTopVoltage(double voltage) {
+  public void setVoltage(double voltage) {
     topMotor.setVoltage(voltage);
   }
 
@@ -59,19 +49,12 @@ public class FlywheelIOReal implements FlywheelIO {
   }
 
   @Override
-  public void setBottomGains(PIDSVGains gains) {
-    bottomMotor.getConfigurator().apply(
-            new Slot0Configs()
-                    .withKP(gains.getP())
-                    .withKI(gains.getI())
-                    .withKD(gains.getD())
-                    .withKS(gains.getS())
-                    .withKV(gains.getV())
-    );
+  public void resetFollower() {
+    bottomMotor.setControl(new Follower(TOP_MOTOR_ID, BOTTOM_MOTOR_INVERTED));
   }
 
   @Override
-  public void setTopGains(PIDSVGains gains) {
+  public void setGains(PIDSVGains gains) {
     topMotor.getConfigurator().apply(
             new Slot0Configs()
                     .withKP(gains.getP())
@@ -87,7 +70,6 @@ public class FlywheelIOReal implements FlywheelIO {
     bottomMotor.setNeutralMode(NEUTRAL_MODE);
 
     topMotor.setInverted(TOP_MOTOR_INVERTED);
-    bottomMotor.setInverted(BOTTOM_MOTOR_INVERTED);
   }
 
   private void configureCurrentLimits() {

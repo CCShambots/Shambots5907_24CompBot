@@ -136,7 +136,7 @@ public class Constants {
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
 
-      public static final LoggedTunablePIDSV TOP_MOTOR_GAINS = new LoggedTunablePIDSV(
+      public static final LoggedTunablePIDSV GAINS = new LoggedTunablePIDSV(
               "Top Flywheel Gains",
               new PIDSVGains(0, 0, 0, 0, 0),
               () -> ALLOW_TUNING

@@ -139,7 +139,7 @@ public class Shooter extends StateMachine<Shooter.State> {
         State.TOP_FLYWHEEL_VOLTAGE_CALC,
         new ParallelCommandGroup(
                 arm.transitionCommand(Arm.State.SOFT_E_STOP),
-                flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC_TOP))
+                flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC))
             .andThen(flywheel.waitForState(Flywheel.State.IDLE))
             .andThen(transitionCommand(State.SOFT_E_STOP)));
   }
