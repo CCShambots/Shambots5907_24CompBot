@@ -44,10 +44,10 @@ public class Indexer extends StateMachine<Indexer.State> {
                 INDEX_TIMEOUT) // Stop it after some time in case it oscillates or something
             .andThen(
                 new ConditionalCommand( // transition to holding ring or lost ring depending on if
-                    // both prox sensors are tripped or not
+                    // first two prox sensors are tripped and last one is not
                     transitionCommand(State.HOLDING_RING),
                     transitionCommand(State.LOST_RING),
-                    () -> inputs.prox1 && inputs.prox2)));
+                    () -> inputs.prox1 && inputs.prox2 && !inputs.prox3)));
 
     registerStateCommand(
         State.PASS_THROUGH,
@@ -104,14 +104,17 @@ public class Indexer extends StateMachine<Indexer.State> {
     return new FunctionalCommand(
         () -> isFinished.set(false),
         () -> {
-          // either both are set and we have ring or both are unset and we lost ring
-          if (inputs.prox1 == inputs.prox2) isFinished.set(true);
+          // either first two are set and we have ring or both are unset and we lost ring (assuming 3rd is unset)
+          if (inputs.prox1 == inputs.prox2 && !inputs.prox3) isFinished.set(true);
 
-          // if first prox is on but second isnt, run forwards
-          else if (inputs.prox1) io.setTargetVelocity(INDEX_SPEED);
+          // none of the prox are set (where did ring go)
+          if (!inputs.prox1 && !inputs.prox2 && !inputs.prox3) isFinished.set(true);
 
-          // otherwise vice versa
-          else io.setTargetVelocity(-INDEX_SPEED);
+          // 2nd or 3rd prox on, reverse
+          else if (inputs.prox3 || inputs.prox2) io.setTargetVelocity(-INDEX_SPEED);
+
+          // otherwise forward
+          else io.setTargetVelocity(INDEX_SPEED);
         },
         (interrupted) -> io.stop(),
         isFinished::get);
