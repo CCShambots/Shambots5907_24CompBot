@@ -13,6 +13,7 @@ import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOReal;
+import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
@@ -24,6 +25,8 @@ import frc.robot.subsystems.shooter.arm.ArmIOSim;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
+
+import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Pose3d[][] componentPoses = new Pose3d[2][4];
@@ -57,9 +60,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new Trigger(() -> false),
             new Trigger(() -> false));
 
+    //TODO: give good sim bindings
     indexer =
         new Indexer(
-            getIndexerIO(),
+            getIndexerIO(() -> false, () -> false, () -> false),
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false));
@@ -87,10 +91,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     }
   }
 
-  private final IndexerIO getIndexerIO() {
+  private final IndexerIO getIndexerIO(BooleanSupplier simProx1, BooleanSupplier simProx2, BooleanSupplier simProx3) {
     switch (Constants.currentBuildMode) {
       case REAL -> {
         return new IndexerIOReal();
+      }
+      case SIM -> {
+        return new IndexerIOSim(simProx1, simProx2, simProx3);
       }
       default -> {
         return new IndexerIO() {};

@@ -12,6 +12,7 @@ public interface IndexerIO {
 
     public boolean prox1 = false;
     public boolean prox2 = false;
+    public boolean prox3 = false;
   }
 
   public default void stop() {}

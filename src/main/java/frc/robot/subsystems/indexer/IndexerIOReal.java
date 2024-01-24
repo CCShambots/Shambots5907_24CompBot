@@ -13,6 +13,7 @@ public class IndexerIOReal implements IndexerIO {
 
   private final DigitalInput prox1 = new DigitalInput(PROX_1_ID);
   private final DigitalInput prox2 = new DigitalInput(PROX_2_ID);
+  private final DigitalInput prox3 = new DigitalInput(PROX_3_ID);
 
   public IndexerIOReal() {
     this(false);
@@ -69,6 +70,7 @@ public class IndexerIOReal implements IndexerIO {
   public void updateInputs(IndexerInputs inputs) {
     inputs.prox1 = prox1.get();
     inputs.prox2 = prox2.get();
+    inputs.prox3 = prox3.get();
 
     inputs.beltVelocity = beltMotor.getEncoderVelocity();
     inputs.beltTargetVelocity = beltMotor.getTarget();

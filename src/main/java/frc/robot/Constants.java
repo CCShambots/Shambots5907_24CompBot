@@ -193,6 +193,7 @@ public class Constants {
 
       public static final int PROX_1_ID = 0;
       public static final int PROX_2_ID = 0;
+      public static final int PROX_3_ID = 0;
 
       public static final CurrentLimitsConfigs BELT_MOTOR_CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
       public static final NeutralModeValue BELT_MOTOR_NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -213,7 +214,9 @@ public class Constants {
       public static final double VOLTAGE_INCREMENT = 0.0;
     }
 
-    public static final class Sim {}
+    public static final class Sim {
+      public static final double MOTOR_INERTIA = 0.0001;
+    }
   }
 
   public static void pullAllianceFromFMS(RobotContainer rc) {
