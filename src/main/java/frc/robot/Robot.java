@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.Constants.currentBuildMode;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -25,9 +26,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
 
-  @AutoLogOutput private Pose3d[] componentPositions = new Pose3d[0];
-
-  @AutoLogOutput private Pose3d[] componentPositionTargets = new Pose3d[0];
+  @AutoLogOutput private Pose3d armPose = new Pose3d();
+  @AutoLogOutput private Pose3d botPose = new Pose3d();
 
   @Override
   public void robotInit() {
@@ -108,10 +108,12 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    Pose3d[][] poses = robotContainer.getComponentPositions();
+  }
 
-    componentPositions = poses[0];
-    componentPositionTargets = poses[1];
+  private void updatePoses() {
+    armPose = new Pose3d()
+            .rotateBy(new Rotation3d(0, robotContainer.getShooterAngle(), 0))
+            .plus(Constants.PhysicalConstants.CHASSIS_TO_SHOOTER)
   }
 
   @Override

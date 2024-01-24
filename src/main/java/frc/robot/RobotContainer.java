@@ -135,100 +135,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     setState(State.SOFT_E_STOP);
   }
 
-  // for the get _ angles/poses/extensions, the first entry is actual and the second is target
-  private void updateShooterAngles() {
-    // TODO: make this do the thing
-    // idx 0 in the pose/motions arrays
+  public double getShooterAngle() {
+    return shooter.getArmAngle();
   }
 
-  private void updateElevatorExtensions() {
-    // TODO: make this do the thing
-    // idx 1 in the pose/motions arrays
-  }
-
-  private void updateClawAngles() {
-    // TODO: make this do the thing
-    // idx 2, 3 in the pose/motions arrays
-  }
-
-  private void updateShooterPoses() {
-    for (int i = 0; i < 2; i++) {
-      componentPoses[i][0] = new Pose3d();
-
-      componentPoses[i][0].transformBy(
-          new Transform3d(
-              Constants.PhysicalConstants.CHASSIS_TO_SHOOTER,
-              new Rotation3d(0, componentRelativeMotions[i][0], 0)));
-    }
-  }
-
-  private void updateElevatorPoses() {
-    for (int i = 0; i < 2; i++) {
-      componentPoses[i][1] = new Pose3d();
-
-      // move origin of elevator to origin of shooter
-      componentPoses[i][1].transformBy(
-          new Transform3d(
-              new Pose3d(),
-              new Pose3d(Constants.PhysicalConstants.SHOOTER_TO_ELEVATOR, new Rotation3d())));
-
-      // rotate elevator to shooter angle
-      componentPoses[i][1].transformBy(new Transform3d(new Pose3d(), componentPoses[i][0]));
-
-      // move elevator to it's extension
-      componentPoses[i][1].transformBy(
-          new Transform3d(
-              new Pose3d(),
-              new Pose3d(
-                  new Translation3d(0, componentRelativeMotions[i][1], 0), new Rotation3d())));
-    }
-  }
-
-  private void updateClawPoses() {
-    for (int i = 0; i < 4; i++) {
-      // stupid, but it will give (0, 3) (1, 3) (0, 4) (1, 4) so it gets both claws in both target
-      // and actual poses
-      // type is target or actual
-      // clawidx is for which part of the claw
-      int typeIdx = i % 2;
-      int clawIdx = (i / 2) + 2;
-
-      componentPoses[typeIdx][clawIdx] = new Pose3d();
-
-      // move origin of claw part to origin of elevator
-      componentPoses[typeIdx][clawIdx].transformBy(
-          new Transform3d(new Pose3d(), componentPoses[typeIdx][1]));
-
-      // rotate the claw to it's angle
-      componentPoses[typeIdx][clawIdx].transformBy(
-          new Transform3d(
-              new Pose3d(),
-              new Pose3d(
-                  new Translation3d(),
-                  new Rotation3d(0, componentRelativeMotions[typeIdx][clawIdx], 0))));
-    }
-  }
-
-  private void updateAllRelative() {
-    updateShooterAngles();
-    updateElevatorExtensions();
-    updateClawAngles();
-  }
-
-  private void updateAllPoses() {
-    updateShooterPoses();
-    updateElevatorPoses();
-    updateClawPoses();
-  }
-
-  // ik this is kinda stupid, i dont really care
-  // im doing it with the arrays n stuff instead of returning to avoid extra allocations cause loop
-  // overruns (yippee)
-  public Pose3d[][] getComponentPositions() {
-    updateAllRelative();
-    updateAllPoses();
-
-    return componentPoses;
+  public Pose3d getBotPose() {
+    //update this when pose estimation is ready
+    return new Pose3d();
   }
 
   public enum State {

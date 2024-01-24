@@ -131,6 +131,10 @@ public class Arm extends StateMachine<Arm.State> {
     setState(State.SOFT_E_STOP);
   }
 
+  public double getAngle() {
+    return inputs.motorPosition;
+  }
+
   public enum State {
     UNDETERMINED,
     SOFT_E_STOP,

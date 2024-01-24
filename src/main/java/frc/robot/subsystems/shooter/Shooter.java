@@ -192,6 +192,10 @@ public class Shooter extends StateMachine<Shooter.State> {
     return Constants.lerp(lower.getValue(), higher.getValue(), interpolation);
   }
 
+  public double getArmAngle() {
+    return arm.getAngle();
+  }
+
   @Override
   protected void determineSelf() {
     // await instructions from rc
