@@ -19,7 +19,7 @@ public class Arm extends StateMachine<Arm.State> {
   private final ArmInputsAutoLogged inputs = new ArmInputsAutoLogged();
   private final Timer syncTimeout = new Timer();
 
-  // AA stands for active adjust :)
+  // AA stands for active adjust
   private final DoubleSupplier distanceAAProvider;
   private final DoubleSupplier trapAAProvider;
 
