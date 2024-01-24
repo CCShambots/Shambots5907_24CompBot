@@ -22,6 +22,8 @@ public interface ArmIO {
 
   public default void syncToAbsoluteEncoder() {}
 
+  public default void resetFollower() {}
+
   public default void setGains(PIDSVGains gains) {}
 
   public default void setVoltage(double voltage) {}

@@ -4,6 +4,7 @@ import static frc.robot.Constants.Arm.Hardware.*;
 import static frc.robot.Constants.Arm.Settings.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.StrictFollower;
 import frc.robot.ShamLib.motors.talonfx.MotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
@@ -41,10 +42,13 @@ public class ArmIOReal implements ArmIO {
   }
 
   @Override
+  public void resetFollower() {
+    followerMotor.setControl(new Follower(LEADER_ID, FOLLOWER_INVERTED));
+  }
+
+  @Override
   public void setTargetPosition(double position) {
     leaderMotor.setTarget(position);
-    // might not need to reset follower every time
-    followerMotor.setControl(new StrictFollower(LEADER_ID));
   }
 
   @Override
@@ -61,7 +65,6 @@ public class ArmIOReal implements ArmIO {
   @Override
   public void setVoltage(double voltage) {
     leaderMotor.setVoltage(voltage);
-    followerMotor.setControl(new StrictFollower(LEADER_ID));
   }
 
   @Override

@@ -127,6 +127,7 @@ public class Arm extends StateMachine<Arm.State> {
 
   @Override
   protected void determineSelf() {
+    io.resetFollower();
     setState(State.SOFT_E_STOP);
   }
 
