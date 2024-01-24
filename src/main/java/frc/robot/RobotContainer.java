@@ -10,6 +10,9 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOReal;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
@@ -29,6 +32,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private final Intake intake;
   private final Shooter shooter;
+
+  private final Indexer indexer;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
@@ -52,6 +57,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new Trigger(() -> false),
             new Trigger(() -> false));
 
+    indexer =
+        new Indexer(
+            getIndexerIO(),
+            new Trigger(() -> false),
+            new Trigger(() -> false),
+            new Trigger(() -> false));
+
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
 
@@ -70,6 +82,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       }
       default -> {
         return new IntakeIO() {};
+      }
+    }
+  }
+
+  private final IndexerIO getIndexerIO() {
+    switch (Constants.currentBuildMode) {
+      case REAL -> {
+        return new IndexerIOReal();
+      }
+      default -> {
+        return new IndexerIO() {};
       }
     }
   }

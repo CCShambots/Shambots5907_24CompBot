@@ -13,11 +13,15 @@ public interface IndexerIO {
     public boolean prox2 = false;
   }
 
-  public void stop();
+  public default void stop() {}
+  ;
 
-  public void setTargetVelocity(double targetVelocity);
+  public default void setTargetVelocity(double targetVelocity) {}
+  ;
 
-  public void setVoltage(double voltage);
+  public default void setVoltage(double voltage) {}
+  ;
 
-  public void updateInputs(IndexerInputs inputs);
+  public default void updateInputs(IndexerInputs inputs) {}
+  ;
 }

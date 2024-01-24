@@ -14,9 +14,11 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class Constants {
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REPLAY;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
+
+  public static final boolean ALLOW_TUNING = true;
 
   public static final class PhysicalConstants {
     // METERS
