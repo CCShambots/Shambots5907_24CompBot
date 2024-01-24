@@ -55,14 +55,15 @@ public class FlywheelIOReal implements FlywheelIO {
 
   @Override
   public void setGains(PIDSVGains gains) {
-    topMotor.getConfigurator().apply(
+    topMotor
+        .getConfigurator()
+        .apply(
             new Slot0Configs()
-                    .withKP(gains.getP())
-                    .withKI(gains.getI())
-                    .withKD(gains.getD())
-                    .withKS(gains.getS())
-                    .withKV(gains.getV())
-    );
+                .withKP(gains.getP())
+                .withKI(gains.getI())
+                .withKD(gains.getD())
+                .withKS(gains.getS())
+                .withKV(gains.getV()));
   }
 
   private void configureHardware() {

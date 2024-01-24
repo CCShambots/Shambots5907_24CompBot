@@ -8,7 +8,8 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class IntakeIOReal implements IntakeIO {
-  protected final VelocityTalonFX topMotor = new VelocityTalonFX(TOP_ID, TOP_GAINS.get(), TOP_RATIO);
+  protected final VelocityTalonFX topMotor =
+      new VelocityTalonFX(TOP_ID, TOP_GAINS.get(), TOP_RATIO);
   protected final VelocityTalonFX bottomMotor =
       new VelocityTalonFX(BOTTOM_ID, TOP_GAINS.get(), BOTTOM_RATIO);
 
@@ -41,7 +42,6 @@ public class IntakeIOReal implements IntakeIO {
     topMotor.setVoltage(voltage);
   }
 
-
   @Override
   public void setBeltTargetVelocity(double velocity) {
     topMotor.setTarget(velocity);
@@ -60,7 +60,8 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setGains(PIDSVGains gains) {
-    Slot0Configs configs = new Slot0Configs()
+    Slot0Configs configs =
+        new Slot0Configs()
             .withKP(gains.getP())
             .withKI(gains.getI())
             .withKD(gains.getD())

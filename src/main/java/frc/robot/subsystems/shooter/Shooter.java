@@ -127,7 +127,6 @@ public class Shooter extends StateMachine<Shooter.State> {
             .andThen(arm.waitForState(Arm.State.SOFT_E_STOP))
             .andThen(transitionCommand(State.SOFT_E_STOP)));
 
-
     registerStateCommand(
         State.FLYWHEEL_VOLTAGE_CALC,
         new ParallelCommandGroup(

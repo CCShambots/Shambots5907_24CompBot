@@ -5,7 +5,6 @@ import static frc.robot.Constants.Arm.Settings.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.StrictFollower;
 import frc.robot.ShamLib.motors.talonfx.MotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.sensor.ThroughBoreEncoder;
@@ -69,23 +68,25 @@ public class ArmIOReal implements ArmIO {
 
   @Override
   public void setGains(PIDSVGains gains) {
-    leaderMotor.getConfigurator().apply(
+    leaderMotor
+        .getConfigurator()
+        .apply(
             new Slot0Configs()
-                    .withKP(gains.getP())
-                    .withKI(gains.getI())
-                    .withKD(gains.getD())
-                    .withKS(gains.getS())
-                    .withKV(gains.getV())
-    );
+                .withKP(gains.getP())
+                .withKI(gains.getI())
+                .withKD(gains.getD())
+                .withKS(gains.getS())
+                .withKV(gains.getV()));
 
-    followerMotor.getConfigurator().apply(
+    followerMotor
+        .getConfigurator()
+        .apply(
             new Slot0Configs()
-                    .withKP(gains.getP())
-                    .withKI(gains.getI())
-                    .withKD(gains.getD())
-                    .withKS(gains.getS())
-                    .withKV(gains.getV())
-    );
+                .withKP(gains.getP())
+                .withKI(gains.getI())
+                .withKD(gains.getD())
+                .withKS(gains.getS())
+                .withKV(gains.getV()));
   }
 
   private double getEncoderPosition() {

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
-
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -85,11 +84,9 @@ public class Constants {
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
 
-      public static final LoggedTunablePIDSV GAINS = new LoggedTunablePIDSV(
-              "Shooter Arm Gains",
-              new PIDSVGains(0, 0, 0, 0, 0),
-              () -> ALLOW_TUNING
-      );
+      public static final LoggedTunablePIDSV GAINS =
+          new LoggedTunablePIDSV(
+              "Shooter Arm Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
     }
 
     public static final class Settings {
@@ -136,17 +133,13 @@ public class Constants {
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
 
-      public static final LoggedTunablePIDSV GAINS = new LoggedTunablePIDSV(
-              "Top Flywheel Gains",
-              new PIDSVGains(0, 0, 0, 0, 0),
-              () -> ALLOW_TUNING
-      );
+      public static final LoggedTunablePIDSV GAINS =
+          new LoggedTunablePIDSV(
+              "Top Flywheel Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
 
-      public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS = new LoggedTunablePIDSV(
-              "Bottom Flywheel Gains",
-              new PIDSVGains(0, 0, 0, 0, 0),
-              () -> ALLOW_TUNING
-      );
+      public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
+          new LoggedTunablePIDSV(
+              "Bottom Flywheel Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
     }
 
     public static final class Settings {
@@ -177,11 +170,9 @@ public class Constants {
 
       public static final CurrentLimitsConfigs CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
 
-      public static final LoggedTunablePIDSV TOP_GAINS = new LoggedTunablePIDSV(
-              "Intake Belt Gains",
-              new PIDSVGains(0, 0, 0, 0, 0),
-              () -> ALLOW_TUNING
-      );
+      public static final LoggedTunablePIDSV TOP_GAINS =
+          new LoggedTunablePIDSV(
+              "Intake Belt Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
     }
 
     public static final class Sim {
@@ -212,11 +203,9 @@ public class Constants {
       public static final CurrentLimitsConfigs BELT_MOTOR_CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
       public static final NeutralModeValue BELT_MOTOR_NEUTRAL_MODE = NeutralModeValue.Coast;
 
-      public static final LoggedTunablePIDSV BELT_GAINS = new LoggedTunablePIDSV(
-              "Indexer Belt Gains",
-              new PIDSVGains(0, 0, 0, 0, 0),
-              () -> ALLOW_TUNING
-      );
+      public static final LoggedTunablePIDSV BELT_GAINS =
+          new LoggedTunablePIDSV(
+              "Indexer Belt Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
     }
 
     public static final class Settings {

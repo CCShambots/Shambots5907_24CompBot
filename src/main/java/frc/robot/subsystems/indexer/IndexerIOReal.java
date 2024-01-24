@@ -54,14 +54,15 @@ public class IndexerIOReal implements IndexerIO {
 
   @Override
   public void setGains(PIDSVGains gains) {
-    beltMotor.getConfigurator().apply(
+    beltMotor
+        .getConfigurator()
+        .apply(
             new Slot0Configs()
-                    .withKP(gains.getP())
-                    .withKI(gains.getI())
-                    .withKD(gains.getD())
-                    .withKS(gains.getS())
-                    .withKV(gains.getV())
-    );
+                .withKP(gains.getP())
+                .withKI(gains.getI())
+                .withKD(gains.getD())
+                .withKS(gains.getS())
+                .withKV(gains.getV()));
   }
 
   @Override
