@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter.flywheel;
 
+import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface FlywheelIO {
@@ -22,6 +23,10 @@ public interface FlywheelIO {
   public default void setTopVoltage(double voltage) {}
 
   public default void setBottomVoltage(double voltage) {}
+
+  public default void setTopGains(PIDSVGains gains) {}
+
+  public default void setBottomGains(PIDSVGains gains) {}
 
   public default void setVoltage(double voltage) {
     setTopVoltage(voltage);

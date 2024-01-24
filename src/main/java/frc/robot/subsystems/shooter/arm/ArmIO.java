@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter.arm;
 
+import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ArmIO {
@@ -20,6 +21,8 @@ public interface ArmIO {
   public default void stop() {}
 
   public default void syncToAbsoluteEncoder() {}
+
+  public default void setGains(PIDSVGains gains) {}
 
   public default void setVoltage(double voltage) {}
 }

@@ -2,13 +2,15 @@ package frc.robot.subsystems.shooter.flywheel;
 
 import static frc.robot.Constants.Flywheel.Hardware.*;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class FlywheelIOReal implements FlywheelIO {
   protected final VelocityTalonFX topMotor =
-      new VelocityTalonFX(TOP_MOTOR_ID, TOP_MOTOR_GAINS, TOP_MOTOR_RATIO);
+      new VelocityTalonFX(TOP_MOTOR_ID, TOP_MOTOR_GAINS.get(), TOP_MOTOR_RATIO);
   protected final VelocityTalonFX bottomMotor =
-      new VelocityTalonFX(BOTTOM_MOTOR_ID, BOTTOM_MOTOR_GAINS, BOTTOM_MOTOR_RATIO);
+      new VelocityTalonFX(BOTTOM_MOTOR_ID, BOTTOM_MOTOR_GAINS.get(), BOTTOM_MOTOR_RATIO);
 
   public FlywheelIOReal() {
     this(false);
@@ -17,6 +19,9 @@ public class FlywheelIOReal implements FlywheelIO {
   public FlywheelIOReal(boolean sim) {
     if (!sim) configureCurrentLimits();
     configureHardware();
+
+    TOP_MOTOR_GAINS.setOnChange(this::setTopGains);
+    BOTTOM_MOTOR_GAINS.setOnChange(this::setBottomGains);
   }
 
   @Override
@@ -51,6 +56,30 @@ public class FlywheelIOReal implements FlywheelIO {
   public void stop() {
     topMotor.stopMotor();
     bottomMotor.stopMotor();
+  }
+
+  @Override
+  public void setBottomGains(PIDSVGains gains) {
+    bottomMotor.getConfigurator().apply(
+            new Slot0Configs()
+                    .withKP(gains.getP())
+                    .withKI(gains.getI())
+                    .withKD(gains.getD())
+                    .withKS(gains.getS())
+                    .withKV(gains.getV())
+    );
+  }
+
+  @Override
+  public void setTopGains(PIDSVGains gains) {
+    topMotor.getConfigurator().apply(
+            new Slot0Configs()
+                    .withKP(gains.getP())
+                    .withKI(gains.getI())
+                    .withKD(gains.getD())
+                    .withKS(gains.getS())
+                    .withKV(gains.getV())
+    );
   }
 
   private void configureHardware() {
