@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface IntakeIO {
@@ -21,6 +22,10 @@ public interface IntakeIO {
   public default void setTopVoltage(double voltage) {}
 
   public default void setBottomVoltage(double voltage) {}
+
+  public default void setTopGains(PIDSVGains gains) {}
+
+  public default void setBottomGains(PIDSVGains gains) {}
 
   public default void updateInputs(IntakeIOInputs inputs) {}
 }

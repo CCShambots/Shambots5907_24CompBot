@@ -2,12 +2,14 @@ package frc.robot.subsystems.intake;
 
 import static frc.robot.Constants.Intake.Hardware.*;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class IntakeIOReal implements IntakeIO {
-  protected final VelocityTalonFX topMotor = new VelocityTalonFX(TOP_ID, TOP_GAINS, TOP_RATIO);
+  protected final VelocityTalonFX topMotor = new VelocityTalonFX(TOP_ID, TOP_GAINS.get(), TOP_RATIO);
   protected final VelocityTalonFX bottomMotor =
-      new VelocityTalonFX(BOTTOM_ID, BOTTOM_GAINS, BOTTOM_RATIO);
+      new VelocityTalonFX(BOTTOM_ID, BOTTOM_GAINS.get(), BOTTOM_RATIO);
 
   public IntakeIOReal() {
     this(false);
@@ -17,6 +19,9 @@ public class IntakeIOReal implements IntakeIO {
     if (!sim) configureCurrentLimits();
 
     configureHardware();
+
+    TOP_GAINS.setOnChange(this::setTopGains);
+    BOTTOM_GAINS.setOnChange(this::setBottomGains);
   }
 
   private void configureCurrentLimits() {
@@ -51,6 +56,30 @@ public class IntakeIOReal implements IntakeIO {
   public void stop() {
     topMotor.stopMotor();
     bottomMotor.stopMotor();
+  }
+
+  @Override
+  public void setTopGains(PIDSVGains gains) {
+    topMotor.getConfigurator().apply(
+            new Slot0Configs()
+                    .withKP(gains.getP())
+                    .withKI(gains.getI())
+                    .withKD(gains.getD())
+                    .withKS(gains.getS())
+                    .withKV(gains.getV())
+    );
+  }
+
+  @Override
+  public void setBottomGains(PIDSVGains gains) {
+    bottomMotor.getConfigurator().apply(
+            new Slot0Configs()
+                    .withKP(gains.getP())
+                    .withKI(gains.getI())
+                    .withKD(gains.getD())
+                    .withKS(gains.getS())
+                    .withKV(gains.getV())
+    );
   }
 
   @Override

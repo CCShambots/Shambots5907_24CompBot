@@ -1,5 +1,6 @@
 package frc.robot.subsystems.indexer;
 
+import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface IndexerIO {
@@ -14,14 +15,12 @@ public interface IndexerIO {
   }
 
   public default void stop() {}
-  ;
+
+  public default void setGains(PIDSVGains gains) {}
 
   public default void setTargetVelocity(double targetVelocity) {}
-  ;
 
   public default void setVoltage(double voltage) {}
-  ;
 
   public default void updateInputs(IndexerInputs inputs) {}
-  ;
 }
