@@ -66,6 +66,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
+    addChildSubsystem(indexer);
 
     configureBindings();
   }
