@@ -114,9 +114,11 @@ public class Robot extends LoggedRobot {
   }
 
   private void updatePoses() {
-    armPose = new Pose3d()
+    armPose =
+        new Pose3d()
             .rotateBy(new Rotation3d(0, robotContainer.getShooterAngle(), 0))
-            .transformBy(new Transform3d(new Pose3d(), Constants.PhysicalConstants.CHASSIS_TO_SHOOTER));
+            .transformBy(
+                new Transform3d(new Pose3d(), Constants.PhysicalConstants.CHASSIS_TO_SHOOTER));
 
     botPose = robotContainer.getBotPose();
   }

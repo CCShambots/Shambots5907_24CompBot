@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,7 +24,8 @@ public class Constants {
   public static final class PhysicalConstants {
     // METERS
 
-    public static final Pose3d CHASSIS_TO_SHOOTER = new Pose3d(new Translation3d(), new Rotation3d());
+    public static final Pose3d CHASSIS_TO_SHOOTER =
+        new Pose3d(new Translation3d(), new Rotation3d());
 
     public static Pose3d SPEAKER_POSE = new Pose3d(new Translation3d(0, 0, 0), new Rotation3d());
 
@@ -63,7 +63,7 @@ public class Constants {
     public static final class Hardware {
       public static final int LEADER_ID = 20;
       public static final int FOLLOWER_ID = 21;
-      public static final int ENCODER_ID = 0;
+      public static final int ENCODER_ID = 3;
 
       public static final double ENCODER_RATIO = 1 * 360.0;
       public static final double MOTOR_RATIO = 1 * 360.0;
@@ -192,8 +192,8 @@ public class Constants {
       public static final boolean INVERT_BELT_MOTOR = false;
 
       public static final int PROX_1_ID = 0;
-      public static final int PROX_2_ID = 0;
-      public static final int PROX_3_ID = 0;
+      public static final int PROX_2_ID = 1;
+      public static final int PROX_3_ID = 2;
 
       public static final CurrentLimitsConfigs BELT_MOTOR_CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
       public static final NeutralModeValue BELT_MOTOR_NEUTRAL_MODE = NeutralModeValue.Coast;

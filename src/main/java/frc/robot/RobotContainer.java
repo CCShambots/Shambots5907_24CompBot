@@ -5,8 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
@@ -25,7 +23,6 @@ import frc.robot.subsystems.shooter.arm.ArmIOSim;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
-
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
@@ -60,7 +57,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new Trigger(() -> false),
             new Trigger(() -> false));
 
-    //TODO: give good sim bindings
+    // TODO: give good sim bindings
     indexer =
         new Indexer(
             getIndexerIO(() -> false, () -> false, () -> false),
@@ -91,7 +88,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     }
   }
 
-  private final IndexerIO getIndexerIO(BooleanSupplier simProx1, BooleanSupplier simProx2, BooleanSupplier simProx3) {
+  private final IndexerIO getIndexerIO(
+      BooleanSupplier simProx1, BooleanSupplier simProx2, BooleanSupplier simProx3) {
     switch (Constants.currentBuildMode) {
       case REAL -> {
         return new IndexerIOReal();
@@ -147,7 +145,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public Pose3d getBotPose() {
-    //update this when pose estimation is ready
+    // update this when pose estimation is ready
     return new Pose3d();
   }
 

@@ -104,7 +104,8 @@ public class Indexer extends StateMachine<Indexer.State> {
     return new FunctionalCommand(
         () -> isFinished.set(false),
         () -> {
-          // either first two are set and we have ring or both are unset and we lost ring (assuming 3rd is unset)
+          // either first two are set and we have ring or both are unset and we lost ring (assuming
+          // 3rd is unset)
           if (inputs.prox1 == inputs.prox2 && !inputs.prox3) isFinished.set(true);
 
           // none of the prox are set (where did ring go)
