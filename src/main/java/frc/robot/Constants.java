@@ -4,12 +4,15 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
+import frc.robot.ShamLib.swerve.module.ModuleInfo;
+
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -148,7 +151,6 @@ public class Constants {
     }
   }
 
-  // TODO: UPDATE INTAKE CONSTANTS
   public static final class Intake {
     public static final class Hardware {
       public static final int TOP_ID = 0;
@@ -179,9 +181,6 @@ public class Constants {
       public static final double VOLTAGE_INC = 0.25;
     }
   }
-
-  public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
-  public static boolean overrideAlliance = false;
 
   public static final class Indexer {
     public static final class Hardware {
@@ -218,6 +217,68 @@ public class Constants {
       public static final double MOTOR_INERTIA = 0.0001;
     }
   }
+
+  public static final class Drivetrain {
+    public static final class Sim {}
+
+    public static final class Hardware {
+      public static final int GYRO_ID = 0;
+
+      public static final String MODULE_CAN_BUS = "";
+      public static final String GYRO_CAN_BUS = "";
+
+      public static final ModuleInfo MODULE_1_INFO = ModuleInfo.generateModuleInfo(
+              ModuleInfo.SwerveModuleType.MK4i,
+              ModuleInfo.SwerveModuleSpeedLevel.L3,
+              0, //DRIVE MOTOR ID
+              0, //TURN MOTOR ID
+              0, //ENCODER ID
+              0.0, //ENCODER OFFSET
+              new Translation2d(0, 0), //MODULE OFFSET FROM CENTER OF BOT
+              false //DRIVE MOTOR INVERTED
+      );
+
+      public static final ModuleInfo MODULE_2_INFO = ModuleInfo.generateModuleInfo(
+              ModuleInfo.SwerveModuleType.MK4i,
+              ModuleInfo.SwerveModuleSpeedLevel.L3,
+              0, //DRIVE MOTOR ID
+              0, //TURN MOTOR ID
+              0, //ENCODER ID
+              0.0, //ENCODER OFFSET
+              new Translation2d(0, 0), //MODULE OFFSET FROM CENTER OF BOT
+              false //DRIVE MOTOR INVERTED
+      );
+
+      public static final ModuleInfo MODULE_3_INFO = ModuleInfo.generateModuleInfo(
+              ModuleInfo.SwerveModuleType.MK4i,
+              ModuleInfo.SwerveModuleSpeedLevel.L3,
+              0, //DRIVE MOTOR ID
+              0, //TURN MOTOR ID
+              0, //ENCODER ID
+              0.0, //ENCODER OFFSET
+              new Translation2d(0, 0), //MODULE OFFSET FROM CENTER OF BOT
+              false //DRIVE MOTOR INVERTED
+      );
+
+      public static final ModuleInfo MODULE_4_INFO = ModuleInfo.generateModuleInfo(
+              ModuleInfo.SwerveModuleType.MK4i,
+              ModuleInfo.SwerveModuleSpeedLevel.L3,
+              0, //DRIVE MOTOR ID
+              0, //TURN MOTOR ID
+              0, //ENCODER ID
+              0.0, //ENCODER OFFSET
+              new Translation2d(0, 0), //MODULE OFFSET FROM CENTER OF BOT
+              false //DRIVE MOTOR INVERTED
+      );
+
+      public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
+    }
+
+    public static final class Settings {}
+  }
+
+  public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
+  public static boolean overrideAlliance = false;
 
   public static void pullAllianceFromFMS(RobotContainer rc) {
     boolean isRedAlliance =
