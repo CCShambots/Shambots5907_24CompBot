@@ -2,12 +2,17 @@ package frc.robot;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.ShamLib.PIDGains;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
@@ -274,7 +279,22 @@ public class Constants {
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
     }
 
-    public static final class Settings {}
+    public static final class Settings {
+      public static final PIDGains AUTO_THETA_GAINS = new PIDGains(10, 0, 0);
+      public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
+
+      public static final PIDSVGains MODULE_DRIVE_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
+      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
+
+      public static final double MAX_CHASSIS_SPEED = 0;
+      public static final double MAX_CHASSIS_ACCELERATION = 0;
+      public static final double MAX_CHASSIS_ROTATIONAL_SPEED = 0;
+      public static final double MAX_CHASSIS_ROTATIONAL_ACCELERATION = 0;
+      public static final double MAX_MODULE_TURN_SPEED = 0;
+      public static final double MAX_MODULE_TURN_ACCELERATION = 0;
+
+      public static final Matrix<N3, N1> STATE_STD_DEVIATIONS = VecBuilder.fill(0.003, 0.003, 0.0002);
+    }
   }
 
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
