@@ -25,9 +25,18 @@ public class Intake extends StateMachine<Intake.State> {
   }
 
   private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
-    registerStateCommand(State.IDLE, io::stop);
-    registerStateCommand(State.INTAKE, () -> io.setBeltTargetVelocity(BELT_SPEED));
-    registerStateCommand(State.EXPEL, () -> io.setBeltTargetVelocity(-BELT_SPEED));
+    registerStateCommand(State.IDLE, new SequentialCommandGroup(
+            new InstantCommand(io::stop),
+            watchProxCommand()
+    ));
+    registerStateCommand(State.INTAKE, new SequentialCommandGroup(
+            new InstantCommand(() -> io.setBeltTargetVelocity(BELT_SPEED)),
+            watchProxCommand()
+    ));
+    registerStateCommand(State.EXPEL, new SequentialCommandGroup(
+            new InstantCommand(() -> io.setBeltTargetVelocity(-BELT_SPEED)),
+            watchProxCommand()
+    ));
 
     registerStateCommand(
         State.VOLTAGE_CALC,
@@ -51,6 +60,17 @@ public class Intake extends StateMachine<Intake.State> {
     addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
 
+  private Command watchProxCommand() {
+    return new RunCommand(() -> {
+      if (inputs.proxTripped) {
+        setFlag(State.PROX_TRIPPED);
+      }
+      else {
+        clearFlag(State.PROX_TRIPPED);
+      }
+    });
+  }
+
   @Override
   protected void update() {
     io.updateInputs(inputs);
@@ -69,6 +89,9 @@ public class Intake extends StateMachine<Intake.State> {
     IDLE,
     INTAKE,
     EXPEL,
-    VOLTAGE_CALC
+    VOLTAGE_CALC,
+
+    //flags
+    PROX_TRIPPED
   }
 }
