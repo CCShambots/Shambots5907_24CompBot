@@ -9,6 +9,8 @@ public interface IntakeIO {
     public double velocity = 0.0; // RPM
     public double targetVelocity = 0.0; // RPM
     public double voltage = 0.0;
+
+    public boolean proxTripped = false;
   }
 
   public default void resetFollower() {}

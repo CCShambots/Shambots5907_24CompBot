@@ -4,6 +4,7 @@ import static frc.robot.Constants.Intake.Hardware.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
@@ -12,6 +13,8 @@ public class IntakeIOReal implements IntakeIO {
       new VelocityTalonFX(TOP_ID, TOP_GAINS.get(), TOP_RATIO);
   protected final VelocityTalonFX bottomMotor =
       new VelocityTalonFX(BOTTOM_ID, TOP_GAINS.get(), BOTTOM_RATIO);
+
+  protected final DigitalInput prox = new DigitalInput(PROX_ID);
 
   public IntakeIOReal() {
     this(false);
@@ -77,5 +80,6 @@ public class IntakeIOReal implements IntakeIO {
     inputs.velocity = topMotor.getEncoderVelocity();
     inputs.targetVelocity = topMotor.getTarget();
     inputs.voltage = topMotor.getMotorVoltage().getValueAsDouble();
+    inputs.proxTripped = prox.get();
   }
 }
