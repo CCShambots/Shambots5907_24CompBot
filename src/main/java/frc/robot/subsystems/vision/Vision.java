@@ -31,6 +31,9 @@ public class Vision extends StateMachine<Vision.State> {
         pvApriltagCams = Arrays.stream(photonVisionInstances)
                 .map((id) -> new PVApriltagCam(id, Constants.currentBuildMode, Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT))
                 .toArray(PVApriltagCam[]::new);
+
+        registerStateCommand();
+        registerTransitions();
     }
 
     public void addVisionUpdateConsumers(Consumer<List<TimestampedPoseEstimator.TimestampedVisionUpdate>>... consumers) {
@@ -42,11 +45,12 @@ public class Vision extends StateMachine<Vision.State> {
     }
 
     private void registerStateCommand() {
-
+        registerStateCommand(State.ENABLED, enabledCommand());
     }
 
     private void registerTransitions() {
-
+        addOmniTransition(State.ENABLED);
+        addOmniTransition(State.DISABLED);
     }
 
     private List<TimestampedPoseEstimator.TimestampedVisionUpdate> getLatestVisionUpdates() {

@@ -23,6 +23,8 @@ import frc.robot.subsystems.shooter.arm.ArmIOSim;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.vision.Vision;
+
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
@@ -34,6 +36,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Shooter shooter;
 
   private final Indexer indexer;
+  private final Vision vision;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
@@ -65,6 +68,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new Trigger(() -> false),
             new Trigger(() -> false));
 
+    vision = new Vision("limelight", "pv_instance_1");
+
+    addChildSubsystem(vision);
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
