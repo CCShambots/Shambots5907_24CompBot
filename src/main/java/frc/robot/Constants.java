@@ -52,6 +52,16 @@ public class Constants {
     }
   }
 
+  public static final class Vision {
+    public static final class Sim {}
+
+    public static final class Hardware {}
+
+    public static final class Settings {
+      public static final int LIMELIGHT_NOTE_TRACK_PIPELINE = 0;
+    }
+  }
+
   public static final class Shooter {
     public static final class Sim {}
 

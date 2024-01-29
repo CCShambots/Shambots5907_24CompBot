@@ -1,11 +1,10 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.Pair;
+import static frc.robot.Constants.Vision.Settings.*;
+
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
@@ -49,7 +48,7 @@ public class Vision extends StateMachine<Vision.State> {
     }
 
     private void registerTransitions() {
-        addOmniTransition(State.ENABLED);
+        addOmniTransition(State.ENABLED, () -> limelight.setPipeline(LIMELIGHT_NOTE_TRACK_PIPELINE));
         addOmniTransition(State.DISABLED);
     }
 
@@ -64,8 +63,15 @@ public class Vision extends StateMachine<Vision.State> {
     }
 
     private RingVisionUpdate getLatestRingVisionUpdate() {
-        //TODO: implement ring vision on limelight
-        return new RingVisionUpdate(new ArrayList<>());
+        var inputs = limelight.getInputs();
+
+        //if no target
+        if (inputs.tv == 0) return null;
+
+        return new RingVisionUpdate(
+                Rotation2d.fromDegrees(inputs.tx),
+                inputs.ta
+        );
     }
 
     private Command enabledCommand() {
@@ -79,7 +85,7 @@ public class Vision extends StateMachine<Vision.State> {
                 }
             }
 
-            if (!ringVisionUpdate.targets().isEmpty()) {
+            if (ringVisionUpdate != null) {
                 setFlag(State.HAS_RING_TARGET);
 
                 for (var c : ringVisionUpdateConsumers) {
@@ -123,5 +129,5 @@ public class Vision extends StateMachine<Vision.State> {
         PV_INSTANCE_DISCONNECT
     }
 
-    public record RingVisionUpdate(List<Pair<Rotation2d, Transform2d>> targets) {}
+    public record RingVisionUpdate(Rotation2d centerOffset, double size) {}
 }
