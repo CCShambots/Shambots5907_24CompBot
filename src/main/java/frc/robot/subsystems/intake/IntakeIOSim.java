@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake;
 import static frc.robot.Constants.Intake.Sim.*;
 
 import frc.robot.ShamLib.motors.talonfx.sim.PhysicsSim;
-
 import java.util.function.BooleanSupplier;
 
 public class IntakeIOSim extends IntakeIOReal {
