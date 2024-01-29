@@ -2,6 +2,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -37,6 +39,17 @@ public class Constants {
 
     public static double TRAP_TO_CHAIN_X = 0.0;
     public static double TRAP_TO_CHAIN_Y = 0.0;
+
+    public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
+
+    static {
+      try {
+        APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      }
+      catch (Exception e) {
+        throw new RuntimeException("Could not load AprilTag field layout from WPI");
+      }
+    }
   }
 
   public static final class Shooter {
