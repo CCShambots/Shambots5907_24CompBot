@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.Follower;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import frc.robot.ShamLib.motors.talonfx.MotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
-import frc.robot.ShamLib.sensor.ThroughBoreEncoder;
 
 public class ArmIOReal implements ArmIO {
   protected final MotionMagicTalonFX leaderMotor =
@@ -17,11 +16,9 @@ public class ArmIOReal implements ArmIO {
   protected final MotionMagicTalonFX followerMotor =
       new MotionMagicTalonFX(FOLLOWER_ID, GAINS.get(), MOTOR_RATIO, VELOCITY, ACCELERATION, JERK);
 
-  private final AnalogPotentiometer potentiometer = new AnalogPotentiometer(
-          ENCODER_ID,
-          ENCODER_RATIO * (ENCODER_INVERTED ? -1 : 1),
-          ENCODER_OFFSET
-  );
+  private final AnalogPotentiometer potentiometer =
+      new AnalogPotentiometer(
+          ENCODER_ID, ENCODER_RATIO * (ENCODER_INVERTED ? -1 : 1), ENCODER_OFFSET);
 
   public ArmIOReal() {
     this(false);
