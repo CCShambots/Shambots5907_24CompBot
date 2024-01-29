@@ -28,10 +28,6 @@ import frc.robot.subsystems.vision.Vision;
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
-  private final Pose3d[][] componentPoses = new Pose3d[2][4];
-
-  private final double[][] componentRelativeMotions = new double[2][4];
-
   private final Intake intake;
   private final Shooter shooter;
 
