@@ -4,10 +4,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -16,11 +14,13 @@ import frc.robot.ShamLib.PIDGains;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
+import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
 
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.function.UnaryOperator;
 
 public class Constants {
   public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
@@ -28,6 +28,15 @@ public class Constants {
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
   public static final boolean ALLOW_TUNING = true;
+
+  public static final class Controller {
+    public static final int LEFT_FLIGHT_STICK_ID = 0;
+    public static final int RIGHT_FLIGHT_STICK_ID = 0;
+    public static final int OPERATOR_CONTROLLER_ID = 0;
+
+    public static final UnaryOperator<Double> DRIVE_CONVERSION = (input) -> (Math.copySign(input * input, input));
+    public static final double DEADBAND = 0.025;
+  }
 
   public static final class PhysicalConstants {
     // METERS
@@ -294,6 +303,19 @@ public class Constants {
       public static final double MAX_MODULE_TURN_ACCELERATION = 0;
 
       public static final Matrix<N3, N1> STATE_STD_DEVIATIONS = VecBuilder.fill(0.003, 0.003, 0.0002);
+
+      public static final SwerveSpeedLimits PATH_FIND_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits TRAVERSE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits AMP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits INTAKE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits SPEAKER_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+
+      public static final SwerveModuleState[] X_SHAPE = new SwerveModuleState[] {
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
+      };
     }
   }
 

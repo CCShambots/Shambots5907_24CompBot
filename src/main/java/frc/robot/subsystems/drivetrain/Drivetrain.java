@@ -5,10 +5,16 @@ import static frc.robot.Constants.Drivetrain.Hardware.*;
 
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.ShamLib.swerve.DriveCommand;
 import frc.robot.ShamLib.swerve.SwerveDrive;
+import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
+
+import java.util.List;
+import java.util.function.DoubleSupplier;
 
 public class Drivetrain extends StateMachine<Drivetrain.State> {
     private final SwerveDrive drive;
+    private boolean invertPath = false;
 
     public Drivetrain() {
         super("Drivetrain", State.UNDETERMINED, State.class);
@@ -33,13 +39,38 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
                 this,
                 true,
                 //change
-                () -> false,
+                () -> invertPath,
                 STATE_STD_DEVIATIONS,
                 MODULE_1_INFO,
                 MODULE_2_INFO,
                 MODULE_3_INFO,
                 MODULE_4_INFO
         );
+    }
+
+    private void registerStateCommands(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
+        registerStateCommand(State.X_SHAPE, () -> drive.setModuleStates(X_SHAPE));
+
+        registerStateCommand(State.IDLE, drive::stopModules);
+
+        registerStateCommand(State.FIELD_ORIENTED_DRIVE, new DriveCommand(
+                drive,
+                x,
+                y,
+                theta,
+                Constants.Controller.DEADBAND,
+                Constants.Controller.DRIVE_CONVERSION,
+                this,
+                TRAVERSE_SPEED
+        ));
+    }
+
+    private void registerTransitions() {
+
+    }
+
+    public void addVisionMeasurements(List<TimestampedPoseEstimator.TimestampedVisionUpdate> measurement) {
+        drive.addTimestampedVisionMeasurements(measurement);
     }
 
     @Override
@@ -50,6 +81,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     public enum State {
         UNDETERMINED,
         IDLE,
-        SOFT_E_STOP
+        X_SHAPE,
+        FIELD_ORIENTED_DRIVE,
+        FOLLOWING_AUTONOMOUS_TRAJECTORY
     }
 }
