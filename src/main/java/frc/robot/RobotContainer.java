@@ -41,7 +41,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     // TODO: Give actual tuning binds
     intake =
         new Intake(
-            getIntakeIO(),
+            getIntakeIO(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false));
@@ -74,13 +74,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private void configureBindings() {}
 
-  private IntakeIO getIntakeIO() {
+  private IntakeIO getIntakeIO(BooleanSupplier simProx1) {
     switch (Constants.currentBuildMode) {
       case REAL -> {
         return new IntakeIOReal();
       }
       case SIM -> {
-        return new IntakeIOSim();
+        return new IntakeIOSim(simProx1);
       }
       default -> {
         return new IntakeIO() {};
