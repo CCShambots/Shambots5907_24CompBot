@@ -2,17 +2,17 @@ package frc.robot;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.PIDGains;
@@ -21,7 +21,6 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
-
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -39,7 +38,8 @@ public class Constants {
     public static final int RIGHT_FLIGHT_STICK_ID = 0;
     public static final int OPERATOR_CONTROLLER_ID = 0;
 
-    public static final UnaryOperator<Double> DRIVE_CONVERSION = (input) -> (Math.copySign(input * input, input));
+    public static final UnaryOperator<Double> DRIVE_CONVERSION =
+        (input) -> (Math.copySign(input * input, input));
     public static final double DEADBAND = 0.025;
   }
 
@@ -64,9 +64,9 @@ public class Constants {
 
     static {
       try {
-        APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-      }
-      catch (Exception e) {
+        APRIL_TAG_FIELD_LAYOUT =
+            AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      } catch (Exception e) {
         throw new RuntimeException("Could not load AprilTag field layout from WPI");
       }
     }
@@ -268,49 +268,53 @@ public class Constants {
       public static final String MODULE_CAN_BUS = "";
       public static final String GYRO_CAN_BUS = "";
 
-      public static final ModuleInfo MODULE_1_INFO = ModuleInfo.generateModuleInfo(
+      public static final ModuleInfo MODULE_1_INFO =
+          ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, //DRIVE MOTOR ID
-              0, //TURN MOTOR ID
-              0, //ENCODER ID
-              0.0, //ENCODER OFFSET
-              new Translation2d(0, 0), //MODULE OFFSET FROM CENTER OF BOT
-              false //DRIVE MOTOR INVERTED
-      );
+              0, // DRIVE MOTOR ID
+              0, // TURN MOTOR ID
+              0, // ENCODER ID
+              0.0, // ENCODER OFFSET
+              new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
+              false // DRIVE MOTOR INVERTED
+              );
 
-      public static final ModuleInfo MODULE_2_INFO = ModuleInfo.generateModuleInfo(
+      public static final ModuleInfo MODULE_2_INFO =
+          ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, //DRIVE MOTOR ID
-              0, //TURN MOTOR ID
-              0, //ENCODER ID
-              0.0, //ENCODER OFFSET
-              new Translation2d(0, 0), //MODULE OFFSET FROM CENTER OF BOT
-              false //DRIVE MOTOR INVERTED
-      );
+              0, // DRIVE MOTOR ID
+              0, // TURN MOTOR ID
+              0, // ENCODER ID
+              0.0, // ENCODER OFFSET
+              new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
+              false // DRIVE MOTOR INVERTED
+              );
 
-      public static final ModuleInfo MODULE_3_INFO = ModuleInfo.generateModuleInfo(
+      public static final ModuleInfo MODULE_3_INFO =
+          ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, //DRIVE MOTOR ID
-              0, //TURN MOTOR ID
-              0, //ENCODER ID
-              0.0, //ENCODER OFFSET
-              new Translation2d(0, 0), //MODULE OFFSET FROM CENTER OF BOT
-              false //DRIVE MOTOR INVERTED
-      );
+              0, // DRIVE MOTOR ID
+              0, // TURN MOTOR ID
+              0, // ENCODER ID
+              0.0, // ENCODER OFFSET
+              new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
+              false // DRIVE MOTOR INVERTED
+              );
 
-      public static final ModuleInfo MODULE_4_INFO = ModuleInfo.generateModuleInfo(
+      public static final ModuleInfo MODULE_4_INFO =
+          ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, //DRIVE MOTOR ID
-              0, //TURN MOTOR ID
-              0, //ENCODER ID
-              0.0, //ENCODER OFFSET
-              new Translation2d(0, 0), //MODULE OFFSET FROM CENTER OF BOT
-              false //DRIVE MOTOR INVERTED
-      );
+              0, // DRIVE MOTOR ID
+              0, // TURN MOTOR ID
+              0, // ENCODER ID
+              0.0, // ENCODER OFFSET
+              new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
+              false // DRIVE MOTOR INVERTED
+              );
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
     }
@@ -329,7 +333,8 @@ public class Constants {
       public static final double MAX_MODULE_TURN_SPEED = 0;
       public static final double MAX_MODULE_TURN_ACCELERATION = 0;
 
-      public static final Matrix<N3, N1> STATE_STD_DEVIATIONS = VecBuilder.fill(0.003, 0.003, 0.0002);
+      public static final Matrix<N3, N1> STATE_STD_DEVIATIONS =
+          VecBuilder.fill(0.003, 0.003, 0.0002);
 
       public static final SwerveSpeedLimits PATH_FIND_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits TRAVERSE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
@@ -337,12 +342,13 @@ public class Constants {
       public static final SwerveSpeedLimits INTAKE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits SPEAKER_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
 
-      public static final SwerveModuleState[] X_SHAPE = new SwerveModuleState[] {
-        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-        new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
-      };
+      public static final SwerveModuleState[] X_SHAPE =
+          new SwerveModuleState[] {
+            new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
+          };
     }
   }
 

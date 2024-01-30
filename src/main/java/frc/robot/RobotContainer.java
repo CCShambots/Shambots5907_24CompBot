@@ -24,7 +24,6 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
-
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
