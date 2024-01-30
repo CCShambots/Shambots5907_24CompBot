@@ -5,9 +5,9 @@ import static frc.robot.Constants.Arm.Settings.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import frc.robot.ShamLib.motors.talonfx.MotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
-import frc.robot.ShamLib.sensor.ThroughBoreEncoder;
 
 public class ArmIOReal implements ArmIO {
   protected final MotionMagicTalonFX leaderMotor =
@@ -16,7 +16,9 @@ public class ArmIOReal implements ArmIO {
   protected final MotionMagicTalonFX followerMotor =
       new MotionMagicTalonFX(FOLLOWER_ID, GAINS.get(), MOTOR_RATIO, VELOCITY, ACCELERATION, JERK);
 
-  private final ThroughBoreEncoder encoder = new ThroughBoreEncoder(ENCODER_ID, ENCODER_OFFSET);
+  private final AnalogPotentiometer potentiometer =
+      new AnalogPotentiometer(
+          ENCODER_ID, ENCODER_RATIO * (ENCODER_INVERTED ? -1 : 1), ENCODER_OFFSET);
 
   public ArmIOReal() {
     this(false);
@@ -33,7 +35,7 @@ public class ArmIOReal implements ArmIO {
 
   @Override
   public void updateInputs(ArmInputs inputs) {
-    inputs.encoderPosition = getEncoderPosition();
+    inputs.encoderPosition = potentiometer.get();
     inputs.motorPosition = leaderMotor.getEncoderPosition();
     inputs.targetPosition = leaderMotor.getTarget();
     inputs.motorVelocity = leaderMotor.getEncoderVelocity();
@@ -58,7 +60,7 @@ public class ArmIOReal implements ArmIO {
 
   @Override
   public void syncToAbsoluteEncoder() {
-    leaderMotor.resetPosition(getEncoderPosition());
+    leaderMotor.resetPosition(potentiometer.get());
   }
 
   @Override
@@ -89,10 +91,6 @@ public class ArmIOReal implements ArmIO {
                 .withKV(gains.getV()));
   }
 
-  private double getEncoderPosition() {
-    return encoder.getRaw() * ENCODER_RATIO;
-  }
-
   private void configureCurrentLimits() {
     leaderMotor.getConfigurator().apply(CURRENT_LIMITS_CONFIGS);
     followerMotor.getConfigurator().apply(CURRENT_LIMITS_CONFIGS);
@@ -104,7 +102,5 @@ public class ArmIOReal implements ArmIO {
 
     leaderMotor.setInverted(LEADER_INVERTED);
     followerMotor.setInverted(FOLLOWER_INVERTED);
-
-    encoder.setInverted(ENCODER_INVERTED);
   }
 }

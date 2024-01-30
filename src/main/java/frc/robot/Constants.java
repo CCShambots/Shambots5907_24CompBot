@@ -8,6 +8,11 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.PIDGains;
@@ -54,6 +59,27 @@ public class Constants {
 
     public static double TRAP_TO_CHAIN_X = 0.0;
     public static double TRAP_TO_CHAIN_Y = 0.0;
+
+    public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
+
+    static {
+      try {
+        APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      }
+      catch (Exception e) {
+        throw new RuntimeException("Could not load AprilTag field layout from WPI");
+      }
+    }
+  }
+
+  public static final class Vision {
+    public static final class Sim {}
+
+    public static final class Hardware {}
+
+    public static final class Settings {
+      public static final int LIMELIGHT_NOTE_TRACK_PIPELINE = 0;
+    }
   }
 
   public static final class Shooter {
@@ -169,6 +195,7 @@ public class Constants {
     public static final class Hardware {
       public static final int TOP_ID = 0;
       public static final int BOTTOM_ID = 1;
+      public static final int PROX_ID = 0;
 
       public static final double TOP_RATIO = 1;
       public static final double BOTTOM_RATIO = 1;

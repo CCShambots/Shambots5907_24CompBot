@@ -23,17 +23,16 @@ import frc.robot.subsystems.shooter.arm.ArmIOSim;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.vision.Vision;
+
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
-  private final Pose3d[][] componentPoses = new Pose3d[2][4];
-
-  private final double[][] componentRelativeMotions = new double[2][4];
-
   private final Intake intake;
   private final Shooter shooter;
 
   private final Indexer indexer;
+  private final Vision vision;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
@@ -41,7 +40,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     // TODO: Give actual tuning binds
     intake =
         new Intake(
-            getIntakeIO(),
+            getIntakeIO(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false));
@@ -65,6 +64,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new Trigger(() -> false),
             new Trigger(() -> false));
 
+    vision = new Vision("limelight", "pv_instance_1");
+
+    addChildSubsystem(vision);
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
@@ -74,13 +76,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private void configureBindings() {}
 
-  private IntakeIO getIntakeIO() {
+  private IntakeIO getIntakeIO(BooleanSupplier simProx1) {
     switch (Constants.currentBuildMode) {
       case REAL -> {
         return new IntakeIOReal();
       }
       case SIM -> {
-        return new IntakeIOSim();
+        return new IntakeIOSim(simProx1);
       }
       default -> {
         return new IntakeIO() {};
