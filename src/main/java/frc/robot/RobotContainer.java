@@ -70,7 +70,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     vision = new Vision("limelight", "pv_instance_1");
 
-    climbers = new Climbers(getLeftClimberIO(), getRightClimberIO());
+    climbers = new Climbers(
+            getLeftClimberIO(),
+            getRightClimberIO(),
+            new Trigger(() -> false),
+            new Trigger(() -> false),
+            new Trigger(() -> false)
+    );
 
     addChildSubsystem(vision);
     addChildSubsystem(intake);
@@ -85,16 +91,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private ClimberIO getLeftClimberIO() {
     return switch (Constants.currentBuildMode) {
-      case REAL -> new ClimberIOReal(Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
-      case SIM -> new ClimberIOSim(Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+      case REAL -> new ClimberIOReal(
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+      case SIM -> new ClimberIOSim(
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
       default -> new ClimberIO() {};
     };
   }
 
   private ClimberIO getRightClimberIO() {
     return switch (Constants.currentBuildMode) {
-      case REAL -> new ClimberIOReal(Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
-      case SIM -> new ClimberIOSim(Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
+      case REAL -> new ClimberIOReal(
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
+      case SIM -> new ClimberIOSim(
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
       default -> new ClimberIO() {};
     };
   }

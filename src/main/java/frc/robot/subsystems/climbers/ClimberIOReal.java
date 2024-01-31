@@ -36,6 +36,7 @@ public class ClimberIOReal implements ClimberIO {
     inputs.position = motor.getEncoderPosition();
 
     inputs.voltage = motor.getMotorVoltage().getValue();
+    inputs.velocity = motor.getEncoderVelocity();
   }
 
   @Override
@@ -54,16 +55,15 @@ public class ClimberIOReal implements ClimberIO {
 
     motor.getConfigurator().refresh(configs);
 
-    configs = configs
+    configs =
+        configs
             .withKP(gains.getP())
             .withKI(gains.getI())
             .withKD(gains.getD())
             .withKV(gains.getV())
             .withKS(gains.getS());
 
-    motor
-            .getConfigurator()
-            .apply(configs);
+    motor.getConfigurator().apply(configs);
   }
 
   @Override
@@ -72,16 +72,15 @@ public class ClimberIOReal implements ClimberIO {
 
     motor.getConfigurator().refresh(configs);
 
-    configs = configs
+    configs =
+        configs
             .withKP(gains.getP())
             .withKI(gains.getI())
             .withKD(gains.getD())
             .withKV(gains.getV())
             .withKS(gains.getS());
 
-    motor
-        .getConfigurator()
-        .apply(configs);
+    motor.getConfigurator().apply(configs);
   }
 
   @Override

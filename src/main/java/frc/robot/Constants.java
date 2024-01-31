@@ -238,13 +238,15 @@ public class Constants {
       public static double LOADED_ACCELERATION = 0;
       public static double LOADED_JERK = 0;
 
-      //meters
+      // meters
       public static double SETPOINT_TOLERANCE = 0.01;
 
       public static int FREE_SLOT = 0;
       public static int LOADED_SLOT = 1;
 
-      public static double EXTENSION_SETPOINT = 0; //meters
+      public static double EXTENSION_SETPOINT = 0; // meters
+
+      public static double VOLTAGE_INCREMENT = 0.125;
     }
   }
 
