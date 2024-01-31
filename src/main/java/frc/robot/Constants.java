@@ -204,7 +204,9 @@ public class Constants {
   }
 
   public static final class Climbers {
-    public static final class Sim {}
+    public static final class Sim {
+      public static final double INERTIA = 0.01;
+    }
 
     public static final class Hardware {
       public static final int LEFT_CLIMBER_ID = 0;
