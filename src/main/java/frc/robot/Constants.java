@@ -414,7 +414,12 @@ public class Constants {
           VecBuilder.fill(0.003, 0.003, 0.0002);
 
       // meters and radians
-      public static final SwerveSpeedLimits PATH_FIND_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits PATH_FIND_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits TRAVERSE_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED,
@@ -447,7 +452,7 @@ public class Constants {
   }
 
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
-  public static boolean overrideAlliance = false;
+  public static boolean overrideAlliance = true;
 
   public static void pullAllianceFromFMS(RobotContainer rc) {
     boolean isRedAlliance =

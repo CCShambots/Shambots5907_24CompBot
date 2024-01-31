@@ -173,7 +173,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   @Override
-  protected void onEnable() {}
+  protected void onEnable() {
+    drivetrain.syncAlliance();
+  }
 
   @Override
   protected void determineSelf() {
