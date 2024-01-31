@@ -127,6 +127,9 @@ public class Constants {
       public static final double MIN_TIME_BETWEEN_SYNC = 2.0;
 
       public static final double VOLTAGE_INCREMENT = 0.25;
+
+      public static final double MIN_ANGLE = 0.0;
+      public static final double MAX_ANGLE = 0.0;
     }
   }
 

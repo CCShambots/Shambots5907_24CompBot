@@ -49,7 +49,9 @@ public class ArmIOReal implements ArmIO {
 
   @Override
   public void setTargetPosition(double position) {
-    leaderMotor.setTarget(position);
+    if (position < MAX_ANGLE && position > MIN_ANGLE) {
+      leaderMotor.setTarget(position);
+    }
   }
 
   @Override
