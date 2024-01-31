@@ -7,6 +7,10 @@ package frc.robot;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.subsystems.climbers.ClimberIO;
+import frc.robot.subsystems.climbers.ClimberIOReal;
+import frc.robot.subsystems.climbers.ClimberIOSim;
+import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.ShamLib.util.GeomUtil;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.indexer.Indexer;
@@ -33,6 +37,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private final Indexer indexer;
   private final Vision vision;
+  private final Climbers climbers;
   private final Drivetrain drivetrain;
 
   public RobotContainer() {
@@ -77,16 +82,45 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
+    climbers = new Climbers(
+            getLeftClimberIO(),
+            getRightClimberIO(),
+            new Trigger(() -> false),
+            new Trigger(() -> false),
+            new Trigger(() -> false)
+    );
+
     addChildSubsystem(drivetrain);
     addChildSubsystem(vision);
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
+    addChildSubsystem(climbers);
 
     configureBindings();
   }
 
   private void configureBindings() {}
+
+  private ClimberIO getLeftClimberIO() {
+    return switch (Constants.currentBuildMode) {
+      case REAL -> new ClimberIOReal(
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+      case SIM -> new ClimberIOSim(
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+      default -> new ClimberIO() {};
+    };
+  }
+
+  private ClimberIO getRightClimberIO() {
+    return switch (Constants.currentBuildMode) {
+      case REAL -> new ClimberIOReal(
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
+      case SIM -> new ClimberIOSim(
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
+      default -> new ClimberIO() {};
+    };
+  }
 
   private IntakeIO getIntakeIO(BooleanSupplier simProx1) {
     switch (Constants.currentBuildMode) {

@@ -152,6 +152,9 @@ public class Constants {
       public static final double MIN_TIME_BETWEEN_SYNC = 2.0;
 
       public static final double VOLTAGE_INCREMENT = 0.25;
+
+      public static final double MIN_ANGLE = 0.0;
+      public static final double MAX_ANGLE = 0.0;
     }
   }
 
@@ -191,6 +194,7 @@ public class Constants {
       public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
 
       public static final double CHUTE_INTAKE_SPEED = 600 / 60.0; // RPS
+      public static final double AMP_SPEED = 1000 / 60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
@@ -227,6 +231,56 @@ public class Constants {
       public static final double VOLTAGE_INC = 0.25;
     }
   }
+
+  public static final class Climbers {
+    public static final class Sim {
+      public static final double INERTIA = 0.01;
+    }
+
+    public static final class Hardware {
+      public static final int LEFT_CLIMBER_ID = 0;
+      public static final int RIGHT_CLIMBER_ID = 0;
+
+      public static final boolean LEFT_INVERTED = false;
+      public static final boolean RIGHT_INVERTED = false;
+
+      public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
+
+      // rotations to meters
+      public static final double CLIMBER_RATIO = 0;
+    }
+
+    public static final class Settings {
+      public static final LoggedTunablePIDSV FREE_GAINS =
+          new LoggedTunablePIDSV(
+              "Climber Free Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+
+      public static final LoggedTunablePIDSV LOADED_GAINS =
+          new LoggedTunablePIDSV(
+              "Climber Loaded Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+
+      public static double FREE_VELOCITY = 0;
+      public static double FREE_ACCELERATION = 0;
+      public static double FREE_JERK = 0;
+
+      public static double LOADED_VELOCITY = 0;
+      public static double LOADED_ACCELERATION = 0;
+      public static double LOADED_JERK = 0;
+
+      // meters
+      public static double SETPOINT_TOLERANCE = 0.01;
+
+      public static int FREE_SLOT = 0;
+      public static int LOADED_SLOT = 1;
+
+      public static double EXTENSION_SETPOINT = 0; // meters
+
+      public static double VOLTAGE_INCREMENT = 0.125;
+    }
+  }
+
+  public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
+  public static boolean overrideAlliance = false;
 
   public static final class Indexer {
     public static final class Hardware {
