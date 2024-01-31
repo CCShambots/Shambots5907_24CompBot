@@ -78,6 +78,13 @@ public class Shooter extends StateMachine<Shooter.State> {
             flywheel.transitionCommand(Flywheel.State.IDLE)));
 
     registerStateCommand(
+        State.AMP,
+        new ParallelCommandGroup(
+            arm.transitionCommand(Arm.State.AMP),
+            flywheel.transitionCommand(Flywheel.State.AMP),
+            watchReadyCommand()));
+
+    registerStateCommand(
         State.BASE_SHOT,
         new ParallelCommandGroup(
             arm.transitionCommand(Arm.State.BASE_SHOT),
@@ -146,6 +153,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.TRAP);
     addOmniTransition(State.TRAP_PREP);
     addOmniTransition(State.CHUTE_INTAKE);
+    addOmniTransition(State.AMP);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
@@ -214,6 +222,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     FLYWHEEL_VOLTAGE_CALC,
     BOTTOM_FLYWHEEL_VOLTAGE_CALC,
     ARM_VOLTAGE_CALC,
+    AMP,
     // flags
     READY
   }

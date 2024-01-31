@@ -2,9 +2,12 @@ package frc.robot;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.ShamLibConstants;
@@ -25,7 +28,9 @@ public class Constants {
     // METERS
 
     public static final Pose3d CHASSIS_TO_SHOOTER =
-        new Pose3d(new Translation3d(), new Rotation3d());
+        new Pose3d(
+            new Translation3d(Units.inchesToMeters(-2.999766), 0, Units.inchesToMeters(9.434239)),
+            new Rotation3d(Math.toRadians(90), 0, Math.toRadians(180)));
 
     public static Pose3d SPEAKER_POSE = new Pose3d(new Translation3d(0, 0, 0), new Rotation3d());
 
@@ -37,6 +42,27 @@ public class Constants {
 
     public static double TRAP_TO_CHAIN_X = 0.0;
     public static double TRAP_TO_CHAIN_Y = 0.0;
+
+    public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
+
+    static {
+      try {
+        APRIL_TAG_FIELD_LAYOUT =
+            AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      } catch (Exception e) {
+        throw new RuntimeException("Could not load AprilTag field layout from WPI");
+      }
+    }
+  }
+
+  public static final class Vision {
+    public static final class Sim {}
+
+    public static final class Hardware {}
+
+    public static final class Settings {
+      public static final int LIMELIGHT_NOTE_TRACK_PIPELINE = 0;
+    }
   }
 
   public static final class Shooter {
@@ -104,6 +130,9 @@ public class Constants {
       public static final double MIN_TIME_BETWEEN_SYNC = 2.0;
 
       public static final double VOLTAGE_INCREMENT = 0.25;
+
+      public static final double MIN_ANGLE = 0.0;
+      public static final double MAX_ANGLE = 0.0;
     }
   }
 
@@ -143,16 +172,17 @@ public class Constants {
       public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
 
       public static final double CHUTE_INTAKE_SPEED = 600 / 60.0; // RPS
+      public static final double AMP_SPEED = 1000 / 60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
   }
 
-  // TODO: UPDATE INTAKE CONSTANTS
   public static final class Intake {
     public static final class Hardware {
       public static final int TOP_ID = 0;
       public static final int BOTTOM_ID = 1;
+      public static final int PROX_ID = 0;
 
       public static final double TOP_RATIO = 1;
       public static final double BOTTOM_RATIO = 1;
@@ -177,6 +207,53 @@ public class Constants {
       public static final double BELT_SPEED = 2000 / 60.0; // RPS
 
       public static final double VOLTAGE_INC = 0.25;
+    }
+  }
+
+  public static final class Climbers {
+    public static final class Sim {
+      public static final double INERTIA = 0.01;
+    }
+
+    public static final class Hardware {
+      public static final int LEFT_CLIMBER_ID = 0;
+      public static final int RIGHT_CLIMBER_ID = 0;
+
+      public static final boolean LEFT_INVERTED = false;
+      public static final boolean RIGHT_INVERTED = false;
+
+      public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
+
+      // rotations to meters
+      public static final double CLIMBER_RATIO = 0;
+    }
+
+    public static final class Settings {
+      public static final LoggedTunablePIDSV FREE_GAINS =
+          new LoggedTunablePIDSV(
+              "Climber Free Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+
+      public static final LoggedTunablePIDSV LOADED_GAINS =
+          new LoggedTunablePIDSV(
+              "Climber Loaded Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+
+      public static double FREE_VELOCITY = 0;
+      public static double FREE_ACCELERATION = 0;
+      public static double FREE_JERK = 0;
+
+      public static double LOADED_VELOCITY = 0;
+      public static double LOADED_ACCELERATION = 0;
+      public static double LOADED_JERK = 0;
+
+      // meters
+      public static double SETPOINT_TOLERANCE = 0.01;
+
+      public static int FREE_SLOT = 0;
+      public static int LOADED_SLOT = 1;
+
+      public static double EXTENSION_SETPOINT = 0; // meters
+
+      public static double VOLTAGE_INCREMENT = 0.125;
     }
   }
 

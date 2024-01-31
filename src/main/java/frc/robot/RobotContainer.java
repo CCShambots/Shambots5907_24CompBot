@@ -8,6 +8,10 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.subsystems.climbers.ClimberIO;
+import frc.robot.subsystems.climbers.ClimberIOReal;
+import frc.robot.subsystems.climbers.ClimberIOSim;
+import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOReal;
@@ -23,17 +27,16 @@ import frc.robot.subsystems.shooter.arm.ArmIOSim;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.vision.Vision;
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
-  private final Pose3d[][] componentPoses = new Pose3d[2][4];
-
-  private final double[][] componentRelativeMotions = new double[2][4];
-
   private final Intake intake;
   private final Shooter shooter;
 
   private final Indexer indexer;
+  private final Vision vision;
+  private final Climbers climbers;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
@@ -41,7 +44,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     // TODO: Give actual tuning binds
     intake =
         new Intake(
-            getIntakeIO(),
+            getIntakeIO(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false));
@@ -65,22 +68,54 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new Trigger(() -> false),
             new Trigger(() -> false));
 
+    vision = new Vision("limelight", "pv_instance_1");
+
+    climbers = new Climbers(
+            getLeftClimberIO(),
+            getRightClimberIO(),
+            new Trigger(() -> false),
+            new Trigger(() -> false),
+            new Trigger(() -> false)
+    );
+
+    addChildSubsystem(vision);
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
+    addChildSubsystem(climbers);
 
     configureBindings();
   }
 
   private void configureBindings() {}
 
-  private IntakeIO getIntakeIO() {
+  private ClimberIO getLeftClimberIO() {
+    return switch (Constants.currentBuildMode) {
+      case REAL -> new ClimberIOReal(
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+      case SIM -> new ClimberIOSim(
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+      default -> new ClimberIO() {};
+    };
+  }
+
+  private ClimberIO getRightClimberIO() {
+    return switch (Constants.currentBuildMode) {
+      case REAL -> new ClimberIOReal(
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
+      case SIM -> new ClimberIOSim(
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
+      default -> new ClimberIO() {};
+    };
+  }
+
+  private IntakeIO getIntakeIO(BooleanSupplier simProx1) {
     switch (Constants.currentBuildMode) {
       case REAL -> {
         return new IntakeIOReal();
       }
       case SIM -> {
-        return new IntakeIOSim();
+        return new IntakeIOSim(simProx1);
       }
       default -> {
         return new IntakeIO() {};
