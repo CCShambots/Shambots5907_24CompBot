@@ -70,13 +70,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     vision = new Vision("limelight", "pv_instance_1");
 
-    climbers = new Climbers(
+    climbers =
+        new Climbers(
             getLeftClimberIO(),
             getRightClimberIO(),
             new Trigger(() -> false),
             new Trigger(() -> false),
-            new Trigger(() -> false)
-    );
+            new Trigger(() -> false));
 
     addChildSubsystem(vision);
     addChildSubsystem(intake);
