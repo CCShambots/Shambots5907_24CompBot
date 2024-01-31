@@ -9,7 +9,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
@@ -44,7 +43,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     this.thetaSupplier = theta;
 
     NamedCommands.registerCommand("notifyNextWaypoint", notifyWaypointCommand());
-    NamedCommands.registerCommand("clearPathfindingFlag", new InstantCommand(() -> clearFlag(State.PATHFINDING)));
+    NamedCommands.registerCommand(
+        "clearPathfindingFlag", new InstantCommand(() -> clearFlag(State.PATHFINDING)));
 
     drive =
         new SwerveDrive(
@@ -80,7 +80,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   public void setClimbSide(ClimbSide climbSide) {
     this.climbSide = climbSide;
 
-    //change the pathfind thingamajig
+    // change the pathfind thingamajig
     registerAutoClimb();
   }
 
@@ -97,10 +97,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   public void syncAlliance() {
-    //flip if we are on red alliance
+    // flip if we are on red alliance
     flipPath = Constants.alliance == DriverStation.Alliance.Red;
 
-    //re-register face commands in case the alliance changed (they are based on the blue poses by default)
+    // re-register face commands in case the alliance changed (they are based on the blue poses by
+    // default)
     registerFaceCommands();
   }
 
@@ -125,13 +126,16 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             this,
             TRAVERSE_SPEED));
 
-    registerStateCommand(State.AUTO_AMP,
-            getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE)
-    );
+    registerStateCommand(
+        State.AUTO_AMP,
+        getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
 
-    registerStateCommand(State.AUTO_HUMAN_PLAYER_INTAKE,
-            getPathfindCommand("AUTO_HUMAN_PLAYER_INTAKE", HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE)
-    );
+    registerStateCommand(
+        State.AUTO_HUMAN_PLAYER_INTAKE,
+        getPathfindCommand(
+            "AUTO_HUMAN_PLAYER_INTAKE",
+            HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY,
+            State.FIELD_ORIENTED_DRIVE));
 
     registerFaceCommands();
     registerAutoClimb();
@@ -157,39 +161,39 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private void registerFaceCommands() {
-    registerStateCommand(State.FACE_AMP, getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_AMP) : BLUE_AMP,
-            AMP_SPEED
-    ));
+    registerStateCommand(
+        State.FACE_AMP,
+        getFacePointCommand(flipPath ? Constants.mirror(BLUE_AMP) : BLUE_AMP, AMP_SPEED));
 
-    registerStateCommand(State.FACE_SPEAKER, getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER,
-            SPEAKER_SPEED
-    ));
+    registerStateCommand(
+        State.FACE_SPEAKER,
+        getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED));
 
-    registerStateCommand(State.FACE_HUMAN_PLAYER_PICKUP, getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_PICKUP) : BLUE_PICKUP,
-            HUMAN_PLAYER_PICKUP_SPEED
-    ));
+    registerStateCommand(
+        State.FACE_HUMAN_PLAYER_PICKUP,
+        getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_PICKUP) : BLUE_PICKUP, HUMAN_PLAYER_PICKUP_SPEED));
 
-    registerStateCommand(State.FACE_CENTER_TRAP, getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_CENTER_TRAP) : BLUE_CENTER_TRAP,
-            TRAP_SPEED
-    ));
+    registerStateCommand(
+        State.FACE_CENTER_TRAP,
+        getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_CENTER_TRAP) : BLUE_CENTER_TRAP, TRAP_SPEED));
 
-    registerStateCommand(State.FACE_LEFT_TRAP, getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_LEFT_TRAP) : BLUE_LEFT_TRAP,
-            TRAP_SPEED
-    ));
+    registerStateCommand(
+        State.FACE_LEFT_TRAP,
+        getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_LEFT_TRAP) : BLUE_LEFT_TRAP, TRAP_SPEED));
 
-    registerStateCommand(State.FACE_RIGHT_TRAP, getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_RIGHT_TRAP) : BLUE_RIGHT_TRAP,
-            TRAP_SPEED
-    ));
+    registerStateCommand(
+        State.FACE_RIGHT_TRAP,
+        getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_RIGHT_TRAP) : BLUE_RIGHT_TRAP, TRAP_SPEED));
   }
 
   private Command getFacePointCommand(Pose2d pose, SwerveSpeedLimits limits) {
-    FacePointCommand facePointCommand = new FacePointCommand(
+    FacePointCommand facePointCommand =
+        new FacePointCommand(
             drive,
             HOLD_ANGLE_GAINS,
             pose,
@@ -199,47 +203,41 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             Constants.Controller.DEADBAND,
             Constants.Controller.DRIVE_CONVERSION,
             this,
-            limits
-    );
+            limits);
 
     return new ParallelCommandGroup(
-            facePointCommand,
-            new RunCommand(() -> {
+        facePointCommand,
+        new RunCommand(
+            () -> {
               if (facePointCommand.atAngle(FACE_ANGLE_TOLERANCE)) {
                 setFlag(State.AT_ANGLE);
-              }
-              else {
+              } else {
                 clearFlag(State.AT_ANGLE);
               }
-            })
-    );
+            }));
   }
 
   private Command getPathfindCommand(String nextPath, double rotationalDelay, State endState) {
     return new SequentialCommandGroup(
-            new InstantCommand(() -> setFlag(State.PATHFINDING)),
-            AutoBuilder.pathfindThenFollowPath(
-                    PathPlannerPath.fromPathFile(nextPath),
-                    getPathfindingConstraints(),
-                    rotationalDelay
-            ),
-            transitionCommand(endState, false)
-    );
+        new InstantCommand(() -> setFlag(State.PATHFINDING)),
+        AutoBuilder.pathfindThenFollowPath(
+            PathPlannerPath.fromPathFile(nextPath), getPathfindingConstraints(), rotationalDelay),
+        transitionCommand(endState, false));
   }
 
   private PathConstraints getPathfindingConstraints() {
     return new PathConstraints(
-            PATH_FIND_SPEED.getMaxSpeed(),
-            PATH_FIND_SPEED.getMaxAcceleration(),
-            PATH_FIND_SPEED.getMaxRotationalSpeed(),
-            PATH_FIND_SPEED.getMaxRotationalAcceleration()
-    );
+        PATH_FIND_SPEED.getMaxSpeed(),
+        PATH_FIND_SPEED.getMaxAcceleration(),
+        PATH_FIND_SPEED.getMaxRotationalSpeed(),
+        PATH_FIND_SPEED.getMaxRotationalAcceleration());
   }
 
   private void registerAutoClimb() {
-    registerStateCommand(State.AUTO_CLIMB,
-        getPathfindCommand("AUTO_CLIMB_" + climbSide, CLIMB_ROTATION_DELAY, State.FIELD_ORIENTED_DRIVE)
-    );
+    registerStateCommand(
+        State.AUTO_CLIMB,
+        getPathfindCommand(
+            "AUTO_CLIMB_" + climbSide, CLIMB_ROTATION_DELAY, State.FIELD_ORIENTED_DRIVE));
   }
 
   private Command notifyWaypointCommand() {
@@ -272,7 +270,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     AUTO_CLIMB,
     AUTO_HUMAN_PLAYER_INTAKE,
 
-    //flags for non-autonomous operations
+    // flags for non-autonomous operations
     PATHFINDING,
     AT_ANGLE
   }

@@ -5,82 +5,75 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
-import frc.robot.subsystems.climbers.Climbers;
-import frc.robot.ShamLib.util.GeomUtil;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOReal;
 import frc.robot.subsystems.indexer.IndexerIOSim;
-import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.arm.ArmIOReal;
 import frc.robot.subsystems.shooter.arm.ArmIOSim;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
-import frc.robot.subsystems.vision.Vision;
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
-  private final Intake intake;
+  /*private final Intake intake;
   private final Shooter shooter;
 
   private final Indexer indexer;
   private final Vision vision;
-  private final Climbers climbers;
+  private final Climbers climbers;*/
   private final Drivetrain drivetrain;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    //actually do bindings :()
+    CommandGenericHID hid = new CommandGenericHID(0);
+
+    // actually do bindings :()
 
     // TODO: Give actual tuning binds
-    intake =
-        new Intake(
-            getIntakeIO(() -> false),
-            new Trigger(() -> false),
-            new Trigger(() -> false),
-            new Trigger(() -> false));
+    /*intake =
+    new Intake(
+        getIntakeIO(() -> false),
+        new Trigger(() -> false),
+        new Trigger(() -> false),
+        new Trigger(() -> false));*/
 
-    shooter =
-        new Shooter(
-            getArmIO(),
-            getFlywheelIO(),
-            Translation2d::new,
-            () -> 0,
-            () -> 0,
-            new Trigger(() -> false),
-            new Trigger(() -> false),
-            new Trigger(() -> false));
+    /*shooter =
+    new Shooter(
+        getArmIO(),
+        getFlywheelIO(),
+        Translation2d::new,
+        () -> 0,
+        () -> 0,
+        new Trigger(() -> false),
+        new Trigger(() -> false),
+        new Trigger(() -> false));*/
 
     // TODO: give good sim bindings
-    indexer =
-        new Indexer(
-            getIndexerIO(() -> false, () -> false, () -> false),
-            new Trigger(() -> false),
-            new Trigger(() -> false),
-            new Trigger(() -> false));
+    /*indexer =
+    new Indexer(
+        getIndexerIO(() -> false, () -> false, () -> false),
+        new Trigger(() -> false),
+        new Trigger(() -> false),
+        new Trigger(() -> false));*/
 
-    vision = new Vision("limelight", "pv_instance_1");
+    /*vision = new Vision("limelight", "pv_instance_1");*/
 
-    drivetrain = new Drivetrain(
-            () -> 0,
-            () -> 0,
-            () -> 0
-    );
+    drivetrain =
+        new Drivetrain(() -> hid.getRawAxis(0), () -> hid.getRawAxis(1), () -> hid.getRawAxis(2));
 
-    vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
+    /*vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
     climbers = new Climbers(
             getLeftClimberIO(),
@@ -88,14 +81,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false)
-    );
+    );*/
 
     addChildSubsystem(drivetrain);
-    addChildSubsystem(vision);
+    /*addChildSubsystem(vision);
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
-    addChildSubsystem(climbers);
+    addChildSubsystem(climbers);*/
 
     configureBindings();
   }
@@ -189,13 +182,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public double getShooterAngle() {
-    return shooter.getArmAngle();
+    return /*shooter.getArmAngle();*/ 0;
   }
 
   public Pose3d getBotPose() {
     // update this when pose estimation is ready
     Pose2d pose = drivetrain.getBotPose();
-    return new Pose3d(new Translation3d(pose.getX(), pose.getY(), 0), new Rotation3d(0, 0, pose.getRotation().getRadians()));
+    return new Pose3d(
+        new Translation3d(pose.getX(), pose.getY(), 0),
+        new Rotation3d(0, 0, pose.getRotation().getRadians()));
   }
 
   public enum State {

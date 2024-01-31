@@ -10,7 +10,12 @@ public class Climbers extends StateMachine<Climbers.State> {
   private Climber leftClimber;
   private Climber rightClimber;
 
-  public Climbers(ClimberIO leftClimberIO, ClimberIO rightClimberIO, Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
+  public Climbers(
+      ClimberIO leftClimberIO,
+      ClimberIO rightClimberIO,
+      Trigger tuningInc,
+      Trigger tuningDec,
+      Trigger tuningStop) {
     super("Climbers", State.UNDETERMINED, State.class);
 
     leftClimber = new Climber("Left Climber", leftClimberIO, tuningInc, tuningDec, tuningStop);
@@ -52,10 +57,11 @@ public class Climbers extends StateMachine<Climbers.State> {
                 rightClimber.transitionCommand(Climber.State.LOADED_RETRACT))
             .andThen(watchSetpointCommand()));
 
-    registerStateCommand(State.VOLTAGE_CALC, new ParallelCommandGroup(
+    registerStateCommand(
+        State.VOLTAGE_CALC,
+        new ParallelCommandGroup(
             leftClimber.transitionCommand(Climber.State.VOLTAGE_CALC),
-            rightClimber.transitionCommand(Climber.State.VOLTAGE_CALC)
-    ));
+            rightClimber.transitionCommand(Climber.State.VOLTAGE_CALC)));
   }
 
   private void registerTransitions() {

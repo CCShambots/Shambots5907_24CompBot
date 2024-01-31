@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.PIDGains;
@@ -279,7 +280,6 @@ public class Constants {
     }
   }
 
-
   public static final class Indexer {
     public static final class Hardware {
       public static final int BELT_MOTOR_ID = 0;
@@ -325,51 +325,60 @@ public class Constants {
       public static final String MODULE_CAN_BUS = "";
       public static final String GYRO_CAN_BUS = "";
 
-      public static final ModuleInfo MODULE_1_INFO =
+      public static final double TRACK_WIDTH = Units.inchesToMeters(24.75);
+      public static final double WHEEL_BASE = Units.inchesToMeters(24.75);
+      public static final double ROTATION_RADIUS =
+          Math.sqrt(Math.pow(TRACK_WIDTH / 2.0, 2) + Math.pow(WHEEL_BASE / 2.0, 2)) * 2 * Math.PI;
+
+      public static final ModuleInfo MODULE_1_INFO = // FRONT LEFT
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, // DRIVE MOTOR ID
-              0, // TURN MOTOR ID
-              0, // ENCODER ID
+              1, // DRIVE MOTOR ID
+              2, // TURN MOTOR ID
+              1, // ENCODER ID
               0.0, // ENCODER OFFSET
-              new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
+              new Translation2d(
+                  WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
               );
 
-      public static final ModuleInfo MODULE_2_INFO =
+      public static final ModuleInfo MODULE_2_INFO = // BACK LEFT
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, // DRIVE MOTOR ID
-              0, // TURN MOTOR ID
-              0, // ENCODER ID
+              3, // DRIVE MOTOR ID
+              4, // TURN MOTOR ID
+              2, // ENCODER ID
               0.0, // ENCODER OFFSET
-              new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
+              new Translation2d(
+                  -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
               );
 
-      public static final ModuleInfo MODULE_3_INFO =
+      public static final ModuleInfo MODULE_3_INFO = // BACK RIGHT
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, // DRIVE MOTOR ID
-              0, // TURN MOTOR ID
-              0, // ENCODER ID
+              5, // DRIVE MOTOR ID
+              6, // TURN MOTOR ID
+              3, // ENCODER ID
               0.0, // ENCODER OFFSET
-              new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
+              new Translation2d(
+                  -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
               );
 
-      public static final ModuleInfo MODULE_4_INFO =
+      public static final ModuleInfo MODULE_4_INFO = // FRONT RIGHT
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, // DRIVE MOTOR ID
-              0, // TURN MOTOR ID
-              0, // ENCODER ID
+              7, // DRIVE MOTOR ID
+              8, // TURN MOTOR ID
+              4, // ENCODER ID
               0.0, // ENCODER OFFSET
-              new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
+              new Translation2d(
+                  WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
               );
 
@@ -380,28 +389,43 @@ public class Constants {
       public static final PIDGains AUTO_THETA_GAINS = new PIDGains(10, 0, 0);
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
 
-      public static final PIDSVGains MODULE_DRIVE_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
-      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
+      public static final PIDSVGains MODULE_DRIVE_GAINS = new PIDSVGains(0.25, 0, 0, 0.3, 0.1135);
+      public static final PIDSVGains MODULE_TURN_GAINS =
+          new PIDSVGains(
+              10, // 10
+              0,
+              0,
+              0.3, // 0.3
+              0.121057 // 0.112
+              );
 
-      public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(0, 0, 0);
+      public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
 
-      public static final double MAX_CHASSIS_SPEED = 0;
-      public static final double MAX_CHASSIS_ACCELERATION = 0;
-      public static final double MAX_CHASSIS_ROTATIONAL_SPEED = 0;
-      public static final double MAX_CHASSIS_ROTATIONAL_ACCELERATION = 0;
-      public static final double MAX_MODULE_TURN_SPEED = 0;
-      public static final double MAX_MODULE_TURN_ACCELERATION = 0;
+      public static final double MAX_CHASSIS_SPEED = 3;
+      public static final double MAX_CHASSIS_ACCELERATION = 6;
+      public static final double MAX_CHASSIS_ROTATIONAL_SPEED =
+          (MAX_CHASSIS_SPEED / Hardware.ROTATION_RADIUS) * (2 * Math.PI);
+      public static final double MAX_CHASSIS_ROTATIONAL_ACCELERATION =
+          MAX_CHASSIS_ROTATIONAL_SPEED * 3;
+      public static final double MAX_MODULE_TURN_SPEED = 1000;
+      public static final double MAX_MODULE_TURN_ACCELERATION = 1000;
 
       public static final Matrix<N3, N1> STATE_STD_DEVIATIONS =
           VecBuilder.fill(0.003, 0.003, 0.0002);
 
       // meters and radians
       public static final SwerveSpeedLimits PATH_FIND_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
-      public static final SwerveSpeedLimits TRAVERSE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits TRAVERSE_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits AMP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits INTAKE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits SPEAKER_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
-      public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED =
+          new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits TRAP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
 
       public static final SwerveModuleState[] X_SHAPE =
@@ -412,12 +436,12 @@ public class Constants {
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
           };
 
-      //meters
+      // meters
       public static final double AMP_ROTATIONAL_DELAY = 0;
       public static final double CLIMB_ROTATION_DELAY = 0;
       public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
 
-      //radians
+      // radians
       public static final double FACE_ANGLE_TOLERANCE = 0.02;
     }
   }
@@ -464,15 +488,14 @@ public class Constants {
 
   public static Pose2d mirror(Pose2d pose) {
     return new Pose2d(
-            new Translation2d(
-                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
-                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()
-            ),
-            pose.getRotation().rotateBy(new Rotation2d(Math.PI))
-    );
+        new Translation2d(
+            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
+            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()),
+        pose.getRotation().rotateBy(new Rotation2d(Math.PI)));
   }
 
   public static Rotation2d rotationBetween(Pose2d pose1, Pose2d pose2) {
-    return Rotation2d.fromRadians(Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
+    return Rotation2d.fromRadians(
+        Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
   }
 }
