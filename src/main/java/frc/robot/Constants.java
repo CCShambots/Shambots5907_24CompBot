@@ -279,8 +279,6 @@ public class Constants {
     }
   }
 
-  public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
-  public static boolean overrideAlliance = false;
 
   public static final class Indexer {
     public static final class Hardware {
