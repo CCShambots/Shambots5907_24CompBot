@@ -169,6 +169,7 @@ public class Constants {
       public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
 
       public static final double CHUTE_INTAKE_SPEED = 600 / 60.0; // RPS
+      public static final double AMP_SPEED = 1000 / 60.0; //RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
