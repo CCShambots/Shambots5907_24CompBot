@@ -77,11 +77,12 @@ public class Shooter extends StateMachine<Shooter.State> {
             arm.transitionCommand(Arm.State.SOFT_E_STOP),
             flywheel.transitionCommand(Flywheel.State.IDLE)));
 
-    registerStateCommand(State.AMP, new ParallelCommandGroup(
+    registerStateCommand(
+        State.AMP,
+        new ParallelCommandGroup(
             arm.transitionCommand(Arm.State.AMP),
             flywheel.transitionCommand(Flywheel.State.AMP),
-            watchReadyCommand()
-    ));
+            watchReadyCommand()));
 
     registerStateCommand(
         State.BASE_SHOT,

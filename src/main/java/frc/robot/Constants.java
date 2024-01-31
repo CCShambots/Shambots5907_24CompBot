@@ -44,9 +44,9 @@ public class Constants {
 
     static {
       try {
-        APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-      }
-      catch (Exception e) {
+        APRIL_TAG_FIELD_LAYOUT =
+            AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      } catch (Exception e) {
         throw new RuntimeException("Could not load AprilTag field layout from WPI");
       }
     }
@@ -169,7 +169,7 @@ public class Constants {
       public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
 
       public static final double CHUTE_INTAKE_SPEED = 600 / 60.0; // RPS
-      public static final double AMP_SPEED = 1000 / 60.0; //RPS
+      public static final double AMP_SPEED = 1000 / 60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
