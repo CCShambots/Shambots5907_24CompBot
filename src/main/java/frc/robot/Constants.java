@@ -55,12 +55,12 @@ public class Constants {
     // how far away climber is from shooter pivot on front/back axis
     public static double CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
 
-    public static Pose2d BLUE_SPEAKER = new Pose2d();
-    public static Pose2d BLUE_AMP = new Pose2d();
-    public static Pose2d BLUE_CENTER_TRAP = new Pose2d();
-    public static Pose2d BLUE_LEFT_TRAP = new Pose2d();
-    public static Pose2d BLUE_RIGHT_TRAP = new Pose2d();
-    public static Pose2d BLUE_PICKUP = new Pose2d();
+    public static Pose2d BLUE_SPEAKER = new Pose2d(new Translation2d(), new Rotation2d());
+    public static Pose2d BLUE_AMP = new Pose2d(new Translation2d(), new Rotation2d());
+    public static Pose2d BLUE_CENTER_TRAP = new Pose2d(new Translation2d(), new Rotation2d());
+    public static Pose2d BLUE_LEFT_TRAP = new Pose2d(new Translation2d(), new Rotation2d());
+    public static Pose2d BLUE_RIGHT_TRAP = new Pose2d(new Translation2d(), new Rotation2d());
+    public static Pose2d BLUE_PICKUP = new Pose2d(new Translation2d(), new Rotation2d());
 
     public static double TRAP_TO_CHAIN_X = 0.0;
     public static double TRAP_TO_CHAIN_Y = 0.0;

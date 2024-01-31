@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
@@ -81,6 +82,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     //change the pathfind thingamajig
     registerAutoClimb();
+  }
+
+  public Pose2d getBotPose() {
+    return drive.getPose();
   }
 
   public ClimbSide getCurrentClimbSide() {

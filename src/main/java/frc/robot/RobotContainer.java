@@ -4,11 +4,10 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.ShamLib.util.GeomUtil;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
@@ -159,7 +158,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   public Pose3d getBotPose() {
     // update this when pose estimation is ready
-    return new Pose3d();
+    Pose2d pose = drivetrain.getBotPose();
+    return new Pose3d(new Translation3d(pose.getX(), pose.getY(), 0), new Rotation3d(0, 0, pose.getRotation().getRadians()));
   }
 
   public enum State {
