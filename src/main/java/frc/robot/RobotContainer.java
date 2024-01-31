@@ -75,6 +75,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () -> 0
     );
 
+    vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
+
     addChildSubsystem(drivetrain);
     addChildSubsystem(vision);
     addChildSubsystem(intake);
