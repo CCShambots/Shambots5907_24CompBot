@@ -2,19 +2,20 @@ package frc.robot.subsystems.drivetrain;
 
 import static frc.robot.Constants.Drivetrain.Hardware.*;
 import static frc.robot.Constants.Drivetrain.Settings.*;
+import static frc.robot.Constants.PhysicalConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.DriveCommand;
 import frc.robot.ShamLib.swerve.SwerveDrive;
+import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,8 +31,16 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
   private ClimbSide climbSide = ClimbSide.CENTER;
 
+  private final DoubleSupplier xSupplier;
+  private final DoubleSupplier ySupplier;
+  private final DoubleSupplier thetaSupplier;
+
   public Drivetrain(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
     super("Drivetrain", State.UNDETERMINED, State.class);
+
+    this.xSupplier = x;
+    this.ySupplier = y;
+    this.thetaSupplier = theta;
 
     NamedCommands.registerCommand("notifyNextWaypoint", notifyWaypointCommand());
     NamedCommands.registerCommand("clearPathfindingFlag", new InstantCommand(() -> clearFlag(State.PATHFINDING)));
@@ -63,7 +72,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             MODULE_3_INFO,
             MODULE_4_INFO);
 
-    registerStateCommands(x, y, theta);
+    registerStateCommands();
     registerTransitions();
   }
 
@@ -85,13 +94,16 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   public void syncAlliance() {
     //flip if we are on red alliance
     flipPath = Constants.alliance == DriverStation.Alliance.Red;
+
+    //re-register face commands in case the alliance changed (they are based on the blue poses by default)
+    registerFaceCommands();
   }
 
   public void setAutonomousCommand(Command command) {
     registerStateCommand(State.FOLLOWING_AUTONOMOUS_TRAJECTORY, command);
   }
 
-  private void registerStateCommands(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
+  private void registerStateCommands() {
     registerStateCommand(State.X_SHAPE, () -> drive.setModuleStates(X_SHAPE));
 
     registerStateCommand(State.IDLE, drive::stopModules);
@@ -100,14 +112,13 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         State.FIELD_ORIENTED_DRIVE,
         new DriveCommand(
             drive,
-            x,
-            y,
-            theta,
+            xSupplier,
+            ySupplier,
+            thetaSupplier,
             Constants.Controller.DEADBAND,
             Constants.Controller.DRIVE_CONVERSION,
             this,
             TRAVERSE_SPEED));
-
 
     registerStateCommand(State.AUTO_AMP,
             getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE)
@@ -117,6 +128,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             getPathfindCommand("AUTO_HUMAN_PLAYER_INTAKE", HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE)
     );
 
+    registerFaceCommands();
     registerAutoClimb();
   }
 
@@ -130,6 +142,65 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_CLIMB);
     addOmniTransition(State.AUTO_HUMAN_PLAYER_INTAKE);
+  }
+
+  private void registerFaceCommands() {
+    registerStateCommand(State.FACE_AMP, getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_AMP) : BLUE_AMP,
+            AMP_SPEED
+    ));
+
+    registerStateCommand(State.FACE_SPEAKER, getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER,
+            SPEAKER_SPEED
+    ));
+
+    registerStateCommand(State.FACE_HUMAN_PLAYER_PICKUP, getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_PICKUP) : BLUE_PICKUP,
+            HUMAN_PLAYER_PICKUP_SPEED
+    ));
+
+    registerStateCommand(State.FACE_CENTER_TRAP, getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_CENTER_TRAP) : BLUE_CENTER_TRAP,
+            TRAP_SPEED
+    ));
+
+    registerStateCommand(State.FACE_LEFT_TRAP, getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_LEFT_TRAP) : BLUE_LEFT_TRAP,
+            TRAP_SPEED
+    ));
+
+    registerStateCommand(State.FACE_RIGHT_TRAP, getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_RIGHT_TRAP) : BLUE_RIGHT_TRAP,
+            TRAP_SPEED
+    ));
+  }
+
+  private Command getFacePointCommand(Pose2d pose, SwerveSpeedLimits limits) {
+    FacePointCommand facePointCommand = new FacePointCommand(
+            drive,
+            HOLD_ANGLE_GAINS,
+            pose,
+            drive::getPose,
+            xSupplier,
+            ySupplier,
+            Constants.Controller.DEADBAND,
+            Constants.Controller.DRIVE_CONVERSION,
+            this,
+            limits
+    );
+
+    return new ParallelCommandGroup(
+            facePointCommand,
+            new RunCommand(() -> {
+              if (facePointCommand.atAngle(FACE_ANGLE_TOLERANCE)) {
+                setFlag(State.AT_ANGLE);
+              }
+              else {
+                clearFlag(State.AT_ANGLE);
+              }
+            })
+    );
   }
 
   private Command getPathfindCommand(String nextPath, double rotationalDelay, State endState) {
@@ -179,6 +250,12 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     X_SHAPE,
     FIELD_ORIENTED_DRIVE,
     FOLLOWING_AUTONOMOUS_TRAJECTORY,
+    FACE_SPEAKER,
+    FACE_AMP,
+    FACE_CENTER_TRAP,
+    FACE_LEFT_TRAP,
+    FACE_RIGHT_TRAP,
+    FACE_HUMAN_PLAYER_PICKUP,
     AUTO_AMP,
     AUTO_CLIMB,
     AUTO_HUMAN_PLAYER_INTAKE,

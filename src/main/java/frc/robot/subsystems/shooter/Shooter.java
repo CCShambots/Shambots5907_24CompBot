@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static frc.robot.Constants.Shooter.Settings.*;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -23,7 +24,7 @@ public class Shooter extends StateMachine<Shooter.State> {
   private final Flywheel flywheel;
 
   // odom
-  private final Supplier<Translation3d> botTranslationProvider;
+  private final Supplier<Translation2d> botTranslationProvider;
 
   // angle about x axis from gyro
   private final DoubleSupplier botXAngleProvider;
@@ -34,7 +35,7 @@ public class Shooter extends StateMachine<Shooter.State> {
   public Shooter(
       ArmIO armIO,
       FlywheelIO flywheelIO,
-      Supplier<Translation3d> botTranslationProvider,
+      Supplier<Translation2d> botTranslationProvider,
       DoubleSupplier botXAngleProvider,
       DoubleSupplier climberExtensionSupplier,
       Trigger tuningInc,
@@ -172,7 +173,7 @@ public class Shooter extends StateMachine<Shooter.State> {
 
   private double distanceAA(NavigableMap<Double, Double> map, double replacement) {
     double distance =
-        Constants.PhysicalConstants.SPEAKER_POSE
+        Constants.PhysicalConstants.BLUE_SPEAKER
             .getTranslation()
             .getDistance(botTranslationProvider.get());
 

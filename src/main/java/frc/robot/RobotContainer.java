@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
@@ -48,7 +49,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new Shooter(
             getArmIO(),
             getFlywheelIO(),
-            Translation3d::new,
+            Translation2d::new,
             () -> 0,
             () -> 0,
             new Trigger(() -> false),

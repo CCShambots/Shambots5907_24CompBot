@@ -49,13 +49,18 @@ public class Constants {
     public static final Pose3d CHASSIS_TO_SHOOTER =
         new Pose3d(new Translation3d(), new Rotation3d());
 
-    public static Pose3d SPEAKER_POSE = new Pose3d(new Translation3d(0, 0, 0), new Rotation3d());
-
     // how much taller climber is than shooter pivot when stowed
     public static double CLIMBER_Y_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
 
     // how far away climber is from shooter pivot on front/back axis
     public static double CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
+
+    public static Pose2d BLUE_SPEAKER = new Pose2d();
+    public static Pose2d BLUE_AMP = new Pose2d();
+    public static Pose2d BLUE_CENTER_TRAP = new Pose2d();
+    public static Pose2d BLUE_LEFT_TRAP = new Pose2d();
+    public static Pose2d BLUE_RIGHT_TRAP = new Pose2d();
+    public static Pose2d BLUE_PICKUP = new Pose2d();
 
     public static double TRAP_TO_CHAIN_X = 0.0;
     public static double TRAP_TO_CHAIN_Y = 0.0;
@@ -326,6 +331,8 @@ public class Constants {
       public static final PIDSVGains MODULE_DRIVE_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
       public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
 
+      public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(0, 0, 0);
+
       public static final double MAX_CHASSIS_SPEED = 0;
       public static final double MAX_CHASSIS_ACCELERATION = 0;
       public static final double MAX_CHASSIS_ROTATIONAL_SPEED = 0;
@@ -342,6 +349,8 @@ public class Constants {
       public static final SwerveSpeedLimits AMP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits INTAKE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits SPEAKER_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits TRAP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
 
       public static final SwerveModuleState[] X_SHAPE =
           new SwerveModuleState[] {
@@ -355,6 +364,9 @@ public class Constants {
       public static final double AMP_ROTATIONAL_DELAY = 0;
       public static final double CLIMB_ROTATION_DELAY = 0;
       public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
+
+      //radians
+      public static final double FACE_ANGLE_TOLERANCE = 0.02;
     }
   }
 
@@ -396,5 +408,19 @@ public class Constants {
     double y = chainToBotY * Math.cos(botAngle) + chainToBotX * Math.sin(botAngle) + trapToChainY;
 
     return new double[] {x, y};
+  }
+
+  public static Pose2d mirror(Pose2d pose) {
+    return new Pose2d(
+            new Translation2d(
+                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
+                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()
+            ),
+            pose.getRotation().rotateBy(new Rotation2d(Math.PI))
+    );
+  }
+
+  public static Rotation2d rotationBetween(Pose2d pose1, Pose2d pose2) {
+    return Rotation2d.fromRadians(Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
   }
 }
