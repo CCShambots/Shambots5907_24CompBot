@@ -147,6 +147,13 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_CLIMB);
     addOmniTransition(State.AUTO_HUMAN_PLAYER_INTAKE);
+
+    addOmniTransition(State.FACE_RIGHT_TRAP);
+    addOmniTransition(State.FACE_LEFT_TRAP);
+    addOmniTransition(State.FACE_CENTER_TRAP);
+    addOmniTransition(State.FACE_AMP);
+    addOmniTransition(State.FACE_SPEAKER);
+    addOmniTransition(State.FACE_HUMAN_PLAYER_PICKUP);
   }
 
   private void registerFaceCommands() {
