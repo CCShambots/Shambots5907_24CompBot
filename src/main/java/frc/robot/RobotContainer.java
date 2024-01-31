@@ -71,7 +71,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     /*vision = new Vision("limelight", "pv_instance_1");*/
 
     drivetrain =
-        new Drivetrain(() -> hid.getRawAxis(0), () -> hid.getRawAxis(1), () -> hid.getRawAxis(2));
+        new Drivetrain(() -> hid.getRawAxis(0), () -> -hid.getRawAxis(1), () -> hid.getRawAxis(4));
 
     /*vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
@@ -90,10 +90,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addChildSubsystem(indexer);
     addChildSubsystem(climbers);*/
 
-    configureBindings();
+    configureBindings(hid);
   }
 
-  private void configureBindings() {}
+  private void configureBindings(CommandGenericHID hid) {
+    hid.button(1).onTrue(drivetrain.transitionCommand(Drivetrain.State.AUTO_AMP, false));
+    hid.button(1)
+        .onFalse(drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE, false));
+  }
 
   private ClimberIO getLeftClimberIO() {
     return switch (Constants.currentBuildMode) {
@@ -175,6 +179,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   @Override
   protected void onEnable() {
     drivetrain.syncAlliance();
+    drivetrain.requestTransition(Drivetrain.State.FIELD_ORIENTED_DRIVE);
   }
 
   @Override
