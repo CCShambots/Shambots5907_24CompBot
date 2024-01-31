@@ -336,6 +336,7 @@ public class Constants {
       public static final Matrix<N3, N1> STATE_STD_DEVIATIONS =
           VecBuilder.fill(0.003, 0.003, 0.0002);
 
+      // meters and radians
       public static final SwerveSpeedLimits PATH_FIND_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits TRAVERSE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits AMP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
@@ -349,6 +350,11 @@ public class Constants {
             new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
           };
+
+      //meters
+      public static final double AMP_ROTATIONAL_DELAY = 0;
+      public static final double CLIMB_ROTATION_DELAY = 0;
+      public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
     }
   }
 
