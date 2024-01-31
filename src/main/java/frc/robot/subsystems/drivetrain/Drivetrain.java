@@ -78,6 +78,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     return climbSide;
   }
 
+  public void setWaypointConsumer(IntConsumer waypointConsumer) {
+    this.waypointConsumer = waypointConsumer;
+  }
+
   public void syncAlliance() {
     //flip if we are on red alliance
     flipPath = Constants.alliance == DriverStation.Alliance.Red;
