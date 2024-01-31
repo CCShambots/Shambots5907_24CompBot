@@ -44,9 +44,9 @@ public class Constants {
 
     static {
       try {
-        APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-      }
-      catch (Exception e) {
+        APRIL_TAG_FIELD_LAYOUT =
+            AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      } catch (Exception e) {
         throw new RuntimeException("Could not load AprilTag field layout from WPI");
       }
     }
@@ -171,7 +171,6 @@ public class Constants {
     }
   }
 
-  // TODO: UPDATE INTAKE CONSTANTS
   public static final class Intake {
     public static final class Hardware {
       public static final int TOP_ID = 0;
@@ -201,6 +200,43 @@ public class Constants {
       public static final double BELT_SPEED = 2000 / 60.0; // RPS
 
       public static final double VOLTAGE_INC = 0.25;
+    }
+  }
+
+  public static final class Climbers {
+    public static final class Sim {}
+
+    public static final class Hardware {
+      public static final int LEFT_CLIMBER_ID = 0;
+      public static final int RIGHT_CLIMBER_ID = 0;
+
+      public static final boolean LEFT_INVERTED = false;
+      public static final boolean RIGHT_INVERTED = false;
+
+      public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
+
+      // rotations to meters
+      public static final double CLIMBER_RATIO = 0;
+    }
+
+    public static final class Settings {
+      public static final LoggedTunablePIDSV FREE_GAINS =
+          new LoggedTunablePIDSV(
+              "Climber Free Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+
+      public static final LoggedTunablePIDSV LOADED_GAINS =
+          new LoggedTunablePIDSV(
+              "Climber Loaded Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+
+      public static double FREE_VELOCITY = 0;
+      public static double FREE_ACCELERATION = 0;
+      public static double FREE_JERK = 0;
+
+      public static double LOADED_VELOCITY = 0;
+      public static double LOADED_ACCELERATION = 0;
+      public static double LOADED_JERK = 0;
+
+
     }
   }
 
