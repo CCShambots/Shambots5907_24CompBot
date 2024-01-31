@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOReal;
@@ -33,9 +34,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private final Indexer indexer;
   private final Vision vision;
+  private final Drivetrain drivetrain;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
+
+    //actually do bindings :()
 
     // TODO: Give actual tuning binds
     intake =
@@ -66,6 +70,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     vision = new Vision("limelight", "pv_instance_1");
 
+    drivetrain = new Drivetrain(
+            () -> 0,
+            () -> 0,
+            () -> 0
+    );
+
+    addChildSubsystem(drivetrain);
     addChildSubsystem(vision);
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
