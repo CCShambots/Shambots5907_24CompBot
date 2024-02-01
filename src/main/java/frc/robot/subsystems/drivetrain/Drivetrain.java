@@ -109,11 +109,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerStateCommand(State.FOLLOWING_AUTONOMOUS_TRAJECTORY, command);
   }
 
-  @Override
-  protected void update() {
-    drive.update();
-  }
-
   private void registerStateCommands() {
     registerStateCommand(State.X_SHAPE, () -> drive.setModuleStates(X_SHAPE));
 
