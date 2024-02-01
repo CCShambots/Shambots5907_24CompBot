@@ -137,6 +137,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerAutoClimb();
   }
 
+  @Override
+  protected void update() {
+    drive.update();
+  }
+
   private void registerTransitions() {
     addOmniTransition(State.IDLE);
     addOmniTransition(State.X_SHAPE);
