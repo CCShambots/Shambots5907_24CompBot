@@ -1,5 +1,9 @@
 package frc.robot;
 
+import com.ctre.phoenix.led.Animation;
+import com.ctre.phoenix.led.ColorFlowAnimation;
+import com.ctre.phoenix.led.LarsonAnimation;
+import com.ctre.phoenix.led.StrobeAnimation;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -10,12 +14,16 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.ShamLib.Candle.RGB;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+
+import static com.ctre.phoenix.led.LarsonAnimation.BounceMode.Front;
+import static frc.robot.Constants.Lights.Hardware.NUM_LIGHTS;
 
 public class Constants {
   public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
@@ -293,6 +301,45 @@ public class Constants {
 
     public static final class Sim {
       public static final double MOTOR_INERTIA = 0.0001;
+    }
+  }
+
+  public static final class Lights {
+    public static final class Hardware {
+      public static final int CANDLE_ID = 0;
+
+      public static final int NUM_LIGHTS = 200;
+
+      public static final double BRIGHTNESS = 1.0;
+    }
+
+    public static final class Settings {
+        public static final int NUM_LIGHTS_WITHOUT_CANDLE = NUM_LIGHTS - 8;
+
+        public static final double BOUNCE_SPEED = 0.75;
+        public static final double BLINK_SPEED = .075;
+
+        public static final RGB NO_RING_RGB = new RGB(0, 0, 0);
+        public static final RGB ERROR_RGB = new RGB(255, 0, 0);
+        public static final RGB HOLDING_RING = new RGB(0, 0, 255);
+        public static final RGB READY_TO_SHOOT = new RGB(0, 255, 0);
+
+        public static final Animation DISABLED_ANIMATION =
+              new LarsonAnimation(0, 0, 255, 0, BOUNCE_SPEED, NUM_LIGHTS_WITHOUT_CANDLE, Front, 7, 8);
+
+      public static final Animation AUTO_ANIMATION =
+              new ColorFlowAnimation(
+                      0, 0, 255, 0, .0125, NUM_LIGHTS, ColorFlowAnimation.Direction.Forward);
+
+      public static final Animation TARGETING_ANIMATION =
+            new StrobeAnimation(255, 255, 0, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation INTAKE_ANIMATION =
+              new StrobeAnimation(0, 0, 255, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation EJECT_ANIMATION =
+              new StrobeAnimation(255, 0, 0, 0, BLINK_SPEED, NUM_LIGHTS);
+
     }
   }
 
