@@ -290,9 +290,9 @@ public class Constants {
 
       public static final boolean INVERT_BELT_MOTOR = false;
 
-      public static final int PROX_1_ID = 0;
-      public static final int PROX_2_ID = 1;
-      public static final int PROX_3_ID = 2;
+      public static final int PROX_1_ID = 1;
+      public static final int PROX_2_ID = 2;
+      public static final int PROX_3_ID = 3;
 
       public static final CurrentLimitsConfigs BELT_MOTOR_CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
       public static final NeutralModeValue BELT_MOTOR_NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -403,7 +403,8 @@ public class Constants {
       public static final SwerveSpeedLimits AMP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits INTAKE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits SPEAKER_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
-      public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED =
+          new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits TRAP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
 
       public static final SwerveModuleState[] X_SHAPE =
@@ -414,12 +415,12 @@ public class Constants {
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
           };
 
-      //meters
+      // meters
       public static final double AMP_ROTATIONAL_DELAY = 0;
       public static final double CLIMB_ROTATION_DELAY = 0;
       public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
 
-      //radians
+      // radians
       public static final double FACE_ANGLE_TOLERANCE = 0.02;
     }
   }
@@ -436,6 +437,10 @@ public class Constants {
     if (!overrideAlliance) {
       alliance = isRedAlliance ? DriverStation.Alliance.Red : DriverStation.Alliance.Blue;
     }
+  }
+
+  public static boolean FMSConnected() {
+    return NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").exists();
   }
 
   public static boolean doubleEqual(double a, double b, double accuracy) {
@@ -466,15 +471,14 @@ public class Constants {
 
   public static Pose2d mirror(Pose2d pose) {
     return new Pose2d(
-            new Translation2d(
-                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
-                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()
-            ),
-            pose.getRotation().rotateBy(new Rotation2d(Math.PI))
-    );
+        new Translation2d(
+            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
+            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()),
+        pose.getRotation().rotateBy(new Rotation2d(Math.PI)));
   }
 
   public static Rotation2d rotationBetween(Pose2d pose1, Pose2d pose2) {
-    return Rotation2d.fromRadians(Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
+    return Rotation2d.fromRadians(
+        Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
   }
 }

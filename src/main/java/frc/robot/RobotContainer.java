@@ -11,7 +11,6 @@ import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
 import frc.robot.subsystems.climbers.Climbers;
-import frc.robot.ShamLib.util.GeomUtil;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
@@ -43,7 +42,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    //actually do bindings :()
+    // actually do bindings :()
 
     // TODO: Give actual tuning binds
     intake =
@@ -74,21 +73,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     vision = new Vision("limelight", "pv_instance_1");
 
-    drivetrain = new Drivetrain(
-            () -> 0,
-            () -> 0,
-            () -> 0
-    );
+    drivetrain = new Drivetrain(() -> 0, () -> 0, () -> 0);
 
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
-    climbers = new Climbers(
+    climbers =
+        new Climbers(
             getLeftClimberIO(),
             getRightClimberIO(),
             new Trigger(() -> false),
             new Trigger(() -> false),
-            new Trigger(() -> false)
-    );
+            new Trigger(() -> false));
 
     addChildSubsystem(drivetrain);
     addChildSubsystem(vision);
@@ -195,7 +190,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public Pose3d getBotPose() {
     // update this when pose estimation is ready
     Pose2d pose = drivetrain.getBotPose();
-    return new Pose3d(new Translation3d(pose.getX(), pose.getY(), 0), new Rotation3d(0, 0, pose.getRotation().getRadians()));
+    return new Pose3d(
+        new Translation3d(pose.getX(), pose.getY(), 0),
+        new Rotation3d(0, 0, pose.getRotation().getRadians()));
   }
 
   public enum State {
