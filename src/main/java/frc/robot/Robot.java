@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.Constants.currentBuildMode;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -29,6 +30,9 @@ public class Robot extends LoggedRobot {
 
   @AutoLogOutput private Pose3d armPose = new Pose3d();
   @AutoLogOutput private Pose3d botPose = new Pose3d();
+
+  @AutoLogOutput private Pose3d[] componentPoses = new Pose3d[0];
+  @AutoLogOutput private Pose2d botPose2D = new Pose2d();
 
   @Override
   public void robotInit() {
@@ -116,11 +120,14 @@ public class Robot extends LoggedRobot {
   private void updatePoses() {
     armPose =
         new Pose3d()
-            .rotateBy(new Rotation3d(0, robotContainer.getShooterAngle(), 0))
             .transformBy(
-                new Transform3d(new Pose3d(), Constants.PhysicalConstants.CHASSIS_TO_SHOOTER));
+                new Transform3d(new Pose3d(), Constants.PhysicalConstants.CHASSIS_TO_SHOOTER))
+            .rotateBy(new Rotation3d(0, robotContainer.getShooterAngle(), 0));
 
     botPose = robotContainer.getBotPose();
+
+    botPose2D = botPose.toPose2d();
+    componentPoses = new Pose3d[] {armPose};
   }
 
   @Override

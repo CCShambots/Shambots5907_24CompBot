@@ -48,7 +48,9 @@ public class Constants {
     // METERS
 
     public static final Pose3d CHASSIS_TO_SHOOTER =
-        new Pose3d(new Translation3d(), new Rotation3d());
+        new Pose3d(
+            new Translation3d(Units.inchesToMeters(-2.999766), 0, Units.inchesToMeters(9.434239)),
+            new Rotation3d(Math.toRadians(90), 0, Math.toRadians(180)));
 
     // how much taller climber is than shooter pivot when stowed
     public static double CLIMBER_Y_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
