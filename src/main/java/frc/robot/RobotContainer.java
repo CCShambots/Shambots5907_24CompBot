@@ -89,7 +89,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false));
-    
+
     lights = new Lights(getLightsIO());
 
     addChildSubsystem(drivetrain);
@@ -186,11 +186,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       case REAL -> {
         return new LightsIOReal();
       }
-      
+
       case SIM -> {
         return new LightsIOSim();
       }
-    
+
       default -> {
         return new LightsIO() {};
       }
