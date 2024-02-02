@@ -428,12 +428,7 @@ public class Constants {
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
   public static boolean overrideAlliance = false;
 
-  public static void pullAllianceFromFMS(RobotContainer rc) {
-    boolean isRedAlliance =
-        NetworkTableInstance.getDefault()
-            .getTable("FMSInfo")
-            .getEntry("IsRedAlliance")
-            .getBoolean(true);
+  public static void applyAlliance(boolean isRedAlliance) {
     if (!overrideAlliance) {
       alliance = isRedAlliance ? DriverStation.Alliance.Red : DriverStation.Alliance.Blue;
     }
