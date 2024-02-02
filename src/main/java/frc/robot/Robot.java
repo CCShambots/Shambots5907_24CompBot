@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
+import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.ShamLib.motors.talonfx.sim.PhysicsSim;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -93,8 +95,13 @@ public class Robot extends LoggedRobot {
     // PathPlannerLogging.startServer(5811);
     // }
 
-    // Check the alliance from FMS when the bot turns on
-    Constants.pullAllianceFromFMS(robotContainer);
+    // Check the alliance from FMS when the FMS entries exist in the network tables
+    new Trigger(Constants::FMSConnected)
+        .onTrue(
+            new WhileDisabledInstantCommand(
+                () -> {
+                  Constants.pullAllianceFromFMS(robotContainer);
+                }));
 
     // TODO: Figure out how to add another periodic thing
     // Update the event loop for misaligned modules once every 10 seconds
