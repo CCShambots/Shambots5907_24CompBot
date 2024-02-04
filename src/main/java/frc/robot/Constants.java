@@ -3,10 +3,7 @@ package frc.robot;
 import static com.ctre.phoenix.led.LarsonAnimation.BounceMode.Front;
 import static frc.robot.Constants.Lights.Hardware.NUM_LIGHTS;
 
-import com.ctre.phoenix.led.Animation;
-import com.ctre.phoenix.led.ColorFlowAnimation;
-import com.ctre.phoenix.led.LarsonAnimation;
-import com.ctre.phoenix.led.StrobeAnimation;
+import com.ctre.phoenix.led.*;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -361,6 +358,9 @@ public class Constants {
 
       public static final Animation EJECT_ANIMATION =
           new StrobeAnimation(255, 0, 0, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation AUTOMATIC_SCORE_ANIMATION =
+              new TwinkleAnimation(0, 0, 255, 0, 0.5, NUM_LIGHTS, TwinkleAnimation.TwinklePercent.Percent76);
     }
   }
 
