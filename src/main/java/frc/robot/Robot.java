@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -36,6 +37,9 @@ public class Robot extends LoggedRobot {
   @AutoLogOutput private Pose3d[] componentPoses = new Pose3d[0];
   @AutoLogOutput private Pose2d botPose2D = new Pose2d();
 
+  private int moduleCheckCounter = 0;
+
+  private final EventLoop checkModulesLoop = new EventLoop();
 
   @Override
   public void robotInit() {
@@ -85,7 +89,7 @@ public class Robot extends LoggedRobot {
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
     // be added.
 
-    robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer(checkModulesLoop);
 
     SubsystemManagerFactory.getInstance().registerSubsystem(robotContainer, false);
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
@@ -102,10 +106,6 @@ public class Robot extends LoggedRobot {
                 )
         );
 
-    // TODO: Figure out how to add another periodic thing
-    // Update the event loop for misaligned modules once every 10 seconds
-    // addPeriodic(checkModulesLoop::poll, 10);
-
   }
 
   @Override
@@ -113,6 +113,12 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
 
     updatePoses();
+
+    moduleCheckCounter++;
+    if(moduleCheckCounter >= 500) {
+      moduleCheckCounter = 0;
+      checkModulesLoop.poll();
+    }
 
   }
 

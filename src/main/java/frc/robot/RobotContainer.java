@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.climbers.ClimberIO;
@@ -44,7 +45,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Drivetrain drivetrain;
   private final Lights lights;
 
-  public RobotContainer() {
+  public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
     // actually do bindings :()
@@ -79,6 +80,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     vision = new Vision("limelight", "pv_instance_1");
 
     drivetrain = new Drivetrain(() -> 0, () -> 0, () -> 0);
+
+    drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
+
 
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
