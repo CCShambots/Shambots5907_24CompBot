@@ -10,10 +10,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
@@ -35,6 +35,7 @@ public class Robot extends LoggedRobot {
 
   @AutoLogOutput private Pose3d[] componentPoses = new Pose3d[0];
   @AutoLogOutput private Pose2d botPose2D = new Pose2d();
+
 
   @Override
   public void robotInit() {
@@ -60,8 +61,7 @@ public class Robot extends LoggedRobot {
 
     switch (Constants.currentBuildMode) {
       case REAL:
-        Logger.addDataReceiver(
-            new WPILOGWriter("/home/lvuser/logs")); // Log to a USB stick ("/U/logs")
+        Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs"));
         Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
         // TODO: Deal with this
         new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
@@ -90,31 +90,22 @@ public class Robot extends LoggedRobot {
     SubsystemManagerFactory.getInstance().registerSubsystem(robotContainer, false);
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
 
-    // TODO: What happened to the pathplanner server
-    // if(!Constants.AT_COMP) {
-    // PathPlannerLogging.startServer(5811);
-    // }
-
-    // Check the alliance from FMS when the FMS entries exist in the network tables
-    new Trigger(Constants::FMSConnected)
+    //AKit shims the Driver Station using their logged driver station, so this shouldn't be a problem
+    new Trigger(DriverStation::isDSAttached)
+        .or(DriverStation::isFMSAttached)
         .onTrue(
-            new WhileDisabledInstantCommand(
-                () -> {
-                  Constants.pullAllianceFromFMS(robotContainer);
-                }));
+                new WaitCommand(2).andThen(
+                  new WhileDisabledInstantCommand(
+                      () -> {
+                        Constants.applyAlliance(DriverStation.getAlliance());
+                      })
+                )
+        );
 
     // TODO: Figure out how to add another periodic thing
     // Update the event loop for misaligned modules once every 10 seconds
     // addPeriodic(checkModulesLoop::poll, 10);
 
-    // new WaitCommand(2).andThen(robotContainer.syncAlliance()).schedule();
-
-    // addPeriodic(() -> {if(!robotContainer.arm().isTransitioning())
-    // robotContainer.arm().pullAbsoluteAngles();}, 2);
-
-    // Logging
-    DataLogManager.start();
-    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   @Override
@@ -122,6 +113,7 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
 
     updatePoses();
+
   }
 
   private void updatePoses() {

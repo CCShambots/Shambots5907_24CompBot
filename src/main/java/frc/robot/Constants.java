@@ -29,6 +29,7 @@ import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.UnaryOperator;
 
@@ -474,14 +475,9 @@ public class Constants {
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
   public static boolean overrideAlliance = false;
 
-  public static void pullAllianceFromFMS(RobotContainer rc) {
-    boolean isRedAlliance =
-        NetworkTableInstance.getDefault()
-            .getTable("FMSInfo")
-            .getEntry("IsRedAlliance")
-            .getBoolean(true);
-    if (!overrideAlliance) {
-      alliance = isRedAlliance ? DriverStation.Alliance.Red : DriverStation.Alliance.Blue;
+  public static void applyAlliance(Optional<DriverStation.Alliance> newAlliance) {
+    if (!overrideAlliance && newAlliance.isPresent()) {
+      alliance = newAlliance.get();
     }
   }
 
