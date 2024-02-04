@@ -10,21 +10,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.ShamLib.motors.talonfx.sim.PhysicsSim;
-import frc.robot.fmsinfo.FMSIO;
-import frc.robot.fmsinfo.FMSIOReal;
-import frc.robot.fmsinfo.FMSInputsAutoLogged;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedDriverStation;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -38,8 +36,6 @@ public class Robot extends LoggedRobot {
   @AutoLogOutput private Pose3d[] componentPoses = new Pose3d[0];
   @AutoLogOutput private Pose2d botPose2D = new Pose2d();
 
-  private FMSIO FMSio;
-  private FMSInputsAutoLogged fmsInputs = new FMSInputsAutoLogged();
 
   @Override
   public void robotInit() {
@@ -94,35 +90,22 @@ public class Robot extends LoggedRobot {
     SubsystemManagerFactory.getInstance().registerSubsystem(robotContainer, false);
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
 
-    FMSio = getFMSio();
-
-    // Check the alliance from FMS when the FMS entries exist in the network tables
-    new Trigger(() -> LoggedDriverStation.getDSData().dsAttached)
+    //AKit shims the Driver Station using their logged driver station, so this shouldn't be a problem
+    new Trigger(DriverStation::isDSAttached)
+        .or(DriverStation::isFMSAttached)
         .onTrue(
-            new WhileDisabledInstantCommand(
-                () -> {
-                  Constants.applyAlliance(LoggedDriverStation.getDSData().allianceStation);
-                }));
-
+                new WaitCommand(2).andThen(
+                  new WhileDisabledInstantCommand(
+                      () -> {
+                        Constants.applyAlliance(DriverStation.getAlliance());
+                      })
+                )
+        );
 
     // TODO: Figure out how to add another periodic thing
     // Update the event loop for misaligned modules once every 10 seconds
     // addPeriodic(checkModulesLoop::poll, 10);
 
-  }
-
-  private FMSIO getFMSio() {
-    switch (Constants.currentBuildMode) {
-      case REAL -> {
-        return new FMSIOReal();
-      }
-      case SIM -> {
-        return new FMSIOReal();
-      }
-      default -> {
-        return new FMSIO() {};
-      }
-    }
   }
 
   @Override
@@ -131,8 +114,6 @@ public class Robot extends LoggedRobot {
 
     updatePoses();
 
-    FMSio.updateInputs(fmsInputs);
-    Logger.processInputs("fms-info", fmsInputs);
   }
 
   private void updatePoses() {
