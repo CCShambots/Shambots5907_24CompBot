@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.climbers.ClimberIO;
@@ -33,6 +35,8 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
@@ -45,8 +49,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Drivetrain drivetrain;
   private final Lights lights;
 
+  private final LoggedDashboardChooser<Command> autoChooser;
+
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
+
+    autoChooser = new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     // actually do bindings :()
 
@@ -104,6 +112,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addChildSubsystem(climbers);
 
     configureBindings();
+  }
+
+  private void registerStateCommands() {
+    registerStateCommand(State.TRAVERSING, new ParallelCommandGroup());
+  }
+
+  private void registerTransitions() {
+    addOmniTransition(State.TRAVERSING, new ParallelCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            climbers.transitionCommand(Climbers.State.FREE_RETRACT)
+    ));
   }
 
   private void configureBindings() {}
@@ -224,6 +243,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   public enum State {
     UNDETERMINED,
-    SOFT_E_STOP // placeholder
+    AUTONOMOUS,
+    TRAVERSING,
+
+    SOFT_E_STOP
   }
 }
