@@ -23,6 +23,7 @@ import frc.robot.subsystems.shooter.arm.ArmIOSim;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.vision.Vision;
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
@@ -30,7 +31,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Shooter shooter;
 
   private final Indexer indexer;
-  private final Vision vision;
+  */ private final Vision vision; /*
   private final Climbers climbers;*/
   private final Drivetrain drivetrain;
 
@@ -68,12 +69,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new Trigger(() -> false),
         new Trigger(() -> false));*/
 
-    /*vision = new Vision("limelight", "pv_instance_1");*/
+    vision = new Vision("limelight", "pv_instance_1");
 
     drivetrain =
         new Drivetrain(() -> hid.getRawAxis(0), () -> -hid.getRawAxis(1), () -> hid.getRawAxis(4));
 
-    /*vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
+    vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements); /*
 
     climbers = new Climbers(
             getLeftClimberIO(),
@@ -84,8 +85,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     );*/
 
     addChildSubsystem(drivetrain);
-    /*addChildSubsystem(vision);
-    addChildSubsystem(intake);
+    addChildSubsystem(vision);
+    /*addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
     addChildSubsystem(climbers);*/
