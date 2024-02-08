@@ -526,20 +526,6 @@ public class Constants {
         pose.getRotation().rotateBy(new Rotation2d(Math.PI)));
   }
 
-  public static Transform3d pvToNWU(Transform3d t) {
-    //idk if this is right
-    return new Transform3d(
-            t.getZ(),
-            t.getX(),
-            t.getY(),
-            new Rotation3d(
-                    t.getRotation().getZ(),
-                    t.getRotation().getX(),
-                    t.getRotation().getY()
-            )
-    )
-  }
-
   public static Rotation2d rotationBetween(Pose2d pose1, Pose2d pose2) {
     return Rotation2d.fromRadians(
         Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
