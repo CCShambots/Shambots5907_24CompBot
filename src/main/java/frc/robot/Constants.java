@@ -523,7 +523,7 @@ public class Constants {
         new Translation2d(
             PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
             PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()),
-        pose.getRotation().rotateBy(new Rotation2d(Math.PI)));
+        pose.getRotation().minus(new Rotation2d(Math.PI)));
   }
 
   public static Rotation2d rotationBetween(Pose2d pose1, Pose2d pose2) {
