@@ -2,8 +2,10 @@ package frc.robot.subsystems.shooter;
 
 import static frc.robot.Constants.Shooter.Settings.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -14,8 +16,7 @@ import frc.robot.subsystems.shooter.arm.Arm;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
-import java.util.Map;
-import java.util.NavigableMap;
+
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -50,7 +51,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     arm =
         new Arm(
             armIO,
-            () -> distanceAA(ARM_DISTANCE_LUT, Constants.Arm.Settings.BASE_SHOT_POSITION),
+            () -> distanceAA(ARM_SPEAKER_DISTANCE_OFFSET_LUT),
             this::armTrapAA,
             tuningInc,
             tuningDec,
@@ -59,7 +60,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     flywheel =
         new Flywheel(
             flywheelIO,
-            () -> distanceAA(FLYWHEEL_DISTANCE_LUT, Constants.Flywheel.Settings.BASE_SHOT_VELOCITY),
+            () -> distanceAA(FLYWHEEL_SPEAKER_DISTANCE_LUT),
             tuningInc,
             tuningDec,
             tuningStop);
@@ -172,33 +173,24 @@ public class Shooter extends StateMachine<Shooter.State> {
         });
   }
 
-  private double armTrapAA() {
-    double[] botTrapOffset =
-        Constants.getTrapOffsetFromBot(
-            climberExtensionSupplier.getAsDouble(), botXAngleProvider.getAsDouble());
-    return Math.atan2(botTrapOffset[0], botTrapOffset[1]);
-  }
-
-  private double distanceAA(NavigableMap<Double, Double> map, double replacement) {
+  private double distanceAA(Pose2d pose, InterpolatingDoubleTreeMap map) {
     double distance =
-        Constants.PhysicalConstants.BLUE_SPEAKER
+        pose
             .getTranslation()
             .getDistance(botTranslationProvider.get());
 
-    Map.Entry<Double, Double> lower = map.floorEntry(distance);
-    Map.Entry<Double, Double> higher = map.ceilingEntry(distance);
+    return map.get(distance);
+  }
 
-    if (lower == null && higher == null) {
-      // avoid crashing
-      return replacement;
-    } else if (lower == null || higher == null) {
-      return lower != null ? lower.getValue() : higher.getValue();
-    }
+  private Pose2d getSpeakerPose() {
+    return Constants.alliance == DriverStation.Alliance.Blue ?
+            Constants.PhysicalConstants.BLUE_SPEAKER :
+            Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
+  }
 
-    double interpolation = (distance - lower.getKey()) / (higher.getKey() - lower.getKey());
-
-    // TODO: check this math
-    return Constants.lerp(lower.getValue(), higher.getValue(), interpolation);
+  private Pose2d getTrapPose() {
+    return Constants.alliance == DriverStation.Alliance.Blue ?
+            //the different traps asdfjasdfjkasd bhfoiadyusfasdhfjkasbdgfijahsgdfiuaksydfgh
   }
 
   public double getArmAngle() {

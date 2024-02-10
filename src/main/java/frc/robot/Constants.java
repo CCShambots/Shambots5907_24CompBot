@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -22,9 +23,7 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+
 import java.util.function.UnaryOperator;
 
 public class Constants {
@@ -97,11 +96,26 @@ public class Constants {
 
     public static final class Settings {
 
-      public static final NavigableMap<Double, Double> FLYWHEEL_DISTANCE_LUT =
-          new TreeMap<>(Map.of(0.0, 0.0));
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_SPEAKER_DISTANCE_LUT = new InterpolatingDoubleTreeMap();
 
-      public static final NavigableMap<Double, Double> ARM_DISTANCE_LUT =
-          new TreeMap<>(Map.of(0.0, 0.0));
+      public static final InterpolatingDoubleTreeMap ARM_SPEAKER_DISTANCE_OFFSET_LUT = new InterpolatingDoubleTreeMap();
+
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_TRAP_DISTANCE_LUT = new InterpolatingDoubleTreeMap();
+      public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT = new InterpolatingDoubleTreeMap();
+
+      static {
+        //FLYWHEEL SPEAKER VALUES
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 0.0);
+
+        //ARM SPEAKER OFFSETS
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
+
+        //FLYWHEEL TRAP VALUES
+        FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, 0.0);
+
+        //ARM TRAP OFFSETS
+        ARM_TRAP_DISTANCE_LUT.put(0.0, 0.0);
+      }
     }
   }
 
