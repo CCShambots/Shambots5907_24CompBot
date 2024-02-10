@@ -30,9 +30,6 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
-import frc.robot.ShamLib.util.GeomUtil;
-
-import javax.xml.crypto.dsig.Transform;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -523,7 +520,7 @@ public class Constants {
         new Translation2d(
             PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
             PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()),
-            new Rotation2d(Math.PI).minus(pose.getRotation()));
+        new Rotation2d(Math.PI).minus(pose.getRotation()));
   }
 
   public static Rotation2d rotationBetween(Pose2d pose1, Pose2d pose2) {

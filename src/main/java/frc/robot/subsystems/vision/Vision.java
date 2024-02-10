@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import static frc.robot.Constants.Vision.Settings.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants;
@@ -34,6 +35,7 @@ public class Vision extends StateMachine<Vision.State> {
                     new PVApriltagCam(
                         id,
                         Constants.currentBuildMode,
+                        new Transform3d(),
                         Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT))
             .toArray(PVApriltagCam[]::new);
 
@@ -63,7 +65,7 @@ public class Vision extends StateMachine<Vision.State> {
     List<TimestampedPoseEstimator.TimestampedVisionUpdate> updates = new ArrayList<>();
 
     for (PVApriltagCam cam : pvApriltagCams) {
-      updates.addAll(cam.getAllEstimates());
+      updates.add(cam.getLatestEstimate());
     }
 
     return updates;
