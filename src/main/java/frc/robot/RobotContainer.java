@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.climbers.ClimberIO;
@@ -20,6 +21,10 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.lights.Lights;
+import frc.robot.subsystems.lights.LightsIO;
+import frc.robot.subsystems.lights.LightsIOReal;
+import frc.robot.subsystems.lights.LightsIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.arm.ArmIOReal;
@@ -39,10 +44,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Vision vision;
   private final Climbers climbers;
   private final Drivetrain drivetrain;
+  private final Lights lights;
 
   private StageSide targetStageSide = StageSide.CENTER;
 
-  public RobotContainer() {
+  public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
     // actually do bindings :()
@@ -79,6 +85,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     drivetrain = new Drivetrain(() -> 0, () -> 0, () -> 0, () -> targetStageSide);
 
+    drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
+
+
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
     climbers =
@@ -88,6 +97,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false));
+
+    lights = new Lights(getLightsIO());
 
     addChildSubsystem(drivetrain);
     addChildSubsystem(vision);
@@ -174,6 +185,22 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       }
       default -> {
         return new ArmIO() {};
+      }
+    }
+  }
+
+  private LightsIO getLightsIO() {
+    switch (Constants.currentBuildMode) {
+      case REAL -> {
+        return new LightsIOReal();
+      }
+
+      case SIM -> {
+        return new LightsIOSim();
+      }
+
+      default -> {
+        return new LightsIO() {};
       }
     }
   }

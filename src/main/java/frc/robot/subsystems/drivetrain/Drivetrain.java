@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
@@ -18,6 +19,9 @@ import frc.robot.ShamLib.swerve.SwerveDrive;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
 import frc.robot.util.StageSide;
+import frc.robot.ShamLib.swerve.module.RealignModuleCommand;
+import frc.robot.ShamLib.swerve.module.SwerveModule;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.DoubleSupplier;
@@ -251,6 +255,17 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   public void addVisionMeasurements(
       List<TimestampedPoseEstimator.TimestampedVisionUpdate> measurement) {
     drive.addTimestampedVisionMeasurements(measurement);
+  }
+
+  public void registerMisalignedSwerveTriggers(EventLoop loop) {
+    for (SwerveModule module : drive.getModules()) {
+      loop.bind(
+              () -> {
+                if (module.isModuleMisaligned() && !isEnabled()) {
+                  new RealignModuleCommand(module).schedule();
+                }
+              });
+    }
   }
 
   @Override

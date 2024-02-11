@@ -1,5 +1,9 @@
 package frc.robot;
 
+import static com.ctre.phoenix.led.LarsonAnimation.BounceMode.Front;
+import static frc.robot.Constants.Lights.Hardware.NUM_LIGHTS;
+
+import com.ctre.phoenix.led.*;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -17,12 +21,14 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.ShamLib.Candle.RGB;
 import frc.robot.ShamLib.PIDGains;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 public class Constants {
@@ -301,9 +307,9 @@ public class Constants {
 
       public static final boolean INVERT_BELT_MOTOR = false;
 
-      public static final int PROX_1_ID = 0;
-      public static final int PROX_2_ID = 1;
-      public static final int PROX_3_ID = 2;
+      public static final int PROX_1_ID = 1;
+      public static final int PROX_2_ID = 2;
+      public static final int PROX_3_ID = 3;
 
       public static final CurrentLimitsConfigs BELT_MOTOR_CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
       public static final NeutralModeValue BELT_MOTOR_NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -326,6 +332,47 @@ public class Constants {
 
     public static final class Sim {
       public static final double MOTOR_INERTIA = 0.0001;
+    }
+  }
+
+  public static final class Lights {
+    public static final class Hardware {
+      public static final int CANDLE_ID = 0;
+
+      public static final int NUM_LIGHTS = 200;
+
+      public static final double BRIGHTNESS = 1.0;
+    }
+
+    public static final class Settings {
+      public static final int NUM_LIGHTS_WITHOUT_CANDLE = NUM_LIGHTS - 8;
+
+      public static final double BOUNCE_SPEED = 0.75;
+      public static final double BLINK_SPEED = .075;
+
+      public static final RGB NO_RING_RGB = new RGB(0, 0, 0);
+      public static final RGB ERROR_RGB = new RGB(255, 0, 0);
+      public static final RGB HOLDING_RING = new RGB(0, 0, 255);
+      public static final RGB READY_TO_SHOOT = new RGB(0, 255, 0);
+
+      public static final Animation DISABLED_ANIMATION =
+          new LarsonAnimation(0, 0, 255, 0, BOUNCE_SPEED, NUM_LIGHTS_WITHOUT_CANDLE, Front, 7, 8);
+
+      public static final Animation AUTO_ANIMATION =
+          new ColorFlowAnimation(
+              0, 0, 255, 0, .0125, NUM_LIGHTS, ColorFlowAnimation.Direction.Forward);
+
+      public static final Animation TARGETING_ANIMATION =
+          new StrobeAnimation(255, 255, 0, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation INTAKE_ANIMATION =
+          new StrobeAnimation(0, 0, 255, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation EJECT_ANIMATION =
+          new StrobeAnimation(255, 0, 0, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation AUTOMATIC_SCORE_ANIMATION =
+              new TwinkleAnimation(0, 0, 255, 0, 0.5, NUM_LIGHTS, TwinkleAnimation.TwinklePercent.Percent76);
     }
   }
 
@@ -439,15 +486,14 @@ public class Constants {
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
   public static boolean overrideAlliance = false;
 
-  public static void pullAllianceFromFMS(RobotContainer rc) {
-    boolean isRedAlliance =
-        NetworkTableInstance.getDefault()
-            .getTable("FMSInfo")
-            .getEntry("IsRedAlliance")
-            .getBoolean(true);
-    if (!overrideAlliance) {
-      alliance = isRedAlliance ? DriverStation.Alliance.Red : DriverStation.Alliance.Blue;
+  public static void applyAlliance(Optional<DriverStation.Alliance> newAlliance) {
+    if (!overrideAlliance && newAlliance.isPresent()) {
+      alliance = newAlliance.get();
     }
+  }
+
+  public static boolean FMSConnected() {
+    return NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").exists();
   }
 
   public static boolean doubleEqual(double a, double b, double accuracy) {
@@ -460,14 +506,15 @@ public class Constants {
 
   public static Pose2d mirror(Pose2d pose) {
     return new Pose2d(
-        new Translation2d(
-            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
-            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()),
-        pose.getRotation().rotateBy(new Rotation2d(Math.PI)));
+            new Translation2d(
+                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
+                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()
+            ),
+            pose.getRotation().rotateBy(new Rotation2d(Math.PI))
+    );
   }
 
   public static Rotation2d rotationBetween(Pose2d pose1, Pose2d pose2) {
-    return Rotation2d.fromRadians(
-        Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
+    return Rotation2d.fromRadians(Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
   }
 }
