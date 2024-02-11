@@ -56,7 +56,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     arm =
         new Arm(
             armIO,
-            () -> distanceAA(ARM_SPEAKER_DISTANCE_OFFSET_LUT),
+            this::armSpeakerAA,
             this::armTrapAA,
             tuningInc,
             tuningDec,
@@ -65,7 +65,8 @@ public class Shooter extends StateMachine<Shooter.State> {
     flywheel =
         new Flywheel(
             flywheelIO,
-            () -> distanceAA(FLYWHEEL_SPEAKER_DISTANCE_LUT),
+            this::flywheelSpeakerAA,
+            this::flywheelTrapAA,
             tuningInc,
             tuningDec,
             tuningStop);
