@@ -23,7 +23,6 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
-
 import java.util.function.UnaryOperator;
 
 public class Constants {
@@ -87,27 +86,31 @@ public class Constants {
 
     public static final class Settings {
 
-      public static final InterpolatingDoubleTreeMap FLYWHEEL_SPEAKER_DISTANCE_LUT = new InterpolatingDoubleTreeMap();
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_SPEAKER_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
 
-      public static final InterpolatingDoubleTreeMap ARM_SPEAKER_DISTANCE_OFFSET_LUT = new InterpolatingDoubleTreeMap();
+      public static final InterpolatingDoubleTreeMap ARM_SPEAKER_DISTANCE_OFFSET_LUT =
+          new InterpolatingDoubleTreeMap();
 
-      public static final InterpolatingDoubleTreeMap FLYWHEEL_TRAP_DISTANCE_LUT = new InterpolatingDoubleTreeMap();
-      public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT = new InterpolatingDoubleTreeMap();
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_TRAP_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
+      public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
 
       public static final double SPEAKER_TARGET_HEIGHT = 0.0;
       public static final double TRAP_TARGET_HEIGHT = 0.0;
 
       static {
-        //FLYWHEEL SPEAKER VALUES
+        // FLYWHEEL SPEAKER VALUES
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 0.0);
 
-        //ARM SPEAKER OFFSETS
+        // ARM SPEAKER OFFSETS
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
 
-        //FLYWHEEL TRAP VALUES
+        // FLYWHEEL TRAP VALUES
         FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, 0.0);
 
-        //ARM TRAP OFFSETS
+        // ARM TRAP OFFSETS
         ARM_TRAP_DISTANCE_LUT.put(0.0, 0.0);
       }
     }
@@ -411,7 +414,8 @@ public class Constants {
       public static final SwerveSpeedLimits AMP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits INTAKE_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits SPEAKER_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
-      public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
+      public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED =
+          new SwerveSpeedLimits(0, 0, 0, 0);
       public static final SwerveSpeedLimits TRAP_SPEED = new SwerveSpeedLimits(0, 0, 0, 0);
 
       public static final SwerveModuleState[] X_SHAPE =
@@ -422,12 +426,12 @@ public class Constants {
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
           };
 
-      //meters
+      // meters
       public static final double AMP_ROTATIONAL_DELAY = 0;
       public static final double CLIMB_ROTATION_DELAY = 0;
       public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
 
-      //radians
+      // radians
       public static final double FACE_ANGLE_TOLERANCE = 0.02;
     }
   }
@@ -456,15 +460,14 @@ public class Constants {
 
   public static Pose2d mirror(Pose2d pose) {
     return new Pose2d(
-            new Translation2d(
-                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
-                    PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()
-            ),
-            pose.getRotation().rotateBy(new Rotation2d(Math.PI))
-    );
+        new Translation2d(
+            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
+            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()),
+        pose.getRotation().rotateBy(new Rotation2d(Math.PI)));
   }
 
   public static Rotation2d rotationBetween(Pose2d pose1, Pose2d pose2) {
-    return Rotation2d.fromRadians(Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
+    return Rotation2d.fromRadians(
+        Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
   }
 }

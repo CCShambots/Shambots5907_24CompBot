@@ -16,7 +16,8 @@ public class Climber extends StateMachine<Climber.State> {
   private final ClimberIO io;
   private final ClimberInputsAutoLogged inputs = new ClimberInputsAutoLogged();
 
-  public Climber(String name, ClimberIO io, Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
+  public Climber(
+      String name, ClimberIO io, Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     super(name, State.UNDETERMINED, State.class);
 
     this.io = io;
@@ -61,15 +62,16 @@ public class Climber extends StateMachine<Climber.State> {
 
     registerStateCommand(State.SOFT_E_STOP, io::stop);
 
-    registerStateCommand(State.VOLTAGE_CALC, new LinearTuningCommand(
+    registerStateCommand(
+        State.VOLTAGE_CALC,
+        new LinearTuningCommand(
             tuningStop,
             tuningInc,
             tuningDec,
             io::setVoltage,
             () -> inputs.velocity,
             () -> inputs.voltage,
-            VOLTAGE_INCREMENT
-    ));
+            VOLTAGE_INCREMENT));
   }
 
   private void registerTransitions() {
