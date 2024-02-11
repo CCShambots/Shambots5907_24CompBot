@@ -20,10 +20,12 @@ import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
 import frc.robot.ShamLib.swerve.module.RealignModuleCommand;
 import frc.robot.ShamLib.swerve.module.SwerveModule;
+import frc.robot.util.StageSide;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
+import java.util.function.Supplier;
 
 public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final SwerveDrive drive;
@@ -32,18 +34,24 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   private IntConsumer waypointConsumer = null;
   AtomicInteger currentWaypoint = new AtomicInteger(0);
 
-  private ClimbSide climbSide = ClimbSide.CENTER;
+  private final Supplier<StageSide> targetStageSideSupplier;
 
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier thetaSupplier;
 
-  public Drivetrain(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
+  public Drivetrain(
+      DoubleSupplier x,
+      DoubleSupplier y,
+      DoubleSupplier theta,
+      Supplier<StageSide> targetStageSideSupplier) {
     super("Drivetrain", State.UNDETERMINED, State.class);
 
     this.xSupplier = x;
     this.ySupplier = y;
     this.thetaSupplier = theta;
+
+    this.targetStageSideSupplier = targetStageSideSupplier;
 
     NamedCommands.registerCommand("notifyNextWaypoint", notifyWaypointCommand());
     NamedCommands.registerCommand(
@@ -80,19 +88,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerTransitions();
   }
 
-  public void setClimbSide(ClimbSide climbSide) {
-    this.climbSide = climbSide;
-
-    // change the pathfind thingamajig
-    registerAutoClimb();
-  }
-
   public Pose2d getBotPose() {
     return drive.getPose();
-  }
-
-  public ClimbSide getCurrentClimbSide() {
-    return climbSide;
   }
 
   public void setWaypointConsumer(IntConsumer waypointConsumer) {
@@ -236,11 +233,13 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         PATH_FIND_SPEED.getMaxRotationalAcceleration());
   }
 
-  private void registerAutoClimb() {
+  public void registerAutoClimb() {
     registerStateCommand(
         State.AUTO_CLIMB,
         getPathfindCommand(
-            "AUTO_CLIMB_" + climbSide, CLIMB_ROTATION_DELAY, State.FIELD_ORIENTED_DRIVE));
+            "AUTO_CLIMB_" + targetStageSideSupplier.get(),
+            CLIMB_ROTATION_DELAY,
+            State.FIELD_ORIENTED_DRIVE));
   }
 
   private Command notifyWaypointCommand() {
@@ -286,11 +285,5 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     // flags for non-autonomous operations
     PATHFINDING,
     AT_ANGLE
-  }
-
-  public enum ClimbSide {
-    CENTER,
-    LEFT,
-    RIGHT
   }
 }

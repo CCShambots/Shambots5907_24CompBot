@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -27,10 +28,7 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
-import java.util.Map;
-import java.util.NavigableMap;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
@@ -72,9 +70,6 @@ public class Constants {
     public static Pose2d BLUE_LEFT_TRAP = new Pose2d(new Translation2d(4.597, 4.513), Rotation2d.fromDegrees(120));
     public static Pose2d BLUE_RIGHT_TRAP = new Pose2d(new Translation2d(15.652, 4.512), Rotation2d.fromDegrees(-120));
 
-    public static double TRAP_TO_CHAIN_X = 0.0;
-    public static double TRAP_TO_CHAIN_Y = 0.0;
-
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
 
     static {
@@ -104,11 +99,33 @@ public class Constants {
 
     public static final class Settings {
 
-      public static final NavigableMap<Double, Double> FLYWHEEL_DISTANCE_LUT =
-          new TreeMap<>(Map.of(0.0, 0.0));
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_SPEAKER_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
 
-      public static final NavigableMap<Double, Double> ARM_DISTANCE_LUT =
-          new TreeMap<>(Map.of(0.0, 0.0));
+      public static final InterpolatingDoubleTreeMap ARM_SPEAKER_DISTANCE_OFFSET_LUT =
+          new InterpolatingDoubleTreeMap();
+
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_TRAP_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
+      public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
+
+      public static final double SPEAKER_TARGET_HEIGHT = 0.0;
+      public static final double TRAP_TARGET_HEIGHT = 0.0;
+
+      static {
+        // FLYWHEEL SPEAKER VALUES
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 0.0);
+
+        // ARM SPEAKER OFFSETS
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
+
+        // FLYWHEEL TRAP VALUES
+        FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, 0.0);
+
+        // ARM TRAP OFFSETS
+        ARM_TRAP_DISTANCE_LUT.put(0.0, 0.0);
+      }
     }
   }
 
@@ -493,24 +510,6 @@ public class Constants {
 
   public static boolean doubleEqual(double a, double b) {
     return doubleEqual(a, b, 0.00001); // TODO: idk if this is fine or not
-  }
-
-  public static double lerp(double a, double b, double t) {
-    // found this on wiki
-    return (1 - t) * a + t * b;
-  }
-
-  public static double[] getTrapOffsetFromBot(double climberExtension, double botAngle) {
-    double trapToChainX = PhysicalConstants.TRAP_TO_CHAIN_X;
-    double trapToChainY = PhysicalConstants.TRAP_TO_CHAIN_Y;
-    double chainToBotX = PhysicalConstants.CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT;
-    double chainToBotY = PhysicalConstants.CLIMBER_Y_DISTANCE_FROM_SHOOTER_PIVOT + climberExtension;
-
-    // https://www.desmos.com/calculator/tx6sop2qvm
-    double x = chainToBotX * Math.cos(botAngle) - chainToBotY * Math.sin(botAngle) + trapToChainX;
-    double y = chainToBotY * Math.cos(botAngle) + chainToBotX * Math.sin(botAngle) + trapToChainY;
-
-    return new double[] {x, y};
   }
 
   public static Pose2d mirror(Pose2d pose) {
