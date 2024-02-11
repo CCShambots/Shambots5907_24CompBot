@@ -3,10 +3,7 @@ package frc.robot;
 import static com.ctre.phoenix.led.LarsonAnimation.BounceMode.Front;
 import static frc.robot.Constants.Lights.Hardware.NUM_LIGHTS;
 
-import com.ctre.phoenix.led.Animation;
-import com.ctre.phoenix.led.ColorFlowAnimation;
-import com.ctre.phoenix.led.LarsonAnimation;
-import com.ctre.phoenix.led.StrobeAnimation;
+import com.ctre.phoenix.led.*;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -32,6 +29,7 @@ import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.UnaryOperator;
 
@@ -361,6 +359,9 @@ public class Constants {
 
       public static final Animation EJECT_ANIMATION =
           new StrobeAnimation(255, 0, 0, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation AUTOMATIC_SCORE_ANIMATION =
+              new TwinkleAnimation(0, 0, 255, 0, 0.5, NUM_LIGHTS, TwinkleAnimation.TwinklePercent.Percent76);
     }
   }
 
@@ -474,14 +475,9 @@ public class Constants {
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
   public static boolean overrideAlliance = false;
 
-  public static void pullAllianceFromFMS(RobotContainer rc) {
-    boolean isRedAlliance =
-        NetworkTableInstance.getDefault()
-            .getTable("FMSInfo")
-            .getEntry("IsRedAlliance")
-            .getBoolean(true);
-    if (!overrideAlliance) {
-      alliance = isRedAlliance ? DriverStation.Alliance.Red : DriverStation.Alliance.Blue;
+  public static void applyAlliance(Optional<DriverStation.Alliance> newAlliance) {
+    if (!overrideAlliance && newAlliance.isPresent()) {
+      alliance = newAlliance.get();
     }
   }
 

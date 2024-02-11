@@ -24,6 +24,7 @@ public class Lights extends StateMachine<Lights.State> {
     addOmniTransition(State.TARGETING, setLights(State.TARGETING));
     addOmniTransition(State.READY, setLights(State.READY));
     addOmniTransition(State.INTAKE, setLights(State.INTAKE));
+    addOmniTransition(State.AUTOMATIC_SCORE, setLights(State.AUTOMATIC_SCORE));
     addOmniTransition(State.EJECT, setLights(State.EJECT));
     addOmniTransition(State.ERROR, setLights(State.ERROR));
   }
@@ -52,6 +53,7 @@ public class Lights extends StateMachine<Lights.State> {
     TARGETING(new LEDData(TARGETING_ANIMATION)),
     READY(new LEDData(READY_TO_SHOOT)),
     INTAKE(new LEDData(INTAKE_ANIMATION)),
+    AUTOMATIC_SCORE(new LEDData(AUTOMATIC_SCORE_ANIMATION)),
     EJECT(new LEDData(EJECT_ANIMATION)),
     ERROR(new LEDData(ERROR_RGB));
 
