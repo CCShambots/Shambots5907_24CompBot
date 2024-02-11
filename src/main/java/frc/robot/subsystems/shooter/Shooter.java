@@ -16,6 +16,7 @@ import frc.robot.subsystems.shooter.arm.Arm;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
+import frc.robot.util.StageSide;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -33,12 +34,15 @@ public class Shooter extends StateMachine<Shooter.State> {
   // climber extension
   private final DoubleSupplier climberExtensionSupplier;
 
+  private final Supplier<StageSide> targetStageSideSupplier;
+
   public Shooter(
       ArmIO armIO,
       FlywheelIO flywheelIO,
       Supplier<Translation2d> botTranslationProvider,
       DoubleSupplier botXAngleProvider,
       DoubleSupplier climberExtensionSupplier,
+      Supplier<StageSide> targetStageSideSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
@@ -47,6 +51,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     this.botTranslationProvider = botTranslationProvider;
     this.botXAngleProvider = botXAngleProvider;
     this.climberExtensionSupplier = climberExtensionSupplier;
+    this.targetStageSideSupplier = targetStageSideSupplier;
 
     arm =
         new Arm(
@@ -182,15 +187,46 @@ public class Shooter extends StateMachine<Shooter.State> {
     return map.get(distance);
   }
 
-  private Pose2d getSpeakerPose() {
-    return Constants.alliance == DriverStation.Alliance.Blue ?
-            Constants.PhysicalConstants.BLUE_SPEAKER :
-            Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
+  private double armTrapAA() {
+    double distance = getTrapDistance();
+
+    //angle of shooter to face directly at trap target height plus lut offset
+    return Math.atan2(TRAP_TARGET_HEIGHT, distance) + ARM_TRAP_DISTANCE_LUT.get(distance);
   }
 
-  private Pose2d getTrapPose() {
-    return Constants.alliance == DriverStation.Alliance.Blue ?
-            //the different traps asdfjasdfjkasd bhfoiadyusfasdhfjkasbdgfijahsgdfiuaksydfgh
+  private double armSpeakerAA() {
+    double distance = getSpeakerDistance();
+
+    //angle of shooter to face directly at speaker target height plus lut offset
+    return Math.atan2(SPEAKER_TARGET_HEIGHT, distance) + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
+  }
+
+  private double flywheelTrapAA() {
+    return FLYWHEEL_TRAP_DISTANCE_LUT.get(getTrapDistance());
+  }
+
+  private double flywheelSpeakerAA() {
+    return FLYWHEEL_SPEAKER_DISTANCE_LUT.get(getSpeakerDistance());
+  }
+
+  private double getSpeakerDistance() {
+    Pose2d speaker = Constants.alliance == DriverStation.Alliance.Blue ?
+            Constants.PhysicalConstants.BLUE_SPEAKER :
+            Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
+
+    return speaker.getTranslation().getDistance(botTranslationProvider.get());
+  }
+
+  private double getTrapDistance() {
+    Pose2d targetTrap = switch (targetStageSideSupplier.get()) {
+      case CENTER -> Constants.PhysicalConstants.BLUE_CENTER_TRAP;
+      case LEFT -> Constants.PhysicalConstants.BLUE_LEFT_TRAP;
+      case RIGHT -> Constants.PhysicalConstants.BLUE_RIGHT_TRAP;
+    };
+
+    targetTrap = Constants.alliance == DriverStation.Alliance.Blue ? targetTrap : Constants.mirror(targetTrap);
+
+    return targetTrap.getTranslation().getDistance(botTranslationProvider.get());
   }
 
   public double getArmAngle() {
