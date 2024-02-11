@@ -94,18 +94,17 @@ public class Robot extends LoggedRobot {
     SubsystemManagerFactory.getInstance().registerSubsystem(robotContainer, false);
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
 
-    //AKit shims the Driver Station using their logged driver station, so this shouldn't be a problem
+    // AKit shims the Driver Station using their logged driver station, so this shouldn't be a
+    // problem
     new Trigger(DriverStation::isDSAttached)
         .or(DriverStation::isFMSAttached)
         .onTrue(
-                new WaitCommand(2).andThen(
-                  new WhileDisabledInstantCommand(
-                      () -> {
-                        Constants.applyAlliance(DriverStation.getAlliance());
-                      })
-                )
-        );
-
+            new WaitCommand(2)
+                .andThen(
+                    new WhileDisabledInstantCommand(
+                        () -> {
+                          Constants.applyAlliance(DriverStation.getAlliance());
+                        })));
   }
 
   @Override
@@ -115,11 +114,10 @@ public class Robot extends LoggedRobot {
     updatePoses();
 
     moduleCheckCounter++;
-    if(moduleCheckCounter >= 500) {
+    if (moduleCheckCounter >= 500) {
       moduleCheckCounter = 0;
       checkModulesLoop.poll();
     }
-
   }
 
   private void updatePoses() {

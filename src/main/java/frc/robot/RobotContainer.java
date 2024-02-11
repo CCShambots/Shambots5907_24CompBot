@@ -87,7 +87,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
 
-
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
     climbers =
