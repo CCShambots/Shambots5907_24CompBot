@@ -29,6 +29,8 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.util.StageSide;
+
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
@@ -39,6 +41,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Vision vision;
   private final Climbers climbers;
   private final Drivetrain drivetrain;
+
+  private StageSide targetStageSide = StageSide.CENTER;
 
   public RobotContainer() {
     super("Robot Container", State.UNDETERMINED, State.class);
@@ -60,6 +64,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             Translation2d::new,
             () -> 0,
             () -> 0,
+            () -> targetStageSide,
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false));
