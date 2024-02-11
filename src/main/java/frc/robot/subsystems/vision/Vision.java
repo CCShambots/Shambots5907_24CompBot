@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import static frc.robot.Constants.Vision.Settings.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import org.photonvision.PhotonPoseEstimator;
 
 public class Vision extends StateMachine<Vision.State> {
   private List<Consumer<List<TimestampedPoseEstimator.TimestampedVisionUpdate>>>
@@ -34,8 +36,15 @@ public class Vision extends StateMachine<Vision.State> {
                     new PVApriltagCam(
                         id,
                         Constants.currentBuildMode,
+                        new Transform3d(),
                         Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT))
             .toArray(PVApriltagCam[]::new);
+
+    for (var cam : pvApriltagCams) {
+      cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+      cam.setMultiTagFallbackEstimationStrategy(
+          PhotonPoseEstimator.PoseStrategy.AVERAGE_BEST_TARGETS);
+    }
 
     registerStateCommand();
     registerTransitions();
@@ -63,7 +72,7 @@ public class Vision extends StateMachine<Vision.State> {
     List<TimestampedPoseEstimator.TimestampedVisionUpdate> updates = new ArrayList<>();
 
     for (PVApriltagCam cam : pvApriltagCams) {
-      updates.addAll(cam.getAllEstimates());
+      updates.add(cam.getLatestEstimate());
     }
 
     return updates;
