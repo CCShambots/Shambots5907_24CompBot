@@ -33,6 +33,8 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.UnaryOperator;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+
 public class Constants {
   public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
@@ -64,12 +66,11 @@ public class Constants {
     // how far away climber is from shooter pivot on front/back axis
     public static double CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
 
-    public static Pose2d BLUE_SPEAKER = new Pose2d(new Translation2d(), new Rotation2d());
-    public static Pose2d BLUE_AMP = new Pose2d(new Translation2d(), new Rotation2d());
-    public static Pose2d BLUE_CENTER_TRAP = new Pose2d(new Translation2d(), new Rotation2d());
-    public static Pose2d BLUE_LEFT_TRAP = new Pose2d(new Translation2d(), new Rotation2d());
-    public static Pose2d BLUE_RIGHT_TRAP = new Pose2d(new Translation2d(), new Rotation2d());
-    public static Pose2d BLUE_PICKUP = new Pose2d(new Translation2d(), new Rotation2d());
+    public static Pose2d BLUE_SPEAKER = new Pose2d(new Translation2d(-0.039243, 5.557), Rotation2d.fromDegrees(0));
+    public static Pose2d BLUE_AMP = new Pose2d(new Translation2d(1.799, 0.0218), Rotation2d.fromDegrees(-90));
+    public static Pose2d BLUE_CENTER_TRAP = new Pose2d(new Translation2d(5.286, 4.115), Rotation2d.fromDegrees(0));
+    public static Pose2d BLUE_LEFT_TRAP = new Pose2d(new Translation2d(4.597, 4.513), Rotation2d.fromDegrees(120));
+    public static Pose2d BLUE_RIGHT_TRAP = new Pose2d(new Translation2d(15.652, 4.512), Rotation2d.fromDegrees(-120));
 
     public static double TRAP_TO_CHAIN_X = 0.0;
     public static double TRAP_TO_CHAIN_Y = 0.0;

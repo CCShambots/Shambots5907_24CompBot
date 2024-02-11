@@ -179,11 +179,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED));
 
     registerStateCommand(
-        State.FACE_HUMAN_PLAYER_PICKUP,
-        getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_PICKUP) : BLUE_PICKUP, HUMAN_PLAYER_PICKUP_SPEED));
-
-    registerStateCommand(
         State.FACE_CENTER_TRAP,
         getFacePointCommand(
             flipPath ? Constants.mirror(BLUE_CENTER_TRAP) : BLUE_CENTER_TRAP, TRAP_SPEED));
@@ -284,7 +279,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     FACE_CENTER_TRAP,
     FACE_LEFT_TRAP,
     FACE_RIGHT_TRAP,
-    FACE_HUMAN_PLAYER_PICKUP,
     AUTO_AMP,
     AUTO_CLIMB,
     AUTO_HUMAN_PLAYER_INTAKE,
