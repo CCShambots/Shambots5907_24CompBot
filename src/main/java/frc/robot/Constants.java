@@ -51,21 +51,12 @@ public class Constants {
             new Translation3d(Units.inchesToMeters(-2.999766), 0, Units.inchesToMeters(9.434239)),
             new Rotation3d(Math.toRadians(90), 0, Math.toRadians(180)));
 
-    // how much taller climber is than shooter pivot when stowed
-    public static double CLIMBER_Y_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
-
-    // how far away climber is from shooter pivot on front/back axis
-    public static double CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
-
     public static Pose2d BLUE_SPEAKER = new Pose2d(new Translation2d(), new Rotation2d());
     public static Pose2d BLUE_AMP = new Pose2d(new Translation2d(), new Rotation2d());
     public static Pose2d BLUE_CENTER_TRAP = new Pose2d(new Translation2d(), new Rotation2d());
     public static Pose2d BLUE_LEFT_TRAP = new Pose2d(new Translation2d(), new Rotation2d());
     public static Pose2d BLUE_RIGHT_TRAP = new Pose2d(new Translation2d(), new Rotation2d());
     public static Pose2d BLUE_PICKUP = new Pose2d(new Translation2d(), new Rotation2d());
-
-    public static double TRAP_TO_CHAIN_X = 0.0;
-    public static double TRAP_TO_CHAIN_Y = 0.0;
 
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
 
@@ -102,6 +93,9 @@ public class Constants {
 
       public static final InterpolatingDoubleTreeMap FLYWHEEL_TRAP_DISTANCE_LUT = new InterpolatingDoubleTreeMap();
       public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT = new InterpolatingDoubleTreeMap();
+
+      public static final double SPEAKER_TARGET_HEIGHT = 0.0;
+      public static final double TRAP_TARGET_HEIGHT = 0.0;
 
       static {
         //FLYWHEEL SPEAKER VALUES
@@ -458,24 +452,6 @@ public class Constants {
 
   public static boolean doubleEqual(double a, double b) {
     return doubleEqual(a, b, 0.00001); // TODO: idk if this is fine or not
-  }
-
-  public static double lerp(double a, double b, double t) {
-    // found this on wiki
-    return (1 - t) * a + t * b;
-  }
-
-  public static double[] getTrapOffsetFromBot(double climberExtension, double botAngle) {
-    double trapToChainX = PhysicalConstants.TRAP_TO_CHAIN_X;
-    double trapToChainY = PhysicalConstants.TRAP_TO_CHAIN_Y;
-    double chainToBotX = PhysicalConstants.CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT;
-    double chainToBotY = PhysicalConstants.CLIMBER_Y_DISTANCE_FROM_SHOOTER_PIVOT + climberExtension;
-
-    // https://www.desmos.com/calculator/tx6sop2qvm
-    double x = chainToBotX * Math.cos(botAngle) - chainToBotY * Math.sin(botAngle) + trapToChainX;
-    double y = chainToBotY * Math.cos(botAngle) + chainToBotX * Math.sin(botAngle) + trapToChainY;
-
-    return new double[] {x, y};
   }
 
   public static Pose2d mirror(Pose2d pose) {
