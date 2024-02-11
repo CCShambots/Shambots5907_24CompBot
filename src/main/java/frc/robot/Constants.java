@@ -361,7 +361,8 @@ public class Constants {
           new StrobeAnimation(255, 0, 0, 0, BLINK_SPEED, NUM_LIGHTS);
 
       public static final Animation AUTOMATIC_SCORE_ANIMATION =
-              new TwinkleAnimation(0, 0, 255, 0, 0.5, NUM_LIGHTS, TwinkleAnimation.TwinklePercent.Percent76);
+          new TwinkleAnimation(
+              0, 0, 255, 0, 0.5, NUM_LIGHTS, TwinkleAnimation.TwinklePercent.Percent76);
     }
   }
 

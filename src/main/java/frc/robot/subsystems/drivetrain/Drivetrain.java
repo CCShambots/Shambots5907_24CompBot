@@ -20,7 +20,6 @@ import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
 import frc.robot.ShamLib.swerve.module.RealignModuleCommand;
 import frc.robot.ShamLib.swerve.module.SwerveModule;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.DoubleSupplier;
@@ -261,11 +260,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   public void registerMisalignedSwerveTriggers(EventLoop loop) {
     for (SwerveModule module : drive.getModules()) {
       loop.bind(
-              () -> {
-                if (module.isModuleMisaligned() && !isEnabled()) {
-                  new RealignModuleCommand(module).schedule();
-                }
-              });
+          () -> {
+            if (module.isModuleMisaligned() && !isEnabled()) {
+              new RealignModuleCommand(module).schedule();
+            }
+          });
     }
   }
 
