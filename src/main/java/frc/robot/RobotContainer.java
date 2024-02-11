@@ -82,7 +82,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     drivetrain = new Drivetrain(
             () -> 0,
             () -> 0,
-            () -> 0
+            () -> 0,
+            () -> targetStageSide
     );
 
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
