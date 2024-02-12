@@ -130,7 +130,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             this,
             TRAVERSE_SPEED));
 
-    registerStateCommand(State.GROUND_INTAKE, new DriveCommand(
+    registerStateCommand(
+        State.GROUND_INTAKE,
+        new DriveCommand(
             drive,
             xSupplier,
             ySupplier,
@@ -138,10 +140,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             Constants.Controller.DEADBAND,
             Constants.Controller.DRIVE_CONVERSION,
             this,
-            INTAKE_SPEED
-    ));
+            INTAKE_SPEED));
 
-    registerStateCommand(State.HUMAN_PLAYER_INTAKE, new DriveCommand(
+    registerStateCommand(
+        State.HUMAN_PLAYER_INTAKE,
+        new DriveCommand(
             drive,
             xSupplier,
             ySupplier,
@@ -149,8 +152,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             Constants.Controller.DEADBAND,
             Constants.Controller.DRIVE_CONVERSION,
             this,
-            HUMAN_PLAYER_PICKUP_SPEED
-    ));
+            HUMAN_PLAYER_PICKUP_SPEED));
 
     registerStateCommand(
         State.AUTO_AMP,

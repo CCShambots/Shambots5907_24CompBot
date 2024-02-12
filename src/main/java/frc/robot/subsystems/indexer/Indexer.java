@@ -68,10 +68,11 @@ public class Indexer extends StateMachine<Indexer.State> {
                 () -> !(inputs.prox1 || inputs.prox2)), // wait for neither prox to be tripped
             transitionCommand(State.IDLE))); // go to idle
 
-    registerStateCommand(State.CLEANSE, new ParallelCommandGroup(
+    registerStateCommand(
+        State.CLEANSE,
+        new ParallelCommandGroup(
             new InstantCommand(() -> io.setTargetVelocity(PASS_THROUGH_SPEED)),
-            proxClearCommand()
-    ));
+            proxClearCommand()));
 
     registerStateCommand(
         State.VOLTAGE_CALC,
@@ -125,14 +126,14 @@ public class Indexer extends StateMachine<Indexer.State> {
   }
 
   private Command proxClearCommand() {
-    return new RunCommand(() -> {
-      if (!(inputs.prox1 || inputs.prox2 || inputs.prox3)) {
-        setFlag(State.PROX_CLEAR);
-      }
-      else {
-        clearFlag(State.PROX_CLEAR);
-      }
-    });
+    return new RunCommand(
+        () -> {
+          if (!(inputs.prox1 || inputs.prox2 || inputs.prox3)) {
+            setFlag(State.PROX_CLEAR);
+          } else {
+            clearFlag(State.PROX_CLEAR);
+          }
+        });
   }
 
   @Override
@@ -159,7 +160,7 @@ public class Indexer extends StateMachine<Indexer.State> {
     LOST_RING,
     VOLTAGE_CALC,
 
-    //flags
+    // flags
     PROX_CLEAR
   }
 }

@@ -188,8 +188,8 @@ public class Constants {
 
       public static final double VOLTAGE_INCREMENT = 0.25;
 
-      public static final double MIN_ANGLE = 30.0  * (Math.PI / 180);
-      public static final double MAX_ANGLE = 60  * (Math.PI / 180);
+      public static final double MIN_ANGLE = 30.0 * (Math.PI / 180);
+      public static final double MAX_ANGLE = 60 * (Math.PI / 180);
     }
   }
 

@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -39,11 +38,9 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
-import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import frc.robot.util.StageSide;
 import java.util.function.BooleanSupplier;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Intake intake;
@@ -54,9 +51,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Drivetrain drivetrain;
   private final Lights lights;
 
-  private final CommandXboxController operatorController = new CommandXboxController(Constants.Controller.OPERATOR_CONTROLLER_ID);
-  private final CommandFlightStick leftFlightStick = new CommandFlightStick(Constants.Controller.LEFT_FLIGHT_STICK_ID);
-  private final CommandFlightStick rightFlightStick = new CommandFlightStick(Constants.Controller.RIGHT_FLIGHT_STICK_ID);
+  private final CommandXboxController operatorController =
+      new CommandXboxController(Constants.Controller.OPERATOR_CONTROLLER_ID);
+  private final CommandFlightStick leftFlightStick =
+      new CommandFlightStick(Constants.Controller.LEFT_FLIGHT_STICK_ID);
+  private final CommandFlightStick rightFlightStick =
+      new CommandFlightStick(Constants.Controller.RIGHT_FLIGHT_STICK_ID);
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -65,7 +65,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    autoChooser = new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
+    autoChooser =
+        new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     // actually do bindings :()
 
@@ -81,9 +82,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     indexer =
         new Indexer(
             getIndexerIO(
-                    operatorController.povLeft(),
-                    operatorController.povUp(),
-                    operatorController.povRight()),
+                operatorController.povLeft(),
+                operatorController.povUp(),
+                operatorController.povRight()),
             tuningIncrement(),
             tuningDecrement(),
             tuningStop());
@@ -115,14 +116,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     lights = new Lights(getLightsIO());
 
     shooter =
-            new Shooter(
-                    getArmIO(),
-                    getFlywheelIO(),
-                    () -> drivetrain.getBotPose().getTranslation(),
-                    () -> targetStageSide,
-                    tuningIncrement(),
-                    tuningDecrement(),
-                    tuningStop());
+        new Shooter(
+            getArmIO(),
+            getFlywheelIO(),
+            () -> drivetrain.getBotPose().getTranslation(),
+            () -> targetStageSide,
+            tuningIncrement(),
+            tuningDecrement(),
+            tuningStop());
 
     addChildSubsystem(drivetrain);
     addChildSubsystem(vision);
@@ -139,45 +140,48 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void registerStateCommands() {
-    registerStateCommand(State.SOFT_E_STOP, new ParallelCommandGroup(
+    registerStateCommand(
+        State.SOFT_E_STOP,
+        new ParallelCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             climbers.transitionCommand(Climbers.State.SOFT_E_STOP),
             intake.transitionCommand(Intake.State.IDLE),
             shooter.transitionCommand(Shooter.State.SOFT_E_STOP),
             indexer.transitionCommand(Indexer.State.IDLE),
-            lights.transitionCommand(Lights.State.ERROR)
-    ));
+            lights.transitionCommand(Lights.State.ERROR)));
 
-    registerStateCommand(State.TRAVERSING, new ParallelCommandGroup(
+    registerStateCommand(
+        State.TRAVERSING,
+        new ParallelCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             climbers.transitionCommand(Climbers.State.FREE_RETRACT),
             intake.transitionCommand(Intake.State.IDLE),
-            new DetermineRingStatusCommand(shooter, indexer, lights)
-    ));
+            new DetermineRingStatusCommand(shooter, indexer, lights)));
 
-    registerStateCommand(State.SPEAKER_SCORE, new SequentialCommandGroup(
-            //face speaker and idle intake
+    registerStateCommand(
+        State.SPEAKER_SCORE,
+        new SequentialCommandGroup(
+            // face speaker and idle intake
             drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER),
             intake.transitionCommand(Intake.State.IDLE),
-            //figure out ring issues (if there are any)
+            // figure out ring issues (if there are any)
             new DetermineRingStatusCommand(shooter, indexer, lights),
-            //have shooter start to track
+            // have shooter start to track
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
-            //lights show green on ready and feed ring on press, transition to traversing after ring is fed
+            // lights show green on ready and feed ring on press, transition to traversing after
+            // ring is fed
             new ParallelCommandGroup(
-                    lightsOnReadyCommand(Lights.State.TARGETING),
-                    feedOnPress(State.TRAVERSING)
-            )
-    ));
+                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
 
-    registerStateCommand(State.GROUND_INTAKE, new SequentialCommandGroup(
+    registerStateCommand(
+        State.GROUND_INTAKE,
+        new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.GROUND_INTAKE),
             shooter.transitionCommand(Shooter.State.PARTIAL_STOW),
             indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
             intake.transitionCommand(Intake.State.INTAKE),
             indexer.waitForState(Indexer.State.INDEXING),
-            transitionCommand(State.TRAVERSING)
-    ));
+            transitionCommand(State.TRAVERSING)));
   }
 
   private void registerTransitions() {
@@ -188,30 +192,30 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private Command flashError(Lights.State onEnd) {
     return new SequentialCommandGroup(
-            lights.transitionCommand(Lights.State.ERROR),
-            new WaitCommand(0.5),
-            lights.transitionCommand(onEnd)
-    );
+        lights.transitionCommand(Lights.State.ERROR),
+        new WaitCommand(0.5),
+        lights.transitionCommand(onEnd));
   }
 
   private Command feedOnPress(State onEnd) {
     return new SequentialCommandGroup(
-            new WaitUntilCommand(operatorController.a()),
-            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
-            indexer.waitForState(Indexer.State.IDLE),
-            transitionCommand(onEnd)
-    );
+        new WaitUntilCommand(operatorController.a()),
+        indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
+        indexer.waitForState(Indexer.State.IDLE),
+        transitionCommand(onEnd));
   }
 
   private Command lightsOnReadyCommand(Lights.State alt) {
-    return new RunCommand(() -> {
-      if (shooter.isFlag(Shooter.State.READY) && drivetrain.isFlag(Drivetrain.State.AT_ANGLE) && indexer.getState() == Indexer.State.HOLDING_RING) {
-        lights.requestTransition(Lights.State.READY);
-      }
-      else {
-        lights.requestTransition(alt);
-      }
-    });
+    return new RunCommand(
+        () -> {
+          if (shooter.isFlag(Shooter.State.READY)
+              && drivetrain.isFlag(Drivetrain.State.AT_ANGLE)
+              && indexer.getState() == Indexer.State.HOLDING_RING) {
+            lights.requestTransition(Lights.State.READY);
+          } else {
+            lights.requestTransition(alt);
+          }
+        });
   }
 
   private Trigger tuningIncrement() {

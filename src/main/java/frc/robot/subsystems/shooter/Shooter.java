@@ -2,7 +2,6 @@ package frc.robot.subsystems.shooter;
 
 import static frc.robot.Constants.Shooter.Settings.*;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -19,7 +18,6 @@ import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.util.StageSide;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class Shooter extends StateMachine<Shooter.State> {
@@ -134,20 +132,23 @@ public class Shooter extends StateMachine<Shooter.State> {
             .andThen(flywheel.waitForState(Flywheel.State.IDLE))
             .andThen(transitionCommand(State.SOFT_E_STOP)));
 
-    registerStateCommand(State.PASS_THROUGH, new SequentialCommandGroup(
+    registerStateCommand(
+        State.PASS_THROUGH,
+        new SequentialCommandGroup(
             flywheel.transitionCommand(Flywheel.State.PASS_THROUGH),
-            arm.transitionCommand(Arm.State.PARTIAL_STOW)
-    ));
+            arm.transitionCommand(Arm.State.PARTIAL_STOW)));
 
-    registerStateCommand(State.TRAP_AA, new ParallelCommandGroup(
+    registerStateCommand(
+        State.TRAP_AA,
+        new ParallelCommandGroup(
             flywheel.transitionCommand(Flywheel.State.TRAP_ACTIVE_ADJUST_SPIN),
-            arm.transitionCommand(Arm.State.TRAP_ACTIVE_ADJUST)
-    ));
+            arm.transitionCommand(Arm.State.TRAP_ACTIVE_ADJUST)));
 
-    registerStateCommand(State.SPEAKER_AA, new ParallelCommandGroup(
+    registerStateCommand(
+        State.SPEAKER_AA,
+        new ParallelCommandGroup(
             flywheel.transitionCommand(Flywheel.State.SPEAKER_ACTIVE_ADJUST_SPIN),
-            arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST)
-    ));
+            arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST)));
   }
 
   private void registerTransitions() {
