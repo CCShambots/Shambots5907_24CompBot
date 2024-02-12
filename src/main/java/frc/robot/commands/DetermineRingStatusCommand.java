@@ -34,6 +34,10 @@ public class DetermineRingStatusCommand extends Command {
                 indexer.requestTransition(Indexer.State.CLEANSE);
                 lights.requestTransition(Lights.State.EJECT);
             }
+            case INDEXING -> {
+                shooter.requestTransition(Shooter.State.PARTIAL_STOW);
+                lights.requestTransition(Lights.State.HAVE_RING);
+            }
             default -> {
                 indexer.requestTransition(Indexer.State.IDLE);
                 shooter.requestTransition(Shooter.State.PARTIAL_STOW);

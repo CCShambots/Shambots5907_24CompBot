@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -154,12 +155,63 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new DetermineRingStatusCommand(shooter, indexer, lights)
     ));
 
+    registerStateCommand(State.SPEAKER_SCORE, new SequentialCommandGroup(
+            //face speaker and idle intake
+            drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER),
+            intake.transitionCommand(Intake.State.IDLE),
+            //figure out ring issues (if there are any)
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            //have shooter start to track
+            shooter.transitionCommand(Shooter.State.SPEAKER_AA),
+            //lights show green on ready and feed ring on press, transition to traversing after ring is fed
+            new ParallelCommandGroup(
+                    lightsOnReadyCommand(Lights.State.TARGETING),
+                    feedOnPress(State.TRAVERSING)
+            )
+    ));
 
+    registerStateCommand(State.GROUND_INTAKE, new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.GROUND_INTAKE),
+            shooter.transitionCommand(Shooter.State.PARTIAL_STOW),
+            indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
+            intake.transitionCommand(Intake.State.INTAKE),
+            indexer.waitForState(Indexer.State.INDEXING),
+            transitionCommand(State.TRAVERSING)
+    ));
   }
 
   private void registerTransitions() {
     addOmniTransition(State.TRAVERSING);
     addOmniTransition(State.SOFT_E_STOP);
+    addOmniTransition(State.SPEAKER_SCORE);
+  }
+
+  private Command flashError(Lights.State onEnd) {
+    return new SequentialCommandGroup(
+            lights.transitionCommand(Lights.State.ERROR),
+            new WaitCommand(0.5),
+            lights.transitionCommand(onEnd)
+    );
+  }
+
+  private Command feedOnPress(State onEnd) {
+    return new SequentialCommandGroup(
+            new WaitUntilCommand(operatorController.a()),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
+            indexer.waitForState(Indexer.State.IDLE),
+            transitionCommand(onEnd)
+    );
+  }
+
+  private Command lightsOnReadyCommand(Lights.State alt) {
+    return new RunCommand(() -> {
+      if (shooter.isFlag(Shooter.State.READY) && drivetrain.isFlag(Drivetrain.State.AT_ANGLE) && indexer.getState() == Indexer.State.HOLDING_RING) {
+        lights.requestTransition(Lights.State.READY);
+      }
+      else {
+        lights.requestTransition(alt);
+      }
+    });
   }
 
   private Trigger tuningIncrement() {
@@ -274,7 +326,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   @Override
   protected void determineSelf() {
-    // placeholder
     setState(State.SOFT_E_STOP);
   }
 
@@ -283,7 +334,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public Pose3d getBotPose() {
-    // update this when pose estimation is ready
     Pose2d pose = drivetrain.getBotPose();
     return new Pose3d(
         new Translation3d(pose.getX(), pose.getY(), 0),
@@ -294,7 +344,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     UNDETERMINED,
     AUTONOMOUS,
     TRAVERSING,
-
+    SPEAKER_SCORE,
+    GROUND_INTAKE,
     SOFT_E_STOP
   }
 }

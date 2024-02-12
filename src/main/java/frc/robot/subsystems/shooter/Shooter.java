@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static frc.robot.Constants.Shooter.Settings.*;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -137,6 +138,16 @@ public class Shooter extends StateMachine<Shooter.State> {
             flywheel.transitionCommand(Flywheel.State.PASS_THROUGH),
             arm.transitionCommand(Arm.State.PARTIAL_STOW)
     ));
+
+    registerStateCommand(State.TRAP_AA, new ParallelCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.TRAP_ACTIVE_ADJUST_SPIN),
+            arm.transitionCommand(Arm.State.TRAP_ACTIVE_ADJUST)
+    ));
+
+    registerStateCommand(State.SPEAKER_AA, new ParallelCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.SPEAKER_ACTIVE_ADJUST_SPIN),
+            arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST)
+    ));
   }
 
   private void registerTransitions() {
@@ -151,6 +162,8 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.CHUTE_INTAKE);
     addOmniTransition(State.AMP);
     addOmniTransition(State.PASS_THROUGH);
+    addOmniTransition(State.SPEAKER_AA);
+    addOmniTransition(State.TRAP_AA);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
@@ -246,6 +259,8 @@ public class Shooter extends StateMachine<Shooter.State> {
     ARM_VOLTAGE_CALC,
     AMP,
     PASS_THROUGH,
+    SPEAKER_AA,
+    TRAP_AA,
     // flags
     READY
   }
