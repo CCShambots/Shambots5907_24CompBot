@@ -121,14 +121,15 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerStateCommand(
         State.FIELD_ORIENTED_DRIVE,
         new DriveCommand(
-            drive,
-            xSupplier,
-            ySupplier,
-            thetaSupplier,
-            Constants.Controller.DEADBAND,
-            Constants.Controller.DRIVE_CONVERSION,
-            this,
-            TRAVERSE_SPEED).alongWith(new InstantCommand(() -> setFlag(State.AT_ANGLE))));
+                drive,
+                xSupplier,
+                ySupplier,
+                thetaSupplier,
+                Constants.Controller.DEADBAND,
+                Constants.Controller.DRIVE_CONVERSION,
+                this,
+                TRAVERSE_SPEED)
+            .alongWith(new InstantCommand(() -> setFlag(State.AT_ANGLE))));
 
     registerStateCommand(
         State.GROUND_INTAKE,
