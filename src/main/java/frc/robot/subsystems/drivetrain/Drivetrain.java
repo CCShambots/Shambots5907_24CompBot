@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.DriveCommand;
@@ -44,7 +45,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
       DoubleSupplier x,
       DoubleSupplier y,
       DoubleSupplier theta,
-      Supplier<StageSide> targetStageSideSupplier) {
+      Supplier<StageSide> targetStageSideSupplier,
+      Trigger stop,
+      Trigger incrementUp,
+      Trigger incrementDown) {
     super("Drivetrain", State.UNDETERMINED, State.class);
 
     this.xSupplier = x;
@@ -84,7 +88,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             MODULE_3_INFO,
             MODULE_4_INFO);
 
-    registerStateCommands();
+    registerStateCommands(stop, incrementUp, incrementDown);
     registerTransitions();
   }
 
@@ -109,7 +113,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerStateCommand(State.FOLLOWING_AUTONOMOUS_TRAJECTORY, command);
   }
 
-  private void registerStateCommands() {
+  private void registerStateCommands(Trigger stop, Trigger incrementUp, Trigger incrementDown) {
     registerStateCommand(State.X_SHAPE, () -> drive.setModuleStates(X_SHAPE));
 
     registerStateCommand(State.IDLE, drive::stopModules);
@@ -137,6 +141,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY,
             State.FIELD_ORIENTED_DRIVE));
 
+    registerStateCommand(State.TURN_VOLTAGE_CALC, drive.getTurnVoltageCalcCommand(stop, incrementUp, incrementDown, TURN_VOLTAGE_INCREMENT));
+    registerStateCommand(State.DRIVE_VOLTAGE_CALC, drive.getDriveVoltageCalcCommand(stop, incrementUp, incrementDown, DRIVE_VOLTAGE_INCREMENT));
+
     registerFaceCommands();
     registerAutoClimb();
   }
@@ -152,6 +159,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.FIELD_ORIENTED_DRIVE);
 
     addTransition(State.IDLE, State.FOLLOWING_AUTONOMOUS_TRAJECTORY);
+
+    addTransition(State.IDLE, State.TURN_VOLTAGE_CALC);
+    addTransition(State.IDLE, State.DRIVE_VOLTAGE_CALC);
 
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_CLIMB);
@@ -242,7 +252,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private Command notifyWaypointCommand() {
-    return new InstantCommand(() -> waypointConsumer.accept(currentWaypoint.getAndIncrement()));
+    return new InstantCommand(() -> {
+      if (waypointConsumer != null) waypointConsumer.accept(currentWaypoint.getAndIncrement());
+    });
   }
 
   public void addVisionMeasurements(
@@ -280,6 +292,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     AUTO_AMP,
     AUTO_CLIMB,
     AUTO_HUMAN_PLAYER_INTAKE,
+    TURN_VOLTAGE_CALC,
+    DRIVE_VOLTAGE_CALC,
 
     // flags for non-autonomous operations
     PATHFINDING,

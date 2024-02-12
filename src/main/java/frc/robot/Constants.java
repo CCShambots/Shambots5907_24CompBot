@@ -491,6 +491,9 @@ public class Constants {
 
       // radians
       public static final double FACE_ANGLE_TOLERANCE = 0.02;
+
+      public static final double TURN_VOLTAGE_INCREMENT = 0.125;
+      public static final double DRIVE_VOLTAGE_INCREMENT = 0.125;
     }
   }
 
