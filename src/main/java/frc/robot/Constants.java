@@ -147,8 +147,9 @@ public class Constants {
       public static final int FOLLOWER_ID = 21;
       public static final int ENCODER_ID = 3;
 
-      public static final double ENCODER_RATIO = (10.0/58.0) * 2 * Math.PI;
-      public static final double MOTOR_RATIO = (10.0/64.0)*(18.0/50.0)*(10.0/58.0) * 2 * Math.PI;
+      public static final double ENCODER_RATIO = (10.0 / 58.0) * 2 * Math.PI;
+      public static final double MOTOR_RATIO =
+          (10.0 / 64.0) * (18.0 / 50.0) * (10.0 / 58.0) * 2 * Math.PI;
 
       public static final boolean ENCODER_INVERTED = true;
       public static final boolean LEADER_INVERTED = false;
@@ -293,7 +294,7 @@ public class Constants {
           new LoggedTunablePIDSV(
               "Climber Loaded Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
 
-      //all in meters
+      // all in meters
       public static double FREE_VELOCITY = 1;
       public static double FREE_ACCELERATION = 1;
       public static double FREE_JERK = 0;
@@ -335,13 +336,13 @@ public class Constants {
     }
 
     public static final class Settings {
-      //rps
+      // rps
       public static final double EXPECT_SPEED = 20;
       public static final double PASS_THROUGH_SPEED = 33;
       public static final double INDEX_SPEED = 20;
       public static final double FEED_SPEED = 33;
 
-      //seconds
+      // seconds
       public static final double INDEX_TIMEOUT = 2;
 
       public static final double VOLTAGE_INCREMENT = 0.125;
@@ -403,12 +404,12 @@ public class Constants {
       public static final double TRACK_WIDTH = Units.inchesToMeters(24.75);
       public static final double WHEEL_BASE = Units.inchesToMeters(24.75);
       public static final double ROTATION_RADIUS =
-              Math.sqrt(Math.pow(TRACK_WIDTH / 2.0, 2) + Math.pow(WHEEL_BASE / 2.0, 2)) * 2 * Math.PI;
+          Math.sqrt(Math.pow(TRACK_WIDTH / 2.0, 2) + Math.pow(WHEEL_BASE / 2.0, 2)) * 2 * Math.PI;
 
       public static final String MODULE_CAN_BUS = "";
       public static final String GYRO_CAN_BUS = "";
 
-      public static final ModuleInfo MODULE_1_INFO = //FRONT LEFT
+      public static final ModuleInfo MODULE_1_INFO = // FRONT LEFT
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
@@ -416,11 +417,12 @@ public class Constants {
               61, // TURN MOTOR ID
               60, // ENCODER ID
               0.0, // ENCODER OFFSET
-              new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
+              new Translation2d(
+                  WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
               );
 
-      public static final ModuleInfo MODULE_2_INFO = //BACK LEFT
+      public static final ModuleInfo MODULE_2_INFO = // BACK LEFT
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
@@ -428,11 +430,12 @@ public class Constants {
               63, // TURN MOTOR ID
               61, // ENCODER ID
               0.0, // ENCODER OFFSET
-              new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
+              new Translation2d(
+                  -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
               );
 
-      public static final ModuleInfo MODULE_3_INFO = //BACK RIGHT
+      public static final ModuleInfo MODULE_3_INFO = // BACK RIGHT
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
@@ -440,11 +443,12 @@ public class Constants {
               65, // TURN MOTOR ID
               62, // ENCODER ID
               0.0, // ENCODER OFFSET
-              new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
+              new Translation2d(
+                  -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
               );
 
-      public static final ModuleInfo MODULE_4_INFO = //FRONT RIGHT
+      public static final ModuleInfo MODULE_4_INFO = // FRONT RIGHT
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
@@ -452,7 +456,8 @@ public class Constants {
               67, // TURN MOTOR ID
               63, // ENCODER ID
               0.0, // ENCODER OFFSET
-              new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
+              new Translation2d(
+                  WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
               );
 
@@ -468,13 +473,13 @@ public class Constants {
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(0, 0, 0);
 
-      //m/s
+      // m/s
       public static final double MAX_CHASSIS_SPEED = 5;
       public static final double MAX_CHASSIS_ACCELERATION = 10;
       public static final double MAX_CHASSIS_ROTATIONAL_SPEED =
-              (MAX_CHASSIS_SPEED / Hardware.ROTATION_RADIUS) * (2 * Math.PI);
+          (MAX_CHASSIS_SPEED / Hardware.ROTATION_RADIUS) * (2 * Math.PI);
       public static final double MAX_CHASSIS_ROTATIONAL_ACCELERATION =
-              MAX_CHASSIS_ROTATIONAL_SPEED * 3;
+          MAX_CHASSIS_ROTATIONAL_SPEED * 3;
       public static final double MAX_MODULE_TURN_SPEED = 1000;
       public static final double MAX_MODULE_TURN_ACCELERATION = 1000;
 
@@ -482,14 +487,48 @@ public class Constants {
           VecBuilder.fill(0.003, 0.003, 0.0002);
 
       // meters and radians
-      public static final SwerveSpeedLimits PATH_FIND_SPEED = new SwerveSpeedLimits(MAX_CHASSIS_SPEED / 2, MAX_CHASSIS_ACCELERATION, MAX_CHASSIS_ROTATIONAL_SPEED / 2, MAX_CHASSIS_ROTATIONAL_ACCELERATION);
-      public static final SwerveSpeedLimits TRAVERSE_SPEED = new SwerveSpeedLimits(MAX_CHASSIS_SPEED, MAX_CHASSIS_ACCELERATION, MAX_CHASSIS_ROTATIONAL_SPEED, MAX_CHASSIS_ROTATIONAL_ACCELERATION);
-      public static final SwerveSpeedLimits AMP_SPEED = new SwerveSpeedLimits(MAX_CHASSIS_SPEED / 1.25, MAX_CHASSIS_ACCELERATION, MAX_CHASSIS_ROTATIONAL_SPEED / 1.25, MAX_CHASSIS_ROTATIONAL_ACCELERATION);
-      public static final SwerveSpeedLimits INTAKE_SPEED = new SwerveSpeedLimits(MAX_CHASSIS_SPEED / 1.25, MAX_CHASSIS_ACCELERATION, MAX_CHASSIS_ROTATIONAL_SPEED / 1.25, MAX_CHASSIS_ROTATIONAL_ACCELERATION);
-      public static final SwerveSpeedLimits SPEAKER_SPEED = new SwerveSpeedLimits(MAX_CHASSIS_SPEED / 1.25, MAX_CHASSIS_ACCELERATION, MAX_CHASSIS_ROTATIONAL_SPEED / 1.25, MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+      public static final SwerveSpeedLimits PATH_FIND_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED / 2,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED / 2,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+      public static final SwerveSpeedLimits TRAVERSE_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+      public static final SwerveSpeedLimits AMP_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED / 1.25,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+      public static final SwerveSpeedLimits INTAKE_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED / 1.25,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+      public static final SwerveSpeedLimits SPEAKER_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED / 1.25,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED =
-              new SwerveSpeedLimits(MAX_CHASSIS_SPEED / 1.75, MAX_CHASSIS_ACCELERATION, MAX_CHASSIS_ROTATIONAL_SPEED / 1.75, MAX_CHASSIS_ROTATIONAL_ACCELERATION);
-      public static final SwerveSpeedLimits TRAP_SPEED = new SwerveSpeedLimits(MAX_CHASSIS_SPEED / 1.25, MAX_CHASSIS_ACCELERATION, MAX_CHASSIS_ROTATIONAL_SPEED / 1.25, MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED / 1.75,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED / 1.75,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+      public static final SwerveSpeedLimits TRAP_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED / 1.25,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
 
       public static final SwerveModuleState[] X_SHAPE =
           new SwerveModuleState[] {
