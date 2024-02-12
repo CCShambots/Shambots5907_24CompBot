@@ -130,6 +130,28 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             this,
             TRAVERSE_SPEED));
 
+    registerStateCommand(State.GROUND_INTAKE, new DriveCommand(
+            drive,
+            xSupplier,
+            ySupplier,
+            thetaSupplier,
+            Constants.Controller.DEADBAND,
+            Constants.Controller.DRIVE_CONVERSION,
+            this,
+            INTAKE_SPEED
+    ));
+
+    registerStateCommand(State.HUMAN_PLAYER_INTAKE, new DriveCommand(
+            drive,
+            xSupplier,
+            ySupplier,
+            thetaSupplier,
+            Constants.Controller.DEADBAND,
+            Constants.Controller.DRIVE_CONVERSION,
+            this,
+            HUMAN_PLAYER_PICKUP_SPEED
+    ));
+
     registerStateCommand(
         State.AUTO_AMP,
         getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
@@ -162,6 +184,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.IDLE);
     addOmniTransition(State.X_SHAPE);
     addOmniTransition(State.FIELD_ORIENTED_DRIVE);
+    addOmniTransition(State.GROUND_INTAKE);
+    addOmniTransition(State.HUMAN_PLAYER_INTAKE);
 
     addTransition(State.IDLE, State.FOLLOWING_AUTONOMOUS_TRAJECTORY);
 
@@ -300,6 +324,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     AUTO_HUMAN_PLAYER_INTAKE,
     TURN_VOLTAGE_CALC,
     DRIVE_VOLTAGE_CALC,
+    GROUND_INTAKE,
+    HUMAN_PLAYER_INTAKE,
 
     // flags for non-autonomous operations
     PATHFINDING,
