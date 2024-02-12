@@ -46,9 +46,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
       DoubleSupplier y,
       DoubleSupplier theta,
       Supplier<StageSide> targetStageSideSupplier,
-      Trigger stop,
       Trigger incrementUp,
-      Trigger incrementDown) {
+      Trigger incrementDown,
+      Trigger stop) {
     super("Drivetrain", State.UNDETERMINED, State.class);
 
     this.xSupplier = x;

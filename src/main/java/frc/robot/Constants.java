@@ -39,8 +39,8 @@ public class Constants {
   public static final boolean ALLOW_TUNING = true;
 
   public static final class Controller {
-    public static final int LEFT_FLIGHT_STICK_ID = 0;
-    public static final int RIGHT_FLIGHT_STICK_ID = 0;
+    public static final int LEFT_FLIGHT_STICK_ID = 1;
+    public static final int RIGHT_FLIGHT_STICK_ID = 2;
     public static final int OPERATOR_CONTROLLER_ID = 0;
 
     public static final UnaryOperator<Double> DRIVE_CONVERSION =

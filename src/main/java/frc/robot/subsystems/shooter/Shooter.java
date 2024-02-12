@@ -27,20 +27,12 @@ public class Shooter extends StateMachine<Shooter.State> {
   // odom
   private final Supplier<Translation2d> botTranslationProvider;
 
-  // angle about x axis from gyro
-  private final DoubleSupplier botXAngleProvider;
-
-  // climber extension
-  private final DoubleSupplier climberExtensionSupplier;
-
   private final Supplier<StageSide> targetStageSideSupplier;
 
   public Shooter(
       ArmIO armIO,
       FlywheelIO flywheelIO,
       Supplier<Translation2d> botTranslationProvider,
-      DoubleSupplier botXAngleProvider,
-      DoubleSupplier climberExtensionSupplier,
       Supplier<StageSide> targetStageSideSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
@@ -48,8 +40,6 @@ public class Shooter extends StateMachine<Shooter.State> {
     super("Shooter", State.UNDETERMINED, State.class);
 
     this.botTranslationProvider = botTranslationProvider;
-    this.botXAngleProvider = botXAngleProvider;
-    this.climberExtensionSupplier = climberExtensionSupplier;
     this.targetStageSideSupplier = targetStageSideSupplier;
 
     arm = new Arm(armIO, this::armSpeakerAA, this::armTrapAA, tuningInc, tuningDec, tuningStop);
