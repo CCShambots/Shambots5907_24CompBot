@@ -14,7 +14,6 @@ import frc.robot.ShamLib.HID.CommandFlightStick;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.commands.DetermineRingStatusCommand;
 import frc.robot.subsystems.climbers.ClimberIO;
-import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
 import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -28,7 +27,6 @@ import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.lights.Lights;
 import frc.robot.subsystems.lights.LightsIO;
-import frc.robot.subsystems.lights.LightsIOReal;
 import frc.robot.subsystems.lights.LightsIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.arm.ArmIO;
@@ -245,8 +243,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private ClimberIO getLeftClimberIO() {
     return switch (Constants.currentBuildMode) {
-      case REAL -> new ClimberIOReal(
-          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+        /*case REAL -> new ClimberIOReal(
+        Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);*/
       case SIM -> new ClimberIOSim(
           Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
       default -> new ClimberIO() {};
@@ -255,8 +253,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private ClimberIO getRightClimberIO() {
     return switch (Constants.currentBuildMode) {
-      case REAL -> new ClimberIOReal(
-          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
+        /*case REAL -> new ClimberIOReal(
+        Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);*/
       case SIM -> new ClimberIOSim(
           Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
       default -> new ClimberIO() {};
@@ -322,9 +320,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private LightsIO getLightsIO() {
     switch (Constants.currentBuildMode) {
-      case REAL -> {
-        return new LightsIOReal();
-      }
+        /*case REAL -> {
+          return new LightsIOReal();
+        }*/
 
       case SIM -> {
         return new LightsIOSim();
