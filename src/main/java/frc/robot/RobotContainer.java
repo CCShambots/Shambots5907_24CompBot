@@ -37,6 +37,7 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import frc.robot.util.StageSide;
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
@@ -50,6 +51,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Lights lights;
 
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  private StageSide targetStageSide = StageSide.CENTER;
 
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
@@ -73,6 +76,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             Translation2d::new,
             () -> 0,
             () -> 0,
+            () -> targetStageSide,
             new Trigger(() -> false),
             new Trigger(() -> false),
             new Trigger(() -> false));
@@ -87,10 +91,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     vision = new Vision("limelight", "pv_instance_1");
 
-    drivetrain = new Drivetrain(() -> 0, () -> 0, () -> 0);
+    drivetrain =
+        new Drivetrain(
+            () -> 0,
+            () -> 0,
+            () -> 0,
+            () -> targetStageSide,
+            new Trigger(() -> false),
+            new Trigger(() -> false),
+            new Trigger(() -> false));
 
     drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
-
 
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
