@@ -167,29 +167,29 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double VELOCITY = (10 / 60.0) * 360; // DEG/s
-      public static final double ACCELERATION = (0.25 / 60.0) * 360.0; // DEG/s/s
-      public static final double JERK = 10_000; // DEG/s/s/s
+      public static final double VELOCITY = (2 / 60.0) * 2 * Math.PI; // RAD/s
+      public static final double ACCELERATION = (4 / 60.0) * 2 * Math.PI; // RAD/s/s
+      public static final double JERK = 10_000; // RAD/s/s/s
 
-      public static final double POSITION_READY_TOLERANCE = 5; // DEG
+      public static final double POSITION_READY_TOLERANCE = 5 * (Math.PI / 180); // RAD
 
-      public static final double BASE_SHOT_POSITION = 65; // DEG
-      public static final double AMP_POSITION = 50; // DEG
-      public static final double TRAP_PREP_POSITION = 50; // DEG
-      public static final double FULL_STOW_POSITION = 0; // DEG
-      public static final double PARTIAL_STOW_POSITION = 50; // DEG
-      public static final double CHUTE_INTAKE_POSITION = 60; // DEG
+      public static final double BASE_SHOT_POSITION = 65 * (Math.PI / 180); // RAD
+      public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
+      public static final double TRAP_PREP_POSITION = 50 * (Math.PI / 180); // RAD
+      public static final double FULL_STOW_POSITION = 30 * (Math.PI / 180); // RAD
+      public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
+      public static final double CHUTE_INTAKE_POSITION = 60 * (Math.PI / 180); // RAD
 
-      public static final double AUTO_SYNC_TOLERANCE = 5;
-      public static final double AUTO_SYNC_MAX_VELOCITY = 1; // DEG/s
+      public static final double AUTO_SYNC_TOLERANCE = 0.1;
+      public static final double AUTO_SYNC_MAX_VELOCITY = 0.1; // RAD/s
 
       public static final boolean ENABLE_AUTO_SYNC = false;
       public static final double MIN_TIME_BETWEEN_SYNC = 2.0;
 
       public static final double VOLTAGE_INCREMENT = 0.25;
 
-      public static final double MIN_ANGLE = 0.0;
-      public static final double MAX_ANGLE = 0.0;
+      public static final double MIN_ANGLE = 30.0  * (Math.PI / 180);
+      public static final double MAX_ANGLE = 60  * (Math.PI / 180);
     }
   }
 
