@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.HID.CommandFlightStick;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.commands.DetermineRingStatusCommand;
 import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
@@ -128,22 +129,37 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
     addChildSubsystem(climbers);
+    addChildSubsystem(lights);
+
+    registerStateCommands();
+    registerTransitions();
 
     configureBindings();
   }
 
   private void registerStateCommands() {
-    registerStateCommand(State.TRAVERSING, new ParallelCommandGroup(
-            drivetrain.requestTransition(Drivetrain.State.FIELD_ORIENTED_DRIVE),
-
+    registerStateCommand(State.SOFT_E_STOP, new ParallelCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            climbers.transitionCommand(Climbers.State.SOFT_E_STOP),
+            intake.transitionCommand(Intake.State.IDLE),
+            shooter.transitionCommand(Shooter.State.SOFT_E_STOP),
+            indexer.transitionCommand(Indexer.State.IDLE),
+            lights.transitionCommand(Lights.State.ERROR)
     ));
+
+    registerStateCommand(State.TRAVERSING, new ParallelCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            climbers.transitionCommand(Climbers.State.FREE_RETRACT),
+            intake.transitionCommand(Intake.State.IDLE),
+            new DetermineRingStatusCommand(shooter, indexer, lights)
+    ));
+
+
   }
 
   private void registerTransitions() {
-    addOmniTransition(State.TRAVERSING, new ParallelCommandGroup(
-            drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
-            climbers.transitionCommand(Climbers.State.FREE_RETRACT)
-    ));
+    addOmniTransition(State.TRAVERSING);
+    addOmniTransition(State.SOFT_E_STOP);
   }
 
   private Trigger tuningIncrement() {
