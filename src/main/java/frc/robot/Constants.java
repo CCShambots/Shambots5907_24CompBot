@@ -272,8 +272,8 @@ public class Constants {
     }
 
     public static final class Hardware {
-      public static final int LEFT_CLIMBER_ID = 0;
-      public static final int RIGHT_CLIMBER_ID = 0;
+      public static final int LEFT_CLIMBER_ID = 40;
+      public static final int RIGHT_CLIMBER_ID = 41;
 
       public static final boolean LEFT_INVERTED = false;
       public static final boolean RIGHT_INVERTED = false;
