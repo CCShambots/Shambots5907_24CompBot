@@ -141,8 +141,13 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY,
             State.FIELD_ORIENTED_DRIVE));
 
-    registerStateCommand(State.TURN_VOLTAGE_CALC, drive.getTurnVoltageCalcCommand(stop, incrementUp, incrementDown, TURN_VOLTAGE_INCREMENT));
-    registerStateCommand(State.DRIVE_VOLTAGE_CALC, drive.getDriveVoltageCalcCommand(stop, incrementUp, incrementDown, DRIVE_VOLTAGE_INCREMENT));
+    registerStateCommand(
+        State.TURN_VOLTAGE_CALC,
+        drive.getTurnVoltageCalcCommand(stop, incrementUp, incrementDown, TURN_VOLTAGE_INCREMENT));
+    registerStateCommand(
+        State.DRIVE_VOLTAGE_CALC,
+        drive.getDriveVoltageCalcCommand(
+            stop, incrementUp, incrementDown, DRIVE_VOLTAGE_INCREMENT));
 
     registerFaceCommands();
     registerAutoClimb();
@@ -252,9 +257,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private Command notifyWaypointCommand() {
-    return new InstantCommand(() -> {
-      if (waypointConsumer != null) waypointConsumer.accept(currentWaypoint.getAndIncrement());
-    });
+    return new InstantCommand(
+        () -> {
+          if (waypointConsumer != null) waypointConsumer.accept(currentWaypoint.getAndIncrement());
+        });
   }
 
   public void addVisionMeasurements(

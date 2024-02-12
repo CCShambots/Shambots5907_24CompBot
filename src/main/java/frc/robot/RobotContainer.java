@@ -83,7 +83,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     vision = new Vision("limelight", "pv_instance_1");
 
-    drivetrain = new Drivetrain(() -> 0, () -> 0, () -> 0, () -> targetStageSide);
+    drivetrain =
+        new Drivetrain(
+            () -> 0,
+            () -> 0,
+            () -> 0,
+            () -> targetStageSide,
+            new Trigger(() -> false),
+            new Trigger(() -> false),
+            new Trigger(() -> false));
 
     drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
 
