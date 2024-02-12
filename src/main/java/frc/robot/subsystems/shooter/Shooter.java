@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
@@ -131,6 +132,11 @@ public class Shooter extends StateMachine<Shooter.State> {
                 flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC))
             .andThen(flywheel.waitForState(Flywheel.State.IDLE))
             .andThen(transitionCommand(State.SOFT_E_STOP)));
+
+    registerStateCommand(State.PASS_THROUGH, new SequentialCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.PASS_THROUGH),
+            arm.transitionCommand(Arm.State.PARTIAL_STOW)
+    ));
   }
 
   private void registerTransitions() {
@@ -144,6 +150,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.TRAP_PREP);
     addOmniTransition(State.CHUTE_INTAKE);
     addOmniTransition(State.AMP);
+    addOmniTransition(State.PASS_THROUGH);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
@@ -238,6 +245,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     BOTTOM_FLYWHEEL_VOLTAGE_CALC,
     ARM_VOLTAGE_CALC,
     AMP,
+    PASS_THROUGH,
     // flags
     READY
   }
