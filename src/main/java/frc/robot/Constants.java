@@ -143,8 +143,8 @@ public class Constants {
     }
 
     public static final class Hardware {
-      public static final int LEADER_ID = 20;
-      public static final int FOLLOWER_ID = 21;
+      public static final int LEADER_ID = 12;
+      public static final int FOLLOWER_ID = 13;
       public static final int ENCODER_ID = 3;
 
       public static final double ENCODER_RATIO = (10.0 / 58.0) * 2 * Math.PI;
@@ -413,9 +413,9 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              60, // DRIVE MOTOR ID
-              61, // TURN MOTOR ID
-              60, // ENCODER ID
+              20, // DRIVE MOTOR ID
+              21, // TURN MOTOR ID
+              20, // ENCODER ID
               0.0, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
@@ -426,9 +426,9 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              62, // DRIVE MOTOR ID
-              63, // TURN MOTOR ID
-              61, // ENCODER ID
+              22, // DRIVE MOTOR ID
+              23, // TURN MOTOR ID
+              21, // ENCODER ID
               0.0, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
@@ -439,9 +439,9 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              64, // DRIVE MOTOR ID
-              65, // TURN MOTOR ID
-              62, // ENCODER ID
+              24, // DRIVE MOTOR ID
+              25, // TURN MOTOR ID
+              22, // ENCODER ID
               0.0, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
@@ -452,9 +452,9 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              66, // DRIVE MOTOR ID
-              67, // TURN MOTOR ID
-              63, // ENCODER ID
+              26, // DRIVE MOTOR ID
+              27, // TURN MOTOR ID
+              23, // ENCODER ID
               0.0, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
