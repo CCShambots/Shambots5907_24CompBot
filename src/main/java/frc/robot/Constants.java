@@ -222,7 +222,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BASE_SHOT_VELOCITY = 4000 / 60.0; // RPS
+      public static final double BASE_SHOT_VELOCITY = 5800 / 60.0; // RPS
       public static final double SPIN_UP_READY_TOLERANCE = 60 / 60.0; // RPS
 
       public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
