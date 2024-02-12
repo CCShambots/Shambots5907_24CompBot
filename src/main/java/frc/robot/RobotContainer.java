@@ -182,12 +182,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             intake.transitionCommand(Intake.State.INTAKE),
             indexer.waitForState(Indexer.State.INDEXING),
             transitionCommand(State.TRAVERSING)));
+
+    registerStateCommand(State.BASE_SHOT, new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            intake.transitionCommand(Intake.State.IDLE),
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            shooter.transitionCommand(Shooter.State.BASE_SHOT),
+            new ParallelCommandGroup(lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))
+    ));
   }
 
   private void registerTransitions() {
     addOmniTransition(State.TRAVERSING);
     addOmniTransition(State.SOFT_E_STOP);
     addOmniTransition(State.SPEAKER_SCORE);
+    addOmniTransition(State.BASE_SHOT);
   }
 
   private Command flashError(Lights.State onEnd) {
@@ -350,6 +359,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     TRAVERSING,
     SPEAKER_SCORE,
     GROUND_INTAKE,
+    BASE_SHOT,
     SOFT_E_STOP
   }
 }
