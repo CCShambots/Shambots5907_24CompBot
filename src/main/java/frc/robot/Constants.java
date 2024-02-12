@@ -113,21 +113,25 @@ public class Constants {
       public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT =
           new InterpolatingDoubleTreeMap();
 
-      public static final double SPEAKER_TARGET_HEIGHT = 0.0;
-      public static final double TRAP_TARGET_HEIGHT = 0.0;
+      public static final double SPEAKER_TARGET_HEIGHT = 2.05;
+      public static final double TRAP_TARGET_HEIGHT = 1.52;
 
       static {
         // FLYWHEEL SPEAKER VALUES
-        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 0.0);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
 
         // ARM SPEAKER OFFSETS
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(20.0, 0.0);
 
         // FLYWHEEL TRAP VALUES
-        FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, 0.0);
+        FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
+        FLYWHEEL_TRAP_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
 
         // ARM TRAP OFFSETS
         ARM_TRAP_DISTANCE_LUT.put(0.0, 0.0);
+        ARM_TRAP_DISTANCE_LUT.put(20.0, 0.0);
       }
     }
   }
@@ -143,8 +147,8 @@ public class Constants {
       public static final int FOLLOWER_ID = 21;
       public static final int ENCODER_ID = 3;
 
-      public static final double ENCODER_RATIO = 1 * 360.0;
-      public static final double MOTOR_RATIO = 1 * 360.0;
+      public static final double ENCODER_RATIO = (10.0/58.0) * 2 * Math.PI;
+      public static final double MOTOR_RATIO = (10.0/64.0)*(18.0/50.0)*(10.0/58.0) * 2 * Math.PI;
 
       public static final boolean ENCODER_INVERTED = true;
       public static final boolean LEADER_INVERTED = false;
