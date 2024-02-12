@@ -398,7 +398,7 @@ public class Constants {
     public static final class Sim {}
 
     public static final class Hardware {
-      public static final int GYRO_ID = 0;
+      public static final int GYRO_ID = 60;
 
       public static final String MODULE_CAN_BUS = "";
       public static final String GYRO_CAN_BUS = "";
@@ -407,9 +407,9 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, // DRIVE MOTOR ID
-              0, // TURN MOTOR ID
-              0, // ENCODER ID
+              60, // DRIVE MOTOR ID
+              61, // TURN MOTOR ID
+              60, // ENCODER ID
               0.0, // ENCODER OFFSET
               new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
@@ -419,9 +419,9 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, // DRIVE MOTOR ID
-              0, // TURN MOTOR ID
-              0, // ENCODER ID
+              62, // DRIVE MOTOR ID
+              63, // TURN MOTOR ID
+              61, // ENCODER ID
               0.0, // ENCODER OFFSET
               new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
@@ -431,9 +431,9 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, // DRIVE MOTOR ID
-              0, // TURN MOTOR ID
-              0, // ENCODER ID
+              64, // DRIVE MOTOR ID
+              65, // TURN MOTOR ID
+              62, // ENCODER ID
               0.0, // ENCODER OFFSET
               new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
@@ -443,9 +443,9 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
-              0, // DRIVE MOTOR ID
-              0, // TURN MOTOR ID
-              0, // ENCODER ID
+              66, // DRIVE MOTOR ID
+              67, // TURN MOTOR ID
+              63, // ENCODER ID
               0.0, // ENCODER OFFSET
               new Translation2d(0, 0), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
