@@ -186,10 +186,10 @@ public class Constants {
       public static final boolean ENABLE_AUTO_SYNC = false;
       public static final double MIN_TIME_BETWEEN_SYNC = 2.0;
 
-      public static final double VOLTAGE_INCREMENT = 0.25;
+      public static final double VOLTAGE_INCREMENT = 0.125;
 
-      public static final double MIN_ANGLE = 30.0 * (Math.PI / 180);
-      public static final double MAX_ANGLE = 60 * (Math.PI / 180);
+      public static final double MIN_ANGLE = 20.0 * (Math.PI / 180);
+      public static final double MAX_ANGLE = 65.0 * (Math.PI / 180);
     }
   }
 
