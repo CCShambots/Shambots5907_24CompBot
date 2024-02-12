@@ -236,8 +236,8 @@ public class Constants {
 
   public static final class Intake {
     public static final class Hardware {
-      public static final int TOP_ID = 0;
-      public static final int BOTTOM_ID = 1;
+      public static final int TOP_ID = 30;
+      public static final int BOTTOM_ID = 31;
       public static final int PROX_ID = 0;
 
       public static final double TOP_RATIO = 1;
