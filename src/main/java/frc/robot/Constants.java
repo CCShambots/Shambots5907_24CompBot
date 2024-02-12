@@ -316,7 +316,7 @@ public class Constants {
 
   public static final class Indexer {
     public static final class Hardware {
-      public static final int BELT_MOTOR_ID = 0;
+      public static final int BELT_MOTOR_ID = 50;
 
       public static final double BELT_RATIO = 1.0;
 
@@ -335,14 +335,16 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double EXPECT_SPEED = 0.0;
-      public static final double PASS_THROUGH_SPEED = 0.0;
-      public static final double INDEX_SPEED = 0.0;
-      public static final double FEED_SPEED = 0.0;
+      //rps
+      public static final double EXPECT_SPEED = 20;
+      public static final double PASS_THROUGH_SPEED = 33;
+      public static final double INDEX_SPEED = 20;
+      public static final double FEED_SPEED = 33;
 
-      public static final double INDEX_TIMEOUT = 0.0;
+      //seconds
+      public static final double INDEX_TIMEOUT = 2;
 
-      public static final double VOLTAGE_INCREMENT = 0.0;
+      public static final double VOLTAGE_INCREMENT = 0.125;
     }
 
     public static final class Sim {
