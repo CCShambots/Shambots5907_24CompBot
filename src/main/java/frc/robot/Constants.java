@@ -171,12 +171,12 @@ public class Constants {
       public static final double ACCELERATION = (4 / 60.0) * 2 * Math.PI; // RAD/s/s
       public static final double JERK = 10_000; // RAD/s/s/s
 
-      public static final double POSITION_READY_TOLERANCE = 5 * (Math.PI / 180); // RAD
+      public static final double POSITION_READY_TOLERANCE = 2 * (Math.PI / 180); // RAD
 
-      public static final double BASE_SHOT_POSITION = 65 * (Math.PI / 180); // RAD
+      public static final double BASE_SHOT_POSITION = 60 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
       public static final double TRAP_PREP_POSITION = 50 * (Math.PI / 180); // RAD
-      public static final double FULL_STOW_POSITION = 30 * (Math.PI / 180); // RAD
+      public static final double FULL_STOW_POSITION = 20 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
       public static final double CHUTE_INTAKE_POSITION = 60 * (Math.PI / 180); // RAD
 
