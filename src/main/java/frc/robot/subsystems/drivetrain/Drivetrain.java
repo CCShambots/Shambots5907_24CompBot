@@ -128,7 +128,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             Constants.Controller.DEADBAND,
             Constants.Controller.DRIVE_CONVERSION,
             this,
-            TRAVERSE_SPEED));
+            TRAVERSE_SPEED).alongWith(new InstantCommand(() -> setFlag(State.AT_ANGLE))));
 
     registerStateCommand(
         State.GROUND_INTAKE,
