@@ -178,6 +178,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerAutoClimb();
   }
 
+  public void resetGyro() {
+    drive.resetGyro();
+  }
+
   @Override
   protected void update() {
     drive.update();
