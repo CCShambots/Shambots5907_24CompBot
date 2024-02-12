@@ -281,7 +281,7 @@ public class Constants {
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
 
       // rotations to meters
-      public static final double CLIMBER_RATIO = 0;
+      public static final double CLIMBER_RATIO = 1;
     }
 
     public static final class Settings {
