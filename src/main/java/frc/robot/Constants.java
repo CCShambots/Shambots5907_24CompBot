@@ -144,17 +144,17 @@ public class Constants {
     public static final class Hardware {
       public static final int LEADER_ID = 12;
       public static final int FOLLOWER_ID = 13;
-      public static final int ENCODER_ID = 3;
+      public static final int POTENTIOMETER_ID = 3;
 
-      public static final double ENCODER_RATIO = (10.0 / 58.0) * 2 * Math.PI;
+      public static final double POTENTIOMETER_RATIO = (10.0 / 58.0) * 2 * Math.PI;
       public static final double MOTOR_RATIO =
           (10.0 / 64.0) * (18.0 / 50.0) * (10.0 / 58.0) * 2 * Math.PI;
 
-      public static final boolean ENCODER_INVERTED = true;
+      public static final boolean POTENTIOMETER_INVERTED = true;
       public static final boolean LEADER_INVERTED = false;
       public static final boolean FOLLOWER_INVERTED = false;
 
-      public static final double ENCODER_OFFSET = 0.0;
+      public static final double POTENTIOMETER_OFFSET = 0.0;
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
