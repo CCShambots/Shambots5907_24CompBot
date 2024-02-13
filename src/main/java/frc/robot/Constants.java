@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 public class Constants {
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REAL;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
