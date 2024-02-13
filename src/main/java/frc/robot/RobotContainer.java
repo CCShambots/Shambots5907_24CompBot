@@ -41,6 +41,7 @@ import frc.robot.subsystems.shooter.arm.ArmIOSim;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -49,7 +50,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Intake intake;
   private final Shooter shooter;
   private final Indexer indexer;
-  // private final Vision vision;
+  private final Vision vision;
   private final Climbers climbers;
   private final Drivetrain drivetrain;
   private final Lights lights;
@@ -122,9 +123,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningIncrement(),
             tuningDecrement(),
             tuningStop());
-
-    autoChooser =
-        new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     addChildSubsystem(drivetrain);
     // addChildSubsystem(vision);
