@@ -135,6 +135,10 @@ public class Arm extends StateMachine<Arm.State> {
     return inputs.motorPosition;
   }
 
+  public double getAbsoluteAngle() {
+    return inputs.encoderPosition;
+  }
+
   public enum State {
     UNDETERMINED,
     SOFT_E_STOP,

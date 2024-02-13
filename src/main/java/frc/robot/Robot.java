@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
@@ -103,7 +104,7 @@ public class Robot extends LoggedRobot {
                 .andThen(
                     new WhileDisabledInstantCommand(
                         () -> {
-                          Constants.applyAlliance(DriverStation.getAlliance());
+                          AllianceManager.applyAlliance(DriverStation.getAlliance());
                         })));
   }
 
