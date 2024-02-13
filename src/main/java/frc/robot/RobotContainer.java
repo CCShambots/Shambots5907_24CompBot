@@ -239,9 +239,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     return operatorController.a();
   }
 
-  private void configureBindings() {
-    leftFlightStick.topBase().onTrue(new InstantCommand(drivetrain::resetGyro));
-  }
+  private void configureBindings() {}
 
   private ClimberIO getLeftClimberIO() {
     return switch (Constants.currentBuildMode) {
