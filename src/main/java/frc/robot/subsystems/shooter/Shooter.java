@@ -214,7 +214,7 @@ public class Shooter extends StateMachine<Shooter.State> {
 
   private double getSpeakerDistance() {
     Pose2d speaker =
-        AllianceManager.alliance == DriverStation.Alliance.Blue
+        AllianceManager.getAlliance() == DriverStation.Alliance.Blue
             ? Constants.PhysicalConstants.BLUE_SPEAKER
             : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
 
@@ -230,7 +230,7 @@ public class Shooter extends StateMachine<Shooter.State> {
         };
 
     targetTrap =
-        AllianceManager.alliance == DriverStation.Alliance.Blue
+        AllianceManager.getAlliance() == DriverStation.Alliance.Blue
             ? targetTrap
             : Constants.mirror(targetTrap);
 

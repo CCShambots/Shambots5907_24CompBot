@@ -91,6 +91,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     registerStateCommands(stop, incrementUp, incrementDown);
     registerTransitions();
+
+    //Make sure the alliaince flipping gets passed on to the drivetrain
+    AllianceManager.addAllianceChangeHook(this::syncAlliance);
   }
 
   public Pose2d getBotPose() {
@@ -103,7 +106,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
   public void syncAlliance() {
     // flip if we are on red alliance
-    flipPath = AllianceManager.alliance == DriverStation.Alliance.Red;
+    flipPath = AllianceManager.getAlliance() == DriverStation.Alliance.Red;
 
     // re-register face commands in case the alliance changed (they are based on the blue poses by
     // default)

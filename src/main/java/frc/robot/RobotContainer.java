@@ -364,7 +364,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     driveTab.add("Auto Route", autoChooser).withPosition(3, 0).withSize(2, 2);
 
     driveTab
-        .addString("ALLIANCE", () -> AllianceManager.alliance.name())
+        .addString("ALLIANCE", () -> AllianceManager.getAlliance().name())
         .withPosition(0, 0)
         .withSize(2, 2);
     driveTab
