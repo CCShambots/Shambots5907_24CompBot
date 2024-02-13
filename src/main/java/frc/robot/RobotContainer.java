@@ -68,9 +68,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    autoChooser =
-        new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
-
     // actually do bindings :()
 
     // TODO: Give actual tuning binds
@@ -140,6 +137,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     registerTransitions();
 
     configureBindings();
+
+    //Important to instatiate after drivetrain consructor is called so that auto builder is configured
+    autoChooser =
+        new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     initializeDriveTab();
   }
