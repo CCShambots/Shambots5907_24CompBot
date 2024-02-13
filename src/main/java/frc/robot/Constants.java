@@ -16,18 +16,13 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.ShamLib.Candle.RGB;
 import frc.robot.ShamLib.PIDGains;
 import frc.robot.ShamLib.ShamLibConstants;
-import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
-import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 public class Constants {
@@ -551,31 +546,6 @@ public class Constants {
       public static final double TURN_VOLTAGE_INCREMENT = 0.125;
       public static final double DRIVE_VOLTAGE_INCREMENT = 0.125;
     }
-  }
-
-  public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
-  public static boolean overrideAlliance = false;
-
-  public static void applyAlliance(Optional<DriverStation.Alliance> newAlliance) {
-    if (!overrideAlliance && newAlliance.isPresent()) {
-      alliance = newAlliance.get();
-    }
-  }
-
-  public static InstantCommand switchAlliance() {
-    return new WhileDisabledInstantCommand(
-        () -> {
-          alliance = alliance == Alliance.Red ? Alliance.Blue : Alliance.Red;
-          Constants.overrideAlliance = true;
-        });
-  }
-
-  public static InstantCommand syncAlliance() {
-    return new WhileDisabledInstantCommand(
-        () -> {
-          Constants.applyAlliance(DriverStation.getAlliance());
-          Constants.overrideAlliance = false;
-        });
   }
 
   public static boolean doubleEqual(double a, double b, double accuracy) {

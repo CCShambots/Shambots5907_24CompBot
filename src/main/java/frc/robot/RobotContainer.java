@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.HID.CommandFlightStick;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.commands.DetermineRingStatusCommand;
@@ -363,11 +364,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     driveTab.add("Auto Route", autoChooser).withPosition(3, 0).withSize(2, 2);
 
     driveTab
-        .addString("ALLIANCE", () -> Constants.alliance.name())
+        .addString("ALLIANCE", () -> AllianceManager.alliance.name())
         .withPosition(0, 0)
         .withSize(2, 2);
-    driveTab.add("SWITCH ALLIANCE", Constants.switchAlliance()).withPosition(5, 2).withSize(2, 2);
-    driveTab.add("SYNC ALLIANCE", Constants.syncAlliance()).withPosition(5, 0).withSize(2, 2);
+    driveTab
+        .add("SWITCH ALLIANCE", AllianceManager.switchAlliance())
+        .withPosition(5, 2)
+        .withSize(2, 2);
+    driveTab.add("SYNC ALLIANCE", AllianceManager.syncAlliance()).withPosition(5, 0).withSize(2, 2);
 
     driveTab
         .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))

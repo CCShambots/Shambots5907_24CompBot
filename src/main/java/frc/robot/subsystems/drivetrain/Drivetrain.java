@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.DriveCommand;
 import frc.robot.ShamLib.swerve.SwerveDrive;
@@ -102,7 +103,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
   public void syncAlliance() {
     // flip if we are on red alliance
-    flipPath = Constants.alliance == DriverStation.Alliance.Red;
+    flipPath = AllianceManager.alliance == DriverStation.Alliance.Red;
 
     // re-register face commands in case the alliance changed (they are based on the blue poses by
     // default)
