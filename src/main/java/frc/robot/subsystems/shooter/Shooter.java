@@ -2,10 +2,14 @@ package frc.robot.subsystems.shooter;
 
 import static frc.robot.Constants.Shooter.Settings.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
@@ -13,9 +17,7 @@ import frc.robot.subsystems.shooter.arm.Arm;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.function.DoubleSupplier;
+import frc.robot.util.StageSide;
 import java.util.function.Supplier;
 
 public class Shooter extends StateMachine<Shooter.State> {
@@ -25,40 +27,28 @@ public class Shooter extends StateMachine<Shooter.State> {
   // odom
   private final Supplier<Translation2d> botTranslationProvider;
 
-  // angle about x axis from gyro
-  private final DoubleSupplier botXAngleProvider;
-
-  // climber extension
-  private final DoubleSupplier climberExtensionSupplier;
+  private final Supplier<StageSide> targetStageSideSupplier;
 
   public Shooter(
       ArmIO armIO,
       FlywheelIO flywheelIO,
       Supplier<Translation2d> botTranslationProvider,
-      DoubleSupplier botXAngleProvider,
-      DoubleSupplier climberExtensionSupplier,
+      Supplier<StageSide> targetStageSideSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
     super("Shooter", State.UNDETERMINED, State.class);
 
     this.botTranslationProvider = botTranslationProvider;
-    this.botXAngleProvider = botXAngleProvider;
-    this.climberExtensionSupplier = climberExtensionSupplier;
+    this.targetStageSideSupplier = targetStageSideSupplier;
 
-    arm =
-        new Arm(
-            armIO,
-            () -> distanceAA(ARM_DISTANCE_LUT, Constants.Arm.Settings.BASE_SHOT_POSITION),
-            this::armTrapAA,
-            tuningInc,
-            tuningDec,
-            tuningStop);
+    arm = new Arm(armIO, this::armSpeakerAA, this::armTrapAA, tuningInc, tuningDec, tuningStop);
 
     flywheel =
         new Flywheel(
             flywheelIO,
-            () -> distanceAA(FLYWHEEL_DISTANCE_LUT, Constants.Flywheel.Settings.BASE_SHOT_VELOCITY),
+            this::flywheelSpeakerAA,
+            this::flywheelTrapAA,
             tuningInc,
             tuningDec,
             tuningStop);
@@ -141,6 +131,24 @@ public class Shooter extends StateMachine<Shooter.State> {
                 flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC))
             .andThen(flywheel.waitForState(Flywheel.State.IDLE))
             .andThen(transitionCommand(State.SOFT_E_STOP)));
+
+    registerStateCommand(
+        State.PASS_THROUGH,
+        new SequentialCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.PASS_THROUGH),
+            arm.transitionCommand(Arm.State.PARTIAL_STOW)));
+
+    registerStateCommand(
+        State.TRAP_AA,
+        new ParallelCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.TRAP_ACTIVE_ADJUST_SPIN),
+            arm.transitionCommand(Arm.State.TRAP_ACTIVE_ADJUST)));
+
+    registerStateCommand(
+        State.SPEAKER_AA,
+        new ParallelCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.SPEAKER_ACTIVE_ADJUST_SPIN),
+            arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST)));
   }
 
   private void registerTransitions() {
@@ -154,6 +162,9 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.TRAP_PREP);
     addOmniTransition(State.CHUTE_INTAKE);
     addOmniTransition(State.AMP);
+    addOmniTransition(State.PASS_THROUGH);
+    addOmniTransition(State.SPEAKER_AA);
+    addOmniTransition(State.TRAP_AA);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
@@ -171,33 +182,58 @@ public class Shooter extends StateMachine<Shooter.State> {
         });
   }
 
-  private double armTrapAA() {
-    double[] botTrapOffset =
-        Constants.getTrapOffsetFromBot(
-            climberExtensionSupplier.getAsDouble(), botXAngleProvider.getAsDouble());
-    return Math.atan2(botTrapOffset[0], botTrapOffset[1]);
+  private double distanceAA(Pose2d pose, InterpolatingDoubleTreeMap map) {
+    double distance = pose.getTranslation().getDistance(botTranslationProvider.get());
+
+    return map.get(distance);
   }
 
-  private double distanceAA(NavigableMap<Double, Double> map, double replacement) {
-    double distance =
-        Constants.PhysicalConstants.BLUE_SPEAKER
-            .getTranslation()
-            .getDistance(botTranslationProvider.get());
+  private double armTrapAA() {
+    double distance = getTrapDistance();
 
-    Map.Entry<Double, Double> lower = map.floorEntry(distance);
-    Map.Entry<Double, Double> higher = map.ceilingEntry(distance);
+    // angle of shooter to face directly at trap target height plus lut offset
+    return Math.atan2(TRAP_TARGET_HEIGHT, distance) + ARM_TRAP_DISTANCE_LUT.get(distance);
+  }
 
-    if (lower == null && higher == null) {
-      // avoid crashing
-      return replacement;
-    } else if (lower == null || higher == null) {
-      return lower != null ? lower.getValue() : higher.getValue();
-    }
+  private double armSpeakerAA() {
+    double distance = getSpeakerDistance();
 
-    double interpolation = (distance - lower.getKey()) / (higher.getKey() - lower.getKey());
+    // angle of shooter to face directly at speaker target height plus lut offset
+    return Math.atan2(SPEAKER_TARGET_HEIGHT, distance)
+        + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
+  }
 
-    // TODO: check this math
-    return Constants.lerp(lower.getValue(), higher.getValue(), interpolation);
+  private double flywheelTrapAA() {
+    return FLYWHEEL_TRAP_DISTANCE_LUT.get(getTrapDistance());
+  }
+
+  private double flywheelSpeakerAA() {
+    return FLYWHEEL_SPEAKER_DISTANCE_LUT.get(getSpeakerDistance());
+  }
+
+  private double getSpeakerDistance() {
+    Pose2d speaker =
+        Constants.alliance == DriverStation.Alliance.Blue
+            ? Constants.PhysicalConstants.BLUE_SPEAKER
+            : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
+
+    return speaker.getTranslation().getDistance(botTranslationProvider.get());
+  }
+
+  private double getTrapDistance() {
+    Pose2d targetTrap =
+        switch (targetStageSideSupplier.get()) {
+          case CENTER -> Constants.PhysicalConstants.BLUE_CENTER_TRAP;
+          case LEFT -> Constants.PhysicalConstants.BLUE_LEFT_TRAP;
+          case RIGHT -> Constants.PhysicalConstants.BLUE_RIGHT_TRAP;
+        };
+
+    targetTrap =
+        Constants.alliance == DriverStation.Alliance.Blue
+            ? targetTrap
+            : Constants.mirror(targetTrap);
+
+    return targetTrap.getTranslation().getDistance(botTranslationProvider.get());
   }
 
   public double getArmAngle() {
@@ -223,6 +259,9 @@ public class Shooter extends StateMachine<Shooter.State> {
     BOTTOM_FLYWHEEL_VOLTAGE_CALC,
     ARM_VOLTAGE_CALC,
     AMP,
+    PASS_THROUGH,
+    SPEAKER_AA,
+    TRAP_AA,
     // flags
     READY
   }

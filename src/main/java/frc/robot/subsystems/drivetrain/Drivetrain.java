@@ -10,17 +10,23 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.DriveCommand;
 import frc.robot.ShamLib.swerve.SwerveDrive;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
+import frc.robot.ShamLib.swerve.module.RealignModuleCommand;
+import frc.robot.ShamLib.swerve.module.SwerveModule;
+import frc.robot.util.StageSide;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
+import java.util.function.Supplier;
 
 public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final SwerveDrive drive;
@@ -29,18 +35,27 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   private IntConsumer waypointConsumer = null;
   AtomicInteger currentWaypoint = new AtomicInteger(0);
 
-  private ClimbSide climbSide = ClimbSide.CENTER;
+  private final Supplier<StageSide> targetStageSideSupplier;
 
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier thetaSupplier;
 
-  public Drivetrain(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
+  public Drivetrain(
+      DoubleSupplier x,
+      DoubleSupplier y,
+      DoubleSupplier theta,
+      Supplier<StageSide> targetStageSideSupplier,
+      Trigger incrementUp,
+      Trigger incrementDown,
+      Trigger stop) {
     super("Drivetrain", State.UNDETERMINED, State.class);
 
     this.xSupplier = x;
     this.ySupplier = y;
     this.thetaSupplier = theta;
+
+    this.targetStageSideSupplier = targetStageSideSupplier;
 
     NamedCommands.registerCommand("notifyNextWaypoint", notifyWaypointCommand());
     NamedCommands.registerCommand(
@@ -73,23 +88,12 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             MODULE_3_INFO,
             MODULE_4_INFO);
 
-    registerStateCommands();
+    registerStateCommands(stop, incrementUp, incrementDown);
     registerTransitions();
-  }
-
-  public void setClimbSide(ClimbSide climbSide) {
-    this.climbSide = climbSide;
-
-    // change the pathfind thingamajig
-    registerAutoClimb();
   }
 
   public Pose2d getBotPose() {
     return drive.getPose();
-  }
-
-  public ClimbSide getCurrentClimbSide() {
-    return climbSide;
   }
 
   public void setWaypointConsumer(IntConsumer waypointConsumer) {
@@ -109,13 +113,26 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerStateCommand(State.FOLLOWING_AUTONOMOUS_TRAJECTORY, command);
   }
 
-  private void registerStateCommands() {
+  private void registerStateCommands(Trigger stop, Trigger incrementUp, Trigger incrementDown) {
     registerStateCommand(State.X_SHAPE, () -> drive.setModuleStates(X_SHAPE));
 
     registerStateCommand(State.IDLE, drive::stopModules);
 
     registerStateCommand(
         State.FIELD_ORIENTED_DRIVE,
+        new DriveCommand(
+                drive,
+                xSupplier,
+                ySupplier,
+                thetaSupplier,
+                Constants.Controller.DEADBAND,
+                Constants.Controller.DRIVE_CONVERSION,
+                this,
+                TRAVERSE_SPEED)
+            .alongWith(new InstantCommand(() -> setFlag(State.AT_ANGLE))));
+
+    registerStateCommand(
+        State.GROUND_INTAKE,
         new DriveCommand(
             drive,
             xSupplier,
@@ -124,7 +141,19 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             Constants.Controller.DEADBAND,
             Constants.Controller.DRIVE_CONVERSION,
             this,
-            TRAVERSE_SPEED));
+            INTAKE_SPEED));
+
+    registerStateCommand(
+        State.HUMAN_PLAYER_INTAKE,
+        new DriveCommand(
+            drive,
+            xSupplier,
+            ySupplier,
+            thetaSupplier,
+            Constants.Controller.DEADBAND,
+            Constants.Controller.DRIVE_CONVERSION,
+            this,
+            HUMAN_PLAYER_PICKUP_SPEED));
 
     registerStateCommand(
         State.AUTO_AMP,
@@ -136,6 +165,14 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             "AUTO_HUMAN_PLAYER_INTAKE",
             HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY,
             State.FIELD_ORIENTED_DRIVE));
+
+    registerStateCommand(
+        State.TURN_VOLTAGE_CALC,
+        drive.getTurnVoltageCalcCommand(stop, incrementUp, incrementDown, TURN_VOLTAGE_INCREMENT));
+    registerStateCommand(
+        State.DRIVE_VOLTAGE_CALC,
+        drive.getDriveVoltageCalcCommand(
+            stop, incrementUp, incrementDown, DRIVE_VOLTAGE_INCREMENT));
 
     registerFaceCommands();
     registerAutoClimb();
@@ -150,8 +187,13 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.IDLE);
     addOmniTransition(State.X_SHAPE);
     addOmniTransition(State.FIELD_ORIENTED_DRIVE);
+    addOmniTransition(State.GROUND_INTAKE);
+    addOmniTransition(State.HUMAN_PLAYER_INTAKE);
 
     addTransition(State.IDLE, State.FOLLOWING_AUTONOMOUS_TRAJECTORY);
+
+    addTransition(State.IDLE, State.TURN_VOLTAGE_CALC);
+    addTransition(State.IDLE, State.DRIVE_VOLTAGE_CALC);
 
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_CLIMB);
@@ -162,7 +204,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.FACE_CENTER_TRAP);
     addOmniTransition(State.FACE_AMP);
     addOmniTransition(State.FACE_SPEAKER);
-    addOmniTransition(State.FACE_HUMAN_PLAYER_PICKUP);
   }
 
   private void registerFaceCommands() {
@@ -174,11 +215,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         State.FACE_SPEAKER,
         getFacePointCommand(
             flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED));
-
-    registerStateCommand(
-        State.FACE_HUMAN_PLAYER_PICKUP,
-        getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_PICKUP) : BLUE_PICKUP, HUMAN_PLAYER_PICKUP_SPEED));
 
     registerStateCommand(
         State.FACE_CENTER_TRAP,
@@ -238,20 +274,36 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         PATH_FIND_SPEED.getMaxRotationalAcceleration());
   }
 
-  private void registerAutoClimb() {
+  public void registerAutoClimb() {
     registerStateCommand(
         State.AUTO_CLIMB,
         getPathfindCommand(
-            "AUTO_CLIMB_" + climbSide, CLIMB_ROTATION_DELAY, State.FIELD_ORIENTED_DRIVE));
+            "AUTO_CLIMB_" + targetStageSideSupplier.get(),
+            CLIMB_ROTATION_DELAY,
+            State.FIELD_ORIENTED_DRIVE));
   }
 
   private Command notifyWaypointCommand() {
-    return new InstantCommand(() -> waypointConsumer.accept(currentWaypoint.getAndIncrement()));
+    return new InstantCommand(
+        () -> {
+          if (waypointConsumer != null) waypointConsumer.accept(currentWaypoint.getAndIncrement());
+        });
   }
 
   public void addVisionMeasurements(
       List<TimestampedPoseEstimator.TimestampedVisionUpdate> measurement) {
     drive.addTimestampedVisionMeasurements(measurement);
+  }
+
+  public void registerMisalignedSwerveTriggers(EventLoop loop) {
+    for (SwerveModule module : drive.getModules()) {
+      loop.bind(
+          () -> {
+            if (module.isModuleMisaligned() && !isEnabled()) {
+              new RealignModuleCommand(module).schedule();
+            }
+          });
+    }
   }
 
   @Override
@@ -270,19 +322,16 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     FACE_CENTER_TRAP,
     FACE_LEFT_TRAP,
     FACE_RIGHT_TRAP,
-    FACE_HUMAN_PLAYER_PICKUP,
     AUTO_AMP,
     AUTO_CLIMB,
     AUTO_HUMAN_PLAYER_INTAKE,
+    TURN_VOLTAGE_CALC,
+    DRIVE_VOLTAGE_CALC,
+    GROUND_INTAKE,
+    HUMAN_PLAYER_INTAKE,
 
     // flags for non-autonomous operations
     PATHFINDING,
     AT_ANGLE
-  }
-
-  public enum ClimbSide {
-    CENTER,
-    LEFT,
-    RIGHT
   }
 }

@@ -4,19 +4,33 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
+import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.ShamLib.HID.CommandFlightStick;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.commands.DetermineRingStatusCommand;
 import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
+import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOReal;
 import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.lights.Lights;
+import frc.robot.subsystems.lights.LightsIO;
+import frc.robot.subsystems.lights.LightsIOReal;
+import frc.robot.subsystems.lights.LightsIOSim;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.arm.ArmIOReal;
 import frc.robot.subsystems.shooter.arm.ArmIOSim;
@@ -24,81 +38,210 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.util.StageSide;
 import java.util.function.BooleanSupplier;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
-  /*private final Intake intake;
+  private final Intake intake;
   private final Shooter shooter;
-
   private final Indexer indexer;
-  */ private final Vision vision; /*
-  private final Climbers climbers;*/
+  private final Vision vision;
+  private final Climbers climbers;
   private final Drivetrain drivetrain;
+  private final Lights lights;
 
-  public RobotContainer() {
+  private final CommandXboxController operatorController =
+      new CommandXboxController(Constants.Controller.OPERATOR_CONTROLLER_ID);
+  private final CommandFlightStick leftFlightStick =
+      new CommandFlightStick(Constants.Controller.LEFT_FLIGHT_STICK_ID);
+  private final CommandFlightStick rightFlightStick =
+      new CommandFlightStick(Constants.Controller.RIGHT_FLIGHT_STICK_ID);
+
+  private final LoggedDashboardChooser<Command> autoChooser;
+
+  private StageSide targetStageSide = StageSide.CENTER;
+
+  public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    CommandGenericHID hid = new CommandGenericHID(0);
+    autoChooser =
+        new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     // actually do bindings :()
 
     // TODO: Give actual tuning binds
-    /*intake =
-    new Intake(
-        getIntakeIO(() -> false),
-        new Trigger(() -> false),
-        new Trigger(() -> false),
-        new Trigger(() -> false));*/
-
-    /*shooter =
-    new Shooter(
-        getArmIO(),
-        getFlywheelIO(),
-        Translation2d::new,
-        () -> 0,
-        () -> 0,
-        new Trigger(() -> false),
-        new Trigger(() -> false),
-        new Trigger(() -> false));*/
+    intake =
+        new Intake(
+            getIntakeIO(operatorController.povDown()),
+            tuningIncrement(),
+            tuningDecrement(),
+            tuningStop());
 
     // TODO: give good sim bindings
-    /*indexer =
-    new Indexer(
-        getIndexerIO(() -> false, () -> false, () -> false),
-        new Trigger(() -> false),
-        new Trigger(() -> false),
-        new Trigger(() -> false));*/
+    indexer =
+        new Indexer(
+            getIndexerIO(
+                operatorController.povLeft(),
+                operatorController.povUp(),
+                operatorController.povRight()),
+            tuningIncrement(),
+            tuningDecrement(),
+            tuningStop());
 
     vision = new Vision("limelight", "pv_instance_1");
 
     drivetrain =
-        new Drivetrain(() -> hid.getRawAxis(0), () -> -hid.getRawAxis(1), () -> hid.getRawAxis(4));
+        new Drivetrain(
+            () -> -leftFlightStick.getY(),
+            () -> -leftFlightStick.getX(),
+            () -> -rightFlightStick.getRawAxis(0),
+            () -> targetStageSide,
+            tuningIncrement(),
+            tuningDecrement(),
+            tuningStop());
 
-    vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements); /*
+    drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
 
-    climbers = new Climbers(
+    vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
+
+    climbers =
+        new Climbers(
             getLeftClimberIO(),
             getRightClimberIO(),
-            new Trigger(() -> false),
-            new Trigger(() -> false),
-            new Trigger(() -> false)
-    );*/
+            tuningIncrement(),
+            tuningDecrement(),
+            tuningStop());
+
+    lights = new Lights(getLightsIO());
+
+    shooter =
+        new Shooter(
+            getArmIO(),
+            getFlywheelIO(),
+            () -> drivetrain.getBotPose().getTranslation(),
+            () -> targetStageSide,
+            tuningIncrement(),
+            tuningDecrement(),
+            tuningStop());
 
     addChildSubsystem(drivetrain);
     addChildSubsystem(vision);
-    /*addChildSubsystem(intake);
+    addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
-    addChildSubsystem(climbers);*/
+    addChildSubsystem(climbers);
+    addChildSubsystem(lights);
 
-    configureBindings(hid);
+    registerStateCommands();
+    registerTransitions();
+
+    configureBindings();
   }
 
-  private void configureBindings(CommandGenericHID hid) {
-    hid.button(1).onTrue(drivetrain.transitionCommand(Drivetrain.State.AUTO_AMP, false));
-    hid.button(1)
-        .onFalse(drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE, false));
+  private void registerStateCommands() {
+    registerStateCommand(
+        State.SOFT_E_STOP,
+        new ParallelCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            climbers.transitionCommand(Climbers.State.SOFT_E_STOP),
+            intake.transitionCommand(Intake.State.IDLE),
+            shooter.transitionCommand(Shooter.State.SOFT_E_STOP),
+            indexer.transitionCommand(Indexer.State.IDLE),
+            lights.transitionCommand(Lights.State.ERROR)));
+
+    registerStateCommand(
+        State.TRAVERSING,
+        new ParallelCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            climbers.transitionCommand(Climbers.State.FREE_RETRACT),
+            intake.transitionCommand(Intake.State.IDLE),
+            new DetermineRingStatusCommand(shooter, indexer, lights)));
+
+    registerStateCommand(
+        State.SPEAKER_SCORE,
+        new SequentialCommandGroup(
+            // face speaker and idle intake
+            drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER),
+            intake.transitionCommand(Intake.State.IDLE),
+            // figure out ring issues (if there are any)
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            // have shooter start to track
+            shooter.transitionCommand(Shooter.State.SPEAKER_AA),
+            // lights show green on ready and feed ring on press, transition to traversing after
+            // ring is fed
+            new ParallelCommandGroup(
+                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+
+    registerStateCommand(
+        State.GROUND_INTAKE,
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.GROUND_INTAKE),
+            shooter.transitionCommand(Shooter.State.PARTIAL_STOW),
+            indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
+            intake.transitionCommand(Intake.State.INTAKE),
+            indexer.waitForState(Indexer.State.INDEXING),
+            transitionCommand(State.TRAVERSING)));
+
+    registerStateCommand(
+        State.BASE_SHOT,
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            intake.transitionCommand(Intake.State.IDLE),
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            shooter.transitionCommand(Shooter.State.BASE_SHOT),
+            new ParallelCommandGroup(
+                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
   }
+
+  private void registerTransitions() {
+    addOmniTransition(State.TRAVERSING);
+    addOmniTransition(State.SOFT_E_STOP);
+    addOmniTransition(State.SPEAKER_SCORE);
+    addOmniTransition(State.BASE_SHOT);
+  }
+
+  private Command flashError(Lights.State onEnd) {
+    return new SequentialCommandGroup(
+        lights.transitionCommand(Lights.State.ERROR),
+        new WaitCommand(0.5),
+        lights.transitionCommand(onEnd));
+  }
+
+  private Command feedOnPress(State onEnd) {
+    return new SequentialCommandGroup(
+        new WaitUntilCommand(operatorController.a()),
+        indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
+        indexer.waitForState(Indexer.State.IDLE),
+        transitionCommand(onEnd));
+  }
+
+  private Command lightsOnReadyCommand(Lights.State alt) {
+    return new RunCommand(
+        () -> {
+          if (shooter.isFlag(Shooter.State.READY)
+              && drivetrain.isFlag(Drivetrain.State.AT_ANGLE)
+              && indexer.getState() == Indexer.State.HOLDING_RING) {
+            lights.requestTransition(Lights.State.READY);
+          } else {
+            lights.requestTransition(alt);
+          }
+        });
+  }
+
+  private Trigger tuningIncrement() {
+    return operatorController.povUp();
+  }
+
+  private Trigger tuningDecrement() {
+    return operatorController.povDown();
+  }
+
+  private Trigger tuningStop() {
+    return operatorController.a();
+  }
+
+  private void configureBindings() {}
 
   private ClimberIO getLeftClimberIO() {
     return switch (Constants.currentBuildMode) {
@@ -177,24 +320,35 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     }
   }
 
-  @Override
-  protected void onEnable() {
-    drivetrain.syncAlliance();
-    drivetrain.requestTransition(Drivetrain.State.FIELD_ORIENTED_DRIVE);
+  private LightsIO getLightsIO() {
+    switch (Constants.currentBuildMode) {
+      case REAL -> {
+        return new LightsIOReal();
+      }
+
+      case SIM -> {
+        return new LightsIOSim();
+      }
+
+      default -> {
+        return new LightsIO() {};
+      }
+    }
   }
 
   @Override
+  protected void onEnable() {}
+
+  @Override
   protected void determineSelf() {
-    // placeholder
     setState(State.SOFT_E_STOP);
   }
 
   public double getShooterAngle() {
-    return /*shooter.getArmAngle();*/ 0;
+    return shooter.getArmAngle();
   }
 
   public Pose3d getBotPose() {
-    // update this when pose estimation is ready
     Pose2d pose = drivetrain.getBotPose();
     return new Pose3d(
         new Translation3d(pose.getX(), pose.getY(), 0),
@@ -203,6 +357,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   public enum State {
     UNDETERMINED,
-    SOFT_E_STOP // placeholder
+    AUTONOMOUS,
+    TRAVERSING,
+    SPEAKER_SCORE,
+    GROUND_INTAKE,
+    BASE_SHOT,
+    SOFT_E_STOP
   }
 }
