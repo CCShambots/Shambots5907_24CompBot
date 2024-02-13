@@ -8,9 +8,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.ShamLib.HID.CommandFlightStick;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.commands.DetermineRingStatusCommand;
 import frc.robot.subsystems.climbers.ClimberIO;
@@ -37,7 +37,6 @@ import frc.robot.subsystems.shooter.arm.ArmIOSim;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
-import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -46,17 +45,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Intake intake;
   private final Shooter shooter;
   private final Indexer indexer;
-  private final Vision vision;
+  // private final Vision vision;
   private final Climbers climbers;
   private final Drivetrain drivetrain;
   private final Lights lights;
 
-  private final CommandXboxController operatorController =
-      new CommandXboxController(Constants.Controller.OPERATOR_CONTROLLER_ID);
-  private final CommandFlightStick leftFlightStick =
-      new CommandFlightStick(Constants.Controller.LEFT_FLIGHT_STICK_ID);
-  private final CommandFlightStick rightFlightStick =
-      new CommandFlightStick(Constants.Controller.RIGHT_FLIGHT_STICK_ID);
+  private final CommandXboxController operatorController = new CommandXboxController(0);
+
+  private final CommandGenericHID triggerSims = new CommandGenericHID(1);
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -64,9 +60,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
-
-    autoChooser =
-        new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     // actually do bindings :()
 
@@ -89,13 +82,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    vision = new Vision("limelight", "pv_instance_1");
+    // vision = new Vision("limelight", "pv_instance_1");
 
     drivetrain =
         new Drivetrain(
-            () -> -leftFlightStick.getY(),
-            () -> -leftFlightStick.getX(),
-            () -> -rightFlightStick.getRawAxis(0),
+            () -> -operatorController.getLeftY(),
+            () -> -operatorController.getLeftX(),
+            () -> -operatorController.getRightX(),
             () -> targetStageSide,
             tuningIncrement(),
             tuningDecrement(),
@@ -103,7 +96,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
 
-    vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
+    // vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
     climbers =
         new Climbers(
@@ -125,8 +118,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
+    autoChooser =
+        new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
+
     addChildSubsystem(drivetrain);
-    addChildSubsystem(vision);
+    // addChildSubsystem(vision);
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);

@@ -125,7 +125,7 @@ public class Robot extends LoggedRobot {
         new Pose3d()
             .transformBy(
                 new Transform3d(new Pose3d(), Constants.PhysicalConstants.CHASSIS_TO_SHOOTER))
-            .rotateBy(new Rotation3d(0, robotContainer.getShooterAngle(), 0));
+            .rotateBy(new Rotation3d(0, -robotContainer.getShooterAngle(), 0));
 
     botPose = robotContainer.getBotPose();
 
