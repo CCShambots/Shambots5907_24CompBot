@@ -19,7 +19,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.Candle.RGB;
 import frc.robot.ShamLib.PIDGains;
@@ -558,10 +557,6 @@ public class Constants {
     if (!overrideAlliance && newAlliance.isPresent()) {
       alliance = newAlliance.get();
     }
-  }
-
-  public static boolean FMSConnected() {
-    return NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").exists();
   }
 
   public static boolean doubleEqual(double a, double b, double accuracy) {
