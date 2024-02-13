@@ -140,6 +140,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     registerTransitions();
 
     configureBindings();
+
+    initializeDriveTab();
   }
 
   private void registerStateCommands() {
