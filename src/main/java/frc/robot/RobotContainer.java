@@ -89,7 +89,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    vision = new Vision("limelight", "pv_instance_1");
+    // vision = new Vision("limelight", "pv_instance_1");
+    vision = new Vision("limelight");
 
     drivetrain =
         new Drivetrain(
@@ -138,7 +139,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     configureBindings();
 
-    //Important to instatiate after drivetrain consructor is called so that auto builder is configured
+    // Important to instatiate after drivetrain consructor is called so that auto builder is
+    // configured
     autoChooser =
         new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
@@ -364,7 +366,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private void initializeDriveTab() {
     ShuffleboardTab driveTab = Shuffleboard.getTab("Drive");
 
-    driveTab.add("Auto Route", autoChooser).withPosition(3, 0).withSize(2, 2);
+    driveTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(3, 0).withSize(2, 2);
 
     driveTab
         .addString("ALLIANCE", () -> AllianceManager.getAlliance().name())
