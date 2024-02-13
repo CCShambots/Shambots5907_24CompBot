@@ -92,7 +92,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerStateCommands(stop, incrementUp, incrementDown);
     registerTransitions();
 
-    //Make sure the alliaince flipping gets passed on to the drivetrain
+    // Make sure the alliaince flipping gets passed on to the drivetrain
     AllianceManager.addAllianceChangeHook(this::syncAlliance);
   }
 
