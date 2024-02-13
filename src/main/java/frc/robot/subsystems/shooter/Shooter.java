@@ -240,6 +240,10 @@ public class Shooter extends StateMachine<Shooter.State> {
     return arm.getAngle();
   }
 
+  public double getArmAbsoluteAngle() {
+    return arm.getAbsoluteAngle();
+  }
+
   @Override
   protected void determineSelf() {
     // await instructions from rc

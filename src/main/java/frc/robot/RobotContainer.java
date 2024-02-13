@@ -7,6 +7,8 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -353,6 +355,29 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     return new Pose3d(
         new Translation3d(pose.getX(), pose.getY(), 0),
         new Rotation3d(0, 0, pose.getRotation().getRadians()));
+  }
+
+  private void initializeDriveTab() {
+    ShuffleboardTab driveTab = Shuffleboard.getTab("Drive");
+
+    driveTab.add("Auto Route", autoChooser).withPosition(3, 0).withSize(2, 2);
+
+    driveTab
+        .addString("ALLIANCE", () -> Constants.alliance.name())
+        .withPosition(0, 0)
+        .withSize(2, 2);
+    driveTab.add("SWITCH ALLIANCE", Constants.switchAlliance()).withPosition(5, 2).withSize(2, 2);
+    driveTab.add("SYNC ALLIANCE", Constants.syncAlliance()).withPosition(5, 0).withSize(2, 2);
+
+    driveTab
+        .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))
+        .withPosition(1, 2)
+        .withSize(1, 1);
+
+    driveTab
+        .addNumber("arm relative", () -> Math.toDegrees(shooter.getArmAngle()))
+        .withPosition(0, 2)
+        .withSize(1, 1);
   }
 
   public enum State {
