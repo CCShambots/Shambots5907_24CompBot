@@ -18,7 +18,9 @@ public class ArmIOReal implements ArmIO {
 
   private final AnalogPotentiometer potentiometer =
       new AnalogPotentiometer(
-          ENCODER_ID, ENCODER_RATIO * (ENCODER_INVERTED ? -1 : 1), ENCODER_OFFSET);
+          POTENTIOMETER_ID,
+          POTENTIOMETER_RATIO * (POTENTIOMETER_INVERTED ? -1 : 1),
+          POTENTIOMETER_OFFSET);
 
   public ArmIOReal() {
     this(false);

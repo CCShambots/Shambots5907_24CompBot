@@ -47,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "RAISE_CLIMBER"
+                "name": "raiseClimber"
               }
             }
           ]
@@ -67,7 +67,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "CLIMBS",
+  "folder": "MACROS",
   "previewStartingState": {
     "rotation": -60.0,
     "velocity": 0

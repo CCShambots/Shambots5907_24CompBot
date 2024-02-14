@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.shooter.arm.Arm;
 import frc.robot.subsystems.shooter.arm.ArmIO;
@@ -213,7 +214,7 @@ public class Shooter extends StateMachine<Shooter.State> {
 
   private double getSpeakerDistance() {
     Pose2d speaker =
-        Constants.alliance == DriverStation.Alliance.Blue
+        AllianceManager.getAlliance() == DriverStation.Alliance.Blue
             ? Constants.PhysicalConstants.BLUE_SPEAKER
             : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
 
@@ -229,7 +230,7 @@ public class Shooter extends StateMachine<Shooter.State> {
         };
 
     targetTrap =
-        Constants.alliance == DriverStation.Alliance.Blue
+        AllianceManager.getAlliance() == DriverStation.Alliance.Blue
             ? targetTrap
             : Constants.mirror(targetTrap);
 
@@ -238,6 +239,10 @@ public class Shooter extends StateMachine<Shooter.State> {
 
   public double getArmAngle() {
     return arm.getAngle();
+  }
+
+  public double getArmAbsoluteAngle() {
+    return arm.getAbsoluteAngle();
   }
 
   @Override

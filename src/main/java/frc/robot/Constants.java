@@ -11,16 +11,11 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShamLib.Candle.RGB;
 import frc.robot.ShamLib.PIDGains;
 import frc.robot.ShamLib.ShamLibConstants;
@@ -28,7 +23,6 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
-import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 public class Constants {
@@ -145,17 +139,17 @@ public class Constants {
     public static final class Hardware {
       public static final int LEADER_ID = 12;
       public static final int FOLLOWER_ID = 13;
-      public static final int ENCODER_ID = 3;
+      public static final int POTENTIOMETER_ID = 3;
 
-      public static final double ENCODER_RATIO = (10.0 / 58.0) * 2 * Math.PI;
+      public static final double POTENTIOMETER_RATIO = (10.0 / 58.0) * 2 * Math.PI;
       public static final double MOTOR_RATIO =
           (10.0 / 64.0) * (18.0 / 50.0) * (10.0 / 58.0) * 2 * Math.PI;
 
-      public static final boolean ENCODER_INVERTED = true;
+      public static final boolean POTENTIOMETER_INVERTED = true;
       public static final boolean LEADER_INVERTED = false;
       public static final boolean FOLLOWER_INVERTED = false;
 
-      public static final double ENCODER_OFFSET = 0.0;
+      public static final double POTENTIOMETER_OFFSET = 0.0;
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
@@ -282,7 +276,10 @@ public class Constants {
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
 
       // rotations to meters
-      public static final double CLIMBER_RATIO = 1;
+      public static final double CLIMBER_RATIO =
+          (1 / 30.0) // Gear ratio is 30:1
+              * (Units.inchesToMeters(1) * Math.PI) // Circumference of the spool
+          ;
     }
 
     public static final class Settings {
@@ -549,19 +546,6 @@ public class Constants {
       public static final double TURN_VOLTAGE_INCREMENT = 0.125;
       public static final double DRIVE_VOLTAGE_INCREMENT = 0.125;
     }
-  }
-
-  public static DriverStation.Alliance alliance = DriverStation.Alliance.Red;
-  public static boolean overrideAlliance = false;
-
-  public static void applyAlliance(Optional<DriverStation.Alliance> newAlliance) {
-    if (!overrideAlliance && newAlliance.isPresent()) {
-      alliance = newAlliance.get();
-    }
-  }
-
-  public static boolean FMSConnected() {
-    return NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").exists();
   }
 
   public static boolean doubleEqual(double a, double b, double accuracy) {
