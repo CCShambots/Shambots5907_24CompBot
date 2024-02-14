@@ -60,8 +60,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   // Controller bindings object that will be created to handle both real control and sim inputs
   private final ControllerBindings controllerBindings;
 
-  private final CommandGenericHID triggerSims = new CommandGenericHID(1);
-
   private final LoggedDashboardChooser<Command> autoChooser;
 
   private StageSide targetStageSide = StageSide.CENTER;
