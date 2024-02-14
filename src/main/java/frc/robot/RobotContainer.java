@@ -68,9 +68,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-    // actually do bindings :()
-
-    // TODO: Give actual tuning binds
     intake =
         new Intake(
             getIntakeIO(operatorController.povDown()),
@@ -78,7 +75,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    // TODO: give good sim bindings
     indexer =
         new Indexer(
             getIndexerIO(
