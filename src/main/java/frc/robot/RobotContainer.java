@@ -10,12 +10,15 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
-import frc.robot.ShamLib.HID.CommandFlightStick;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.commands.DetermineRingStatusCommand;
+import frc.robot.controllers.ControllerBindings;
+import frc.robot.controllers.RealControllerBindings;
+import frc.robot.controllers.SimControllerBindings;
 import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
@@ -54,12 +57,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Drivetrain drivetrain;
   private final Lights lights;
 
-  private final CommandXboxController operatorController =
-      new CommandXboxController(Constants.Controller.OPERATOR_CONTROLLER_ID);
-  private final CommandFlightStick leftFlightStick =
-      new CommandFlightStick(Constants.Controller.LEFT_FLIGHT_STICK_ID);
-  private final CommandFlightStick rightFlightStick =
-      new CommandFlightStick(Constants.Controller.RIGHT_FLIGHT_STICK_ID);
+  // Controller bindings object that will be created to handle both real control and sim inputs
+  private final ControllerBindings controllerBindings;
+
+  private final CommandGenericHID triggerSims = new CommandGenericHID(1);
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -68,9 +69,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
+    if (Constants.currentBuildMode == ShamLibConstants.BuildMode.SIM) {
+      controllerBindings = new SimControllerBindings();
+    } else {
+      controllerBindings = new RealControllerBindings();
+    }
+
     intake =
         new Intake(
-            getIntakeIO(operatorController.povDown()),
+            getIntakeIO(controllerBindings.simProx1()),
             tuningIncrement(),
             tuningDecrement(),
             tuningStop());
@@ -78,9 +85,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     indexer =
         new Indexer(
             getIndexerIO(
-                operatorController.povLeft(),
-                operatorController.povUp(),
-                operatorController.povRight()),
+                controllerBindings.simProx2(),
+                controllerBindings.simProx3(),
+                controllerBindings.simProx4()),
             tuningIncrement(),
             tuningDecrement(),
             tuningStop());
@@ -90,9 +97,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     drivetrain =
         new Drivetrain(
-            () -> -leftFlightStick.getY(),
-            () -> -leftFlightStick.getX(),
-            () -> -rightFlightStick.getRawAxis(0),
+            controllerBindings::getDriveXValue,
+            controllerBindings::getDriveYValue,
+            controllerBindings::getDriveTurnValue,
             () -> targetStageSide,
             tuningIncrement(),
             tuningDecrement(),
@@ -100,7 +107,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
 
-    vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
+    // vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
     climbers =
         new Climbers(
@@ -123,7 +130,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningStop());
 
     addChildSubsystem(drivetrain);
-    addChildSubsystem(vision);
+    // addChildSubsystem(vision);
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
@@ -214,7 +221,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private Command feedOnPress(State onEnd) {
     return new SequentialCommandGroup(
-        new WaitUntilCommand(operatorController.a()),
+        new WaitUntilCommand(controllerBindings.feedOnPress()),
         indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
         indexer.waitForState(Indexer.State.IDLE),
         transitionCommand(onEnd));
@@ -234,15 +241,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private Trigger tuningIncrement() {
-    return operatorController.povUp();
+    return controllerBindings.tuningIncrement();
   }
 
   private Trigger tuningDecrement() {
-    return operatorController.povDown();
+    return controllerBindings.tuningDecrement();
   }
 
   private Trigger tuningStop() {
-    return operatorController.a();
+    return controllerBindings.tuningStop();
   }
 
   private void configureBindings() {}
