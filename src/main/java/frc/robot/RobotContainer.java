@@ -15,7 +15,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.commands.DetermineRingStatusCommand;
+import frc.robot.controllers.ControllerBindings;
+import frc.robot.controllers.RealControllerBindings;
+import frc.robot.controllers.SimControllerBindings;
 import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
@@ -42,6 +46,8 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
+
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -54,7 +60,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Drivetrain drivetrain;
   private final Lights lights;
 
-  private final CommandXboxController operatorController = new CommandXboxController(0);
+  //Controller bindings object that will be created to handle both real control and sim inputs
+  private final ControllerBindings controllerBindings;
 
   private final CommandGenericHID triggerSims = new CommandGenericHID(1);
 
@@ -65,12 +72,18 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
+      if (Constants.currentBuildMode == ShamLibConstants.BuildMode.SIM) {
+          controllerBindings = new SimControllerBindings();
+      } else {
+          controllerBindings = new RealControllerBindings();
+      }
+
     // actually do bindings :()
 
     // TODO: Give actual tuning binds
     intake =
         new Intake(
-            getIntakeIO(operatorController.povDown()),
+            getIntakeIO(controllerBindings.simProx1()),
             tuningIncrement(),
             tuningDecrement(),
             tuningStop());
@@ -79,9 +92,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     indexer =
         new Indexer(
             getIndexerIO(
-                operatorController.povLeft(),
-                operatorController.povUp(),
-                operatorController.povRight()),
+                controllerBindings.simProx2(),
+                controllerBindings.simProx3(),
+                controllerBindings.simProx4()),
             tuningIncrement(),
             tuningDecrement(),
             tuningStop());
@@ -91,9 +104,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     drivetrain =
         new Drivetrain(
-            () -> -operatorController.getLeftY(),
-            () -> -operatorController.getLeftX(),
-            () -> -operatorController.getRightX(),
+                controllerBindings::getDriveXValue,
+                controllerBindings::getDriveYValue,
+                controllerBindings::getDriveTurnValue,
             () -> targetStageSide,
             tuningIncrement(),
             tuningDecrement(),
@@ -215,7 +228,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private Command feedOnPress(State onEnd) {
     return new SequentialCommandGroup(
-        new WaitUntilCommand(operatorController.a()),
+        new WaitUntilCommand(controllerBindings.feedOnPress()),
         indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
         indexer.waitForState(Indexer.State.IDLE),
         transitionCommand(onEnd));
@@ -235,15 +248,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private Trigger tuningIncrement() {
-    return operatorController.povUp();
+    return controllerBindings.tuningIncrement();
   }
 
   private Trigger tuningDecrement() {
-    return operatorController.povDown();
+    return controllerBindings.tuningDecrement();
   }
 
   private Trigger tuningStop() {
-    return operatorController.a();
+    return controllerBindings.tuningStop();
   }
 
   private void configureBindings() {}
