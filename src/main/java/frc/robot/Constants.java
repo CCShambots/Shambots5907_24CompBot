@@ -39,7 +39,7 @@ public class Constants {
 
     public static final UnaryOperator<Double> DRIVE_CONVERSION =
         (input) -> (Math.copySign(input * input, input));
-    public static final double DEADBAND = 0.025;
+    public static final double DEADBAND = 0.075;
   }
 
   public static final class PhysicalConstants {
@@ -157,12 +157,12 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Shooter Arm Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Shooter Arm Gains", new PIDSVGains(0, 0, 00, 0, 0), () -> ALLOW_TUNING);
     }
 
     public static final class Settings {
-      public static final double VELOCITY = (2 / 60.0) * 2 * Math.PI; // RAD/s
-      public static final double ACCELERATION = (4 / 60.0) * 2 * Math.PI; // RAD/s/s
+      public static final double VELOCITY = 10; // RAD/s
+      public static final double ACCELERATION = 2; // RAD/s/s
       public static final double JERK = 10_000; // RAD/s/s/s
 
       public static final double POSITION_READY_TOLERANCE = 2 * (Math.PI / 180); // RAD
@@ -170,7 +170,7 @@ public class Constants {
       public static final double BASE_SHOT_POSITION = 60 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
       public static final double TRAP_PREP_POSITION = 50 * (Math.PI / 180); // RAD
-      public static final double FULL_STOW_POSITION = 20 * (Math.PI / 180); // RAD
+      public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
       public static final double CHUTE_INTAKE_POSITION = 60 * (Math.PI / 180); // RAD
 
@@ -466,9 +466,16 @@ public class Constants {
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
-      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
+      public static final PIDSVGains MODULE_TURN_GAINS =
+          new PIDSVGains(
+              0,
+              0,
+              0,
+              0,
+              0 
+              );
 
-      public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(0, 0, 0);
+      public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
 
       // m/s
       public static final double MAX_CHASSIS_SPEED = 5;
