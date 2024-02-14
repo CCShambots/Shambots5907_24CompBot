@@ -61,7 +61,7 @@ public class Arm extends StateMachine<Arm.State> {
                 tuningInc,
                 tuningDec,
                 io::setVoltage,
-                () -> inputs.motorVelocity,
+                () -> inputs.motorRotorVelocity,
                 () -> inputs.motorVoltage,
                 VOLTAGE_INCREMENT),
             transitionCommand(State.SOFT_E_STOP)));
