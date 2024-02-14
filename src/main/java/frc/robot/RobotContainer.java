@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -145,6 +146,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     initializeDriveTab();
+
+    NamedCommands.registerCommand("raiseClimber", new InstantCommand());
   }
 
   private void registerStateCommands() {
@@ -288,6 +291,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private final IndexerIO getIndexerIO(
       BooleanSupplier simProx1, BooleanSupplier simProx2, BooleanSupplier simProx3) {
+    System.out.println("CURRENT BUILD MODE : " + Constants.currentBuildMode);
     switch (Constants.currentBuildMode) {
       case REAL -> {
         return new IndexerIOReal();

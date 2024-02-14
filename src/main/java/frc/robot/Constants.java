@@ -403,7 +403,7 @@ public class Constants {
       public static final double ROTATION_RADIUS =
           Math.sqrt(Math.pow(TRACK_WIDTH / 2.0, 2) + Math.pow(WHEEL_BASE / 2.0, 2)) * 2 * Math.PI;
 
-      public static final String MODULE_CAN_BUS = "";
+      public static final String MODULE_CAN_BUS = "drivetrain";
       public static final String GYRO_CAN_BUS = "";
 
       public static final ModuleInfo MODULE_1_INFO = // FRONT LEFT
