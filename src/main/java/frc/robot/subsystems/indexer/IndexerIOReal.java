@@ -4,6 +4,7 @@ import static frc.robot.Constants.Indexer.Hardware.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.Constants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
@@ -45,7 +46,7 @@ public class IndexerIOReal implements IndexerIO {
 
   @Override
   public void setTargetVelocity(double targetVelocity) {
-    beltMotor.setTarget(targetVelocity);
+    if (!Constants.doubleEqual(targetVelocity, beltMotor.getTarget())) beltMotor.setTarget(targetVelocity);
   }
 
   @Override
