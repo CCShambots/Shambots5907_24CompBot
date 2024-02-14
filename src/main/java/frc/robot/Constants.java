@@ -340,7 +340,7 @@ public class Constants {
       public static final double FEED_SPEED = 33;
 
       // seconds
-      public static final double INDEX_TIMEOUT = 2;
+      public static final double INDEX_TIMEOUT = 4;
 
       public static final double VOLTAGE_INCREMENT = 0.125;
     }
@@ -466,14 +466,7 @@ public class Constants {
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
-      public static final PIDSVGains MODULE_TURN_GAINS =
-          new PIDSVGains(
-              0,
-              0,
-              0,
-              0,
-              0 
-              );
+      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
 
