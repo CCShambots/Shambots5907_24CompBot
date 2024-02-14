@@ -207,6 +207,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.SOFT_E_STOP);
     addOmniTransition(State.SPEAKER_SCORE);
     addOmniTransition(State.BASE_SHOT);
+    addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
   private Command flashError(Lights.State onEnd) {

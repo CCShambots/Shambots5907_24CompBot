@@ -46,7 +46,8 @@ public class IndexerIOReal implements IndexerIO {
 
   @Override
   public void setTargetVelocity(double targetVelocity) {
-    if (!Constants.doubleEqual(targetVelocity, beltMotor.getTarget())) beltMotor.setTarget(targetVelocity);
+    if (!Constants.doubleEqual(targetVelocity, beltMotor.getTarget()))
+      beltMotor.setTarget(targetVelocity);
   }
 
   @Override

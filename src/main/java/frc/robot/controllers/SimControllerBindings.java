@@ -50,16 +50,16 @@ public class SimControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger simProx2() {
-    return operatorController.povLeft();
+    return operatorController.a();
   }
 
   @Override
   public Trigger simProx3() {
-    return operatorController.povUp();
+    return operatorController.b();
   }
 
   @Override
   public Trigger simProx4() {
-    return operatorController.povRight();
+    return operatorController.x();
   }
 }

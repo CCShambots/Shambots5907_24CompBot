@@ -93,6 +93,9 @@ public class Indexer extends StateMachine<Indexer.State> {
     addOmniTransition(State.IDLE);
     addOmniTransition(State.CLEANSE);
 
+    addTransition(State.IDLE, State.EXPECT_RING_BACK);
+    addTransition(State.IDLE, State.EXPECT_RING_FRONT);
+
     addTransition(State.INDEXING, State.LOST_RING);
     addTransition(State.INDEXING, State.HOLDING_RING);
 
