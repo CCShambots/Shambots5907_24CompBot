@@ -112,15 +112,16 @@ public class Indexer extends StateMachine<Indexer.State> {
           // 3rd is unset)
           if (inputs.prox1 == inputs.prox2 && !inputs.prox3) isFinished.set(true);
 
-          //avoid doing stuff if its already done
+          // avoid doing stuff if its already done
           if (!isFinished.get()) {
             // none of the prox are set (where did ring go)
+            // ＼（〇_ｏ）／
             if (!inputs.prox1 && !inputs.prox2 && !inputs.prox3) isFinished.set(true);
 
-              // 2nd or 3rd prox on, reverse
+            // 2nd or 3rd prox on, reverse
             else if (inputs.prox3 || inputs.prox2) io.setTargetVelocity(-INDEX_SPEED);
 
-              // otherwise forward
+            // otherwise forward
             else io.setTargetVelocity(INDEX_SPEED);
           }
         },
