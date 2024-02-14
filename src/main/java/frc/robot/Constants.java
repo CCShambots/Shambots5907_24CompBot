@@ -157,7 +157,7 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Shooter Arm Gains", new PIDSVGains(10, 0, 0.2, 0, 1.97), () -> ALLOW_TUNING);
+              "Shooter Arm Gains", new PIDSVGains(0, 0, 00, 0, 0), () -> ALLOW_TUNING);
     }
 
     public static final class Settings {
@@ -465,14 +465,14 @@ public class Constants {
       public static final PIDGains AUTO_THETA_GAINS = new PIDGains(10, 0, 0);
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
 
-      public static final PIDSVGains MODULE_DRIVE_GAINS = new PIDSVGains(0.25, 0, 0, 0.3, 0.1135);
+      public static final PIDSVGains MODULE_DRIVE_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
       public static final PIDSVGains MODULE_TURN_GAINS =
           new PIDSVGains(
-              0.1, // 10
               0,
               0,
-              0.1, // 0.3
-              0.111057 // 0.112
+              0,
+              0,
+              0 
               );
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
