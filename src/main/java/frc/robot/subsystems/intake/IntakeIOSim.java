@@ -23,5 +23,6 @@ public class IntakeIOSim extends IntakeIOReal {
     inputs.targetVelocity = topMotor.getTarget();
     inputs.voltage = topMotor.getMotorVoltage().getValueAsDouble();
     inputs.proxTripped = proxSupplier.getAsBoolean();
+    inputs.rotorVelocity = topMotor.getRotorVelocity().getValueAsDouble();
   }
 }

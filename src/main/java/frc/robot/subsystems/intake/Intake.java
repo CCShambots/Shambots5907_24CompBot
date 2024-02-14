@@ -44,7 +44,7 @@ public class Intake extends StateMachine<Intake.State> {
                 tuningInc,
                 tuningDec,
                 io::setVoltage,
-                () -> inputs.velocity,
+                () -> inputs.rotorVelocity,
                 () -> inputs.voltage,
                 VOLTAGE_INC),
             transitionCommand(State.IDLE)));
