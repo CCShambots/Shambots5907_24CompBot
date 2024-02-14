@@ -25,6 +25,7 @@ public class IndexerIOSim extends IndexerIOReal {
     inputs.beltVelocity = beltMotor.getEncoderVelocity();
     inputs.beltTargetVelocity = beltMotor.getTarget();
     inputs.beltVoltage = beltMotor.getMotorVoltage().getValueAsDouble();
+    inputs.beltRotorVelocity = beltMotor.getRotorVelocity().getValueAsDouble();
 
     inputs.prox1 = prox1.getAsBoolean();
     inputs.prox2 = prox2.getAsBoolean();

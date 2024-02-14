@@ -81,7 +81,7 @@ public class Indexer extends StateMachine<Indexer.State> {
             tuningInc,
             tuningDec,
             io::setVoltage,
-            () -> inputs.beltVelocity,
+            () -> inputs.beltRotorVelocity,
             () -> inputs.beltVoltage,
             VOLTAGE_INCREMENT));
   }
