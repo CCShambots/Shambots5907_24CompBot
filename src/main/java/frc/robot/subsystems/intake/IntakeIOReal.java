@@ -81,5 +81,6 @@ public class IntakeIOReal implements IntakeIO {
     inputs.targetVelocity = topMotor.getTarget();
     inputs.voltage = topMotor.getMotorVoltage().getValueAsDouble();
     inputs.proxTripped = prox.get();
+    inputs.rotorVelocity = topMotor.getRotorVelocity().getValueAsDouble();
   }
 }

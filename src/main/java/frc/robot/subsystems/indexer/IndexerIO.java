@@ -6,9 +6,10 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IndexerIO {
   @AutoLog
   public static class IndexerInputs {
-    public double beltVelocity = 0.0; // DEG/s
-    public double beltTargetVelocity = 0.0; // DEG/s
+    public double beltVelocity = 0.0;
+    public double beltTargetVelocity = 0.0;
     public double beltVoltage = 0.0;
+    public double beltRotorVelocity = 0.0;
 
     public boolean prox1 = false;
     public boolean prox2 = false;

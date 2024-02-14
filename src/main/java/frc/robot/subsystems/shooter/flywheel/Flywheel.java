@@ -43,7 +43,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
                 tuningInc,
                 tuningDec,
                 io::setVoltage,
-                () -> inputs.velocity,
+                () -> inputs.rotorVelocity,
                 () -> inputs.voltage,
                 VOLTAGE_INCREMENT),
             transitionCommand(State.IDLE)));

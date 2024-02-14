@@ -6,7 +6,8 @@ import org.littletonrobotics.junction.AutoLog;
 public interface FlywheelIO {
   @AutoLog
   public class FlywheelInputs {
-    public double velocity = 0.0; // RPS
+    public double velocity = 0.0;
+    public double rotorVelocity = 0.0;
     public double targetVelocity = 0.0;
     public double voltage = 0.0;
   }
