@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.StateMachine;
@@ -46,8 +45,6 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
-
-import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -60,7 +57,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Drivetrain drivetrain;
   private final Lights lights;
 
-  //Controller bindings object that will be created to handle both real control and sim inputs
+  // Controller bindings object that will be created to handle both real control and sim inputs
   private final ControllerBindings controllerBindings;
 
   private final CommandGenericHID triggerSims = new CommandGenericHID(1);
@@ -72,11 +69,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
-      if (Constants.currentBuildMode == ShamLibConstants.BuildMode.SIM) {
-          controllerBindings = new SimControllerBindings();
-      } else {
-          controllerBindings = new RealControllerBindings();
-      }
+    if (Constants.currentBuildMode == ShamLibConstants.BuildMode.SIM) {
+      controllerBindings = new SimControllerBindings();
+    } else {
+      controllerBindings = new RealControllerBindings();
+    }
 
     // actually do bindings :()
 
@@ -104,9 +101,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     drivetrain =
         new Drivetrain(
-                controllerBindings::getDriveXValue,
-                controllerBindings::getDriveYValue,
-                controllerBindings::getDriveTurnValue,
+            controllerBindings::getDriveXValue,
+            controllerBindings::getDriveYValue,
+            controllerBindings::getDriveTurnValue,
             () -> targetStageSide,
             tuningIncrement(),
             tuningDecrement(),
