@@ -20,6 +20,9 @@ public class ArmIOSim extends ArmIOReal {
     inputs.motorVelocity = leaderMotor.getEncoderVelocity();
     inputs.motorVoltage = leaderMotor.getMotorVoltage().getValueAsDouble();
     inputs.motorRotorVelocity = leaderMotor.getRotorVelocity().getValueAsDouble();
+
+    inputs.followerPosition = followerMotor.getEncoderPosition();
+    inputs.followerVelocity = followerMotor.getEncoderVelocity();
   }
 
   @Override
