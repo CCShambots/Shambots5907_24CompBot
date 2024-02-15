@@ -422,6 +422,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     GROUND_INTAKE,
     BASE_SHOT,
     SOFT_E_STOP,
-    HUMAN_PLAYER_INTAKE
+    HUMAN_PLAYER_INTAKE,
+    AMP
   }
 }
