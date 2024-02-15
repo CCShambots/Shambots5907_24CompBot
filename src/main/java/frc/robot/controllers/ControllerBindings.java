@@ -28,6 +28,8 @@ public interface ControllerBindings {
 
   Trigger traversing();
 
+  Trigger xShape();
+
   // Simulated prox sensors for running in sim mode
   default Trigger simProx1() {
     return new Trigger(() -> false);

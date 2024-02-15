@@ -262,7 +262,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BELT_SPEED = 1000 / 60.0; // RPS
+      public static final double BELT_SPEED = 2000 / 60.0; // RPS
 
       public static final double VOLTAGE_INC = 0.25;
     }
@@ -341,7 +341,7 @@ public class Constants {
 
     public static final class Settings {
       // rps
-      public static final double EXPECT_SPEED = 1000 / 60.0;
+      public static final double EXPECT_SPEED = 2000 / 60.0;
       public static final double PASS_THROUGH_SPEED = 33;
       public static final double INDEX_SPEED = 500 / 60.0;
       public static final double FEED_SPEED = 33;
@@ -473,8 +473,8 @@ public class Constants {
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
-          new PIDSVGains(.1, 0, 0, 0.08045, 0.118675);
-      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(1, 0, 0, 0.1176, 0.1182);
+          new PIDSVGains(.25, 0, 0, 0.08045, 0.118675);
+      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(10, 0, 0, 0.1176, 0.1182);
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
 

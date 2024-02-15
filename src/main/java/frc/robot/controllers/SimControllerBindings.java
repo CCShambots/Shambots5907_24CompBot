@@ -44,6 +44,11 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger xShape() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
   public Trigger tuningIncrement() {
     return operatorController.povUp();
   }

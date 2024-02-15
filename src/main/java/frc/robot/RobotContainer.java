@@ -60,6 +60,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private StageSide targetStageSide = StageSide.CENTER;
 
+  private Drivetrain.State prevDTState = Drivetrain.State.FIELD_ORIENTED_DRIVE;
+
   public RobotContainer(EventLoop checkModulesLoop) {
     super("Robot Container", State.UNDETERMINED, State.class);
 
@@ -256,6 +258,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings.baseShot().onTrue(transitionCommand(State.BASE_SHOT));
     controllerBindings.groundIntake().onTrue(transitionCommand(State.GROUND_INTAKE));
     controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING));
+
+    controllerBindings
+        .xShape()
+        .onTrue(
+            new InstantCommand(
+                    () -> {
+                      prevDTState = drivetrain.getState();
+                    })
+                .andThen(drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)))
+        .onFalse(new InstantCommand(() -> drivetrain.requestTransition(prevDTState)));
   }
 
   private ClimberIO getLeftClimberIO() {

@@ -55,6 +55,11 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger xShape() {
+    return rightFlightStick.trigger();
+  }
+
+  @Override
   public Trigger tuningIncrement() {
     return operatorController.povUp();
   }
