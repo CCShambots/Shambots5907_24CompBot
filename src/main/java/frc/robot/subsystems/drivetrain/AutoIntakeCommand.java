@@ -86,7 +86,7 @@ public class AutoIntakeCommand extends Command {
 
       Logger.recordOutput(
           "Vision/EstimatedRingPose",
-          drive.getPose().transformBy(new Transform2d(botRelativeEstimatedPose, new Rotation2d())));
+          Constants.convertPose2dToPose3d(drive.getPose().transformBy(new Transform2d(botRelativeEstimatedPose, new Rotation2d()))));
 
       // Extract chassis speeds from the translation
       double angleToMove =

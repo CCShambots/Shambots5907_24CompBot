@@ -579,4 +579,8 @@ public class Constants {
     return Rotation2d.fromRadians(
         Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
   }
+
+  public static Pose3d convertPose2dToPose3d(Pose2d pose) {
+    return new Pose3d(pose.getX(), pose.getY(), 0, new Rotation3d(0, 0, pose.getRotation().getRadians()));
+  }
 }
