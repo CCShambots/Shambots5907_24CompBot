@@ -20,6 +20,14 @@ public interface ControllerBindings {
 
   Trigger resetGyro();
 
+  Trigger groundIntake();
+
+  Trigger baseShot();
+
+  Trigger hpIntake();
+
+  Trigger traversing();
+
   // Simulated prox sensors for running in sim mode
   default Trigger simProx1() {
     return new Trigger(() -> false);
