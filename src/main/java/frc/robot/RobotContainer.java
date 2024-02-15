@@ -199,6 +199,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             shooter.transitionCommand(Shooter.State.BASE_SHOT),
             new ParallelCommandGroup(
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+
+    registerStateCommand(State.HUMAN_PLAYER_INTAKE, new ParallelCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.HUMAN_PLAYER_INTAKE),
+            intake.transitionCommand(Intake.State.IDLE),
+            shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
+            indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT)
+    ).andThen(new WaitUntilCommand(() -> indexer.getState() == Indexer.State.HOLDING_RING || indexer.getState() == Indexer.State.LOST_RING))
+            .andThen(transitionCommand(State.TRAVERSING)));
+
+
   }
 
   private void registerTransitions() {
@@ -411,6 +421,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     SPEAKER_SCORE,
     GROUND_INTAKE,
     BASE_SHOT,
-    SOFT_E_STOP
+    SOFT_E_STOP,
+    HUMAN_PLAYER_INTAKE
   }
 }
