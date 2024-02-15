@@ -53,6 +53,7 @@ public class ArmIOReal implements ArmIO {
   @Override
   public void setTargetPosition(double position) {
     if (position < MAX_ANGLE && position > MIN_ANGLE) {
+      resetFollower();
       leaderMotor.setTarget(position);
     }
   }
@@ -71,6 +72,7 @@ public class ArmIOReal implements ArmIO {
   @Override
   public void setVoltage(double voltage) {
     leaderMotor.setVoltage(voltage);
+    followerMotor.setVoltage(voltage);
   }
 
   @Override
