@@ -184,7 +184,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         State.GROUND_INTAKE,
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.GROUND_INTAKE),
-            shooter.transitionCommand(Shooter.State.PARTIAL_STOW),
+            shooter.transitionCommand(Shooter.State.STOW),
             indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
             intake.transitionCommand(Intake.State.INTAKE),
             indexer.waitForState(Indexer.State.INDEXING),
@@ -252,6 +252,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private void configureBindings() {
 
     controllerBindings.resetGyro().onTrue(drivetrain.resetGyro());
+
+    controllerBindings.baseShot().onTrue(transitionCommand(State.BASE_SHOT));
+    controllerBindings.groundIntake().onTrue(transitionCommand(State.GROUND_INTAKE));
+    controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING));
   }
 
   private ClimberIO getLeftClimberIO() {
@@ -352,6 +356,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   @Override
   protected void onEnable() {}
+
+  @Override
+  protected void onTeleopStart() {
+    requestTransition(State.TRAVERSING);
+  }
 
   @Override
   protected void determineSelf() {

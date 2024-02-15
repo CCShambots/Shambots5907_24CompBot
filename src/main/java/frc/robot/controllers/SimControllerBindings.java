@@ -24,6 +24,26 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger baseShot() {
+    return operatorController.b();
+  }
+
+  @Override
+  public Trigger groundIntake() {
+    return operatorController.a();
+  }
+
+  @Override
+  public Trigger hpIntake() {
+    return operatorController.x();
+  }
+
+  @Override
+  public Trigger traversing() {
+    return operatorController.leftBumper();
+  }
+
+  @Override
   public Trigger tuningIncrement() {
     return operatorController.povUp();
   }

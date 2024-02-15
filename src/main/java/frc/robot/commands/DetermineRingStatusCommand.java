@@ -24,7 +24,7 @@ public class DetermineRingStatusCommand extends Command {
 
     switch (indexer.getState()) {
       case HOLDING_RING -> {
-        shooter.requestTransition(Shooter.State.PARTIAL_STOW);
+        shooter.requestTransition(Shooter.State.STOW);
         lights.requestTransition(Lights.State.HAVE_RING);
 
         isFinished = true;
@@ -35,12 +35,12 @@ public class DetermineRingStatusCommand extends Command {
         lights.requestTransition(Lights.State.EJECT);
       }
       case INDEXING -> {
-        shooter.requestTransition(Shooter.State.PARTIAL_STOW);
+        shooter.requestTransition(Shooter.State.STOW);
         lights.requestTransition(Lights.State.HAVE_RING);
       }
       default -> {
         indexer.requestTransition(Indexer.State.IDLE);
-        shooter.requestTransition(Shooter.State.PARTIAL_STOW);
+        shooter.requestTransition(Shooter.State.STOW);
         lights.requestTransition(Lights.State.NO_RING);
 
         isFinished = true;

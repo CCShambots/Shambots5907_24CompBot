@@ -13,6 +13,9 @@ public interface ArmIO {
     public double motorRotorVelocity = 0.0;
     public double motorVelocity = 0.0;
     public double motorVoltage = 0.0;
+
+    public double followerPosition = 0.0;
+    public double followerVelocity = 0.0;
   }
 
   public default void updateInputs(ArmInputs inputs) {}
