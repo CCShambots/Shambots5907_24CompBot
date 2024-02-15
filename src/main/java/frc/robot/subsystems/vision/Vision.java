@@ -84,7 +84,8 @@ public class Vision extends StateMachine<Vision.State> {
     // if no target
     if (inputs.tv == 0) return null;
 
-    return new RingVisionUpdate(Rotation2d.fromDegrees(inputs.tx), inputs.ta);
+    return new RingVisionUpdate(
+        Rotation2d.fromDegrees(inputs.tx), Rotation2d.fromDegrees(inputs.ty), inputs.ta);
   }
 
   private Command enabledCommand() {
@@ -142,5 +143,5 @@ public class Vision extends StateMachine<Vision.State> {
     PV_INSTANCE_DISCONNECT
   }
 
-  public record RingVisionUpdate(Rotation2d centerOffset, double size) {}
+  public record RingVisionUpdate(Rotation2d centerOffsetX, Rotation2d centerOffsetY, double size) {}
 }

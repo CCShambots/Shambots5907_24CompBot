@@ -23,6 +23,7 @@ import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
 import frc.robot.ShamLib.swerve.module.RealignModuleCommand;
 import frc.robot.ShamLib.swerve.module.SwerveModule;
+import frc.robot.subsystems.vision.Vision.RingVisionUpdate;
 import frc.robot.util.StageSide;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,6 +43,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier thetaSupplier;
+
+  private RingVisionUpdate ringVisionUpdate;
 
   public Drivetrain(
       DoubleSupplier x,
@@ -149,6 +152,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             INTAKE_SPEED));
 
     registerStateCommand(
+        State.AUTO_GROUND_INTAKE,
+        new AutoIntakeCommand(drive, () -> ringVisionUpdate, INTAKE_SPEED, AUTO_THETA_GAINS));
+
+    registerStateCommand(
         State.HUMAN_PLAYER_INTAKE,
         new DriveCommand(
             drive,
@@ -193,6 +200,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.X_SHAPE);
     addOmniTransition(State.FIELD_ORIENTED_DRIVE);
     addOmniTransition(State.GROUND_INTAKE);
+    addOmniTransition(State.AUTO_GROUND_INTAKE);
     addOmniTransition(State.HUMAN_PLAYER_INTAKE);
 
     addTransition(State.IDLE, State.FOLLOWING_AUTONOMOUS_TRAJECTORY);
@@ -307,6 +315,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     drive.addTimestampedVisionMeasurements(measurement);
   }
 
+  public void recordRingMeasurement(RingVisionUpdate visionUpdate) {
+    this.ringVisionUpdate = visionUpdate;
+  }
+
   public void registerMisalignedSwerveTriggers(EventLoop loop) {
     for (SwerveModule module : drive.getModules()) {
       loop.bind(
@@ -336,6 +348,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     FACE_RIGHT_TRAP,
     AUTO_AMP,
     AUTO_CLIMB,
+    AUTO_GROUND_INTAKE,
     AUTO_HUMAN_PLAYER_INTAKE,
     TURN_VOLTAGE_CALC,
     DRIVE_VOLTAGE_CALC,

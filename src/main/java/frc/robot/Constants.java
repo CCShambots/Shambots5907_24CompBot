@@ -82,7 +82,15 @@ public class Constants {
   public static final class Vision {
     public static final class Sim {}
 
-    public static final class Hardware {}
+    public static final class Hardware {
+
+      public static Pose3d RING_CAMERA_POSE =
+          new Pose3d(
+              -0.3574542,
+              0,
+              0.2729939422,
+              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180)));
+    }
 
     public static final class Settings {
       public static final int LIMELIGHT_NOTE_TRACK_PIPELINE = 0;
