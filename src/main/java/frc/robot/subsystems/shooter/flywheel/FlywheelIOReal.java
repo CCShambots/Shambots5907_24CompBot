@@ -3,7 +3,6 @@ package frc.robot.subsystems.shooter.flywheel;
 import static frc.robot.Constants.Flywheel.Hardware.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.Follower;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
@@ -51,7 +50,7 @@ public class FlywheelIOReal implements FlywheelIO {
 
   @Override
   public void resetFollower() {
-    bottomMotor.setControl(new Follower(TOP_MOTOR_ID, BOTTOM_MOTOR_INVERTED));
+    // bottomMotor.setControl(new Follower(TOP_MOTOR_ID, BOTTOM_MOTOR_INVERTED));
   }
 
   @Override

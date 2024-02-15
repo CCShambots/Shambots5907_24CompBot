@@ -44,6 +44,11 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger resetGyro() {
+    return operatorController.b();
+  }
+
+  @Override
   public Trigger simProx1() {
     return operatorController.povDown();
   }

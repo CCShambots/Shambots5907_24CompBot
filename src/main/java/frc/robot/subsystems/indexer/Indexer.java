@@ -85,8 +85,8 @@ public class Indexer extends StateMachine<Indexer.State> {
             () -> inputs.beltVoltage,
             VOLTAGE_INCREMENT));
 
-    registerStateCommand(State.HOLDING_RING, () -> io.setTargetVelocity(0));
-    registerStateCommand(State.LOST_RING, () -> io.setTargetVelocity(0));
+    registerStateCommand(State.HOLDING_RING, () -> io.stop());
+    registerStateCommand(State.LOST_RING, () -> io.stop());
   }
 
   private void registerTransitions() {

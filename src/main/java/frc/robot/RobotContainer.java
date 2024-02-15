@@ -20,8 +20,6 @@ import frc.robot.controllers.ControllerBindings;
 import frc.robot.controllers.RealControllerBindings;
 import frc.robot.controllers.SimControllerBindings;
 import frc.robot.subsystems.climbers.ClimberIO;
-import frc.robot.subsystems.climbers.ClimberIOReal;
-import frc.robot.subsystems.climbers.ClimberIOSim;
 import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.indexer.Indexer;
@@ -34,8 +32,6 @@ import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.lights.Lights;
 import frc.robot.subsystems.lights.LightsIO;
-import frc.robot.subsystems.lights.LightsIOReal;
-import frc.robot.subsystems.lights.LightsIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.arm.ArmIOReal;
@@ -140,14 +136,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     configureBindings();
 
+    NamedCommands.registerCommand("raiseClimber", new InstantCommand());
+
     // Important to instatiate after drivetrain consructor is called so that auto builder is
     // configured
     autoChooser =
         new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     initializeDriveTab();
-
-    NamedCommands.registerCommand("raiseClimber", new InstantCommand());
   }
 
   private void registerStateCommands() {
@@ -253,24 +249,29 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     return controllerBindings.tuningStop();
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+
+    controllerBindings.resetGyro().onTrue(drivetrain.resetGyro());
+  }
 
   private ClimberIO getLeftClimberIO() {
     return switch (Constants.currentBuildMode) {
-      case REAL -> new ClimberIOReal(
-          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
-      case SIM -> new ClimberIOSim(
-          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+        // case REAL -> new ClimberIOReal(
+        // Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+        // case SIM -> new ClimberIOSim(
+        // Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
       default -> new ClimberIO() {};
     };
   }
 
   private ClimberIO getRightClimberIO() {
     return switch (Constants.currentBuildMode) {
-      case REAL -> new ClimberIOReal(
-          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
-      case SIM -> new ClimberIOSim(
-          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
+        // case REAL -> new ClimberIOReal(
+        // Constants.Climbers.Hardware.RIGHT_CLIMBER_ID,
+        // Constants.Climbers.Hardware.RIGHT_INVERTED);
+        // case SIM -> new ClimberIOSim(
+        // Constants.Climbers.Hardware.RIGHT_CLIMBER_ID,
+        // Constants.Climbers.Hardware.RIGHT_INVERTED);
       default -> new ClimberIO() {};
     };
   }
@@ -335,13 +336,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private LightsIO getLightsIO() {
     switch (Constants.currentBuildMode) {
-      case REAL -> {
-        return new LightsIOReal();
-      }
+        // case REAL -> {
+        // return new LightsIOReal();
+        // }
 
-      case SIM -> {
-        return new LightsIOSim();
-      }
+        // case SIM -> {
+        // return new LightsIOSim();
+        // }
 
       default -> {
         return new LightsIO() {};

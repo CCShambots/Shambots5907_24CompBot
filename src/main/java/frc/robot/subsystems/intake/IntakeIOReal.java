@@ -47,12 +47,14 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void setBeltTargetVelocity(double velocity) {
+    resetFollower();
+
     topMotor.setTarget(velocity);
   }
 
   @Override
   public void resetFollower() {
-    bottomMotor.setControl(new Follower(TOP_ID, BOTTOM_INVERTED));
+    bottomMotor.setControl(new Follower(topMotor.getDeviceID(), BOTTOM_INVERTED));
   }
 
   @Override

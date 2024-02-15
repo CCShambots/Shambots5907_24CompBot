@@ -48,4 +48,9 @@ public class RealControllerBindings implements ControllerBindings {
   public Trigger tuningStop() {
     return operatorController.a();
   }
+
+  @Override
+  public Trigger resetGyro() {
+    return rightFlightStick.topBase();
+  }
 }

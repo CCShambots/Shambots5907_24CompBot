@@ -1,0 +1,38 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Indexer Belt Gains": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Drive/Auto Route": "String Chooser",
+      "/Shuffleboard/Drive/SWITCH ALLIANCE": "Command",
+      "/Shuffleboard/Drive/SYNC ALLIANCE": "Command",
+      "/SmartDashboard/ClimbersState Chooser": "String Chooser",
+      "/SmartDashboard/DrivetrainState Chooser": "String Chooser",
+      "/SmartDashboard/IndexerState Chooser": "String Chooser",
+      "/SmartDashboard/IntakeState Chooser": "String Chooser",
+      "/SmartDashboard/Left ClimberState Chooser": "String Chooser",
+      "/SmartDashboard/LightsState Chooser": "String Chooser",
+      "/SmartDashboard/Logged Autonomous Chooser": "String Chooser",
+      "/SmartDashboard/Right ClimberState Chooser": "String Chooser",
+      "/SmartDashboard/Robot ContainerState Chooser": "String Chooser",
+      "/SmartDashboard/Shooter ArmState Chooser": "String Chooser",
+      "/SmartDashboard/Shooter FlywheelState Chooser": "String Chooser",
+      "/SmartDashboard/ShooterState Chooser": "String Chooser",
+      "/SmartDashboard/VisionState Chooser": "String Chooser"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT3)",
+    "serverTeam": "5907"
+  }
+}

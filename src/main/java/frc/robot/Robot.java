@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -67,8 +68,7 @@ public class Robot extends LoggedRobot {
       case REAL:
         Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs"));
         Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-        // TODO: Deal with this
-        // new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+        new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
         break;
       case SIM:
         // Running a physics simulator, log to NT

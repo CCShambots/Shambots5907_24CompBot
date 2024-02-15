@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.ShamLib.swerve.DriveCommand;
 import frc.robot.ShamLib.swerve.SwerveDrive;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
@@ -285,6 +286,13 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             "AUTO_CLIMB_" + targetStageSideSupplier.get(),
             CLIMB_ROTATION_DELAY,
             State.FIELD_ORIENTED_DRIVE));
+  }
+
+  public Command resetGyro() {
+    return new WhileDisabledInstantCommand(
+        () -> {
+          drive.resetGyro();
+        });
   }
 
   private Command notifyWaypointCommand() {

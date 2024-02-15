@@ -77,5 +77,6 @@ public class IndexerIOReal implements IndexerIO {
     inputs.beltVelocity = beltMotor.getEncoderVelocity();
     inputs.beltTargetVelocity = beltMotor.getTarget();
     inputs.beltRotorVelocity = beltMotor.getRotorVelocity().getValue();
+    inputs.beltVoltage = beltMotor.getMotorVoltage().getValue();
   }
 }

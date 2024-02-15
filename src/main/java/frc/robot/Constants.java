@@ -139,7 +139,7 @@ public class Constants {
     public static final class Hardware {
       public static final int LEADER_ID = 12;
       public static final int FOLLOWER_ID = 13;
-      public static final int POTENTIOMETER_ID = 3;
+      public static final int POTENTIOMETER_ID = 0;
 
       public static final double POTENTIOMETER_RATIO = (10.0 / 58.0) * 2 * Math.PI;
       public static final double MOTOR_RATIO =
@@ -209,11 +209,15 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Top Flywheel Gains",
+              new PIDSVGains(1.100000, 0, 0, 0.2301, 0.1171),
+              () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
-              "Bottom Flywheel Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Bottom Flywheel Gains",
+              new PIDSVGains(1.100000, 0, 0, 0.2301, 0.1171),
+              () -> ALLOW_TUNING);
     }
 
     public static final class Settings {
@@ -247,7 +251,7 @@ public class Constants {
 
       public static final LoggedTunablePIDSV TOP_GAINS =
           new LoggedTunablePIDSV(
-              "Intake Belt Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Intake Belt Gains", new PIDSVGains(0.5, 0, 0, 0.2469, 0.1237), () -> ALLOW_TUNING);
     }
 
     public static final class Sim {
@@ -255,7 +259,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BELT_SPEED = 2000 / 60.0; // RPS
+      public static final double BELT_SPEED = 1000 / 60.0; // RPS
 
       public static final double VOLTAGE_INC = 0.25;
     }
@@ -321,22 +325,22 @@ public class Constants {
       public static final boolean INVERT_BELT_MOTOR = false;
 
       public static final int PROX_1_ID = 1;
-      public static final int PROX_2_ID = 2;
-      public static final int PROX_3_ID = 3;
+      public static final int PROX_2_ID = 3;
+      public static final int PROX_3_ID = 2;
 
       public static final CurrentLimitsConfigs BELT_MOTOR_CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
       public static final NeutralModeValue BELT_MOTOR_NEUTRAL_MODE = NeutralModeValue.Coast;
 
       public static final LoggedTunablePIDSV BELT_GAINS =
           new LoggedTunablePIDSV(
-              "Indexer Belt Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Indexer Belt Gains", new PIDSVGains(0.5, 0, 0, 0.1454, 0.1204), () -> ALLOW_TUNING);
     }
 
     public static final class Settings {
       // rps
-      public static final double EXPECT_SPEED = 20;
+      public static final double EXPECT_SPEED = 1000 / 60.0;
       public static final double PASS_THROUGH_SPEED = 33;
-      public static final double INDEX_SPEED = 20;
+      public static final double INDEX_SPEED = 500 / 60.0;
       public static final double FEED_SPEED = 33;
 
       // seconds
@@ -413,10 +417,10 @@ public class Constants {
               20, // DRIVE MOTOR ID
               21, // TURN MOTOR ID
               20, // ENCODER ID
-              0.0, // ENCODER OFFSET
+              -108.545, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              false // DRIVE MOTOR INVERTED
+              true // DRIVE MOTOR INVERTED
               );
 
       public static final ModuleInfo MODULE_2_INFO = // BACK LEFT
@@ -426,10 +430,10 @@ public class Constants {
               22, // DRIVE MOTOR ID
               23, // TURN MOTOR ID
               21, // ENCODER ID
-              0.0, // ENCODER OFFSET
+              -92.021, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              false // DRIVE MOTOR INVERTED
+              true // DRIVE MOTOR INVERTED
               );
 
       public static final ModuleInfo MODULE_3_INFO = // BACK RIGHT
@@ -439,10 +443,10 @@ public class Constants {
               24, // DRIVE MOTOR ID
               25, // TURN MOTOR ID
               22, // ENCODER ID
-              0.0, // ENCODER OFFSET
+              32.607, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              false // DRIVE MOTOR INVERTED
+              true // DRIVE MOTOR INVERTED
               );
 
       public static final ModuleInfo MODULE_4_INFO = // FRONT RIGHT
@@ -452,7 +456,7 @@ public class Constants {
               26, // DRIVE MOTOR ID
               27, // TURN MOTOR ID
               23, // ENCODER ID
-              0.0, // ENCODER OFFSET
+              -55.811, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               false // DRIVE MOTOR INVERTED
@@ -465,8 +469,9 @@ public class Constants {
       public static final PIDGains AUTO_THETA_GAINS = new PIDGains(10, 0, 0);
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
 
-      public static final PIDSVGains MODULE_DRIVE_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
-      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(0, 0, 0, 0, 0);
+      public static final PIDSVGains MODULE_DRIVE_GAINS =
+          new PIDSVGains(.1, 0, 0, 0.08045, 0.118675);
+      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(1, 0, 0, 0.1176, 0.1182);
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
 

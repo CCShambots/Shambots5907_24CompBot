@@ -18,6 +18,8 @@ public interface ControllerBindings {
 
   Trigger feedOnPress();
 
+  Trigger resetGyro();
+
   // Simulated prox sensors for running in sim mode
   default Trigger simProx1() {
     return new Trigger(() -> false);
