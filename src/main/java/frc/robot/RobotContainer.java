@@ -218,10 +218,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private Command feedOnPress(State onEnd) {
     return new SequentialCommandGroup(
-        new WaitUntilCommand(controllerBindings.feedOnPress()),
-        indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
-        indexer.waitForState(Indexer.State.IDLE),
-        transitionCommand(onEnd));
+            new WaitUntilCommand(controllerBindings.feedOnPress()),
+            new ConditionalCommand(
+                new SequentialCommandGroup(
+                    indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
+                    indexer.waitForState(Indexer.State.IDLE),
+                    transitionCommand(onEnd)),
+                Commands.none(),
+                () -> shooter.isFlag(Shooter.State.READY)))
+        .repeatedly();
   }
 
   private Command lightsOnReadyCommand(Lights.State alt) {
