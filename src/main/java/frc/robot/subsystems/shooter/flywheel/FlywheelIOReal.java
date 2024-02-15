@@ -5,13 +5,14 @@ import static frc.robot.Constants.Flywheel.Hardware.*;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityMotionMagicTalonFX;
-import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class FlywheelIOReal implements FlywheelIO {
   protected final VelocityMotionMagicTalonFX topMotor =
-      new VelocityMotionMagicTalonFX(TOP_MOTOR_ID, GAINS.get(), TOP_MOTOR_RATIO, ACCELERATION, JERK);
+      new VelocityMotionMagicTalonFX(
+          TOP_MOTOR_ID, GAINS.get(), TOP_MOTOR_RATIO, ACCELERATION, JERK);
   protected final VelocityMotionMagicTalonFX bottomMotor =
-      new VelocityMotionMagicTalonFX(BOTTOM_MOTOR_ID, GAINS.get(), BOTTOM_MOTOR_RATIO, ACCELERATION, JERK);
+      new VelocityMotionMagicTalonFX(
+          BOTTOM_MOTOR_ID, GAINS.get(), BOTTOM_MOTOR_RATIO, ACCELERATION, JERK);
 
   public FlywheelIOReal() {
     this(false);
