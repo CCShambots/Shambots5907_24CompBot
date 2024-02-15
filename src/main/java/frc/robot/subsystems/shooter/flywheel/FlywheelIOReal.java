@@ -4,13 +4,14 @@ import static frc.robot.Constants.Flywheel.Hardware.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
+import frc.robot.ShamLib.motors.talonfx.VelocityMotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class FlywheelIOReal implements FlywheelIO {
-  protected final VelocityTalonFX topMotor =
-      new VelocityTalonFX(TOP_MOTOR_ID, GAINS.get(), TOP_MOTOR_RATIO);
-  protected final VelocityTalonFX bottomMotor =
-      new VelocityTalonFX(BOTTOM_MOTOR_ID, GAINS.get(), BOTTOM_MOTOR_RATIO);
+  protected final VelocityMotionMagicTalonFX topMotor =
+      new VelocityMotionMagicTalonFX(TOP_MOTOR_ID, GAINS.get(), TOP_MOTOR_RATIO, ACCELERATION, JERK);
+  protected final VelocityMotionMagicTalonFX bottomMotor =
+      new VelocityMotionMagicTalonFX(BOTTOM_MOTOR_ID, GAINS.get(), BOTTOM_MOTOR_RATIO, ACCELERATION, JERK);
 
   public FlywheelIOReal() {
     this(false);
@@ -71,6 +72,7 @@ public class FlywheelIOReal implements FlywheelIO {
     bottomMotor.setNeutralMode(NEUTRAL_MODE);
 
     topMotor.setInverted(TOP_MOTOR_INVERTED);
+    bottomMotor.setInverted(BOTTOM_MOTOR_INVERTED);
   }
 
   private void configureCurrentLimits() {

@@ -6,11 +6,12 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
+import frc.robot.ShamLib.motors.talonfx.VelocityMotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 
 public class IntakeIOReal implements IntakeIO {
-  protected final VelocityTalonFX topMotor =
-      new VelocityTalonFX(TOP_ID, TOP_GAINS.get(), TOP_RATIO);
+  protected final VelocityMotionMagicTalonFX topMotor =
+      new VelocityMotionMagicTalonFX(TOP_ID, TOP_GAINS.get(), TOP_RATIO, ACCELERATION, JERK);
   protected final VelocityTalonFX bottomMotor =
       new VelocityTalonFX(BOTTOM_ID, TOP_GAINS.get(), BOTTOM_RATIO);
 
