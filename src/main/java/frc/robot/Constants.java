@@ -141,15 +141,15 @@ public class Constants {
       public static final int FOLLOWER_ID = 13;
       public static final int POTENTIOMETER_ID = 0;
 
-      public static final double POTENTIOMETER_RATIO = (10.0 / 58.0) * 2 * Math.PI;
+      public static final double POTENTIOMETER_RATIO = (10.0 / 58.0) * 10 * 2 * Math.PI;
       public static final double MOTOR_RATIO =
           (10.0 / 64.0) * (18.0 / 50.0) * (10.0 / 58.0) * 2 * Math.PI;
 
       public static final boolean POTENTIOMETER_INVERTED = true;
-      public static final boolean LEADER_INVERTED = false;
-      public static final boolean FOLLOWER_INVERTED = false;
+      public static final boolean LEADER_INVERTED = true;
+      public static final boolean FOLLOWER_INVERTED = true;
 
-      public static final double POTENTIOMETER_OFFSET = 0.0;
+      public static final double POTENTIOMETER_OFFSET = 5.64 + Math.toRadians(20);
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
@@ -157,22 +157,22 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Shooter Arm Gains", new PIDSVGains(0, 0, 00, 0, 0), () -> ALLOW_TUNING);
+              "Shooter Arm Gains", new PIDSVGains(3, 0, 0, 0.0869, 0.3299), () -> ALLOW_TUNING);
     }
 
     public static final class Settings {
-      public static final double VELOCITY = 10; // RAD/s
-      public static final double ACCELERATION = 2; // RAD/s/s
+      public static final double VELOCITY = 100; // RAD/s
+      public static final double ACCELERATION = 50; // RAD/s/s
       public static final double JERK = 10_000; // RAD/s/s/s
 
       public static final double POSITION_READY_TOLERANCE = 2 * (Math.PI / 180); // RAD
 
-      public static final double BASE_SHOT_POSITION = 60 * (Math.PI / 180); // RAD
+      public static final double BASE_SHOT_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
       public static final double TRAP_PREP_POSITION = 50 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
-      public static final double CHUTE_INTAKE_POSITION = 60 * (Math.PI / 180); // RAD
+      public static final double CHUTE_INTAKE_POSITION = 59 * (Math.PI / 180); // RAD
 
       public static final double AUTO_SYNC_TOLERANCE = 0.1;
       public static final double AUTO_SYNC_MAX_VELOCITY = 0.1; // RAD/s
@@ -183,7 +183,7 @@ public class Constants {
       public static final double VOLTAGE_INCREMENT = 0.125;
 
       public static final double MIN_ANGLE = 20.0 * (Math.PI / 180);
-      public static final double MAX_ANGLE = 65.0 * (Math.PI / 180);
+      public static final double MAX_ANGLE = 60.0 * (Math.PI / 180);
     }
   }
 
@@ -209,14 +209,12 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains",
-              new PIDSVGains(1.100000, 0, 0, 0.2301, 0.1171),
-              () -> ALLOW_TUNING);
+              "Top Flywheel Gains", new PIDSVGains(.5, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
-              new PIDSVGains(1.100000, 0, 0, 0.2301, 0.1171),
+              new PIDSVGains(.5, 0, 0, 0.2301, 0.1171),
               () -> ALLOW_TUNING);
     }
 
@@ -226,7 +224,7 @@ public class Constants {
 
       public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
 
-      public static final double CHUTE_INTAKE_SPEED = 600 / 60.0; // RPS
+      public static final double CHUTE_INTAKE_SPEED = -500 / 60.0; // RPS
       public static final double AMP_SPEED = 1000 / 60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
