@@ -85,6 +85,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             true,
             () -> flipPath,
             STATE_STD_DEVIATIONS,
+            Constants.LOOP_PERIOD,
             MODULE_1_INFO,
             MODULE_2_INFO,
             MODULE_3_INFO,
