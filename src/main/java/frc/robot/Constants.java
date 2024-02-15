@@ -250,9 +250,6 @@ public class Constants {
 
       public static final CurrentLimitsConfigs CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
 
-      public static final double JERK = 1000;
-      public static final double ACCELERATION = 10;
-
       public static final LoggedTunablePIDSV TOP_GAINS =
           new LoggedTunablePIDSV(
               "Intake Belt Gains", new PIDSVGains(0.5, 0, 0, 0.2469, 0.1237), () -> ALLOW_TUNING);
@@ -334,9 +331,6 @@ public class Constants {
 
       public static final CurrentLimitsConfigs BELT_MOTOR_CURRENT_LIMIT = DEFAULT_CURRENT_LIMIT;
       public static final NeutralModeValue BELT_MOTOR_NEUTRAL_MODE = NeutralModeValue.Coast;
-
-      public static final double JERK = 1000;
-      public static final double ACCELERATION = 10;
 
       public static final LoggedTunablePIDSV BELT_GAINS =
           new LoggedTunablePIDSV(

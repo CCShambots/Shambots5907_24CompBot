@@ -5,13 +5,12 @@ import static frc.robot.Constants.Indexer.Hardware.*;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import frc.robot.Constants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
-import frc.robot.ShamLib.motors.talonfx.VelocityMotionMagicTalonFX;
+import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
 import frc.robot.util.ProxSensor;
 
 public class IndexerIOReal implements IndexerIO {
-  protected final VelocityMotionMagicTalonFX beltMotor =
-      new VelocityMotionMagicTalonFX(
-          BELT_MOTOR_ID, BELT_GAINS.get(), BELT_RATIO, ACCELERATION, JERK);
+  protected final VelocityTalonFX beltMotor =
+      new VelocityTalonFX(BELT_MOTOR_ID, BELT_GAINS.get(), BELT_RATIO);
 
   private final ProxSensor prox1 = new ProxSensor(PROX_1_ID);
   private final ProxSensor prox2 = new ProxSensor(PROX_2_ID);
