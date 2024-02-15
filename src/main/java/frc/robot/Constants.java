@@ -209,21 +209,21 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains", new PIDSVGains(.5, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
+              "Top Flywheel Gains", new PIDSVGains(0.5, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
-              new PIDSVGains(.5, 0, 0, 0.2301, 0.1171),
+              new PIDSVGains(0.5, 0, 0, 0.2301, 0.1171),
               () -> ALLOW_TUNING);
 
-      public static final double ACCELERATION = 10;
+      public static final double ACCELERATION = 50;
       public static final double JERK = 1000;
     }
 
     public static final class Settings {
       public static final double BASE_SHOT_VELOCITY = 5800 / 60.0; // RPS
-      public static final double SPIN_UP_READY_TOLERANCE = 60 / 60.0; // RPS
+      public static final double SPIN_UP_READY_TOLERANCE = 5; // RPS
 
       public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
 
