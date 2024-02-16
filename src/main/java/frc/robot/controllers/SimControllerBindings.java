@@ -35,7 +35,7 @@ public class SimControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger humanPlayerIntake() {
-    return operatorController.x();
+    return new Trigger(() -> false);
   }
 
   @Override
@@ -45,18 +45,17 @@ public class SimControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger traversing() {
-    return operatorController.leftBumper();
+    return operatorController.x();
   }
 
   @Override
   public Trigger xShape() {
     return new Trigger(() -> false);
   }
-  
 
   @Override
   public Trigger trapScore() {
-    return operatorController.leftTrigger(0.5).and(operatorController.rightTrigger(0.5));
+    return operatorController.povDown();
   }
 
   @Override
@@ -82,6 +81,21 @@ public class SimControllerBindings implements ControllerBindings {
   @Override
   public Trigger resetGyro() {
     return operatorController.b();
+  }
+
+  @Override
+  public Trigger targetCenterStage() {
+    return operatorController.povUp();
+  }
+
+  @Override
+  public Trigger targetLeftStage() {
+    return operatorController.povLeft();
+  }
+
+  @Override
+  public Trigger targetRightStage() {
+    return operatorController.povRight();
   }
 
   @Override

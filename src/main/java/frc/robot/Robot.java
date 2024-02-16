@@ -14,11 +14,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
+import frc.robot.ShamLib.ShamLibConstants.BuildMode;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.ShamLib.motors.talonfx.sim.PhysicsSim;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -41,6 +43,8 @@ public class Robot extends LoggedRobot {
   private int moduleCheckCounter = 0;
 
   private final EventLoop checkModulesLoop = new EventLoop();
+
+  private boolean firstLoop = true;
 
   @Override
   public void robotInit() {
@@ -96,15 +100,32 @@ public class Robot extends LoggedRobot {
 
     // AKit shims the Driver Station using their logged driver station, so this shouldn't be a
     // problem
-    new Trigger(DriverStation::isDSAttached)
-        .or(DriverStation::isFMSAttached)
+    new Trigger(
+            () -> {
+              if (firstLoop) {
+                firstLoop = false;
+                return false;
+              } else {
+                return true;
+              }
+            })
+        .and(
+            () ->
+                DriverStation.isFMSAttached()
+                    || DriverStation.isDSAttached()
+                    || Constants.currentBuildMode == BuildMode.SIM)
         .onTrue(
-            new WaitCommand(2)
+            new PrintCommand("----------STARTED-----------")
                 .andThen(
-                    new WhileDisabledInstantCommand(
-                        () -> {
-                          AllianceManager.applyAlliance(DriverStation.getAlliance());
-                        })));
+                    new WaitCommand(2)
+                        .andThen(
+                            new WhileDisabledInstantCommand(
+                                () -> {
+                                  System.out.println("Getting alliance!");
+                                  AllianceManager.applyAlliance(DriverStation.getAlliance());
+                                  System.out.println(
+                                      "Alliance got: " + AllianceManager.getAlliance());
+                                }))));
   }
 
   @Override
@@ -125,7 +146,10 @@ public class Robot extends LoggedRobot {
         new Pose3d()
             .transformBy(
                 new Transform3d(new Pose3d(), Constants.PhysicalConstants.CHASSIS_TO_SHOOTER))
-            .rotateBy(new Rotation3d(0, -robotContainer.getShooterAngle(), 0));
+            .transformBy(
+                new Transform3d(
+                    new Pose3d(),
+                    new Pose3d(0, 0, 0, new Rotation3d(0, 0, -robotContainer.getShooterAngle()))));
 
     botPose = robotContainer.getBotPose();
 

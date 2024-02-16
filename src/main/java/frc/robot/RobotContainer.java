@@ -42,6 +42,7 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
 import java.util.function.BooleanSupplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
@@ -58,12 +59,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private StageSide targetStageSide = StageSide.CENTER;
+  @AutoLogOutput private StageSide targetStageSide = StageSide.CENTER;
 
   private Drivetrain.State prevDTState = Drivetrain.State.FIELD_ORIENTED_DRIVE;
 
   public RobotContainer(EventLoop checkModulesLoop) {
-    super("Robot Container", State.UNDETERMINED, State.class);
+    super("RobotContainer", State.UNDETERMINED, State.class);
 
     if (Constants.currentBuildMode == ShamLibConstants.BuildMode.SIM) {
       controllerBindings = new SimControllerBindings();
@@ -227,16 +228,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
 
     registerStateCommand(
-      State.TRAP, 
+        State.TRAP,
         new SequentialCommandGroup(
-          //TODO: DRIVETRAIN TRACKING TO CORRECT LOCATION
-          shooter.transitionCommand(Shooter.State.TRAP),
-          new DetermineRingStatusCommand(shooter, indexer, lights),
-          new ParallelCommandGroup(
-            lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING)
-          )
-        )
-      );
+            drivetrain.transitionCommand(Drivetrain.State.TRAP),
+            shooter.transitionCommand(Shooter.State.TRAP),
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            new ParallelCommandGroup(
+                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
   }
 
   private void registerTransitions() {
@@ -315,6 +313,23 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings.ampScore().onTrue(transitionCommand(State.AMP, false));
 
     controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
+
+    controllerBindings
+        .targetLeftStage()
+        .onTrue(new InstantCommand(() -> setTargetStageSide(StageSide.LEFT)));
+    controllerBindings
+        .targetCenterStage()
+        .onTrue(new InstantCommand(() -> setTargetStageSide(StageSide.CENTER)));
+    controllerBindings
+        .targetRightStage()
+        .onTrue(new InstantCommand(() -> setTargetStageSide(StageSide.RIGHT)));
+  }
+
+  private void setTargetStageSide(StageSide newSide) {
+
+    targetStageSide = newSide;
+
+    drivetrain.syncTargetStageSide();
   }
 
   private ClimberIO getLeftClimberIO() {
@@ -355,7 +370,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private final IndexerIO getIndexerIO(
       BooleanSupplier simProx1, BooleanSupplier simProx2, BooleanSupplier simProx3) {
-    System.out.println("CURRENT BUILD MODE : " + Constants.currentBuildMode);
     switch (Constants.currentBuildMode) {
       case REAL -> {
         return new IndexerIOReal();
@@ -461,6 +475,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .addNumber("arm relative", () -> Math.toDegrees(shooter.getArmAngle()))
         .withPosition(0, 2)
         .withSize(1, 1);
+
+    // TODO: Be able to select target stage location
   }
 
   public enum State {

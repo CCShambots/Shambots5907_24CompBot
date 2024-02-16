@@ -58,10 +58,25 @@ public class RealControllerBindings implements ControllerBindings {
   public Trigger ampScore() {
     return operatorController.y();
   }
-  
+
   @Override
   public Trigger trapScore() {
     return operatorController.rightTrigger(0.5).and(operatorController.leftTrigger(0.5));
+  }
+
+  @Override
+  public Trigger targetCenterStage() {
+    return leftFlightStick.topBase();
+  }
+
+  @Override
+  public Trigger targetLeftStage() {
+    return leftFlightStick.topLeft();
+  }
+
+  @Override
+  public Trigger targetRightStage() {
+    return leftFlightStick.topRight();
   }
 
   @Override

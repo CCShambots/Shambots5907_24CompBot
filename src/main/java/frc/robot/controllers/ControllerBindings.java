@@ -34,6 +34,12 @@ public interface ControllerBindings {
 
   Trigger trapScore();
 
+  Trigger targetLeftStage();
+
+  Trigger targetRightStage();
+
+  Trigger targetCenterStage();
+
   // Simulated prox sensors for running in sim mode
   default Trigger simProx1() {
     return new Trigger(() -> false);

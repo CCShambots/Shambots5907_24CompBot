@@ -45,13 +45,7 @@ public class Shooter extends StateMachine<Shooter.State> {
 
     arm = new Arm(armIO, this::armSpeakerAA, tuningInc, tuningDec, tuningStop);
 
-    flywheel =
-        new Flywheel(
-            flywheelIO,
-            this::flywheelSpeakerAA,
-            tuningInc,
-            tuningDec,
-            tuningStop);
+    flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, tuningInc, tuningDec, tuningStop);
 
     addChildSubsystem(arm);
     addChildSubsystem(flywheel);

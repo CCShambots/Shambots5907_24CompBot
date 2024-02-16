@@ -24,20 +24,22 @@ public class DetermineRingStatusCommand extends Command {
 
     switch (indexer.getState()) {
       case HOLDING_RING -> {
-        //If we're holding a ring, set the shooter to stow again and make sure the lights show we have a ring
+        // If we're holding a ring, set the shooter to stow again and make sure the lights show we
+        // have a ring
         shooter.requestTransition(Shooter.State.STOW);
         lights.requestTransition(Lights.State.HAVE_RING);
 
         isFinished = true;
       }
       case LOST_RING -> {
-        //Clear the robot of any potential ring if the indexer has lost it
+        // Clear the robot of any potential ring if the indexer has lost it
         shooter.requestTransition(Shooter.State.PASS_THROUGH);
         indexer.requestTransition(Indexer.State.CLEANSE);
         lights.requestTransition(Lights.State.EJECT);
       }
       case INDEXING -> {
-        //Indicate we have a ring and stow the shooter, but wait since the robot isn't done indexing yet
+        // Indicate we have a ring and stow the shooter, but wait since the robot isn't done
+        // indexing yet
         shooter.requestTransition(Shooter.State.STOW);
         lights.requestTransition(Lights.State.HAVE_RING);
       }

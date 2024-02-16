@@ -67,7 +67,9 @@ public class Constants {
     public static Pose2d BLUE_LEFT_TRAP =
         new Pose2d(new Translation2d(4.597, 4.513), Rotation2d.fromDegrees(120));
     public static Pose2d BLUE_RIGHT_TRAP =
-        new Pose2d(new Translation2d(15.652, 4.512), Rotation2d.fromDegrees(-120));
+        new Pose2d(new Translation2d(4.5969682, 3.717244813), Rotation2d.fromDegrees(-120));
+
+    public static double TRAP_SHOT_DISTANCE = 1; // Meters
 
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
 
@@ -473,7 +475,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final PIDGains AUTO_THETA_GAINS = new PIDGains(10, 0, 0);
+      public static final PIDGains AUTO_THETA_GAINS = new PIDGains(5, 0, 0);
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
@@ -499,9 +501,9 @@ public class Constants {
       public static final SwerveSpeedLimits PATH_FIND_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED / 2,
-              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ACCELERATION / 2,
               MAX_CHASSIS_ROTATIONAL_SPEED / 2,
-              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION / 2);
       public static final SwerveSpeedLimits TRAVERSE_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED,
@@ -549,6 +551,7 @@ public class Constants {
 
       // meters
       public static final double AMP_ROTATIONAL_DELAY = 0;
+      public static final double TRAP_ROTATIONAL_DELAY = 0;
       public static final double CLIMB_ROTATION_DELAY = 0;
       public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
 
