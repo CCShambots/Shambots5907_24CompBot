@@ -54,12 +54,18 @@ public class RealControllerBindings implements ControllerBindings {
     return operatorController.leftBumper();
   }
 
+    @Override
+  public Trigger ampScore() {
+    return operatorController.y();
+  }
+
   @Override
   public Trigger xShape() {
     return rightFlightStick.trigger();
   }
 
-  @Override
+
+@Override
   public Trigger tuningIncrement() {
     return operatorController.povUp();
   }

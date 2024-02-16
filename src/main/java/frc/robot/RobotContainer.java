@@ -286,6 +286,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings
         .humanPlayerIntake()
         .onTrue(transitionCommand(State.HUMAN_PLAYER_INTAKE, false));
+
+    
   }
 
   private ClimberIO getLeftClimberIO() {

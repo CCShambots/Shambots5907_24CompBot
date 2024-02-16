@@ -38,7 +38,13 @@ public class SimControllerBindings implements ControllerBindings {
     return operatorController.x();
   }
 
+
   @Override
+  public Trigger ampScore() {
+    return operatorController.y();
+  }
+
+@Override
   public Trigger traversing() {
     return operatorController.leftBumper();
   }
