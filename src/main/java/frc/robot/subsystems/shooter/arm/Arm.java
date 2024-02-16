@@ -21,12 +21,10 @@ public class Arm extends StateMachine<Arm.State> {
 
   // AA stands for active adjust
   private final DoubleSupplier distanceAAProvider;
-  private final DoubleSupplier trapAAProvider;
 
   public Arm(
       ArmIO io,
       DoubleSupplier distanceAAProvider,
-      DoubleSupplier trapAAProvider,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
@@ -34,7 +32,6 @@ public class Arm extends StateMachine<Arm.State> {
 
     this.io = io;
     this.distanceAAProvider = distanceAAProvider;
-    this.trapAAProvider = trapAAProvider;
 
     registerStateCommands(tuningInc, tuningDec, tuningStop);
     registerTransitions();
@@ -48,9 +45,8 @@ public class Arm extends StateMachine<Arm.State> {
     registerStateCommand(State.CHUTE_INTAKE, holdPositionCommand(() -> CHUTE_INTAKE_POSITION));
     registerStateCommand(State.PARTIAL_STOW, holdPositionCommand(() -> PARTIAL_STOW_POSITION));
     registerStateCommand(State.FULL_STOW, holdPositionCommand(() -> FULL_STOW_POSITION));
-    registerStateCommand(State.TRAP_PREP, holdPositionCommand(() -> TRAP_PREP_POSITION));
+    registerStateCommand(State.TRAP, holdPositionCommand(() -> TRAP_POSITION));
 
-    registerStateCommand(State.TRAP_ACTIVE_ADJUST, holdPositionCommand(trapAAProvider));
     registerStateCommand(State.SHOT_ACTIVE_ADJUST, holdPositionCommand(distanceAAProvider));
 
     registerStateCommand(
@@ -78,8 +74,7 @@ public class Arm extends StateMachine<Arm.State> {
     addOmniTransition(State.CHUTE_INTAKE);
     addOmniTransition(State.PARTIAL_STOW);
     addOmniTransition(State.FULL_STOW);
-    addOmniTransition(State.TRAP_PREP);
-    addOmniTransition(State.TRAP_ACTIVE_ADJUST);
+    addOmniTransition(State.TRAP);
     addOmniTransition(State.SHOT_ACTIVE_ADJUST);
   }
 
@@ -144,8 +139,7 @@ public class Arm extends StateMachine<Arm.State> {
     SOFT_E_STOP,
     AMP,
     CHUTE_INTAKE,
-    TRAP_PREP,
-    TRAP_ACTIVE_ADJUST,
+    TRAP,
     BASE_SHOT,
     SHOT_ACTIVE_ADJUST,
     PARTIAL_STOW,

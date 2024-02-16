@@ -52,6 +52,12 @@ public class SimControllerBindings implements ControllerBindings {
   public Trigger xShape() {
     return new Trigger(() -> false);
   }
+  
+
+  @Override
+  public Trigger trapScore() {
+    return operatorController.leftTrigger(0.5).and(operatorController.rightTrigger(0.5));
+  }
 
   @Override
   public Trigger tuningIncrement() {

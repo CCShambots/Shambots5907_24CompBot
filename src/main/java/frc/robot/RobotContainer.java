@@ -225,6 +225,18 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             shooter.transitionCommand(Shooter.State.AMP),
             new ParallelCommandGroup(
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+
+    registerStateCommand(
+      State.TRAP, 
+        new SequentialCommandGroup(
+          //TODO: DRIVETRAIN TRACKING TO CORRECT LOCATION
+          shooter.transitionCommand(Shooter.State.TRAP),
+          new DetermineRingStatusCommand(shooter, indexer, lights),
+          new ParallelCommandGroup(
+            lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING)
+          )
+        )
+      );
   }
 
   private void registerTransitions() {
@@ -234,6 +246,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.BASE_SHOT);
     addOmniTransition(State.HUMAN_PLAYER_INTAKE);
     addOmniTransition(State.AMP);
+    addOmniTransition(State.TRAP);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -300,6 +313,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .onTrue(transitionCommand(State.HUMAN_PLAYER_INTAKE, false));
 
     controllerBindings.ampScore().onTrue(transitionCommand(State.AMP, false));
+
+    controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
   }
 
   private ClimberIO getLeftClimberIO() {
@@ -457,6 +472,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     BASE_SHOT,
     SOFT_E_STOP,
     HUMAN_PLAYER_INTAKE,
-    AMP
+    AMP,
+    TRAP
   }
 }

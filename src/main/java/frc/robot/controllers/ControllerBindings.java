@@ -32,6 +32,8 @@ public interface ControllerBindings {
 
   Trigger ampScore();
 
+  Trigger trapScore();
+
   // Simulated prox sensors for running in sim mode
   default Trigger simProx1() {
     return new Trigger(() -> false);

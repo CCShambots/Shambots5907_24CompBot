@@ -171,7 +171,7 @@ public class Constants {
 
       public static final double BASE_SHOT_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
-      public static final double TRAP_PREP_POSITION = 50 * (Math.PI / 180); // RAD
+      public static final double TRAP_POSITION = 55 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
       public static final double CHUTE_INTAKE_POSITION = 30 * (Math.PI / 180); // RAD
@@ -232,6 +232,9 @@ public class Constants {
       public static final double CHUTE_INTAKE_SPEED = -500 / 60.0; // RPS
       public static final double AMP_SPEED_TOP = -250 / 60.0; // RPS
       public static final double AMP_SPEED_BOTTOM = 750 / 60.0; // RPS
+
+      public static final double TRAP_SPEED_TOP = 750 / 60.0; // RPS
+      public static final double TRAP_SPEED_BOTTOM = 1750 / 60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }

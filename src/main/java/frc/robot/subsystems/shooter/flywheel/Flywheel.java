@@ -15,19 +15,16 @@ public class Flywheel extends StateMachine<Flywheel.State> {
   private final FlywheelInputsAutoLogged inputs = new FlywheelInputsAutoLogged();
 
   private final DoubleSupplier speakerAAProvider;
-  private final DoubleSupplier trapAAProvider;
 
   public Flywheel(
       FlywheelIO io,
       DoubleSupplier speakerAAProvider,
-      DoubleSupplier trapAAProvider,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
     super("Shooter Flywheel", State.UNDETERMINED, State.class);
 
     this.speakerAAProvider = speakerAAProvider;
-    this.trapAAProvider = trapAAProvider;
     this.io = io;
 
     registerStateCommands(tuningInc, tuningDec, tuningStop);
@@ -62,12 +59,6 @@ public class Flywheel extends StateMachine<Flywheel.State> {
             new RunCommand(() -> io.setFlywheelTarget(speakerAAProvider.getAsDouble())),
             atSpeedCommand(speakerAAProvider, SPIN_UP_READY_TOLERANCE)));
 
-    registerStateCommand(
-        State.TRAP_ACTIVE_ADJUST_SPIN,
-        new ParallelCommandGroup(
-            new RunCommand(() -> io.setFlywheelTarget(trapAAProvider.getAsDouble())),
-            atSpeedCommand(trapAAProvider, SPIN_UP_READY_TOLERANCE)));
-
     registerStateCommand(State.PASS_THROUGH, () -> io.setFlywheelTarget(PASS_THROUGH_SPEED));
 
     registerStateCommand(State.CHUTE_INTAKE, () -> io.setFlywheelTarget(CHUTE_INTAKE_SPEED));
@@ -77,6 +68,12 @@ public class Flywheel extends StateMachine<Flywheel.State> {
         new ParallelCommandGroup(
             new InstantCommand(() -> io.setFlywheelTargets(AMP_SPEED_TOP, AMP_SPEED_BOTTOM)),
             atSpeedCommand(() -> AMP_SPEED_TOP, SPIN_UP_READY_TOLERANCE)));
+
+    registerStateCommand(
+    State.TRAP,
+    new ParallelCommandGroup(
+        new InstantCommand(() -> io.setFlywheelTargets(TRAP_SPEED_TOP, TRAP_SPEED_BOTTOM)),
+        atSpeedCommand(() -> TRAP_SPEED_TOP, SPIN_UP_READY_TOLERANCE)));
   }
 
   private void registerTransitions() {
@@ -84,7 +81,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.IDLE);
     addOmniTransition(State.BASE_SHOT_SPIN);
     addOmniTransition(State.SPEAKER_ACTIVE_ADJUST_SPIN);
-    addOmniTransition(State.TRAP_ACTIVE_ADJUST_SPIN);
+    addOmniTransition(State.TRAP);
     addOmniTransition(State.PASS_THROUGH);
     addOmniTransition(State.CHUTE_INTAKE);
     addOmniTransition(State.AMP);
@@ -121,7 +118,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     BASE_SHOT_SPIN,
     IDLE,
     SPEAKER_ACTIVE_ADJUST_SPIN,
-    TRAP_ACTIVE_ADJUST_SPIN,
+    TRAP,
     PASS_THROUGH,
     CHUTE_INTAKE,
     AMP,
