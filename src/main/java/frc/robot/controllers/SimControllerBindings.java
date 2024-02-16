@@ -84,6 +84,11 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger cleanse() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
   public Trigger targetCenterStage() {
     return operatorController.povUp();
   }

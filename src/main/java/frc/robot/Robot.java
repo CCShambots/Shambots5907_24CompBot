@@ -14,13 +14,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.SubsystemManagerFactory;
 import frc.robot.ShamLib.ShamLibConstants;
-import frc.robot.ShamLib.ShamLibConstants.BuildMode;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.ShamLib.motors.talonfx.sim.PhysicsSim;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -109,23 +107,16 @@ public class Robot extends LoggedRobot {
                 return true;
               }
             })
-        .and(
-            () ->
-                DriverStation.isFMSAttached()
-                    || DriverStation.isDSAttached()
-                    || Constants.currentBuildMode == BuildMode.SIM)
+        .and(() -> DriverStation.isFMSAttached() || DriverStation.isDSAttached())
         .onTrue(
-            new PrintCommand("----------STARTED-----------")
+            new WaitCommand(2)
                 .andThen(
-                    new WaitCommand(2)
-                        .andThen(
-                            new WhileDisabledInstantCommand(
-                                () -> {
-                                  System.out.println("Getting alliance!");
-                                  AllianceManager.applyAlliance(DriverStation.getAlliance());
-                                  System.out.println(
-                                      "Alliance got: " + AllianceManager.getAlliance());
-                                }))));
+                    new WhileDisabledInstantCommand(
+                        () -> {
+                          System.out.println("Getting alliance!");
+                          AllianceManager.applyAlliance(DriverStation.getAlliance());
+                          System.out.println("Alliance got: " + AllianceManager.getAlliance());
+                        })));
   }
 
   @Override

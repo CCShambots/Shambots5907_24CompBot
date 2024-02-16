@@ -34,6 +34,8 @@ public interface ControllerBindings {
 
   Trigger trapScore();
 
+  Trigger cleanse();
+
   Trigger targetLeftStage();
 
   Trigger targetRightStage();

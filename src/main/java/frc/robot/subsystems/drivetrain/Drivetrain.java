@@ -119,7 +119,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     syncTargetStageSide();
 
     System.out.println(AllianceManager.getAlliance());
-    System.out.println(flipPath);
+    System.out.println("Path Flipping:" + flipPath);
   }
 
   public void syncTargetStageSide() {

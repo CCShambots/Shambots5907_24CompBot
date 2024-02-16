@@ -61,7 +61,7 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger trapScore() {
-    return operatorController.rightTrigger(0.5).and(operatorController.leftTrigger(0.5));
+    return operatorController.leftTrigger(0.5);
   }
 
   @Override
@@ -77,6 +77,11 @@ public class RealControllerBindings implements ControllerBindings {
   @Override
   public Trigger targetRightStage() {
     return leftFlightStick.topRight();
+  }
+
+  @Override
+  public Trigger cleanse() {
+    return operatorController.button(7).and(operatorController.button(8));
   }
 
   @Override

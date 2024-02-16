@@ -3,8 +3,11 @@ package frc.robot.subsystems.shooter.flywheel;
 import static frc.robot.Constants.Flywheel.Settings.*;
 import static frc.robot.Constants.doubleEqual;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.motors.tuning.LinearTuningCommand;
 import java.util.function.DoubleSupplier;
@@ -29,6 +32,8 @@ public class Flywheel extends StateMachine<Flywheel.State> {
 
     registerStateCommands(tuningInc, tuningDec, tuningStop);
     registerTransitions();
+
+    SmartDashboard.putData("flywheel", this);
   }
 
   private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
@@ -126,5 +131,23 @@ public class Flywheel extends StateMachine<Flywheel.State> {
 
     // flags
     AT_SPEED
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+
+    builder.addDoubleProperty(
+        "TRAP_TOP_SPEED",
+        () -> Constants.Flywheel.Settings.TRAP_SPEED_TOP * 60.0,
+        (val) -> {
+          Constants.Flywheel.Settings.TRAP_SPEED_TOP = val / 60.0;
+        });
+    builder.addDoubleProperty(
+        "TRAP_BOTTOM_SPEED",
+        () -> Constants.Flywheel.Settings.TRAP_SPEED_BOTTOM * 60.0,
+        (val) -> {
+          Constants.Flywheel.Settings.TRAP_SPEED_BOTTOM = val / 60.0;
+        });
   }
 }
