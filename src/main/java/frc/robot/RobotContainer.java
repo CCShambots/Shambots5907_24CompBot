@@ -208,7 +208,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     ).andThen(new WaitUntilCommand(() -> indexer.getState() == Indexer.State.HOLDING_RING || indexer.getState() == Indexer.State.LOST_RING))
             .andThen(transitionCommand(State.TRAVERSING)));
 
-
+    registerStateCommand(State.AMP, new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            intake.transitionCommand(Intake.State.IDLE),
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            shooter.transitionCommand(Shooter.State.AMP),
+            new ParallelCommandGroup(
+                    lightsOnReadyCommand(Lights.State.TARGETING),
+                    feedOnPress(State.TRAVERSING)
+            )
+    ));
   }
 
   private void registerTransitions() {
