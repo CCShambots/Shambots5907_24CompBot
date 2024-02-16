@@ -24,7 +24,7 @@ public interface ControllerBindings {
 
   Trigger baseShot();
 
-  Trigger hpIntake();
+  Trigger humanPlayerIntake();
 
   Trigger traversing();
 

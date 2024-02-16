@@ -34,7 +34,7 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger hpIntake() {
+  public Trigger humanPlayerIntake() {
     return operatorController.x();
   }
 

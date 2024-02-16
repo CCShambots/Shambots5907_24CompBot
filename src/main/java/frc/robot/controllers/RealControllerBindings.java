@@ -45,7 +45,7 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger hpIntake() {
+  public Trigger humanPlayerIntake() {
     return operatorController.x();
   }
 
