@@ -196,8 +196,8 @@ public class Constants {
     }
 
     public static final class Hardware {
-      public static final int TOP_MOTOR_ID = 10;
-      public static final int BOTTOM_MOTOR_ID = 11;
+      public static final int TOP_MOTOR_ID = 11;
+      public static final int BOTTOM_MOTOR_ID = 10;
 
       public static final double TOP_MOTOR_RATIO = 1;
       public static final double BOTTOM_MOTOR_RATIO = 1;
@@ -230,7 +230,8 @@ public class Constants {
       public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
 
       public static final double CHUTE_INTAKE_SPEED = -500 / 60.0; // RPS
-      public static final double AMP_SPEED = 1000 / 60.0; // RPS
+      public static final double AMP_SPEED_TOP = -250 / 60.0; // RPS
+      public static final double AMP_SPEED_BOTTOM = 750 / 60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
@@ -262,7 +263,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BELT_SPEED = 2000 / 60.0; // RPS
+      public static final double BELT_SPEED = 1500 / 60.0; // RPS
 
       public static final double VOLTAGE_INC = 0.25;
     }
@@ -341,7 +342,7 @@ public class Constants {
 
     public static final class Settings {
       // rps
-      public static final double EXPECT_SPEED = 2000 / 60.0;
+      public static final double EXPECT_SPEED = 1500 / 60.0;
       public static final double PASS_THROUGH_SPEED = 33;
       public static final double INDEX_SPEED = 500 / 60.0;
       public static final double FEED_SPEED = 33;

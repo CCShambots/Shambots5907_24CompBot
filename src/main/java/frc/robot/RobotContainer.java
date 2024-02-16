@@ -249,6 +249,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new WaitUntilCommand(controllerBindings.feedOnPress()),
         indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
         indexer.waitForState(Indexer.State.IDLE),
+        new WaitCommand(1),
         transitionCommand(onEnd));
   }
 

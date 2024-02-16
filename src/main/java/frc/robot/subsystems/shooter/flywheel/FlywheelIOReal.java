@@ -31,12 +31,21 @@ public class FlywheelIOReal implements FlywheelIO {
     inputs.velocity = topMotor.getEncoderVelocity();
     inputs.voltage = topMotor.getMotorVoltage().getValueAsDouble();
     inputs.rotorVelocity = topMotor.getRotorVelocity().getValueAsDouble();
+
+    inputs.velocityBottom = bottomMotor.getEncoderVelocity();
+    inputs.targetVeloBottom = bottomMotor.getTarget();
   }
 
   @Override
   public void setFlywheelTarget(double target) {
     topMotor.setTarget(target);
     bottomMotor.setTarget(target);
+  }
+
+  @Override
+  public void setFlywheelTargets(double targetTop, double targetBottom) {
+    topMotor.setTarget(targetTop);
+    bottomMotor.setTarget(targetBottom);
   }
 
   @Override

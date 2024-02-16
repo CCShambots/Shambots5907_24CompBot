@@ -75,8 +75,8 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     registerStateCommand(
         State.AMP,
         new ParallelCommandGroup(
-            new InstantCommand(() -> io.setFlywheelTarget(AMP_SPEED)),
-            atSpeedCommand(() -> AMP_SPEED, SPIN_UP_READY_TOLERANCE)));
+            new InstantCommand(() -> io.setFlywheelTargets(AMP_SPEED_TOP, AMP_SPEED_BOTTOM)),
+            atSpeedCommand(() -> AMP_SPEED_TOP, SPIN_UP_READY_TOLERANCE)));
   }
 
   private void registerTransitions() {
