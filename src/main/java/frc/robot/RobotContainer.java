@@ -201,6 +201,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             shooter.transitionCommand(Shooter.State.BASE_SHOT),
             new ParallelCommandGroup(
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+
+    registerStateCommand(
+        State.HUMAN_PLAYER_INTAKE,
+        new ParallelCommandGroup(
+                drivetrain.transitionCommand(Drivetrain.State.HUMAN_PLAYER_INTAKE),
+                intake.transitionCommand(Intake.State.IDLE),
+                shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
+                indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT))
+            .andThen(
+                new WaitUntilCommand(
+                    () ->
+                        indexer.getState() == Indexer.State.HOLDING_RING
+                            || indexer.getState() == Indexer.State.LOST_RING))
+            .andThen(transitionCommand(State.TRAVERSING)));
   }
 
   private void registerTransitions() {
@@ -208,6 +222,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.SOFT_E_STOP);
     addOmniTransition(State.SPEAKER_SCORE);
     addOmniTransition(State.BASE_SHOT);
+    addOmniTransition(State.HUMAN_PLAYER_INTAKE);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -255,10 +270,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     controllerBindings.resetGyro().onTrue(drivetrain.resetGyro());
 
-    controllerBindings.baseShot().onTrue(transitionCommand(State.BASE_SHOT));
-    controllerBindings.groundIntake().onTrue(transitionCommand(State.GROUND_INTAKE));
-    controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING));
-
     controllerBindings
         .xShape()
         .onTrue(
@@ -268,6 +279,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     })
                 .andThen(drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)))
         .onFalse(new InstantCommand(() -> drivetrain.requestTransition(prevDTState)));
+    controllerBindings.baseShot().onTrue(transitionCommand(State.BASE_SHOT, false));
+    controllerBindings.groundIntake().onTrue(transitionCommand(State.GROUND_INTAKE, false));
+    controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING, false));
+
+    controllerBindings
+        .humanPlayerIntake()
+        .onTrue(transitionCommand(State.HUMAN_PLAYER_INTAKE, false));
   }
 
   private ClimberIO getLeftClimberIO() {
@@ -423,6 +441,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     SPEAKER_SCORE,
     GROUND_INTAKE,
     BASE_SHOT,
-    SOFT_E_STOP
+    SOFT_E_STOP,
+    HUMAN_PLAYER_INTAKE,
+    AMP
   }
 }

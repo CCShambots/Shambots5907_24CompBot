@@ -174,7 +174,7 @@ public class Constants {
       public static final double TRAP_PREP_POSITION = 50 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
-      public static final double CHUTE_INTAKE_POSITION = 59 * (Math.PI / 180); // RAD
+      public static final double CHUTE_INTAKE_POSITION = 30 * (Math.PI / 180); // RAD
 
       public static final double AUTO_SYNC_TOLERANCE = 0.1;
       public static final double AUTO_SYNC_MAX_VELOCITY = 0.1; // RAD/s
@@ -211,12 +211,12 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains", new PIDSVGains(0.5, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
+              "Top Flywheel Gains", new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
-              new PIDSVGains(0.5, 0, 0, 0.2301, 0.1171),
+              new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171),
               () -> ALLOW_TUNING);
 
       public static final double ACCELERATION = 50;
