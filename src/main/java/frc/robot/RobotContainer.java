@@ -223,6 +223,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.SPEAKER_SCORE);
     addOmniTransition(State.BASE_SHOT);
     addOmniTransition(State.HUMAN_PLAYER_INTAKE);
+    addOmniTransition(State.AMP);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -287,7 +288,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .humanPlayerIntake()
         .onTrue(transitionCommand(State.HUMAN_PLAYER_INTAKE, false));
 
-    
+    controllerBindings.ampScore().onTrue(transitionCommand(State.AMP, false));
   }
 
   private ClimberIO getLeftClimberIO() {

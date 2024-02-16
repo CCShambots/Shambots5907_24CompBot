@@ -54,7 +54,7 @@ public class RealControllerBindings implements ControllerBindings {
     return operatorController.leftBumper();
   }
 
-    @Override
+  @Override
   public Trigger ampScore() {
     return operatorController.y();
   }
@@ -64,8 +64,7 @@ public class RealControllerBindings implements ControllerBindings {
     return rightFlightStick.trigger();
   }
 
-
-@Override
+  @Override
   public Trigger tuningIncrement() {
     return operatorController.povUp();
   }
