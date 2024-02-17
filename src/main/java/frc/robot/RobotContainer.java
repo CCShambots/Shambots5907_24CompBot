@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.ShamLibConstants;
+import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.commands.DetermineRingStatusCommand;
 import frc.robot.controllers.ControllerBindings;
 import frc.robot.controllers.RealControllerBindings;
@@ -558,6 +559,28 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     driveTab
         .addNumber("climber right", () -> climbers.getRightPos())
         .withPosition(8, 1)
+        .withSize(1, 1);
+
+    driveTab.addBoolean("POSE WORKING", () -> poseWorking).withPosition(9, 0).withSize(1, 1);
+    driveTab.addBoolean("AUTO INTAKE", () -> autoIntakeWorking).withPosition(10, 0).withSize(1, 1);
+
+    driveTab
+        .add(
+            "TOGGLE POSE",
+            new WhileDisabledInstantCommand(
+                () -> {
+                  poseWorking = !poseWorking;
+                }))
+        .withPosition(9, 1)
+        .withSize(1, 1);
+    driveTab
+        .add(
+            "TOGGLE INTAKE",
+            new WhileDisabledInstantCommand(
+                () -> {
+                  autoIntakeWorking = !autoIntakeWorking;
+                }))
+        .withPosition(10, 1)
         .withSize(1, 1);
   }
 
