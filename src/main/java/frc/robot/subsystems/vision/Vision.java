@@ -32,8 +32,9 @@ public class Vision extends StateMachine<Vision.State> {
     this.limelight = new Limelight(limelight, Constants.currentBuildMode);
 
     pvApriltagCams =
-        photonVisionInstances.entrySet()
-            .stream().map(entry ->
+        photonVisionInstances.entrySet().stream()
+            .map(
+                entry ->
                     new PVApriltagCam(
                         entry.getKey(),
                         Constants.currentBuildMode,

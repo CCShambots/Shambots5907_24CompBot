@@ -292,7 +292,7 @@ public class Constants {
       public static final int LEFT_CLIMBER_ID = 40;
       public static final int RIGHT_CLIMBER_ID = 41;
 
-      public static final boolean LEFT_INVERTED = false;
+      public static final boolean LEFT_INVERTED = true;
       public static final boolean RIGHT_INVERTED = false;
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
@@ -300,22 +300,24 @@ public class Constants {
       // rotations to meters
       public static final double CLIMBER_RATIO =
           (1 / 30.0) // Gear ratio is 30:1
-              * (Units.inchesToMeters(1) * Math.PI) // Circumference of the spool
+              * (Units.inchesToMeters(1.125) * Math.PI) // Circumference of the spool
           ;
     }
 
     public static final class Settings {
+      public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
+
       public static final LoggedTunablePIDSV FREE_GAINS =
           new LoggedTunablePIDSV(
-              "Climber Free Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Climber Free Gains", new PIDSVGains(.5, 0, 0, 0.1055, 0.11535), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV LOADED_GAINS =
           new LoggedTunablePIDSV(
               "Climber Loaded Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
 
       // all in meters
-      public static double FREE_VELOCITY = 1;
-      public static double FREE_ACCELERATION = 1;
+      public static double FREE_VELOCITY = 5500 / 60.0;
+      public static double FREE_ACCELERATION = 10000 / 60.0;
       public static double FREE_JERK = 0;
 
       public static double LOADED_VELOCITY = 1;
@@ -328,7 +330,7 @@ public class Constants {
       public static int FREE_SLOT = 0;
       public static int LOADED_SLOT = 1;
 
-      public static double EXTENSION_SETPOINT = 0;
+      public static double EXTENSION_SETPOINT = 0.45;
 
       public static double VOLTAGE_INCREMENT = 0.125;
     }

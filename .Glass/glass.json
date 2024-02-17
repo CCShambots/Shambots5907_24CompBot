@@ -2,6 +2,9 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Climber Free Gains": {
+          "open": true
+        },
         "Indexer Belt Gains": {
           "open": true
         },
@@ -13,6 +16,7 @@
       "/Shuffleboard/Drive/Auto Route": "String Chooser",
       "/Shuffleboard/Drive/SWITCH ALLIANCE": "Command",
       "/Shuffleboard/Drive/SYNC ALLIANCE": "Command",
+      "/Shuffleboard/Drive/zero climbers": "Command",
       "/SmartDashboard/ClimbersState Chooser": "String Chooser",
       "/SmartDashboard/DrivetrainState Chooser": "String Chooser",
       "/SmartDashboard/IndexerState Chooser": "String Chooser",

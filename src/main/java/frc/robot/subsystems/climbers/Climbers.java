@@ -41,6 +41,14 @@ public class Climbers extends StateMachine<Climbers.State> {
     zeroRight();
   }
 
+  public double getLeftPos() {
+    return leftClimber.getPos();
+  }
+
+  public double getRightPos() {
+    return rightClimber.getPos();
+  }
+
   private void registerStateCommands() {
     registerStateCommand(
         State.SOFT_E_STOP,

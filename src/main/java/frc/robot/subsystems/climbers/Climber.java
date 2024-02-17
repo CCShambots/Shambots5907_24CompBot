@@ -27,7 +27,7 @@ public class Climber extends StateMachine<Climber.State> {
   }
 
   public void zero() {
-      io.resetPosition();
+    io.resetPosition();
   }
 
   private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
@@ -73,7 +73,7 @@ public class Climber extends StateMachine<Climber.State> {
             tuningInc,
             tuningDec,
             io::setVoltage,
-            () -> inputs.velocity,
+            () -> inputs.rotorVelocity,
             () -> inputs.voltage,
             VOLTAGE_INCREMENT));
   }
@@ -107,6 +107,10 @@ public class Climber extends StateMachine<Climber.State> {
   @Override
   protected void determineSelf() {
     setState(State.SOFT_E_STOP);
+  }
+
+  public double getPos() {
+    return inputs.position;
   }
 
   public enum State {
