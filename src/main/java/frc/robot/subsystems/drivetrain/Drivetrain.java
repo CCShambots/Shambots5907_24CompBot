@@ -9,6 +9,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
@@ -85,9 +87,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             GYRO_CAN_BUS,
             CURRENT_LIMITS_CONFIGS,
             this,
-            true,
+            false,
             () -> flipPath,
             STATE_STD_DEVIATIONS,
+            Constants.LOOP_PERIOD,
             MODULE_1_INFO,
             MODULE_2_INFO,
             MODULE_3_INFO,
@@ -115,6 +118,16 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     // re-register face commands in case the alliance changed (they are based on the blue poses by
     // default)
     registerFaceCommands();
+
+    syncTargetStageSide();
+
+    System.out.println(AllianceManager.getAlliance());
+    System.out.println("Path Flipping:" + flipPath);
+  }
+
+  public void syncTargetStageSide() {
+    registerStateCommand(
+        State.TRAP, getPathFindCommand(getTrapTarget(), TRAP_ROTATIONAL_DELAY, State.X_SHAPE));
   }
 
   public void setAutonomousCommand(Command command) {
@@ -168,6 +181,18 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             HUMAN_PLAYER_PICKUP_SPEED));
 
     registerStateCommand(
+        State.CHAIN_ORIENTED_DRIVE,
+        new ChainRelativeDriveCommand(
+            drive,
+            AUTO_THETA_GAINS,
+            targetStageSideSupplier,
+            xSupplier,
+            ySupplier,
+            Constants.Controller.DEADBAND,
+            Constants.Controller.DRIVE_CONVERSION,
+            AMP_SPEED));
+
+    registerStateCommand(
         State.AUTO_AMP,
         getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
 
@@ -212,11 +237,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.AUTO_CLIMB);
     addOmniTransition(State.AUTO_HUMAN_PLAYER_INTAKE);
 
-    addOmniTransition(State.FACE_RIGHT_TRAP);
-    addOmniTransition(State.FACE_LEFT_TRAP);
-    addOmniTransition(State.FACE_CENTER_TRAP);
+    addOmniTransition(State.TRAP);
     addOmniTransition(State.FACE_AMP);
     addOmniTransition(State.FACE_SPEAKER);
+
+    addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
   }
 
   private void registerFaceCommands() {
@@ -228,28 +253,13 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         State.FACE_SPEAKER,
         getFacePointCommand(
             flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED));
-
-    registerStateCommand(
-        State.FACE_CENTER_TRAP,
-        getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_CENTER_TRAP) : BLUE_CENTER_TRAP, TRAP_SPEED));
-
-    registerStateCommand(
-        State.FACE_LEFT_TRAP,
-        getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_LEFT_TRAP) : BLUE_LEFT_TRAP, TRAP_SPEED));
-
-    registerStateCommand(
-        State.FACE_RIGHT_TRAP,
-        getFacePointCommand(
-            flipPath ? Constants.mirror(BLUE_RIGHT_TRAP) : BLUE_RIGHT_TRAP, TRAP_SPEED));
   }
 
   private Command getFacePointCommand(Pose2d pose, SwerveSpeedLimits limits) {
     FacePointCommand facePointCommand =
         new FacePointCommand(
             drive,
-            HOLD_ANGLE_GAINS,
+            AUTO_THETA_GAINS,
             pose,
             drive::getPose,
             xSupplier,
@@ -277,6 +287,40 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         AutoBuilder.pathfindThenFollowPath(
             PathPlannerPath.fromPathFile(nextPath), getPathfindingConstraints(), rotationalDelay),
         transitionCommand(endState, false));
+  }
+
+  private Command getPathFindCommand(Pose2d targetPose, double rotationalDelay, State endState) {
+    return new SequentialCommandGroup(
+        new InstantCommand(() -> setFlag(State.PATHFINDING)),
+        AutoBuilder.pathfindToPose(targetPose, getPathfindingConstraints(), rotationalDelay),
+        transitionCommand(endState, false));
+  }
+
+  private Pose2d getTrapTarget() {
+    Pose2d trapPose;
+
+    switch (targetStageSideSupplier.get()) {
+      case LEFT:
+        trapPose = !flipPath ? BLUE_LEFT_TRAP : BLUE_RIGHT_TRAP;
+        break;
+      case RIGHT:
+        trapPose = !flipPath ? BLUE_RIGHT_TRAP : BLUE_LEFT_TRAP;
+        break;
+      default:
+        trapPose = BLUE_CENTER_TRAP;
+        break;
+    }
+
+    Pose2d targetPose =
+        trapPose.transformBy(
+            new Transform2d(
+                new Pose2d(), new Pose2d(TRAP_SHOT_DISTANCE, 0, Rotation2d.fromDegrees(180))));
+
+    System.out.println("FLIPPED: " + flipPath);
+    System.out.println("alliance at time of run: " + DriverStation.getAlliance());
+    targetPose = flipPath ? Constants.mirror(targetPose) : targetPose;
+
+    return targetPose;
   }
 
   private PathConstraints getPathfindingConstraints() {
@@ -340,12 +384,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     IDLE,
     X_SHAPE,
     FIELD_ORIENTED_DRIVE,
+    CHAIN_ORIENTED_DRIVE,
     FOLLOWING_AUTONOMOUS_TRAJECTORY,
     FACE_SPEAKER,
     FACE_AMP,
-    FACE_CENTER_TRAP,
-    FACE_LEFT_TRAP,
-    FACE_RIGHT_TRAP,
+    TRAP,
     AUTO_AMP,
     AUTO_CLIMB,
     AUTO_GROUND_INTAKE,
@@ -357,6 +400,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     // flags for non-autonomous operations
     PATHFINDING,
-    AT_ANGLE
+    AT_ANGLE,
+    AT_TRAP_POSE
   }
 }

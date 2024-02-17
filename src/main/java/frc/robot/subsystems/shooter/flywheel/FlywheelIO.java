@@ -10,9 +10,14 @@ public interface FlywheelIO {
     public double rotorVelocity = 0.0;
     public double targetVelocity = 0.0;
     public double voltage = 0.0;
+
+    public double targetVeloBottom = 0.0;
+    public double velocityBottom = 0.0;
   }
 
   public default void setFlywheelTarget(double target) {}
+
+  public default void setFlywheelTargets(double targetTop, double targetBottom) {}
 
   public default void stop() {}
 

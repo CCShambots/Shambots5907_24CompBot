@@ -4,6 +4,7 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ClimberIO {
+
   @AutoLog
   public class ClimberInputs {
     public double position = 0;
@@ -12,6 +13,7 @@ public interface ClimberIO {
     public double voltage = 0;
 
     public double velocity = 0;
+    public double rotorVelocity = 0;
   }
 
   public default void updateInputs(ClimberInputs inputs) {}

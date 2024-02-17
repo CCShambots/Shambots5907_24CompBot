@@ -13,6 +13,8 @@ public class ClimberIOReal implements ClimberIO {
   protected MotionMagicTalonFX motor;
   private MotionMagicVoltage mmReq = new MotionMagicVoltage(0);
 
+  private double target = 0;
+
   public ClimberIOReal(int motorID, boolean inverted) {
     this(motorID, inverted, false);
   }
@@ -24,6 +26,8 @@ public class ClimberIOReal implements ClimberIO {
 
     if (!sim) motor.getConfigurator().apply(CURRENT_LIMITS_CONFIGS);
 
+    configureHardware();
+
     motor.setInverted(inverted);
 
     FREE_GAINS.setOnChange(this::setSlot0Gains);
@@ -32,11 +36,13 @@ public class ClimberIOReal implements ClimberIO {
 
   @Override
   public void updateInputs(ClimberInputs inputs) {
-    inputs.targetPosition = motor.getTarget();
+    inputs.targetPosition = target;
     inputs.position = motor.getEncoderPosition();
 
     inputs.voltage = motor.getMotorVoltage().getValue();
     inputs.velocity = motor.getEncoderVelocity();
+
+    inputs.rotorVelocity = motor.getRotorVelocity().getValue();
   }
 
   @Override
@@ -90,6 +96,7 @@ public class ClimberIOReal implements ClimberIO {
 
   @Override
   public void setTarget(double target) {
+    this.target = target;
     motor.setControl(mmReq.withPosition(motor.outputToTicks(target)).withSlot(0));
   }
 
@@ -101,5 +108,9 @@ public class ClimberIOReal implements ClimberIO {
   @Override
   public void resetPosition(double position) {
     motor.resetPosition(position);
+  }
+
+  private void configureHardware() {
+    motor.setNeutralMode(NEUTRAL_MODE);
   }
 }

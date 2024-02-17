@@ -43,11 +43,14 @@ public class ArmIOReal implements ArmIO {
     inputs.motorVelocity = leaderMotor.getEncoderVelocity();
     inputs.motorVoltage = leaderMotor.getMotorVoltage().getValueAsDouble();
     inputs.motorRotorVelocity = leaderMotor.getRotorVelocity().getValueAsDouble();
+
+    inputs.followerPosition = followerMotor.getEncoderPosition();
+    inputs.followerVelocity = followerMotor.getEncoderVelocity();
   }
 
   @Override
   public void resetFollower() {
-    followerMotor.setControl(new Follower(LEADER_ID, FOLLOWER_INVERTED));
+    followerMotor.setControl(new Follower(LEADER_ID, false));
   }
 
   @Override
@@ -67,6 +70,7 @@ public class ArmIOReal implements ArmIO {
   @Override
   public void syncToAbsoluteEncoder() {
     leaderMotor.resetPosition(potentiometer.get());
+    followerMotor.resetPosition(potentiometer.get());
   }
 
   @Override

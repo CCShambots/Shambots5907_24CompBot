@@ -26,6 +26,10 @@ public class Climber extends StateMachine<Climber.State> {
     registerTransitions();
   }
 
+  public void zero() {
+    io.resetPosition();
+  }
+
   private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     registerStateCommand(
         State.FREE_EXTEND,
@@ -56,7 +60,7 @@ public class Climber extends StateMachine<Climber.State> {
                 () -> {
                   io.setSpeed(LOADED_VELOCITY, LOADED_ACCELERATION, LOADED_JERK);
                   io.setControlSlot(LOADED_SLOT);
-                  io.setTarget(0);
+                  io.setTarget(RETRACT_SETPOINT);
                 }),
             watchSetpointCommand()));
 
@@ -69,7 +73,7 @@ public class Climber extends StateMachine<Climber.State> {
             tuningInc,
             tuningDec,
             io::setVoltage,
-            () -> inputs.velocity,
+            () -> inputs.rotorVelocity,
             () -> inputs.voltage,
             VOLTAGE_INCREMENT));
   }
@@ -103,6 +107,10 @@ public class Climber extends StateMachine<Climber.State> {
   @Override
   protected void determineSelf() {
     setState(State.SOFT_E_STOP);
+  }
+
+  public double getPos() {
+    return inputs.position;
   }
 
   public enum State {

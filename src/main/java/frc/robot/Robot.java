@@ -42,6 +42,8 @@ public class Robot extends LoggedRobot {
 
   private final EventLoop checkModulesLoop = new EventLoop();
 
+  private boolean firstLoop = true;
+
   @Override
   public void robotInit() {
     if (isReal()) currentBuildMode = ShamLibConstants.BuildMode.REAL;
@@ -96,14 +98,24 @@ public class Robot extends LoggedRobot {
 
     // AKit shims the Driver Station using their logged driver station, so this shouldn't be a
     // problem
-    new Trigger(DriverStation::isDSAttached)
-        .or(DriverStation::isFMSAttached)
+    new Trigger(
+            () -> {
+              if (firstLoop) {
+                firstLoop = false;
+                return false;
+              } else {
+                return true;
+              }
+            })
+        .and(() -> DriverStation.isFMSAttached() || DriverStation.isDSAttached())
         .onTrue(
             new WaitCommand(2)
                 .andThen(
                     new WhileDisabledInstantCommand(
                         () -> {
+                          System.out.println("Getting alliance!");
                           AllianceManager.applyAlliance(DriverStation.getAlliance());
+                          System.out.println("Alliance got: " + AllianceManager.getAlliance());
                         })));
   }
 
@@ -118,6 +130,9 @@ public class Robot extends LoggedRobot {
       moduleCheckCounter = 0;
       checkModulesLoop.poll();
     }
+
+    Logger.recordOutput("left-cam-pose", Constants.Vision.Hardware.LEFT_CAM_POSE);
+    Logger.recordOutput("right-cam-pose", Constants.Vision.Hardware.RIGHT_CAM_POSE);
   }
 
   private void updatePoses() {
@@ -125,7 +140,10 @@ public class Robot extends LoggedRobot {
         new Pose3d()
             .transformBy(
                 new Transform3d(new Pose3d(), Constants.PhysicalConstants.CHASSIS_TO_SHOOTER))
-            .rotateBy(new Rotation3d(0, -robotContainer.getShooterAngle(), 0));
+            .transformBy(
+                new Transform3d(
+                    new Pose3d(),
+                    new Pose3d(0, 0, 0, new Rotation3d(0, 0, -robotContainer.getShooterAngle()))));
 
     botPose = robotContainer.getBotPose();
 

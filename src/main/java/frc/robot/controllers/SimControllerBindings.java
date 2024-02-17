@@ -24,6 +24,41 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger shoot() {
+    return operatorController.b();
+  }
+
+  @Override
+  public Trigger groundIntake() {
+    return operatorController.a();
+  }
+
+  @Override
+  public Trigger humanPlayerIntake() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
+  public Trigger ampScore() {
+    return operatorController.y();
+  }
+
+  @Override
+  public Trigger traversing() {
+    return operatorController.leftBumper();
+  }
+
+  @Override
+  public Trigger xShape() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
+  public Trigger trapScore() {
+    return operatorController.povDown();
+  }
+
+  @Override
   public Trigger tuningIncrement() {
     return operatorController.povUp();
   }
@@ -40,12 +75,42 @@ public class SimControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger feedOnPress() {
-    return operatorController.a();
+    return operatorController.rightBumper();
   }
 
   @Override
   public Trigger resetGyro() {
     return operatorController.b();
+  }
+
+  @Override
+  public Trigger cleanse() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
+  public Trigger retractClimb() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
+  public Trigger startClimb() {
+    return operatorController.x();
+  }
+
+  @Override
+  public Trigger targetCenterStage() {
+    return operatorController.povUp();
+  }
+
+  @Override
+  public Trigger targetLeftStage() {
+    return operatorController.povLeft();
+  }
+
+  @Override
+  public Trigger targetRightStage() {
+    return operatorController.povRight();
   }
 
   @Override

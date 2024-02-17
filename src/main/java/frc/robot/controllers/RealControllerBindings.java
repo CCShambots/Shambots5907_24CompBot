@@ -31,7 +31,72 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger feedOnPress() {
+    return operatorController.rightBumper();
+  }
+
+  @Override
+  public Trigger shoot() {
+    return operatorController.b();
+  }
+
+  @Override
+  public Trigger groundIntake() {
     return operatorController.a();
+  }
+
+  @Override
+  public Trigger humanPlayerIntake() {
+    return operatorController.x();
+  }
+
+  @Override
+  public Trigger traversing() {
+    return operatorController.leftBumper();
+  }
+
+  @Override
+  public Trigger ampScore() {
+    return operatorController.y();
+  }
+
+  @Override
+  public Trigger trapScore() {
+    return operatorController.leftTrigger(0.5);
+  }
+
+  @Override
+  public Trigger targetCenterStage() {
+    return operatorController.povUp();
+  }
+
+  @Override
+  public Trigger targetLeftStage() {
+    return operatorController.povLeft();
+  }
+
+  @Override
+  public Trigger targetRightStage() {
+    return operatorController.povRight();
+  }
+
+  @Override
+  public Trigger retractClimb() {
+    return operatorController.rightTrigger(0.5);
+  }
+
+  @Override
+  public Trigger startClimb() {
+    return leftFlightStick.topBase();
+  }
+
+  @Override
+  public Trigger cleanse() {
+    return operatorController.button(7).and(operatorController.button(8));
+  }
+
+  @Override
+  public Trigger xShape() {
+    return rightFlightStick.trigger();
   }
 
   @Override

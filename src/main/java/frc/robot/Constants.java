@@ -26,6 +26,8 @@ import frc.robot.ShamLib.swerve.module.ModuleInfo;
 import java.util.function.UnaryOperator;
 
 public class Constants {
+  public static final double LOOP_PERIOD = 0.02;
+
   public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
@@ -65,7 +67,9 @@ public class Constants {
     public static Pose2d BLUE_LEFT_TRAP =
         new Pose2d(new Translation2d(4.597, 4.513), Rotation2d.fromDegrees(120));
     public static Pose2d BLUE_RIGHT_TRAP =
-        new Pose2d(new Translation2d(15.652, 4.512), Rotation2d.fromDegrees(-120));
+        new Pose2d(new Translation2d(4.5969682, 3.717244813), Rotation2d.fromDegrees(-120));
+
+    public static double TRAP_SHOT_DISTANCE = 1; // Meters
 
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
 
@@ -90,6 +94,20 @@ public class Constants {
               0,
               0.2729939422,
               new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180)));
+              
+      public static Pose3d LEFT_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(11.868),
+              Units.inchesToMeters(12.303),
+              Units.inchesToMeters(8.710),
+              new Rotation3d(0, Math.toRadians(-40), Math.toRadians(-5)));
+
+      public static Pose3d RIGHT_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(11.868),
+              Units.inchesToMeters(-12.303),
+              Units.inchesToMeters(8.710),
+              new Rotation3d(0, Math.toRadians(-40), Math.toRadians(5 + 7.4028)));
     }
 
     public static final class Settings {
@@ -177,10 +195,10 @@ public class Constants {
 
       public static final double BASE_SHOT_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
-      public static final double TRAP_PREP_POSITION = 50 * (Math.PI / 180); // RAD
+      public static final double TRAP_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
-      public static final double CHUTE_INTAKE_POSITION = 59 * (Math.PI / 180); // RAD
+      public static final double CHUTE_INTAKE_POSITION = 30 * (Math.PI / 180); // RAD
 
       public static final double AUTO_SYNC_TOLERANCE = 0.1;
       public static final double AUTO_SYNC_MAX_VELOCITY = 0.1; // RAD/s
@@ -202,8 +220,8 @@ public class Constants {
     }
 
     public static final class Hardware {
-      public static final int TOP_MOTOR_ID = 10;
-      public static final int BOTTOM_MOTOR_ID = 11;
+      public static final int TOP_MOTOR_ID = 11;
+      public static final int BOTTOM_MOTOR_ID = 10;
 
       public static final double TOP_MOTOR_RATIO = 1;
       public static final double BOTTOM_MOTOR_RATIO = 1;
@@ -217,23 +235,32 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains", new PIDSVGains(.5, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
+              "Top Flywheel Gains", new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
-              new PIDSVGains(.5, 0, 0, 0.2301, 0.1171),
+              new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171),
               () -> ALLOW_TUNING);
+
+      public static final double ACCELERATION = 50;
+      public static final double JERK = 1000;
     }
 
     public static final class Settings {
       public static final double BASE_SHOT_VELOCITY = 5800 / 60.0; // RPS
-      public static final double SPIN_UP_READY_TOLERANCE = 60 / 60.0; // RPS
+      public static final double SPIN_UP_READY_TOLERANCE = 5; // RPS
 
-      public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
+      public static final double PASS_THROUGH_SPEED = 500 / 60.0; // RPS
 
       public static final double CHUTE_INTAKE_SPEED = -500 / 60.0; // RPS
-      public static final double AMP_SPEED = 1000 / 60.0; // RPS
+
+      public static final double AMP_SPEED_TOP = 250 / 60.0; // RPS
+      public static final double AMP_SPEED_BOTTOM = 750 / 60.0; // RPS
+
+      // TODO: MAKE FINAL
+      public static double TRAP_SPEED_TOP = 700 / 60.0; // RPS
+      public static double TRAP_SPEED_BOTTOM = 1700 / 60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
@@ -265,7 +292,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BELT_SPEED = 1000 / 60.0; // RPS
+      public static final double BELT_SPEED = 1500 / 60.0; // RPS
 
       public static final double VOLTAGE_INC = 0.25;
     }
@@ -280,7 +307,7 @@ public class Constants {
       public static final int LEFT_CLIMBER_ID = 40;
       public static final int RIGHT_CLIMBER_ID = 41;
 
-      public static final boolean LEFT_INVERTED = false;
+      public static final boolean LEFT_INVERTED = true;
       public static final boolean RIGHT_INVERTED = false;
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
@@ -288,26 +315,28 @@ public class Constants {
       // rotations to meters
       public static final double CLIMBER_RATIO =
           (1 / 30.0) // Gear ratio is 30:1
-              * (Units.inchesToMeters(1) * Math.PI) // Circumference of the spool
+              * (Units.inchesToMeters(1.125) * Math.PI) // Circumference of the spool
           ;
     }
 
     public static final class Settings {
+      public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
+
       public static final LoggedTunablePIDSV FREE_GAINS =
           new LoggedTunablePIDSV(
-              "Climber Free Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Climber Free Gains", new PIDSVGains(.5, 0, 0, 0.1055, 0.11535), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV LOADED_GAINS =
           new LoggedTunablePIDSV(
-              "Climber Loaded Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Climber Loaded Gains", new PIDSVGains(.5, 0, 0, 0.0138, 0.1225), () -> ALLOW_TUNING);
 
       // all in meters
-      public static double FREE_VELOCITY = 1;
-      public static double FREE_ACCELERATION = 1;
+      public static double FREE_VELOCITY = 5500 / 60.0;
+      public static double FREE_ACCELERATION = 10000 / 60.0;
       public static double FREE_JERK = 0;
 
-      public static double LOADED_VELOCITY = 1;
-      public static double LOADED_ACCELERATION = 1;
+      public static double LOADED_VELOCITY = 5500 / 60.0;
+      public static double LOADED_ACCELERATION = 10000 / 60.0;
       public static double LOADED_JERK = 0;
 
       // meters
@@ -316,7 +345,9 @@ public class Constants {
       public static int FREE_SLOT = 0;
       public static int LOADED_SLOT = 1;
 
-      public static double EXTENSION_SETPOINT = 0;
+      public static double EXTENSION_SETPOINT = 0.45;
+
+      public static double RETRACT_SETPOINT = 0.0;
 
       public static double VOLTAGE_INCREMENT = 0.125;
     }
@@ -344,7 +375,7 @@ public class Constants {
 
     public static final class Settings {
       // rps
-      public static final double EXPECT_SPEED = 1000 / 60.0;
+      public static final double EXPECT_SPEED = 1500 / 60.0;
       public static final double PASS_THROUGH_SPEED = 33;
       public static final double INDEX_SPEED = 500 / 60.0;
       public static final double FEED_SPEED = 33;
@@ -472,12 +503,12 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final PIDGains AUTO_THETA_GAINS = new PIDGains(10, 0, 0);
+      public static final PIDGains AUTO_THETA_GAINS = new PIDGains(5, 0, 0);
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
-          new PIDSVGains(.1, 0, 0, 0.08045, 0.118675);
-      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(1, 0, 0, 0.1176, 0.1182);
+          new PIDSVGains(.25, 0, 0, 0.08045, 0.118675);
+      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(10, 0, 0, 0.1176, 0.1182);
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
 
@@ -497,10 +528,7 @@ public class Constants {
       // meters and radians
       public static final SwerveSpeedLimits PATH_FIND_SPEED =
           new SwerveSpeedLimits(
-              MAX_CHASSIS_SPEED / 2,
-              MAX_CHASSIS_ACCELERATION,
-              MAX_CHASSIS_ROTATIONAL_SPEED / 2,
-              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+              1, 3, MAX_CHASSIS_ROTATIONAL_SPEED / 2, MAX_CHASSIS_ROTATIONAL_ACCELERATION / 2);
       public static final SwerveSpeedLimits TRAVERSE_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED,
@@ -548,6 +576,7 @@ public class Constants {
 
       // meters
       public static final double AMP_ROTATIONAL_DELAY = 0;
+      public static final double TRAP_ROTATIONAL_DELAY = 0;
       public static final double CLIMB_ROTATION_DELAY = 0;
       public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
 
@@ -570,8 +599,7 @@ public class Constants {
   public static Pose2d mirror(Pose2d pose) {
     return new Pose2d(
         new Translation2d(
-            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
-            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()),
+            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(), pose.getY()),
         new Rotation2d(Math.PI).minus(pose.getRotation()));
   }
 
