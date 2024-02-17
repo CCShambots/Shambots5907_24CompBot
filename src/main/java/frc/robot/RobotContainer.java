@@ -67,6 +67,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private Drivetrain.State prevDTState = Drivetrain.State.FIELD_ORIENTED_DRIVE;
 
   private boolean poseWorking = true;
+  private boolean autoIntakeWorking = true;
 
   public RobotContainer(EventLoop checkModulesLoop) {
     super("RobotContainer", State.UNDETERMINED, State.class);
@@ -111,7 +112,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
 
     vision.addRingVisionUpdateConsumers(drivetrain::recordRingMeasurement);
-    
+
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
     climbers =
@@ -269,6 +270,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.waitForState(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             new ParallelCommandGroup(
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+
+    registerStateCommand(
+        State.AUTO_INTAKE,
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+            shooter.transitionCommand(Shooter.State.STOW),
+            indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
+            intake.transitionCommand(Intake.State.INTAKE),
+            indexer.waitForState(Indexer.State.INDEXING),
+            transitionCommand(State.TRAVERSING)));
   }
 
   private void registerTransitions() {
@@ -282,6 +293,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.CLEANSE);
     addOmniTransition(State.CLIMB);
     addOmniTransition(State.AUTO_AMP);
+    addOmniTransition(State.AUTO_INTAKE);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -346,7 +358,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 transitionCommand(State.SPEAKER_SCORE, false),
                 transitionCommand(State.BASE_SHOT, false),
                 () -> poseWorking));
-    controllerBindings.groundIntake().onTrue(transitionCommand(State.GROUND_INTAKE, false));
+    controllerBindings
+        .groundIntake()
+        .onTrue(
+            new ConditionalCommand(
+                transitionCommand(State.AUTO_INTAKE, false),
+                transitionCommand(State.GROUND_INTAKE, false),
+                () -> autoIntakeWorking));
     controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING, false));
 
     controllerBindings
@@ -555,6 +573,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     CLIMB,
     AMP,
     AUTO_AMP,
+    AUTO_INTAKE,
     TRAP,
     CLEANSE
   }

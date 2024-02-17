@@ -106,11 +106,12 @@ public class Vision extends StateMachine<Vision.State> {
           if (ringVisionUpdate != null) {
             setFlag(State.HAS_RING_TARGET);
 
-            for (var c : ringVisionUpdateConsumers) {
-              c.accept(ringVisionUpdate);
-            }
           } else {
             clearFlag(State.HAS_RING_TARGET);
+          }
+
+          for (var c : ringVisionUpdateConsumers) {
+            c.accept(ringVisionUpdate);
           }
 
           if (Arrays.stream(pvApriltagCams).anyMatch((cam) -> !cam.isConnected())) {

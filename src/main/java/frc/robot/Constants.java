@@ -94,7 +94,7 @@ public class Constants {
               0,
               0.2729939422,
               new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180)));
-              
+
       public static Pose3d LEFT_CAM_POSE =
           new Pose3d(
               Units.inchesToMeters(11.868),
@@ -332,11 +332,11 @@ public class Constants {
 
       // all in meters
       public static double FREE_VELOCITY = 5500 / 60.0;
-      public static double FREE_ACCELERATION = 10000 / 60.0;
+      public static double FREE_ACCELERATION = 20000 / 60.0;
       public static double FREE_JERK = 0;
 
       public static double LOADED_VELOCITY = 5500 / 60.0;
-      public static double LOADED_ACCELERATION = 10000 / 60.0;
+      public static double LOADED_ACCELERATION = 20000 / 60.0;
       public static double LOADED_JERK = 0;
 
       // meters
@@ -543,10 +543,7 @@ public class Constants {
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits INTAKE_SPEED =
           new SwerveSpeedLimits(
-              MAX_CHASSIS_SPEED / 1.25,
-              MAX_CHASSIS_ACCELERATION,
-              MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
-              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+              1, 3, MAX_CHASSIS_ROTATIONAL_SPEED / 1.25, MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits SPEAKER_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED / 1.25,
@@ -609,6 +606,7 @@ public class Constants {
   }
 
   public static Pose3d convertPose2dToPose3d(Pose2d pose) {
-    return new Pose3d(pose.getX(), pose.getY(), 0, new Rotation3d(0, 0, pose.getRotation().getRadians()));
+    return new Pose3d(
+        pose.getX(), pose.getY(), 0, new Rotation3d(0, 0, pose.getRotation().getRadians()));
   }
 }

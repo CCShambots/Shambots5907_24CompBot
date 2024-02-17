@@ -70,7 +70,7 @@ public class AutoIntakeCommand extends Command {
       // Mainly just extract the distance for logging purposes
       double distanceToRing = -cameraHeight / Math.tan(vertAngleToRing);
 
-      double horizOffsetRadians = Math.PI / 2 - currentRingData.centerOffsetX().getRadians();
+      double horizOffsetRadians = Math.PI / 2 + 0.25 * currentRingData.centerOffsetX().getRadians();
 
       // Camera relative pose of the ring
       Translation2d cameraRelativeEstimatedPose =
@@ -86,7 +86,10 @@ public class AutoIntakeCommand extends Command {
 
       Logger.recordOutput(
           "Vision/EstimatedRingPose",
-          Constants.convertPose2dToPose3d(drive.getPose().transformBy(new Transform2d(botRelativeEstimatedPose, new Rotation2d()))));
+          Constants.convertPose2dToPose3d(
+              drive
+                  .getPose()
+                  .transformBy(new Transform2d(botRelativeEstimatedPose, new Rotation2d()))));
 
       // Extract chassis speeds from the translation
       double angleToMove =
@@ -95,7 +98,9 @@ public class AutoIntakeCommand extends Command {
       double targetSpeedX = speedLimits.getMaxSpeed() * Math.cos(angleToMove);
       double targetSpeedY = speedLimits.getMaxSpeed() * Math.sin(angleToMove);
       double targetRotation =
-          thetaController.calculate(drive.getCurrentAngle().getRadians(), angleToMove);
+          thetaController.calculate(
+              drive.getCurrentAngle().getRadians(),
+              drive.getCurrentAngle().getRadians() + currentRingData.centerOffsetX().getRadians());
 
       ChassisSpeeds speeds =
           new ChassisSpeeds(
@@ -104,7 +109,14 @@ public class AutoIntakeCommand extends Command {
               thetaLimiter.calculate(targetRotation));
 
       drive.drive(speeds);
+    } else {
+
     }
+  }
+
+  @Override
+  public boolean isFinished() {
+    return visionUpdateSupplier.get() == null;
   }
 
   @Override
