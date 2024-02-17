@@ -26,6 +26,10 @@ public class Climber extends StateMachine<Climber.State> {
     registerTransitions();
   }
 
+  public void zero() {
+      io.resetPosition();
+  }
+
   private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     registerStateCommand(
         State.FREE_EXTEND,
