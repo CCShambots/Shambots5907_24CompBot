@@ -66,6 +66,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private Drivetrain.State prevDTState = Drivetrain.State.FIELD_ORIENTED_DRIVE;
 
+  private boolean poseWorking = true;
+
   public RobotContainer(EventLoop checkModulesLoop) {
     super("RobotContainer", State.UNDETERMINED, State.class);
 
@@ -108,7 +110,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
 
-    // vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
+    vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
     climbers =
         new Climbers(
@@ -131,7 +133,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningStop());
 
     addChildSubsystem(drivetrain);
-    // addChildSubsystem(vision);
+    addChildSubsystem(vision);
     addChildSubsystem(intake);
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
@@ -252,7 +254,19 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         State.CLIMB,
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.CHAIN_ORIENTED_DRIVE),
-            climbers.transitionCommand(Climbers.State.FREE_EXTEND)));
+            climbers.transitionCommand(Climbers.State.FREE_EXTEND),
+            new WaitUntilCommand(controllerBindings.retractClimb()),
+            climbers.transitionCommand(Climbers.State.LOADED_RETRACT)));
+
+    registerStateCommand(
+        State.AUTO_AMP,
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.AUTO_AMP),
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            shooter.transitionCommand(Shooter.State.AMP),
+            drivetrain.waitForState(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            new ParallelCommandGroup(
+                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
   }
 
   private void registerTransitions() {
@@ -265,6 +279,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.TRAP);
     addOmniTransition(State.CLEANSE);
     addOmniTransition(State.CLIMB);
+    addOmniTransition(State.AUTO_AMP);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -322,7 +337,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     })
                 .andThen(drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)))
         .onFalse(new InstantCommand(() -> drivetrain.requestTransition(prevDTState)));
-    controllerBindings.baseShot().onTrue(transitionCommand(State.BASE_SHOT, false));
+    controllerBindings
+        .shoot()
+        .onTrue(
+            new ConditionalCommand(
+                transitionCommand(State.SPEAKER_SCORE, false),
+                transitionCommand(State.BASE_SHOT, false),
+                () -> poseWorking));
     controllerBindings.groundIntake().onTrue(transitionCommand(State.GROUND_INTAKE, false));
     controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING, false));
 
@@ -330,13 +351,19 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .humanPlayerIntake()
         .onTrue(transitionCommand(State.HUMAN_PLAYER_INTAKE, false));
 
-    controllerBindings.ampScore().onTrue(transitionCommand(State.AMP, false));
+    controllerBindings
+        .ampScore()
+        .onTrue(
+            new ConditionalCommand(
+                transitionCommand(State.AUTO_AMP, false),
+                transitionCommand(State.AMP, false),
+                () -> poseWorking));
 
     controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
 
     controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
 
-    controllerBindings.startClimb().onTrue(transitionCommand(State.CLIMB, false));
+    controllerBindings.startClimb().debounce(0.5).onTrue(transitionCommand(State.CLIMB, false));
 
     controllerBindings
         .targetLeftStage()
@@ -525,6 +552,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     HUMAN_PLAYER_INTAKE,
     CLIMB,
     AMP,
+    AUTO_AMP,
     TRAP,
     CLEANSE
   }

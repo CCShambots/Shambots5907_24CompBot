@@ -60,7 +60,7 @@ public class Climber extends StateMachine<Climber.State> {
                 () -> {
                   io.setSpeed(LOADED_VELOCITY, LOADED_ACCELERATION, LOADED_JERK);
                   io.setControlSlot(LOADED_SLOT);
-                  io.setTarget(0);
+                  io.setTarget(RETRACT_SETPOINT);
                 }),
             watchSetpointCommand()));
 

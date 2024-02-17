@@ -35,7 +35,7 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger baseShot() {
+  public Trigger shoot() {
     return operatorController.b();
   }
 

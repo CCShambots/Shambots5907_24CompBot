@@ -100,9 +100,7 @@ public class FacePointCommand extends Command {
         convertRawInput(xSupplier.getAsDouble()) * maxLinearSpeeds.get(currentSpeedMode);
     double correctedY =
         convertRawInput(ySupplier.getAsDouble()) * maxLinearSpeeds.get(currentSpeedMode);
-    double correctedRot =
-        thetaController.calculate(poseSupplier.get().getRotation().getRadians())
-            * maxRotationalSpeeds.get(currentSpeedMode);
+    double correctedRot = thetaController.calculate(poseSupplier.get().getRotation().getRadians());
 
     ChassisSpeeds speeds;
 

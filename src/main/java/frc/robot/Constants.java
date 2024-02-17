@@ -99,7 +99,7 @@ public class Constants {
               Units.inchesToMeters(11.868),
               Units.inchesToMeters(-12.303),
               Units.inchesToMeters(8.710),
-              new Rotation3d(0, Math.toRadians(-40), Math.toRadians(5)));
+              new Rotation3d(0, Math.toRadians(-40), Math.toRadians(5 + 7.4028)));
     }
 
     public static final class Settings {
@@ -246,7 +246,8 @@ public class Constants {
       public static final double PASS_THROUGH_SPEED = 500 / 60.0; // RPS
 
       public static final double CHUTE_INTAKE_SPEED = -500 / 60.0; // RPS
-      public static final double AMP_SPEED_TOP = -250 / 60.0; // RPS
+
+      public static final double AMP_SPEED_TOP = 250 / 60.0; // RPS
       public static final double AMP_SPEED_BOTTOM = 750 / 60.0; // RPS
 
       // TODO: MAKE FINAL
@@ -319,15 +320,15 @@ public class Constants {
 
       public static final LoggedTunablePIDSV LOADED_GAINS =
           new LoggedTunablePIDSV(
-              "Climber Loaded Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Climber Loaded Gains", new PIDSVGains(.5, 0, 0, 0.0138, 0.1225), () -> ALLOW_TUNING);
 
       // all in meters
       public static double FREE_VELOCITY = 5500 / 60.0;
       public static double FREE_ACCELERATION = 10000 / 60.0;
       public static double FREE_JERK = 0;
 
-      public static double LOADED_VELOCITY = 1;
-      public static double LOADED_ACCELERATION = 1;
+      public static double LOADED_VELOCITY = 5500 / 60.0;
+      public static double LOADED_ACCELERATION = 10000 / 60.0;
       public static double LOADED_JERK = 0;
 
       // meters
@@ -337,6 +338,8 @@ public class Constants {
       public static int LOADED_SLOT = 1;
 
       public static double EXTENSION_SETPOINT = 0.45;
+
+      public static double RETRACT_SETPOINT = 0.0;
 
       public static double VOLTAGE_INCREMENT = 0.125;
     }
@@ -517,10 +520,7 @@ public class Constants {
       // meters and radians
       public static final SwerveSpeedLimits PATH_FIND_SPEED =
           new SwerveSpeedLimits(
-              MAX_CHASSIS_SPEED / 2,
-              MAX_CHASSIS_ACCELERATION / 2,
-              MAX_CHASSIS_ROTATIONAL_SPEED / 2,
-              MAX_CHASSIS_ROTATIONAL_ACCELERATION / 2);
+              1, 3, MAX_CHASSIS_ROTATIONAL_SPEED / 2, MAX_CHASSIS_ROTATIONAL_ACCELERATION / 2);
       public static final SwerveSpeedLimits TRAVERSE_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED,

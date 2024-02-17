@@ -251,7 +251,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     FacePointCommand facePointCommand =
         new FacePointCommand(
             drive,
-            HOLD_ANGLE_GAINS,
+            AUTO_THETA_GAINS,
             pose,
             drive::getPose,
             xSupplier,

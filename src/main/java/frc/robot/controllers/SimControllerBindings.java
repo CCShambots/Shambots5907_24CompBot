@@ -24,7 +24,7 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger baseShot() {
+  public Trigger shoot() {
     return operatorController.b();
   }
 

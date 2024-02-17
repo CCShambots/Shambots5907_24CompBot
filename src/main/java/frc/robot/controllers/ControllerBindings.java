@@ -22,7 +22,7 @@ public interface ControllerBindings {
 
   Trigger groundIntake();
 
-  Trigger baseShot();
+  Trigger shoot();
 
   Trigger humanPlayerIntake();
 
