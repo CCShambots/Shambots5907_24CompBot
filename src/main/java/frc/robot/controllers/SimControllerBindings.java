@@ -45,7 +45,7 @@ public class SimControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger traversing() {
-    return operatorController.x();
+    return operatorController.leftBumper();
   }
 
   @Override
@@ -75,7 +75,7 @@ public class SimControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger feedOnPress() {
-    return operatorController.a();
+    return operatorController.rightBumper();
   }
 
   @Override
@@ -86,6 +86,16 @@ public class SimControllerBindings implements ControllerBindings {
   @Override
   public Trigger cleanse() {
     return new Trigger(() -> false);
+  }
+
+  @Override
+  public Trigger retractClimb() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
+  public Trigger startClimb() {
+    return operatorController.x();
   }
 
   @Override

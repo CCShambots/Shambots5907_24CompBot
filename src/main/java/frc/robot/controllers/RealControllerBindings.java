@@ -66,17 +66,27 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger targetCenterStage() {
-    return leftFlightStick.topBase();
+    return operatorController.povUp();
   }
 
   @Override
   public Trigger targetLeftStage() {
-    return leftFlightStick.topLeft();
+    return operatorController.povLeft();
   }
 
   @Override
   public Trigger targetRightStage() {
-    return leftFlightStick.topRight();
+    return operatorController.povRight();
+  }
+
+  @Override
+  public Trigger retractClimb() {
+    return operatorController.rightTrigger(0.5);
+  }
+
+  @Override
+  public Trigger startClimb() {
+    return leftFlightStick.topBase();
   }
 
   @Override

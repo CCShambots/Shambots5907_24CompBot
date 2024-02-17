@@ -34,6 +34,10 @@ public interface ControllerBindings {
 
   Trigger trapScore();
 
+  Trigger startClimb();
+
+  Trigger retractClimb();
+
   Trigger cleanse();
 
   Trigger targetLeftStage();

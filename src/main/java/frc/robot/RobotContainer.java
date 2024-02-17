@@ -230,7 +230,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     registerStateCommand(
         State.TRAP,
         new SequentialCommandGroup(
-            // drivetrain.transitionCommand(Drivetrain.State.TRAP),
+            drivetrain.transitionCommand(Drivetrain.State.TRAP),
             new DetermineRingStatusCommand(shooter, indexer, lights),
             shooter.transitionCommand(Shooter.State.TRAP),
             new ParallelCommandGroup(
@@ -243,6 +243,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             indexer.transitionCommand(Indexer.State.CLEANSE),
             new WaitCommand(2),
             transitionCommand(State.TRAVERSING)));
+
+    registerStateCommand(
+        State.CLIMB,
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.CHAIN_ORIENTED_DRIVE),
+            climbers.transitionCommand(Climbers.State.FREE_EXTEND)));
   }
 
   private void registerTransitions() {
@@ -254,6 +260,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.AMP);
     addOmniTransition(State.TRAP);
     addOmniTransition(State.CLEANSE);
+    addOmniTransition(State.CLIMB);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -324,6 +331,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
 
     controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
+
+    controllerBindings.startClimb().onTrue(transitionCommand(State.CLIMB, false));
 
     controllerBindings
         .targetLeftStage()
@@ -499,6 +508,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     BASE_SHOT,
     SOFT_E_STOP,
     HUMAN_PLAYER_INTAKE,
+    CLIMB,
     AMP,
     TRAP,
     CLEANSE

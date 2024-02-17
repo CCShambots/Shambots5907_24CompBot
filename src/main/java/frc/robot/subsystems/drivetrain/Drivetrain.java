@@ -174,6 +174,18 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             HUMAN_PLAYER_PICKUP_SPEED));
 
     registerStateCommand(
+        State.CHAIN_ORIENTED_DRIVE,
+        new ChainRelativeDriveCommand(
+            drive,
+            AUTO_THETA_GAINS,
+            targetStageSideSupplier,
+            xSupplier,
+            ySupplier,
+            Constants.Controller.DEADBAND,
+            Constants.Controller.DRIVE_CONVERSION,
+            AMP_SPEED));
+
+    registerStateCommand(
         State.AUTO_AMP,
         getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
 
@@ -220,6 +232,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.TRAP);
     addOmniTransition(State.FACE_AMP);
     addOmniTransition(State.FACE_SPEAKER);
+
+    addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
   }
 
   private void registerFaceCommands() {
@@ -279,10 +293,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     switch (targetStageSideSupplier.get()) {
       case LEFT:
-        trapPose = BLUE_LEFT_TRAP;
+        trapPose = !flipPath ? BLUE_LEFT_TRAP : BLUE_RIGHT_TRAP;
         break;
       case RIGHT:
-        trapPose = BLUE_RIGHT_TRAP;
+        trapPose = !flipPath ? BLUE_RIGHT_TRAP : BLUE_LEFT_TRAP;
         break;
       default:
         trapPose = BLUE_CENTER_TRAP;
@@ -358,6 +372,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     IDLE,
     X_SHAPE,
     FIELD_ORIENTED_DRIVE,
+    CHAIN_ORIENTED_DRIVE,
     FOLLOWING_AUTONOMOUS_TRAJECTORY,
     FACE_SPEAKER,
     FACE_AMP,
