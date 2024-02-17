@@ -121,7 +121,6 @@ public class Indexer extends StateMachine<Indexer.State> {
           // avoid doing stuff if its already done
           if (!isFinished.get()) {
             // none of the prox are set (where did ring go)
-            // ＼（〇_ｏ）／
             if (!inputs.prox1 && !inputs.prox2 && !inputs.prox3) isFinished.set(true);
 
             // 2nd or 3rd prox on, reverse
