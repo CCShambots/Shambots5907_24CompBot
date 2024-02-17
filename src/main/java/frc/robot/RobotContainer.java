@@ -41,6 +41,8 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
+
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -89,7 +91,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningStop());
 
     // vision = new Vision("limelight", "pv_instance_1");
-    vision = new Vision("limelight");
+    vision = new Vision("limelight", Map.of( ));
 
     drivetrain =
         new Drivetrain(

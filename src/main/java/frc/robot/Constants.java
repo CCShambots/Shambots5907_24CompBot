@@ -84,7 +84,21 @@ public class Constants {
   public static final class Vision {
     public static final class Sim {}
 
-    public static final class Hardware {}
+    public static final class Hardware {
+      public static Pose3d LEFT_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(11.868),
+              Units.inchesToMeters(12.303),
+              Units.inchesToMeters(8.710),
+              new Rotation3d(0, Math.toRadians(-40), Math.toRadians(-5)));
+
+      public static Pose3d RIGHT_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(11.868),
+              Units.inchesToMeters(-12.303),
+              Units.inchesToMeters(8.710),
+              new Rotation3d(0, Math.toRadians(-40), Math.toRadians(5)));
+    }
 
     public static final class Settings {
       public static final int LIMELIGHT_NOTE_TRACK_PIPELINE = 0;

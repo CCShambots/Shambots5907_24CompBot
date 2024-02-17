@@ -118,6 +118,9 @@ public class Robot extends LoggedRobot {
       moduleCheckCounter = 0;
       checkModulesLoop.poll();
     }
+
+    Logger.recordOutput("left-cam-pose", Constants.Vision.Hardware.LEFT_CAM_POSE);
+    Logger.recordOutput("right-cam-pose", Constants.Vision.Hardware.RIGHT_CAM_POSE);
   }
 
   private void updatePoses() {
