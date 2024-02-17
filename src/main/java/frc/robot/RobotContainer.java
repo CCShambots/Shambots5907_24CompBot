@@ -20,6 +20,8 @@ import frc.robot.controllers.ControllerBindings;
 import frc.robot.controllers.RealControllerBindings;
 import frc.robot.controllers.SimControllerBindings;
 import frc.robot.subsystems.climbers.ClimberIO;
+import frc.robot.subsystems.climbers.ClimberIOReal;
+import frc.robot.subsystems.climbers.ClimberIOSim;
 import frc.robot.subsystems.climbers.Climbers;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.indexer.Indexer;
@@ -41,6 +43,7 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -90,7 +93,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningStop());
 
     // vision = new Vision("limelight", "pv_instance_1");
-    vision = new Vision("limelight");
+    vision =
+        new Vision("limelight", Map.of("pv_instance_1", Constants.Vision.Hardware.RIGHT_CAM_POSE));
 
     drivetrain =
         new Drivetrain(
@@ -354,22 +358,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private ClimberIO getLeftClimberIO() {
     return switch (Constants.currentBuildMode) {
-        // case REAL -> new ClimberIOReal(
-        // Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
-        // case SIM -> new ClimberIOSim(
-        // Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+      case REAL -> new ClimberIOReal(
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
+      case SIM -> new ClimberIOSim(
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED);
       default -> new ClimberIO() {};
     };
   }
 
   private ClimberIO getRightClimberIO() {
     return switch (Constants.currentBuildMode) {
-        // case REAL -> new ClimberIOReal(
-        // Constants.Climbers.Hardware.RIGHT_CLIMBER_ID,
-        // Constants.Climbers.Hardware.RIGHT_INVERTED);
-        // case SIM -> new ClimberIOSim(
-        // Constants.Climbers.Hardware.RIGHT_CLIMBER_ID,
-        // Constants.Climbers.Hardware.RIGHT_INVERTED);
+      case REAL -> new ClimberIOReal(
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
+      case SIM -> new ClimberIOSim(
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED);
       default -> new ClimberIO() {};
     };
   }
@@ -496,7 +498,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(0, 2)
         .withSize(1, 1);
 
-    // TODO: Be able to select target stage location
+    driveTab
+        .add("zero climbers", new InstantCommand(() -> climbers.zero()))
+        .withPosition(7, 0)
+        .withSize(2, 1);
+
+    driveTab
+        .addNumber("climber left", () -> climbers.getLeftPos())
+        .withPosition(7, 1)
+        .withSize(1, 1);
+
+    driveTab
+        .addNumber("climber right", () -> climbers.getRightPos())
+        .withPosition(8, 1)
+        .withSize(1, 1);
   }
 
   public enum State {

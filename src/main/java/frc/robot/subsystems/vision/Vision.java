@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.Constants.Vision.Settings.*;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,6 +15,7 @@ import frc.robot.ShamLib.vision.PhotonVision.Apriltag.PVApriltagCam;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import org.photonvision.PhotonPoseEstimator;
 
@@ -24,19 +26,19 @@ public class Vision extends StateMachine<Vision.State> {
   private final Limelight limelight;
   private final PVApriltagCam[] pvApriltagCams;
 
-  public Vision(String limelight, String... photonVisionInstances) {
+  public Vision(String limelight, Map<String, Pose3d> photonVisionInstances) {
     super("Vision", State.UNDETERMINED, State.class);
 
     this.limelight = new Limelight(limelight, Constants.currentBuildMode);
 
     pvApriltagCams =
-        Arrays.stream(photonVisionInstances)
+        photonVisionInstances.entrySet().stream()
             .map(
-                (id) ->
+                entry ->
                     new PVApriltagCam(
-                        id,
+                        entry.getKey(),
                         Constants.currentBuildMode,
-                        new Transform3d(),
+                        new Transform3d(new Pose3d(), entry.getValue()),
                         Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT))
             .toArray(PVApriltagCam[]::new);
 

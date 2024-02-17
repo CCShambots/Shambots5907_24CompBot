@@ -2,7 +2,10 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "flywheel": {
+        "Climber Free Gains": {
+          "open": true
+        },
+        "Indexer Belt Gains": {
           "open": true
         },
         "open": true
@@ -13,6 +16,7 @@
       "/Shuffleboard/Drive/Auto Route": "String Chooser",
       "/Shuffleboard/Drive/SWITCH ALLIANCE": "Command",
       "/Shuffleboard/Drive/SYNC ALLIANCE": "Command",
+      "/Shuffleboard/Drive/zero climbers": "Command",
       "/SmartDashboard/ClimbersState Chooser": "String Chooser",
       "/SmartDashboard/DrivetrainState Chooser": "String Chooser",
       "/SmartDashboard/IndexerState Chooser": "String Chooser",
@@ -22,12 +26,10 @@
       "/SmartDashboard/Logged Autonomous Chooser": "String Chooser",
       "/SmartDashboard/Right ClimberState Chooser": "String Chooser",
       "/SmartDashboard/Robot ContainerState Chooser": "String Chooser",
-      "/SmartDashboard/RobotContainerState Chooser": "String Chooser",
       "/SmartDashboard/Shooter ArmState Chooser": "String Chooser",
       "/SmartDashboard/Shooter FlywheelState Chooser": "String Chooser",
       "/SmartDashboard/ShooterState Chooser": "String Chooser",
-      "/SmartDashboard/VisionState Chooser": "String Chooser",
-      "/SmartDashboard/flywheel": "Subsystem"
+      "/SmartDashboard/VisionState Chooser": "String Chooser"
     }
   },
   "NetworkTables Info": {

@@ -84,7 +84,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             GYRO_CAN_BUS,
             CURRENT_LIMITS_CONFIGS,
             this,
-            true,
+            false,
             () -> flipPath,
             STATE_STD_DEVIATIONS,
             Constants.LOOP_PERIOD,
