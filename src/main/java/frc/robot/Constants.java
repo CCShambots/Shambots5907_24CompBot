@@ -100,14 +100,15 @@ public class Constants {
               Units.inchesToMeters(12.200452),
               Units.inchesToMeters(12.300867),
               Units.inchesToMeters(8.876258),
-              new Rotation3d(Math.toRadians(8.584449), Math.toRadians(-30.658), Math.toRadians(-14.288)));
+              new Rotation3d(
+                  Math.toRadians(8.584449), Math.toRadians(-30.658), Math.toRadians(-14.288)));
 
       public static Pose3d RIGHT_CAM_POSE =
           new Pose3d(
               Units.inchesToMeters(11.991396),
               Units.inchesToMeters(-12.304561),
               Units.inchesToMeters(8.714002),
-              new Rotation3d(0, Math.toRadians(-60), Math.toRadians(5)));
+              new Rotation3d(0, Math.toRadians(-60.094), Math.toRadians(5)));
     }
 
     public static final class Settings {
