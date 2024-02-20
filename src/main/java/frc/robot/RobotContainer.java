@@ -96,9 +96,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    // vision = new Vision("limelight", "pv_instance_1");
     vision =
-        new Vision("limelight", Map.of("pv_instance_1", Constants.Vision.Hardware.RIGHT_CAM_POSE));
+        new Vision(
+            "limelight",
+            Map.of(
+                "pv_instance_1",
+                Constants.Vision.Hardware.RIGHT_CAM_POSE,
+                "pv_instance_2",
+                Constants.Vision.Hardware.LEFT_CAM_POSE));
 
     drivetrain =
         new Drivetrain(
@@ -108,7 +113,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () -> targetStageSide,
             tuningIncrement(),
             tuningDecrement(),
-            tuningStop());
+            tuningStop(),
+            () -> intake.isFlag(Intake.State.PROX_TRIPPED),
+            () -> indexer.getState() == Indexer.State.INDEXING);
 
     drivetrain.registerMisalignedSwerveTriggers(checkModulesLoop);
 
@@ -274,13 +281,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     registerStateCommand(
         State.AUTO_INTAKE,
-        new SequentialCommandGroup(
-            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
-            shooter.transitionCommand(Shooter.State.STOW),
-            indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
-            intake.transitionCommand(Intake.State.INTAKE),
-            indexer.waitForState(Indexer.State.INDEXING),
-            transitionCommand(State.TRAVERSING)));
+        new ParallelCommandGroup(
+            new SequentialCommandGroup(
+                drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+                new WaitUntilCommand(() -> vision.isFlag(Vision.State.HAS_RING_TARGET)),
+                drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE)),
+            new SequentialCommandGroup(
+                shooter.transitionCommand(Shooter.State.STOW),
+                indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
+                intake.transitionCommand(Intake.State.INTAKE),
+                indexer.waitForState(Indexer.State.INDEXING),
+                transitionCommand(State.TRAVERSING))));
   }
 
   private void registerTransitions() {
@@ -365,7 +376,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new ConditionalCommand(
                 transitionCommand(State.AUTO_INTAKE, false),
                 transitionCommand(State.GROUND_INTAKE, false),
-                () -> autoIntakeWorking));
+                () -> autoIntakeWorking))
+        .onFalse(transitionCommand(State.TRAVERSING));
     controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING, false));
 
     controllerBindings

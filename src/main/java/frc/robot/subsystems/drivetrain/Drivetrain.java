@@ -29,6 +29,7 @@ import frc.robot.subsystems.vision.Vision.RingVisionUpdate;
 import frc.robot.util.StageSide;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
@@ -48,6 +49,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
   private RingVisionUpdate ringVisionUpdate;
 
+  private final BooleanSupplier intakeProxTripped;
+  private final BooleanSupplier indexerReceivedRing;
+
   public Drivetrain(
       DoubleSupplier x,
       DoubleSupplier y,
@@ -55,7 +59,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
       Supplier<StageSide> targetStageSideSupplier,
       Trigger incrementUp,
       Trigger incrementDown,
-      Trigger stop) {
+      Trigger stop,
+      BooleanSupplier intakeProxTripped,
+      BooleanSupplier indexerReceivedRing) {
     super("Drivetrain", State.UNDETERMINED, State.class);
 
     this.xSupplier = x;
@@ -63,6 +69,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     this.thetaSupplier = theta;
 
     this.targetStageSideSupplier = targetStageSideSupplier;
+
+    this.intakeProxTripped = intakeProxTripped;
+    this.indexerReceivedRing = indexerReceivedRing;
 
     NamedCommands.registerCommand("notifyNextWaypoint", notifyWaypointCommand());
     NamedCommands.registerCommand(
@@ -166,7 +175,14 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     registerStateCommand(
         State.AUTO_GROUND_INTAKE,
-        new AutoIntakeCommand(drive, () -> ringVisionUpdate, INTAKE_SPEED, AUTO_THETA_GAINS));
+        new AutoIntakeCommand(
+            drive,
+            () -> ringVisionUpdate,
+            INTAKE_SPEED,
+            AUTO_THETA_GAINS,
+            intakeProxTripped,
+            LOST_RING_TARGET_TIMEOUT,
+            indexerReceivedRing));
 
     registerStateCommand(
         State.HUMAN_PLAYER_INTAKE,

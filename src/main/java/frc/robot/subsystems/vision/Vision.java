@@ -105,7 +105,6 @@ public class Vision extends StateMachine<Vision.State> {
 
           if (ringVisionUpdate != null) {
             setFlag(State.HAS_RING_TARGET);
-
           } else {
             clearFlag(State.HAS_RING_TARGET);
           }

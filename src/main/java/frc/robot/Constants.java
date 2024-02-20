@@ -90,24 +90,24 @@ public class Constants {
 
       public static Pose3d RING_CAMERA_POSE =
           new Pose3d(
-              -0.3574542,
+              Units.inchesToMeters(-14.397090),
               0,
-              0.2729939422,
-              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180)));
+              Units.inchesToMeters(10.788134),
+              new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
 
       public static Pose3d LEFT_CAM_POSE =
           new Pose3d(
-              Units.inchesToMeters(11.868),
-              Units.inchesToMeters(12.303),
-              Units.inchesToMeters(8.710),
-              new Rotation3d(0, Math.toRadians(-40), Math.toRadians(-5)));
+              Units.inchesToMeters(12.200452),
+              Units.inchesToMeters(12.300867),
+              Units.inchesToMeters(8.876258),
+              new Rotation3d(Math.toRadians(8.584449), Math.toRadians(-30.658), Math.toRadians(-14.288)));
 
       public static Pose3d RIGHT_CAM_POSE =
           new Pose3d(
-              Units.inchesToMeters(11.868),
-              Units.inchesToMeters(-12.303),
-              Units.inchesToMeters(8.710),
-              new Rotation3d(0, Math.toRadians(-40), Math.toRadians(5 + 7.4028)));
+              Units.inchesToMeters(11.991396),
+              Units.inchesToMeters(-12.304561),
+              Units.inchesToMeters(8.714002),
+              new Rotation3d(0, Math.toRadians(-60), Math.toRadians(5)));
     }
 
     public static final class Settings {
@@ -133,7 +133,7 @@ public class Constants {
       public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT =
           new InterpolatingDoubleTreeMap();
 
-      public static final double SPEAKER_TARGET_HEIGHT = 2.05;
+      public static final double SPEAKER_TARGET_HEIGHT = 2.2;
       public static final double TRAP_TARGET_HEIGHT = 1.52;
 
       static {
@@ -188,7 +188,7 @@ public class Constants {
 
     public static final class Settings {
       public static final double VELOCITY = 100; // RAD/s
-      public static final double ACCELERATION = 50; // RAD/s/s
+      public static final double ACCELERATION = 150; // RAD/s/s
       public static final double JERK = 10_000; // RAD/s/s/s
 
       public static final double POSITION_READY_TOLERANCE = 2 * (Math.PI / 180); // RAD
@@ -243,7 +243,7 @@ public class Constants {
               new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171),
               () -> ALLOW_TUNING);
 
-      public static final double ACCELERATION = 50;
+      public static final double ACCELERATION = 400;
       public static final double JERK = 1000;
     }
 
@@ -543,7 +543,10 @@ public class Constants {
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits INTAKE_SPEED =
           new SwerveSpeedLimits(
-              1, 3, MAX_CHASSIS_ROTATIONAL_SPEED / 1.25, MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+              MAX_CHASSIS_SPEED / 2,
+              MAX_CHASSIS_ACCELERATION / 2,
+              MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits SPEAKER_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED / 1.25,
@@ -582,6 +585,9 @@ public class Constants {
 
       public static final double TURN_VOLTAGE_INCREMENT = 0.125;
       public static final double DRIVE_VOLTAGE_INCREMENT = 0.125;
+
+      // seconds
+      public static double LOST_RING_TARGET_TIMEOUT = 0.5;
     }
   }
 
