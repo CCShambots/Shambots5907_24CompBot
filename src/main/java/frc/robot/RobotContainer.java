@@ -235,6 +235,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             .andThen(transitionCommand(State.TRAVERSING)));
 
     registerStateCommand(
+        State.AUTO_HP_INTAKE,
+        new ParallelCommandGroup(
+                drivetrain.transitionCommand(Drivetrain.State.AUTO_HUMAN_PLAYER_INTAKE),
+                intake.transitionCommand(Intake.State.IDLE),
+                shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
+                indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT))
+            .andThen(
+                new WaitUntilCommand(
+                    () ->
+                        indexer.getState() == Indexer.State.HOLDING_RING
+                            || indexer.getState() == Indexer.State.LOST_RING))
+            .andThen(transitionCommand(State.TRAVERSING)));
+
+    registerStateCommand(
         State.AMP,
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
@@ -281,7 +295,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
 
     registerStateCommand(
-        State.AUTO_INTAKE,
+        State.AUTO_GROUND_INTAKE,
         new ParallelCommandGroup(
             new SequentialCommandGroup(
                 drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
@@ -306,7 +320,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.CLEANSE);
     addOmniTransition(State.CLIMB);
     addOmniTransition(State.AUTO_AMP);
-    addOmniTransition(State.AUTO_INTAKE);
+    addOmniTransition(State.AUTO_GROUND_INTAKE);
+    addOmniTransition(State.AUTO_HP_INTAKE);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -375,7 +390,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .groundIntake()
         .onTrue(
             new ConditionalCommand(
-                transitionCommand(State.AUTO_INTAKE, false),
+                transitionCommand(State.AUTO_GROUND_INTAKE, false),
                 transitionCommand(State.GROUND_INTAKE, false),
                 () -> autoIntakeWorking))
         .onFalse(transitionCommand(State.TRAVERSING, false));
@@ -535,71 +550,79 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void initializeDriveTab() {
-    ShuffleboardTab driveTab = Shuffleboard.getTab("Drive");
+    ShuffleboardTab autoTab = Shuffleboard.getTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
+    ShuffleboardTab teleTab = Shuffleboard.getTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
+    ShuffleboardTab testTab = Shuffleboard.getTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
 
-    driveTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(3, 0).withSize(2, 2);
+    autoTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(3, 0).withSize(2, 1);
 
-    driveTab
+    autoTab
         .addString("ALLIANCE", () -> AllianceManager.getAlliance().name())
         .withPosition(0, 0)
-        .withSize(2, 2);
-    driveTab
+        .withSize(2, 1);
+    autoTab
         .add("SWITCH ALLIANCE", AllianceManager.switchAlliance())
-        .withPosition(5, 2)
-        .withSize(2, 2);
-    driveTab.add("SYNC ALLIANCE", AllianceManager.syncAlliance()).withPosition(5, 0).withSize(2, 2);
+        .withPosition(0, 1)
+        .withSize(2, 1);
+    autoTab.add("SYNC ALLIANCE", AllianceManager.syncAlliance()).withPosition(0, 2).withSize(2, 1);
 
-    driveTab
+    autoTab
         .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))
         .withPosition(1, 2)
         .withSize(1, 1);
 
-    driveTab
+    autoTab
         .addNumber("arm relative", () -> Math.toDegrees(shooter.getArmAngle()))
-        .withPosition(0, 2)
+        .withPosition(1, 2)
         .withSize(1, 1);
 
-    driveTab
-        .add("zero climbers", new InstantCommand(() -> climbers.zero()))
-        .withPosition(7, 0)
-        .withSize(2, 1);
+    teleTab.addBoolean("POSE WORKING", () -> poseWorking).withPosition(0, 0).withSize(2, 2);
+    teleTab.addBoolean("AUTO INTAKE", () -> autoIntakeWorking).withPosition(2, 0).withSize(2, 2);
 
-    driveTab
-        .addNumber("climber left", () -> climbers.getLeftPos())
-        .withPosition(7, 1)
-        .withSize(1, 1);
-
-    driveTab
-        .addNumber("climber right", () -> climbers.getRightPos())
-        .withPosition(8, 1)
-        .withSize(1, 1);
-
-    driveTab.addBoolean("POSE WORKING", () -> poseWorking).withPosition(9, 0).withSize(1, 1);
-    driveTab.addBoolean("AUTO INTAKE", () -> autoIntakeWorking).withPosition(10, 0).withSize(1, 1);
-
-    driveTab
+    teleTab
         .add(
             "TOGGLE POSE",
             new WhileDisabledInstantCommand(
                 () -> {
                   poseWorking = !poseWorking;
                 }))
-        .withPosition(9, 1)
-        .withSize(1, 1);
-    driveTab
+        .withPosition(0, 2)
+        .withSize(2, 1);
+    teleTab
         .add(
             "TOGGLE INTAKE",
             new WhileDisabledInstantCommand(
                 () -> {
                   autoIntakeWorking = !autoIntakeWorking;
                 }))
-        .withPosition(10, 1)
-        .withSize(1, 1);
+        .withPosition(2, 2)
+        .withSize(2, 1);
 
-    driveTab
+    teleTab
         .addBoolean("SHOOTER READY", () -> shooter.isFlag(Shooter.State.READY))
-        .withSize(2, 2)
-        .withPosition(9, 2);
+        .withSize(3, 3)
+        .withPosition(8, 1);
+
+    teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
+
+    
+
+    testTab
+        .add("zero climbers", new InstantCommand(() -> climbers.zero()))
+        .withPosition(5, 0)
+        .withSize(2, 2);
+
+    testTab
+        .addNumber("climber left", () -> climbers.getLeftPos())
+        .withPosition(3, 0)
+        .withSize(2, 1);
+
+    testTab
+        .addNumber("climber right", () -> climbers.getRightPos())
+        .withPosition(3, 0)
+        .withSize(2, 1);
+
+    Shuffleboard.selectTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
   }
 
   public enum State {
@@ -607,14 +630,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     AUTONOMOUS,
     TRAVERSING,
     SPEAKER_SCORE,
-    GROUND_INTAKE,
     BASE_SHOT,
     SOFT_E_STOP,
-    HUMAN_PLAYER_INTAKE,
     CLIMB,
     AMP,
     AUTO_AMP,
-    AUTO_INTAKE,
+    GROUND_INTAKE,
+    HUMAN_PLAYER_INTAKE,
+    AUTO_GROUND_INTAKE,
+    AUTO_HP_INTAKE,
     TRAP,
     CLEANSE
   }

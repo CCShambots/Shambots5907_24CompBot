@@ -145,6 +145,10 @@ public class Indexer extends StateMachine<Indexer.State> {
         });
   }
 
+  public boolean ringPresent() {
+    return getState() == State.HOLDING_RING || getState() == State.INDEXING;
+  }
+
   @Override
   protected void determineSelf() {
     setState(State.IDLE);

@@ -42,6 +42,10 @@ public class Constants {
     public static final UnaryOperator<Double> DRIVE_CONVERSION =
         (input) -> (Math.copySign(input * input, input));
     public static final double DEADBAND = 0.075;
+
+    public static final String AUTO_SHUFFLEBOARD_TAB = "Auto";
+    public static final String TELE_SHUFFLEBOARD_TAB_ID = "Tele";
+    public static final String TEST_SHUFFLEBOARD_TAB_ID = "Test";
   }
 
   public static final class PhysicalConstants {

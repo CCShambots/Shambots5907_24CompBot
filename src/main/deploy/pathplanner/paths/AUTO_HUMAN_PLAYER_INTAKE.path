@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 10.731301739424959,
-        "y": 1.4261152951359797
+        "x": 13.026840889529161,
+        "y": 1.7336402374668107
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.561189073940112,
-        "y": 1.0827136394745374
+        "x": 13.900945210940998,
+        "y": 1.7919138588942665
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 14.417146176857777,
-        "y": 1.117053805040681
+        "x": 15.357785746627393,
+        "y": 0.9833673615883165
       },
       "prevControl": {
-        "x": 13.232410464825799,
-        "y": 1.1227771659683714
+        "x": 14.673070694854786,
+        "y": 1.9813031285334972
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.0,
-      "rotationDegrees": 180.0,
+      "rotationDegrees": 0.0,
       "rotateFast": true
     }
   ],
@@ -44,12 +44,15 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 180.0,
+    "velocity": 0.0,
+    "rotation": -60.0,
     "rotateFast": true
   },
   "reversed": false,
   "folder": "MACROS",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 0.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }
