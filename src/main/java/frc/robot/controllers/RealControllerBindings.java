@@ -36,12 +36,12 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger shoot() {
-    return operatorController.b();
+    return rightFlightStick.trigger();
   }
 
   @Override
   public Trigger groundIntake() {
-    return operatorController.a();
+    return leftFlightStick.trigger();
   }
 
   @Override
@@ -96,7 +96,7 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger xShape() {
-    return rightFlightStick.trigger();
+    return rightFlightStick.topBase();
   }
 
   @Override
@@ -116,6 +116,6 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger resetGyro() {
-    return rightFlightStick.topBase();
+    return leftFlightStick.topBase();
   }
 }

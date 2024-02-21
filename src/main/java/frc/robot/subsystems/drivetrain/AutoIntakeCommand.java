@@ -118,7 +118,8 @@ public class AutoIntakeCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    drive.stopModules();
+    // drive.stopModules();
+    drive.drive(new ChassisSpeeds(0, 0, 0));
 
     lostTargetTimeout.stop();
   }

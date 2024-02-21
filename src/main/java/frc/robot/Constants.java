@@ -100,8 +100,7 @@ public class Constants {
               Units.inchesToMeters(12.200452),
               Units.inchesToMeters(12.300867),
               Units.inchesToMeters(8.876258),
-              new Rotation3d(
-                  Math.toRadians(8.584449), Math.toRadians(-30.658), Math.toRadians(-14.288)));
+              new Rotation3d(Math.toRadians(8.584449), Math.toRadians(-30.658), Math.toRadians(0)));
 
       public static Pose3d RIGHT_CAM_POSE =
           new Pose3d(
@@ -144,7 +143,12 @@ public class Constants {
 
         // ARM SPEAKER OFFSETS
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(20.0, 0.0);
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), 0.0);
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(2.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(3.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(4));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(4.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(4));
 
         // FLYWHEEL TRAP VALUES
         FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
@@ -244,8 +248,8 @@ public class Constants {
               new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171),
               () -> ALLOW_TUNING);
 
-      public static final double ACCELERATION = 400;
-      public static final double JERK = 1000;
+      public static final double ACCELERATION = 1600;
+      public static final double JERK = 100;
     }
 
     public static final class Settings {
@@ -544,8 +548,8 @@ public class Constants {
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits INTAKE_SPEED =
           new SwerveSpeedLimits(
-              MAX_CHASSIS_SPEED / 2,
-              MAX_CHASSIS_ACCELERATION / 2,
+              MAX_CHASSIS_SPEED / 2.5,
+              MAX_CHASSIS_ACCELERATION / 2.5,
               MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits SPEAKER_SPEED =

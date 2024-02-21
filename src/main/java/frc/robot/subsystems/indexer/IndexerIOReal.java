@@ -41,6 +41,7 @@ public class IndexerIOReal implements IndexerIO {
 
   @Override
   public void stop() {
+    beltMotor.setTarget(0);
     beltMotor.stopMotor();
   }
 

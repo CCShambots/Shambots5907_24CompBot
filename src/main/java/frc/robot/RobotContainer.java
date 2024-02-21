@@ -267,7 +267,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.CHAIN_ORIENTED_DRIVE),
             climbers.transitionCommand(Climbers.State.FREE_EXTEND),
             new WaitUntilCommand(controllerBindings.retractClimb()),
-            climbers.transitionCommand(Climbers.State.LOADED_RETRACT)));
+            climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
+            drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)));
 
     registerStateCommand(
         State.AUTO_AMP,
@@ -377,7 +378,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 transitionCommand(State.AUTO_INTAKE, false),
                 transitionCommand(State.GROUND_INTAKE, false),
                 () -> autoIntakeWorking))
-        .onFalse(transitionCommand(State.TRAVERSING));
+        .onFalse(transitionCommand(State.TRAVERSING, false));
     controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING, false));
 
     controllerBindings
@@ -594,6 +595,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 }))
         .withPosition(10, 1)
         .withSize(1, 1);
+
+    driveTab
+        .addBoolean("SHOOTER READY", () -> shooter.isFlag(Shooter.State.READY))
+        .withSize(2, 2)
+        .withPosition(9, 2);
   }
 
   public enum State {

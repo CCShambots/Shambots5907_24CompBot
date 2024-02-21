@@ -20,6 +20,7 @@ import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.util.StageSide;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Shooter extends StateMachine<Shooter.State> {
   private final Arm arm;
@@ -129,7 +130,8 @@ public class Shooter extends StateMachine<Shooter.State> {
         State.SPEAKER_AA,
         new ParallelCommandGroup(
             flywheel.transitionCommand(Flywheel.State.SPEAKER_ACTIVE_ADJUST_SPIN),
-            arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST)));
+            arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST),
+            watchReadyCommand()));
   }
 
   private void registerTransitions() {
@@ -190,6 +192,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     return FLYWHEEL_SPEAKER_DISTANCE_LUT.get(getSpeakerDistance());
   }
 
+  @AutoLogOutput(key = "Shooter/SpeakerDistance")
   private double getSpeakerDistance() {
     Pose2d speaker =
         AllianceManager.getAlliance() == DriverStation.Alliance.Blue
