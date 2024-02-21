@@ -568,6 +568,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     requestTransition(State.AUTONOMOUS);
   }
 
+  public void resetFieldOriented() {
+    drivetrain.resetFieldOriented();
+  }
+
   @Override
   protected void determineSelf() {
     setState(State.SOFT_E_STOP);

@@ -34,6 +34,8 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+
 public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final SwerveDrive drive;
   private boolean flipPath = false;
@@ -361,6 +363,15 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         () -> {
           drive.resetGyro();
         });
+  }
+
+  public void resetFieldOriented() {
+    Rotation2d newAngle = drive.getPose().getRotation();
+
+    //Flip by 180 if we're on red alliance
+    if(flipPath) newAngle = newAngle.plus(new Rotation2d(Math.PI));
+
+    drive.resetRotationOffset(newAngle);
   }
 
   private Command notifyWaypointCommand() {

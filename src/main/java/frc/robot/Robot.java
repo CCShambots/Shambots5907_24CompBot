@@ -173,7 +173,9 @@ public class Robot extends LoggedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+    robotContainer.resetFieldOriented();
+  }
 
   @Override
   public void teleopInit() {
