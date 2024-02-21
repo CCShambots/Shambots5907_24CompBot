@@ -90,24 +90,24 @@ public class Constants {
 
       public static Pose3d RING_CAMERA_POSE =
           new Pose3d(
-              Units.inchesToMeters(-14.397090),
+              Units.inchesToMeters(-13.647090),
               0,
               Units.inchesToMeters(10.788134),
               new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
 
       public static Pose3d LEFT_CAM_POSE =
           new Pose3d(
-              Units.inchesToMeters(12.200452),
-              Units.inchesToMeters(12.300867),
-              Units.inchesToMeters(8.876258),
-              new Rotation3d(Math.toRadians(8.584449), Math.toRadians(-30.658), Math.toRadians(0)));
+              Units.inchesToMeters(12.198133),
+              Units.inchesToMeters(12.293625),
+              Units.inchesToMeters(8.881022),
+              new Rotation3d(Math.toRadians(0), Math.toRadians(-30), Math.toRadians(0)));
 
       public static Pose3d RIGHT_CAM_POSE =
           new Pose3d(
-              Units.inchesToMeters(11.991396),
-              Units.inchesToMeters(-12.304561),
-              Units.inchesToMeters(8.714002),
-              new Rotation3d(0, Math.toRadians(-60.094), Math.toRadians(5)));
+              Units.inchesToMeters(11.994638),
+              Units.inchesToMeters(-12.276838),
+              Units.inchesToMeters(8.712641),
+              new Rotation3d(0, Math.toRadians(-60), Math.toRadians(0)));
     }
 
     public static final class Settings {
