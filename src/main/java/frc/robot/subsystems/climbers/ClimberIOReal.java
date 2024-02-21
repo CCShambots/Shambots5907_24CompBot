@@ -101,6 +101,11 @@ public class ClimberIOReal implements ClimberIO {
   }
 
   @Override
+  public void setPower(double power) {
+    motor.setManualPower(power);
+  }
+
+  @Override
   public void setVoltage(double voltage) {
     motor.setVoltage(voltage);
   }

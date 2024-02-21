@@ -106,6 +106,14 @@ public class Climbers extends StateMachine<Climbers.State> {
         });
   }
 
+  public Command leftZeroRoutine() {
+    return leftClimber.transitionCommand(Climber.State.AUTOMATIC_ZERO);
+  }
+
+  public Command rightZeroRoutine() {
+    return rightClimber.transitionCommand(Climber.State.AUTOMATIC_ZERO);
+  }
+
   @Override
   protected void determineSelf() {
     setState(State.SOFT_E_STOP);

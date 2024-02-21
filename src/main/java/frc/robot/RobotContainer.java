@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.StateMachine;
-import frc.robot.ShamLib.ShamLibConstants.BuildMode;
 import frc.robot.ShamLib.ShamLibConstants;
+import frc.robot.ShamLib.ShamLibConstants.BuildMode;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.commands.DetermineRingStatusCommand;
 import frc.robot.controllers.ControllerBindings;
@@ -97,15 +97,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    Map<String, Pose3d> photonMap = Constants.currentBuildMode == BuildMode.SIM ? Map.of() : Map.of(
+    Map<String, Pose3d> photonMap =
+        Constants.currentBuildMode == BuildMode.SIM
+            ? Map.of()
+            : Map.of(
                 "pv_instance_1",
                 Constants.Vision.Hardware.RIGHT_CAM_POSE,
                 "pv_instance_2",
                 Constants.Vision.Hardware.LEFT_CAM_POSE);
 
-    vision =
-        new Vision(
-            "limelight", photonMap);
+    vision = new Vision("limelight", photonMap);
 
     drivetrain =
         new Drivetrain(
@@ -578,6 +579,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(1, 2)
         .withSize(1, 1);
 
+    // Teleop info
     teleTab.addBoolean("POSE WORKING", () -> poseWorking).withPosition(0, 0).withSize(2, 2);
     teleTab.addBoolean("AUTO INTAKE", () -> autoIntakeWorking).withPosition(2, 0).withSize(2, 2);
 
@@ -607,22 +609,25 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
 
-    
-
+    // Climber zero stuff
     testTab
         .add("zero climbers", new InstantCommand(() -> climbers.zero()))
-        .withPosition(5, 0)
+        .withPosition(4, 1)
         .withSize(2, 2);
 
     testTab
         .addNumber("climber left", () -> climbers.getLeftPos())
-        .withPosition(3, 0)
+        .withPosition(2, 1)
         .withSize(2, 1);
+
+    testTab.add("run left routine", climbers.leftZeroRoutine()).withSize(2, 1).withPosition(2, 2);
 
     testTab
         .addNumber("climber right", () -> climbers.getRightPos())
-        .withPosition(3, 0)
+        .withPosition(6, 1)
         .withSize(2, 1);
+
+    testTab.add("run right routine", climbers.rightZeroRoutine()).withSize(2, 1).withPosition(6, 2);
 
     Shuffleboard.selectTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
   }

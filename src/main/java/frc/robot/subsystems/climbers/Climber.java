@@ -76,6 +76,11 @@ public class Climber extends StateMachine<Climber.State> {
             () -> inputs.rotorVelocity,
             () -> inputs.voltage,
             VOLTAGE_INCREMENT));
+
+    registerStateCommand(
+        State.AUTOMATIC_ZERO,
+        new AutomaticZeroCommand(
+            this, io, AUTO_ZERO_POWER, AUTO_ZERO_VELO_THRESHOLD, AUTO_ZERO_VELO_THRESHOLD));
   }
 
   private void registerTransitions() {
@@ -83,6 +88,8 @@ public class Climber extends StateMachine<Climber.State> {
     addOmniTransition(State.FREE_RETRACT);
     addOmniTransition(State.FREE_EXTEND);
     addOmniTransition(State.LOADED_RETRACT);
+
+    addTransition(State.SOFT_E_STOP, State.AUTOMATIC_ZERO);
 
     addTransition(State.SOFT_E_STOP, State.VOLTAGE_CALC);
   }
@@ -96,6 +103,10 @@ public class Climber extends StateMachine<Climber.State> {
             clearFlag(State.AT_SETPOINT);
           }
         });
+  }
+
+  public double getClimberVelo() {
+    return inputs.velocity;
   }
 
   @Override
@@ -121,7 +132,7 @@ public class Climber extends StateMachine<Climber.State> {
     SOFT_E_STOP,
     VOLTAGE_CALC,
 
-
+    AUTOMATIC_ZERO,
 
     // flags
     AT_SETPOINT

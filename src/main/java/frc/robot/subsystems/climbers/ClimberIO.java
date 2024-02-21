@@ -32,6 +32,8 @@ public interface ClimberIO {
 
   public default void setVoltage(double voltage) {}
 
+  public default void setPower(double power) {}
+
   public default void resetPosition() {
     resetPosition(0);
   }

@@ -359,6 +359,15 @@ public class Constants {
       public static double RETRACT_SETPOINT = 0.0;
 
       public static double VOLTAGE_INCREMENT = 0.125;
+
+      // 0, 1
+      public static double AUTO_ZERO_POWER = 0.25;
+
+      // m/s
+      public static double AUTO_ZERO_VELO_THRESHOLD = .05;
+
+      // 0
+      public static double MIN_ZERO_TIME = 0.5;
     }
   }
 
