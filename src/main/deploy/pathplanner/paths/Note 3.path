@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.797135331294884,
+        "y": 6.949158590358703
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.3866415068470275,
+        "y": 7.241049997670929
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.491250165891335,
-        "y": 5.192086785557654
+        "x": 2.6670861923038722,
+        "y": 6.949158590358703
       },
       "prevControl": {
-        "x": 2.491250165891335,
-        "y": 5.192086785557654
+        "x": 3.2394222850729437,
+        "y": 6.949158590358703
+      },
+      "nextControl": {
+        "x": 2.5105808803975713,
+        "y": 6.949158590358703
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.1061968213901823,
+        "y": 6.474119633360374
+      },
+      "prevControl": {
+        "x": 2.4953853644731505,
+        "y": 6.68588398768493
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,13 +55,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -161.34211152588045,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "AUTOS",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -179.4153694792949,
     "velocity": 0
   },
   "useDefaultConstraints": true
