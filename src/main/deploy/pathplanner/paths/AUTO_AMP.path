@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 1.8747265888498057,
-        "y": 6.331035610168106
+        "y": 6.584919221302506
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.838305575457646,
-        "y": 7.518360646752519
+        "x": 1.8747265888498057,
+        "y": 6.834919221302506
       },
       "isLocked": false,
       "linkedName": null
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 1.8747265888498057,
-        "y": 8.05376724940301
+        "y": 7.633844406996711
       },
       "prevControl": {
         "x": 1.8747265888498057,
-        "y": 7.203767249403011
+        "y": 7.383844406996711
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,8 +56,8 @@
   "reversed": false,
   "folder": "MACROS",
   "previewStartingState": {
-    "rotation": 91.72266207162282,
-    "velocity": 0
+    "rotation": 90.0,
+    "velocity": 0.0
   },
   "useDefaultConstraints": false
 }
