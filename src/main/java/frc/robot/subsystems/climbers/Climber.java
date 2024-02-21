@@ -121,8 +121,6 @@ public class Climber extends StateMachine<Climber.State> {
     SOFT_E_STOP,
     VOLTAGE_CALC,
 
-
-
     // flags
     AT_SETPOINT
   }

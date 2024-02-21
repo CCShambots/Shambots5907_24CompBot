@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.StateMachine;
-import frc.robot.ShamLib.ShamLibConstants.BuildMode;
 import frc.robot.ShamLib.ShamLibConstants;
+import frc.robot.ShamLib.ShamLibConstants.BuildMode;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.commands.DetermineRingStatusCommand;
 import frc.robot.controllers.ControllerBindings;
@@ -97,15 +97,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    Map<String, Pose3d> photonMap = Constants.currentBuildMode == BuildMode.SIM ? Map.of() : Map.of(
+    Map<String, Pose3d> photonMap =
+        Constants.currentBuildMode == BuildMode.SIM
+            ? Map.of()
+            : Map.of(
                 "pv_instance_1",
                 Constants.Vision.Hardware.RIGHT_CAM_POSE,
                 "pv_instance_2",
                 Constants.Vision.Hardware.LEFT_CAM_POSE);
 
-    vision =
-        new Vision(
-            "limelight", photonMap);
+    vision = new Vision("limelight", photonMap);
 
     drivetrain =
         new Drivetrain(
@@ -169,7 +170,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void registerNamedCommands() {
-    //TODO: set up if we ever use automatic climbing
+    // TODO: set up if we ever use automatic climbing
     NamedCommands.registerCommand("raiseClimber", new InstantCommand());
 
     drivetrain.configurePathplanner();
@@ -613,8 +614,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(8, 1);
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
-
-    
 
     testTab
         .add("zero climbers", new InstantCommand(() -> climbers.zero()))
