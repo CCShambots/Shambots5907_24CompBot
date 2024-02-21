@@ -173,6 +173,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     // TODO: set up if we ever use automatic climbing
     NamedCommands.registerCommand("raiseClimber", new InstantCommand());
 
+    NamedCommands.registerCommand(
+        "intake",
+        new ParallelCommandGroup(
+            intake.transitionCommand(Intake.State.INTAKE, false),
+            indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK)));
+    NamedCommands.registerCommand("stopIntake", intake.transitionCommand(Intake.State.IDLE, false));
+
+    NamedCommands.registerCommand(
+        "shoot", indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER));
+
     drivetrain.configurePathplanner();
   }
 
@@ -541,6 +551,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   @Override
   protected void onTeleopStart() {
     requestTransition(State.TRAVERSING);
+  }
+
+  @Override
+  protected void onAutonomousStart() {
+
+    registerStateCommand(
+        State.AUTONOMOUS,
+        new SequentialCommandGroup(
+            shooter.transitionCommand(Shooter.State.SPEAKER_AA),
+            shooter.waitForFlag(Shooter.State.READY).withTimeout(5),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
+            new WaitCommand(1),
+            autoChooser.get()));
+
+    requestTransition(State.AUTONOMOUS);
   }
 
   @Override
