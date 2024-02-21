@@ -370,6 +370,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         });
   }
 
+  public void configurePathplanner() {
+    drive.configurePathplanner();
+  }
+
   public void addVisionMeasurements(
       List<TimestampedPoseEstimator.TimestampedVisionUpdate> measurement) {
     drive.addTimestampedVisionMeasurements(measurement);

@@ -158,7 +158,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     configureBindings();
 
-    NamedCommands.registerCommand("raiseClimber", new InstantCommand());
+    registerNamedCommands();
 
     // Important to instatiate after drivetrain consructor is called so that auto builder is
     // configured
@@ -166,6 +166,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     initializeDriveTab();
+  }
+
+  private void registerNamedCommands() {
+    //TODO: set up if we ever use automatic climbing
+    NamedCommands.registerCommand("raiseClimber", new InstantCommand());
+
+    drivetrain.configurePathplanner();
   }
 
   private void registerStateCommands() {
