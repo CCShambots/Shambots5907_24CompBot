@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
 import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.ShamLib.ShamLibConstants.BuildMode;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.commands.DetermineRingStatusCommand;
@@ -96,14 +97,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    vision =
-        new Vision(
-            "limelight",
-            Map.of(
+    Map<String, Pose3d> photonMap = Constants.currentBuildMode == BuildMode.SIM ? Map.of() : Map.of(
                 "pv_instance_1",
                 Constants.Vision.Hardware.RIGHT_CAM_POSE,
                 "pv_instance_2",
-                Constants.Vision.Hardware.LEFT_CAM_POSE));
+                Constants.Vision.Hardware.LEFT_CAM_POSE);
+
+    vision =
+        new Vision(
+            "limelight", photonMap);
 
     drivetrain =
         new Drivetrain(
