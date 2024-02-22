@@ -1,8 +1,11 @@
 package frc.robot.subsystems.lights;
 
+import static frc.robot.Constants.Lights.Hardware.NUM_LIGHTS;
 import static frc.robot.Constants.Lights.Settings.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.ShamLib.Candle.TimedColorFlowCommand;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
 
@@ -24,17 +27,30 @@ public class Lights extends StateMachine<Lights.State> {
   }
 
   private void registerStateCommmands() {
-    registerStateCommand(State.RESTING, setLights(State.RESTING));
-    registerStateCommand(State.AUTO, setLights(State.AUTO));
-    registerStateCommand(State.NO_RING, setLights(State.NO_RING));
-    registerStateCommand(State.HAVE_RING, setLights(State.HAVE_RING));
-    registerStateCommand(State.TARGETING, setLights(State.TARGETING));
-    registerStateCommand(State.READY, setLights(State.READY));
-    registerStateCommand(State.INTAKE, setLights(State.INTAKE));
-    registerStateCommand(State.AUTOMATIC_SCORE, setLights(State.AUTOMATIC_SCORE));
-    registerStateCommand(State.EJECT, setLights(State.EJECT));
-    registerStateCommand(State.CLIMB, setLights(State.CLIMB));
-    registerStateCommand(State.ERROR, setLights(State.ERROR));
+    registerStandardState(State.RESTING);
+    registerStandardState(State.NO_RING);
+    registerStandardState(State.HAVE_RING);
+    registerStandardState(State.TARGETING);
+    registerStandardState(State.READY);
+    registerStandardState(State.INTAKE);
+    registerStandardState(State.AUTOMATIC_SCORE);
+    registerStandardState(State.EJECT);
+    registerStandardState(State.CLIMB);
+    registerStandardState(State.ERROR);
+
+    registerStateCommand(
+        State.AUTO,
+        new TimedColorFlowCommand(
+            NUM_LIGHTS,
+            8,
+            (segs) -> io.setMultipleSegs(segs),
+            Constants.AUTO_TIME,
+            AUTO_RGB,
+            AUTO_BACKGROUND_RGB));
+  }
+
+  private void registerStandardState(State state) {
+    registerStateCommand(state, setLights(state));
   }
 
   @Override
@@ -55,7 +71,7 @@ public class Lights extends StateMachine<Lights.State> {
   public enum State {
     UNDETERMINED(new LEDData(DISABLED_ANIMATION)),
     RESTING(new LEDData(DISABLED_ANIMATION)), // Disabled
-    AUTO(new LEDData(AUTO_ANIMATION)), // Autonomous
+    AUTO(new LEDData(DISABLED_ANIMATION)), // Autonomous
     NO_RING(new LEDData(NO_RING_RGB)),
     HAVE_RING(new LEDData(HOLDING_RING)),
     TARGETING(new LEDData(TARGETING_ANIMATION)),

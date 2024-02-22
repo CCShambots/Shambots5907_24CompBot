@@ -34,6 +34,10 @@ public class Constants {
 
   public static final boolean ALLOW_TUNING = true;
 
+  public static final double AUTO_TIME = 15;
+  public static final double GAP_TIME = 3;
+  public static final double TELE_TIME = 135;
+
   public static final class Controller {
     public static final int LEFT_FLIGHT_STICK_ID = 1;
     public static final int RIGHT_FLIGHT_STICK_ID = 2;
@@ -421,6 +425,8 @@ public class Constants {
       public static final RGB NO_RING_RGB = new RGB(0, 0, 0);
       public static final RGB ERROR_RGB = new RGB(255, 0, 0);
       public static final RGB HOLDING_RING = new RGB(0, 0, 255);
+      public static final RGB AUTO_RGB = new RGB(0, 0, 255);
+      public static final RGB AUTO_BACKGROUND_RGB = new RGB(0, 0, 0);
       public static final RGB READY_TO_SHOOT = new RGB(0, 255, 0);
       public static final RGB CLIMB_RGB = new RGB(255, 0, 255);
 
