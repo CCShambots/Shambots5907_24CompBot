@@ -122,6 +122,8 @@ public class Constants {
       public static final int LIMELIGHT_NOTE_TRACK_PIPELINE = 0;
 
       public static final double AUTO_START_TOLERANCE = 0.5;
+
+      public static final double VISION_TRUST_CUTOFF = Units.feetToMeters(18);
     }
   }
 

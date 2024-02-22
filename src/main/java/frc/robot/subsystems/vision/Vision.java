@@ -39,7 +39,8 @@ public class Vision extends StateMachine<Vision.State> {
                         entry.getKey(),
                         Constants.currentBuildMode,
                         new Transform3d(new Pose3d(), entry.getValue()),
-                        Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT))
+                        Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT,
+                        VISION_TRUST_CUTOFF))
             .toArray(PVApriltagCam[]::new);
 
     for (var cam : pvApriltagCams) {
