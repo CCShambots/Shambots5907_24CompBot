@@ -183,17 +183,27 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     NamedCommands.registerCommand("stopIntake", intake.transitionCommand(Intake.State.IDLE, false));
 
     NamedCommands.registerCommand(
-        "shoot", indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER));
+        "shoot",
+        new SequentialCommandGroup(
+            indexer.waitForState(Indexer.State.HOLDING_RING),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER)));
 
     NamedCommands.registerCommand(
         "fireSequence",
         new SequentialCommandGroup(
+            indexer.waitForState(Indexer.State.HOLDING_RING),
             intake.transitionCommand(Intake.State.IDLE, false),
             indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
-            new WaitCommand(1),
+            new WaitCommand(0.25),
             new ParallelCommandGroup(
                 intake.transitionCommand(Intake.State.INTAKE, false),
-                indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))));
+                new InstantCommand(
+                    () -> {
+                      new SequentialCommandGroup(
+                              indexer.waitForState(Indexer.State.IDLE),
+                              indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
+                          .schedule();
+                    }))));
 
     drivetrain.configurePathplanner();
   }
@@ -379,7 +389,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new WaitUntilCommand(controllerBindings.feedOnPress()),
         indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
         indexer.waitForState(Indexer.State.IDLE),
-        new WaitCommand(1),
+        new WaitCommand(0.25),
         transitionCommand(onEnd));
   }
 
@@ -582,9 +592,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         State.AUTONOMOUS,
         new SequentialCommandGroup(
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
-            shooter.waitForFlag(Shooter.State.READY).withTimeout(5),
+            shooter.waitForFlag(Shooter.State.READY).withTimeout(1),
             indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
-            new WaitCommand(1),
+            indexer.waitForState(Indexer.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
             new InstantCommand(
                 () -> {

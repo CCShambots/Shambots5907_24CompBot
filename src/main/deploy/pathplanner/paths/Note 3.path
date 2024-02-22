@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.154831452520048,
-        "y": 6.608548931383577
+        "x": 1.8674423861713738,
+        "y": 6.373677343627979
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.154831452520048,
-        "y": 6.608548931383577
+        "x": 1.8674423861713738,
+        "y": 6.373677343627979
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 3 Start"
     },
     {
       "anchor": {
-        "x": 2.832831379948474,
-        "y": 6.977756812656482
+        "x": 2.8799465584734185,
+        "y": 7.014687179329994
       },
       "prevControl": {
-        "x": 2.832831379948474,
-        "y": 6.977756812656482
+        "x": 2.8799465584734185,
+        "y": 7.014687179329994
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,20 +32,20 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -151.92013434177795,
+    "rotation": -145.58163552094373,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "NOTES",
   "previewStartingState": {
-    "rotation": -151.93736108390453,
+    "rotation": -149.96671956400488,
     "velocity": 0
   },
   "useDefaultConstraints": true
