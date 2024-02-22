@@ -104,14 +104,14 @@ public class Constants {
               Units.inchesToMeters(12.198133),
               Units.inchesToMeters(12.293625),
               Units.inchesToMeters(8.881022),
-              new Rotation3d(Math.toRadians(0), Math.toRadians(-30), Math.toRadians(0)));
+              new Rotation3d(Math.toRadians(0), Math.toRadians(-30), Math.toRadians(4.5)));
 
       public static Pose3d RIGHT_CAM_POSE =
           new Pose3d(
               Units.inchesToMeters(11.994638),
               Units.inchesToMeters(-12.276838),
               Units.inchesToMeters(8.712641),
-              new Rotation3d(0, Math.toRadians(-60), Math.toRadians(0)));
+              new Rotation3d(0, Math.toRadians(-60), Math.toRadians(6.1)));
     }
 
     public static final class Settings {
@@ -224,8 +224,8 @@ public class Constants {
 
   public static final class Flywheel {
     public static final class Sim {
-      public static final double TOP_INERTIA = 0.0001;
-      public static final double BOTTOM_INERTIA = 0.0001;
+      public static final double TOP_INERTIA = 0.00001;
+      public static final double BOTTOM_INERTIA = 0.00001;
     }
 
     public static final class Hardware {
@@ -258,6 +258,9 @@ public class Constants {
 
     public static final class Settings {
       public static final double BASE_SHOT_VELOCITY = 5800 / 60.0; // RPS
+
+      public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 2;
+
       public static final double SPIN_UP_READY_TOLERANCE = 5; // RPS
 
       public static final double PASS_THROUGH_SPEED = 500 / 60.0; // RPS
@@ -404,7 +407,7 @@ public class Constants {
     public static final class Hardware {
       public static final int CANDLE_ID = 0;
 
-      public static final int NUM_LIGHTS = 200;
+      public static final int NUM_LIGHTS = 71;
 
       public static final double BRIGHTNESS = 1.0;
     }
@@ -412,13 +415,14 @@ public class Constants {
     public static final class Settings {
       public static final int NUM_LIGHTS_WITHOUT_CANDLE = NUM_LIGHTS - 8;
 
-      public static final double BOUNCE_SPEED = 0.75;
+      public static final double BOUNCE_SPEED = 0.5;
       public static final double BLINK_SPEED = .075;
 
       public static final RGB NO_RING_RGB = new RGB(0, 0, 0);
       public static final RGB ERROR_RGB = new RGB(255, 0, 0);
       public static final RGB HOLDING_RING = new RGB(0, 0, 255);
       public static final RGB READY_TO_SHOOT = new RGB(0, 255, 0);
+      public static final RGB CLIMB_RGB = new RGB(255, 0, 255);
 
       public static final Animation DISABLED_ANIMATION =
           new LarsonAnimation(0, 0, 255, 0, BOUNCE_SPEED, NUM_LIGHTS_WITHOUT_CANDLE, Front, 7, 8);
@@ -513,7 +517,7 @@ public class Constants {
 
     public static final class Settings {
       public static final PIDGains AUTO_THETA_GAINS = new PIDGains(5, 0, 0);
-      public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
+      public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(10, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
           new PIDSVGains(.25, 0, 0, 0.08045, 0.118675);

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.0759918544058542,
-      "y": 4.402262977536336
+      "x": 0.9350644433320808,
+      "y": 4.414226823129778
     },
-    "rotation": 136.3971810272964
+    "rotation": 127.36666941276872
   },
   "command": {
     "type": "sequential",
@@ -26,19 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
+            "name": "fireSequence"
           }
         },
         {
@@ -50,25 +38,49 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
+            "name": "fireSequence"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Note 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3 to 8"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Note 8"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "8 to 7 "
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Note 7"
           }
         },
         {

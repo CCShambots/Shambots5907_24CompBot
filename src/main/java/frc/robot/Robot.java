@@ -156,6 +156,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
+
+    robotContainer.returnLightsToIdle();
   }
 
   @Override

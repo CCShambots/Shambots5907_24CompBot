@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.885203196011929,
+        "x": 7.468994245885563,
         "y": 7.2982836069478365
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.8982380802131855,
-        "y": 7.366963938080124
+        "x": 7.840488582485593,
+        "y": 7.2982836069478365
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 8 Start"
     },
     {
       "anchor": {
@@ -41,7 +41,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 8 End"
     }
   ],
   "rotationTargets": [
@@ -72,8 +72,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -83,9 +83,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AUTOS",
+  "folder": "NOTES",
   "previewStartingState": {
-    "rotation": -177.13759477388828,
+    "rotation": -175.0135059897824,
     "velocity": 0
   },
   "useDefaultConstraints": true

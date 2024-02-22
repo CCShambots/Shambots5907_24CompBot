@@ -36,6 +36,7 @@ import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.lights.Lights;
 import frc.robot.subsystems.lights.LightsIO;
+import frc.robot.subsystems.lights.LightsIOReal;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.arm.ArmIOReal;
@@ -152,7 +153,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
     addChildSubsystem(climbers);
-    addChildSubsystem(lights);
+
+    lights.enable();
 
     registerStateCommands();
     registerTransitions();
@@ -183,6 +185,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     NamedCommands.registerCommand(
         "shoot", indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER));
 
+    NamedCommands.registerCommand(
+        "fireSequence",
+        new SequentialCommandGroup(
+            intake.transitionCommand(Intake.State.IDLE, false),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
+            new WaitCommand(1),
+            new ParallelCommandGroup(
+                intake.transitionCommand(Intake.State.INTAKE, false),
+                indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))));
+
     drivetrain.configurePathplanner();
   }
 
@@ -203,6 +215,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             climbers.transitionCommand(Climbers.State.FREE_RETRACT),
             intake.transitionCommand(Intake.State.IDLE),
+            new ConditionalCommand(
+                shooter.partialFlywheelSpinup(), new InstantCommand(), () -> indexer.ringPresent()),
             new DetermineRingStatusCommand(shooter, indexer, lights)));
 
     registerStateCommand(
@@ -245,6 +259,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new ParallelCommandGroup(
                 drivetrain.transitionCommand(Drivetrain.State.HUMAN_PLAYER_INTAKE),
                 intake.transitionCommand(Intake.State.IDLE),
+                lights.transitionCommand(Lights.State.INTAKE),
                 shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT))
             .andThen(
@@ -259,6 +274,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new ParallelCommandGroup(
                 drivetrain.transitionCommand(Drivetrain.State.AUTO_HUMAN_PLAYER_INTAKE),
                 intake.transitionCommand(Intake.State.IDLE),
+                lights.transitionCommand(Lights.State.INTAKE),
                 shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT))
             .andThen(
@@ -292,6 +308,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new SequentialCommandGroup(
             shooter.transitionCommand(Shooter.State.PASS_THROUGH),
             indexer.transitionCommand(Indexer.State.CLEANSE),
+            lights.transitionCommand(Lights.State.EJECT),
             new WaitCommand(2),
             transitionCommand(State.TRAVERSING)));
 
@@ -299,6 +316,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         State.CLIMB,
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.CHAIN_ORIENTED_DRIVE),
+            lights.transitionCommand(Lights.State.CLIMB),
             climbers.transitionCommand(Climbers.State.FREE_EXTEND),
             new WaitUntilCommand(controllerBindings.retractClimb()),
             climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
@@ -311,6 +329,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new DetermineRingStatusCommand(shooter, indexer, lights),
             shooter.transitionCommand(Shooter.State.AMP),
             drivetrain.waitForState(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            lights.transitionCommand(Lights.State.TARGETING),
             new ParallelCommandGroup(
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
 
@@ -322,6 +341,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 new WaitUntilCommand(() -> vision.isFlag(Vision.State.HAS_RING_TARGET)),
                 drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE)),
             new SequentialCommandGroup(
+                lights.transitionCommand(Lights.State.INTAKE),
                 shooter.transitionCommand(Shooter.State.STOW),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
                 intake.transitionCommand(Intake.State.INTAKE),
@@ -342,6 +362,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_GROUND_INTAKE);
     addOmniTransition(State.AUTO_HP_INTAKE);
+
+    addTransition(State.SOFT_E_STOP, State.AUTONOMOUS);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -405,7 +427,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new ConditionalCommand(
                 transitionCommand(State.SPEAKER_SCORE, false),
                 transitionCommand(State.BASE_SHOT, false),
-                () -> poseWorking));
+                () -> poseWorking))
+        .onFalse(transitionCommand(State.TRAVERSING, false));
+
     controllerBindings
         .groundIntake()
         .onTrue(
@@ -531,13 +555,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private LightsIO getLightsIO() {
     switch (Constants.currentBuildMode) {
-        // case REAL -> {
-        // return new LightsIOReal();
-        // }
-
-        // case SIM -> {
-        // return new LightsIOSim();
-        // }
+      case REAL -> {
+        return new LightsIOReal();
+      }
 
       default -> {
         return new LightsIO() {};
@@ -556,20 +576,30 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   @Override
   protected void onAutonomousStart() {
 
+    Command selectedAutoCommand = autoChooser.get();
+
     registerStateCommand(
         State.AUTONOMOUS,
         new SequentialCommandGroup(
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
             shooter.waitForFlag(Shooter.State.READY).withTimeout(5),
-            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
             new WaitCommand(1),
-            autoChooser.get()));
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
+            new InstantCommand(
+                () -> {
+                  selectedAutoCommand.schedule();
+                })));
 
     requestTransition(State.AUTONOMOUS);
   }
 
   public void resetFieldOriented() {
     drivetrain.resetFieldOriented();
+  }
+
+  public void returnLightsToIdle() {
+    lights.requestTransition(Lights.State.RESTING);
   }
 
   @Override

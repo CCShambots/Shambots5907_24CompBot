@@ -34,8 +34,6 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-
 public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final SwerveDrive drive;
   private boolean flipPath = false;
@@ -211,17 +209,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             AMP_SPEED));
 
     registerStateCommand(
-        State.AUTO_AMP,
-        getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
-
-    registerStateCommand(
-        State.AUTO_HUMAN_PLAYER_INTAKE,
-        getPathfindCommand(
-            "AUTO_HUMAN_PLAYER_INTAKE",
-            HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY,
-            State.FIELD_ORIENTED_DRIVE));
-
-    registerStateCommand(
         State.TURN_VOLTAGE_CALC,
         drive.getTurnVoltageCalcCommand(stop, incrementUp, incrementDown, TURN_VOLTAGE_INCREMENT));
     registerStateCommand(
@@ -230,7 +217,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             stop, incrementUp, incrementDown, DRIVE_VOLTAGE_INCREMENT));
 
     registerFaceCommands();
-    registerAutoClimb();
   }
 
   @Override
@@ -271,6 +257,21 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         State.FACE_SPEAKER,
         getFacePointCommand(
             flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED));
+  }
+
+  private void registerPathFollowStateCommands() {
+    registerStateCommand(
+        State.AUTO_AMP,
+        getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
+
+    registerStateCommand(
+        State.AUTO_HUMAN_PLAYER_INTAKE,
+        getPathfindCommand(
+            "AUTO_HUMAN_PLAYER_INTAKE",
+            HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY,
+            State.FIELD_ORIENTED_DRIVE));
+
+    registerAutoClimb();
   }
 
   private Command getFacePointCommand(Pose2d pose, SwerveSpeedLimits limits) {
@@ -368,8 +369,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   public void resetFieldOriented() {
     Rotation2d newAngle = drive.getPose().getRotation();
 
-    //Flip by 180 if we're on red alliance
-    if(flipPath) newAngle = newAngle.plus(new Rotation2d(Math.PI));
+    // Flip by 180 if we're on red alliance
+    if (flipPath) newAngle = newAngle.plus(new Rotation2d(Math.PI));
 
     drive.resetRotationOffset(newAngle);
   }
@@ -383,6 +384,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
   public void configurePathplanner() {
     drive.configurePathplanner();
+
+    registerPathFollowStateCommands();
   }
 
   public void addVisionMeasurements(

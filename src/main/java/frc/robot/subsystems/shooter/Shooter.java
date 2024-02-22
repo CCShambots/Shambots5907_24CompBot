@@ -152,6 +152,10 @@ public class Shooter extends StateMachine<Shooter.State> {
     addTransition(State.SOFT_E_STOP, State.ARM_VOLTAGE_CALC);
   }
 
+  public Command partialFlywheelSpinup() {
+    return flywheel.transitionCommand(Flywheel.State.PARTIAL_SPINUP);
+  }
+
   private Command watchReadyCommand() {
     return new RunCommand(
         () -> {

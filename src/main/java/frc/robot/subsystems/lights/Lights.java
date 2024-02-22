@@ -14,19 +14,27 @@ public class Lights extends StateMachine<Lights.State> {
     super("Lights", State.UNDETERMINED, State.class);
 
     this.io = io;
+
+    registerStateCommmands();
+    registerTransitions();
   }
 
   private void registerTransitions() {
-    addOmniTransition(State.RESTING, setLights(State.RESTING));
-    addOmniTransition(State.AUTO, setLights(State.AUTO));
-    addOmniTransition(State.NO_RING, setLights(State.NO_RING));
-    addOmniTransition(State.HAVE_RING, setLights(State.HAVE_RING));
-    addOmniTransition(State.TARGETING, setLights(State.TARGETING));
-    addOmniTransition(State.READY, setLights(State.READY));
-    addOmniTransition(State.INTAKE, setLights(State.INTAKE));
-    addOmniTransition(State.AUTOMATIC_SCORE, setLights(State.AUTOMATIC_SCORE));
-    addOmniTransition(State.EJECT, setLights(State.EJECT));
-    addOmniTransition(State.ERROR, setLights(State.ERROR));
+    addOmniTransitions(State.values());
+  }
+
+  private void registerStateCommmands() {
+    registerStateCommand(State.RESTING, setLights(State.RESTING));
+    registerStateCommand(State.AUTO, setLights(State.AUTO));
+    registerStateCommand(State.NO_RING, setLights(State.NO_RING));
+    registerStateCommand(State.HAVE_RING, setLights(State.HAVE_RING));
+    registerStateCommand(State.TARGETING, setLights(State.TARGETING));
+    registerStateCommand(State.READY, setLights(State.READY));
+    registerStateCommand(State.INTAKE, setLights(State.INTAKE));
+    registerStateCommand(State.AUTOMATIC_SCORE, setLights(State.AUTOMATIC_SCORE));
+    registerStateCommand(State.EJECT, setLights(State.EJECT));
+    registerStateCommand(State.CLIMB, setLights(State.CLIMB));
+    registerStateCommand(State.ERROR, setLights(State.ERROR));
   }
 
   @Override
@@ -55,6 +63,7 @@ public class Lights extends StateMachine<Lights.State> {
     INTAKE(new LEDData(INTAKE_ANIMATION)),
     AUTOMATIC_SCORE(new LEDData(AUTOMATIC_SCORE_ANIMATION)),
     EJECT(new LEDData(EJECT_ANIMATION)),
+    CLIMB(new LEDData(CLIMB_RGB)),
     ERROR(new LEDData(ERROR_RGB));
 
     private final LEDData data;
