@@ -185,14 +185,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     NamedCommands.registerCommand(
         "shoot",
         new SequentialCommandGroup(
-            indexer.waitForState(Indexer.State.HOLDING_RING),
-            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER)));
+            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(3),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false)));
 
     NamedCommands.registerCommand(
         "fireSequence",
         new SequentialCommandGroup(
             indexer.waitForState(Indexer.State.HOLDING_RING),
-            intake.transitionCommand(Intake.State.IDLE, false),
+            intake.transitionCommand(Intake.State.IDLE, false).withTimeout(3),
             indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
             new WaitCommand(0.25),
             new ParallelCommandGroup(
