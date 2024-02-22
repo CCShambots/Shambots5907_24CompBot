@@ -599,7 +599,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new SequentialCommandGroup(
             lights.transitionCommand(Lights.State.AUTO),
             shooter.transitionCommand(Shooter.State.BASE_SHOT),
-            shooter.waitForFlag(Shooter.State.READY).withTimeout(1),
+            shooter.waitForFlag(Shooter.State.READY).withTimeout(1.5),
             indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
             indexer.waitForState(Indexer.State.IDLE),
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
@@ -695,7 +695,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(1, 1);
 
     autoTab
-        .addBoolean("ll good", () -> Constants.doubleEqual(vision.getLimelightTargetOffset().getDegrees(), 0, Constants.Vision.Settings.AUTO_START_TOLERANCE))
+        .addBoolean(
+            "ll good",
+            () ->
+                Constants.doubleEqual(
+                    vision.getLimelightTargetOffset().getDegrees(),
+                    0,
+                    Constants.Vision.Settings.AUTO_START_TOLERANCE))
         .withPosition(7, 2)
         .withSize(1, 1);
 

@@ -108,14 +108,14 @@ public class Constants {
               Units.inchesToMeters(12.198133),
               Units.inchesToMeters(12.293625),
               Units.inchesToMeters(8.881022),
-              new Rotation3d(Math.toRadians(0), Math.toRadians(-30), Math.toRadians(4.5)));
+              new Rotation3d(Math.toRadians(0), Math.toRadians(-30), Math.toRadians(0)));
 
       public static Pose3d RIGHT_CAM_POSE =
           new Pose3d(
               Units.inchesToMeters(11.994638),
               Units.inchesToMeters(-12.276838),
               Units.inchesToMeters(8.712641),
-              new Rotation3d(0, Math.toRadians(-60), Math.toRadians(6.1)));
+              new Rotation3d(0, Math.toRadians(-60), Math.toRadians(0)));
     }
 
     public static final class Settings {
@@ -525,7 +525,7 @@ public class Constants {
 
     public static final class Settings {
       public static final PIDGains AUTO_THETA_GAINS = new PIDGains(5, 0, 0);
-      public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(10, 0, 0);
+      public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(8, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
           new PIDSVGains(.25, 0, 0, 0.08045, 0.118675);

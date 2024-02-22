@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.8674423861713738,
-        "y": 6.373677343627979
+        "x": 2.0276948450968773,
+        "y": 6.33725633023582
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8674423861713738,
-        "y": 6.373677343627979
+        "x": 2.0276948450968773,
+        "y": 6.33725633023582
       },
       "isLocked": false,
       "linkedName": "Note 3 Start"
     },
     {
       "anchor": {
-        "x": 2.8799465584734185,
-        "y": 7.014687179329994
+        "x": 3.0401990173989217,
+        "y": 6.985550368616265
       },
       "prevControl": {
-        "x": 2.8799465584734185,
-        "y": 7.014687179329994
+        "x": 3.0401990173989217,
+        "y": 6.985550368616265
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": "NOTES",
   "previewStartingState": {
-    "rotation": -149.96671956400488,
+    "rotation": -146.54669054592733,
     "velocity": 0
   },
   "useDefaultConstraints": true
