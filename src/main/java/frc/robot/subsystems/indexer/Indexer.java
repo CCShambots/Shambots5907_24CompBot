@@ -165,6 +165,18 @@ public class Indexer extends StateMachine<Indexer.State> {
     return getState() == State.HOLDING_RING || getState() == State.INDEXING;
   }
 
+  public boolean isProx1Active() {
+    return inputs.prox1;
+  }
+
+  public boolean isProx2Active() {
+    return inputs.prox2;
+  }
+
+  public boolean isProx3Active() {
+    return inputs.prox3;
+  }
+
   @Override
   protected void determineSelf() {
     setState(State.IDLE);

@@ -135,6 +135,10 @@ public class Vision extends StateMachine<Vision.State> {
     limelight.update();
   }
 
+  public double getLimelightLatency() {
+    return limelight.getLatency();
+  }
+
   public enum State {
     UNDETERMINED,
     ENABLED,

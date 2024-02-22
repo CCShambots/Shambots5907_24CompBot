@@ -597,10 +597,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     registerStateCommand(
         State.AUTONOMOUS,
         new SequentialCommandGroup(
-            shooter.transitionCommand(Shooter.State.SPEAKER_AA),
+            lights.transitionCommand(Lights.State.AUTO),
+            shooter.transitionCommand(Shooter.State.BASE_SHOT),
             shooter.waitForFlag(Shooter.State.READY).withTimeout(1),
             indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
             indexer.waitForState(Indexer.State.IDLE),
+            shooter.transitionCommand(Shooter.State.SPEAKER_AA),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
             new InstantCommand(
                 () -> {
@@ -651,14 +653,53 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(2, 1);
     autoTab.add("SYNC ALLIANCE", AllianceManager.syncAlliance()).withPosition(0, 2).withSize(2, 1);
 
+    // Auto condition checks
     autoTab
         .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))
-        .withPosition(1, 2)
+        .withPosition(5, 0)
         .withSize(1, 1);
 
     autoTab
         .addNumber("arm relative", () -> Math.toDegrees(shooter.getArmAngle()))
-        .withPosition(1, 2)
+        .withPosition(6, 0)
+        .withSize(1, 1);
+
+    autoTab
+        .addBoolean(
+            "shooter good",
+            () ->
+                Constants.doubleEqual(
+                    shooter.getArmAbsoluteAngle(),
+                    shooter.getArmAngle(),
+                    Constants.Arm.Settings.AUTO_SYNC_TOLERANCE))
+        .withPosition(7, 0)
+        .withSize(1, 1);
+
+    autoTab
+        .addBoolean("pv good", () -> !vision.isFlag(Vision.State.PV_INSTANCE_DISCONNECT))
+        .withPosition(7, 1)
+        .withSize(1, 1);
+
+    autoTab
+        .addNumber("ll latency", () -> vision.getLimelightLatency())
+        .withPosition(5, 2)
+        .withSize(2, 1);
+    autoTab
+        .addBoolean("ll good", () -> !vision.isFlag(Vision.State.PV_INSTANCE_DISCONNECT))
+        .withPosition(7, 2)
+        .withSize(1, 1);
+
+    autoTab
+        .addBoolean("prox 1 good", () -> indexer.isProx1Active())
+        .withPosition(5, 3)
+        .withSize(1, 1);
+    autoTab
+        .addBoolean("prox 2 good", () -> indexer.isProx2Active())
+        .withPosition(6, 3)
+        .withSize(1, 1);
+    autoTab
+        .addBoolean("prox 3 good", () -> !indexer.isProx3Active())
+        .withPosition(7, 3)
         .withSize(1, 1);
 
     teleTab.addBoolean("POSE WORKING", () -> poseWorking).withPosition(0, 0).withSize(2, 2);
