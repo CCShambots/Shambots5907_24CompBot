@@ -45,6 +45,11 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger manualGroundIntake() {
+    return operatorController.a();
+  }
+
+  @Override
   public Trigger humanPlayerIntake() {
     return operatorController.x();
   }

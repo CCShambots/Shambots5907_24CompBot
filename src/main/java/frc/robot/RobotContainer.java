@@ -448,6 +448,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 transitionCommand(State.GROUND_INTAKE, false),
                 () -> autoIntakeWorking))
         .onFalse(transitionCommand(State.TRAVERSING, false));
+
+    controllerBindings
+        .manualGroundIntake()
+        .onTrue(transitionCommand(State.GROUND_INTAKE, false))
+        .onFalse(transitionCommand(State.TRAVERSING, false));
+
     controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING, false));
 
     controllerBindings

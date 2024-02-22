@@ -22,6 +22,8 @@ public interface ControllerBindings {
 
   Trigger groundIntake();
 
+  Trigger manualGroundIntake();
+
   Trigger shoot();
 
   Trigger humanPlayerIntake();
