@@ -120,6 +120,8 @@ public class Constants {
 
     public static final class Settings {
       public static final int LIMELIGHT_NOTE_TRACK_PIPELINE = 0;
+
+      public static final double AUTO_START_TOLERANCE = 0.5;
     }
   }
 

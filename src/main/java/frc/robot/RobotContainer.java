@@ -636,12 +636,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new Rotation3d(0, 0, pose.getRotation().getRadians()));
   }
 
+  public boolean autoReady() {
+    return false;
+  }
+
   private void initializeDriveTab() {
     ShuffleboardTab autoTab = Shuffleboard.getTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
     ShuffleboardTab teleTab = Shuffleboard.getTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
     ShuffleboardTab testTab = Shuffleboard.getTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
 
-    autoTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(3, 0).withSize(2, 1);
+    autoTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(2, 0).withSize(2, 1);
 
     autoTab
         .addString("ALLIANCE", () -> AllianceManager.getAlliance().name())
@@ -683,9 +687,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     autoTab
         .addNumber("ll latency", () -> vision.getLimelightLatency())
         .withPosition(5, 2)
-        .withSize(2, 1);
+        .withSize(1, 1);
+
     autoTab
-        .addBoolean("ll good", () -> !vision.isFlag(Vision.State.PV_INSTANCE_DISCONNECT))
+        .addNumber("ll offset", () -> vision.getLimelightTargetOffset().getDegrees())
+        .withPosition(6, 2)
+        .withSize(1, 1);
+
+    autoTab
+        .addBoolean("ll good", () -> Constants.doubleEqual(vision.getLimelightTargetOffset().getDegrees(), 0, Constants.Vision.Settings.AUTO_START_TOLERANCE))
         .withPosition(7, 2)
         .withSize(1, 1);
 
@@ -701,6 +711,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .addBoolean("prox 3 good", () -> !indexer.isProx3Active())
         .withPosition(7, 3)
         .withSize(1, 1);
+
+    autoTab.addBoolean("GOOD TO GO", this::autoReady).withPosition(9, 0).withSize(3, 3);
 
     teleTab.addBoolean("POSE WORKING", () -> poseWorking).withPosition(0, 0).withSize(2, 2);
     teleTab.addBoolean("AUTO INTAKE", () -> autoIntakeWorking).withPosition(2, 0).withSize(2, 2);

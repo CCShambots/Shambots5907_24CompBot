@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.photonvision.PhotonPoseEstimator;
 
 public class Vision extends StateMachine<Vision.State> {
@@ -137,6 +139,13 @@ public class Vision extends StateMachine<Vision.State> {
 
   public double getLimelightLatency() {
     return limelight.getLatency();
+  }
+
+  public Rotation2d getLimelightTargetOffset() {
+    RingVisionUpdate latest = getLatestRingVisionUpdate();
+
+    if(latest != null) return latest.centerOffsetX;
+    else return new Rotation2d();
   }
 
   public enum State {
