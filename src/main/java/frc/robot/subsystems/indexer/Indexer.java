@@ -85,6 +85,11 @@ public class Indexer extends StateMachine<Indexer.State> {
             () -> inputs.beltVoltage,
             VOLTAGE_INCREMENT));
 
+    registerStateCommand(
+            State.IDLE,
+            idleWatchCommand()
+    );
+
     registerStateCommand(State.HOLDING_RING, () -> io.stop());
     registerStateCommand(State.LOST_RING, () -> io.stop());
   }
@@ -132,6 +137,17 @@ public class Indexer extends StateMachine<Indexer.State> {
         },
         (interrupted) -> io.stop(),
         isFinished::get);
+  }
+
+  private Command idleWatchCommand() {
+    return new RunCommand(() -> {
+      if (inputs.prox1 && inputs.prox2 && !inputs.prox3) {
+        requestTransition(State.HOLDING_RING);
+      }
+      else if (inputs.prox1 || inputs.prox2 || inputs.prox3) {
+        requestTransition(State.INDEXING);
+      }
+    });
   }
 
   private Command proxClearCommand() {
