@@ -559,12 +559,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private ArmIO getArmIO() {
     switch (Constants.currentBuildMode) {
-      case REAL -> {
-        return new ArmIOReal();
-      }
-      case SIM -> {
-        return new ArmIOSim();
-      }
+        case REAL -> {
+          return new ArmIOReal();
+        }
+        case SIM -> {
+          return new ArmIOSim();
+        }
       default -> {
         return new ArmIO() {};
       }
