@@ -2,22 +2,20 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.Constants.Vision.Settings.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
 import frc.robot.ShamLib.vision.Limelight.Limelight;
 import frc.robot.ShamLib.vision.PhotonVision.Apriltag.PVApriltagCam;
-
 import java.util.*;
 import java.util.function.Consumer;
-
-import frc.robot.ShamLib.vision.PhotonVision.Apriltag.PVApriltagIO;
+import java.util.function.Supplier;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends StateMachine<Vision.State> {
   private final List<Consumer<List<TimestampedPoseEstimator.TimestampedVisionUpdate>>>
@@ -25,6 +23,8 @@ public class Vision extends StateMachine<Vision.State> {
   private final List<Consumer<RingVisionUpdate>> ringVisionUpdateConsumers = new ArrayList<>();
   private final Limelight limelight;
   private final PVApriltagCam[] pvApriltagCams;
+
+  Supplier<Pose2d> overallEstimateSupplier = null;
 
   public Vision(String limelight, Map<String, Pose3d> photonVisionInstances) {
     super("Vision", State.UNDETERMINED, State.class);
@@ -47,19 +47,94 @@ public class Vision extends StateMachine<Vision.State> {
       cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
       cam.setMultiTagFallbackEstimationStrategy(
           PhotonPoseEstimator.PoseStrategy.AVERAGE_BEST_TARGETS);
+
+      applyPreAndPostProcesses(cam);
     }
 
     registerTransitions();
   }
 
+  public void setOverallEstimateSupplier(Supplier<Pose2d> supplier) {
+    overallEstimateSupplier = supplier;
+  }
+
   private void applyPreAndPostProcesses(PVApriltagCam cam) {
     HashMap<Integer, Double[]> ambiguityAverages = new HashMap<>();
+    int avgLength = 10;
+    double ambiguityThreshold = 0.6;
+    double distanceFromLastEstimateScalar = 1.0;
 
-    cam.setPreProcess((pipelineData) -> {
-      for (var tag : pipelineData.getTargets()) {
+    cam.setPreProcess(
+        (pipelineData) -> {
+          int idx = 0;
 
-      }
-    });
+          for (var tag : pipelineData.getTargets()) {
+            if (!ambiguityAverages.containsKey(tag.getFiducialId())) {
+              Double[] arr = new Double[avgLength];
+              Arrays.fill(arr, -1.0);
+              arr[0] = tag.getPoseAmbiguity();
+
+              ambiguityAverages.put(tag.getFiducialId(), arr);
+            } else {
+              var arr = ambiguityAverages.get(tag.getFiducialId());
+              System.arraycopy(arr, 0, arr, 1, arr.length);
+              arr[avgLength] = tag.getPoseAmbiguity();
+            }
+
+            double avg = 0;
+            double count = 0;
+            for (Double a : ambiguityAverages.get(tag.getFiducialId())) {
+              if (a >= 0) {
+                avg += a;
+                count++;
+              }
+            }
+
+            avg /= count;
+
+            PhotonTrackedTarget target =
+                new PhotonTrackedTarget(
+                    tag.getYaw(),
+                    tag.getPitch(),
+                    tag.getArea(),
+                    tag.getSkew(),
+                    tag.getFiducialId(),
+                    tag.getBestCameraToTarget(),
+                    tag.getAlternateCameraToTarget(),
+                    avg,
+                    tag.getMinAreaRectCorners(),
+                    tag.getDetectedCorners());
+
+            pipelineData.targets.set(idx, target);
+
+            idx++;
+          }
+
+          pipelineData.targets.removeIf(target -> target.getPoseAmbiguity() > ambiguityThreshold);
+
+          return pipelineData;
+        });
+
+    cam.setPostProcess(
+        (estimate) -> {
+          var defaultProcess = cam.defaultPostProcess(estimate);
+
+          if (overallEstimateSupplier != null) {
+            return new TimestampedPoseEstimator.TimestampedVisionUpdate(
+                defaultProcess.timestamp(),
+                defaultProcess.pose(),
+                defaultProcess
+                    .stdDevs()
+                    .times(
+                        overallEstimateSupplier
+                                .get()
+                                .getTranslation()
+                                .getDistance(defaultProcess.pose().getTranslation())
+                            * distanceFromLastEstimateScalar));
+          } else {
+            return defaultProcess;
+          }
+        });
   }
 
   public void addVisionUpdateConsumers(
@@ -113,8 +188,7 @@ public class Vision extends StateMachine<Vision.State> {
   }
 
   private void updateConsumers() {
-    List<TimestampedPoseEstimator.TimestampedVisionUpdate> poseUpdates =
-            getLatestVisionUpdates();
+    List<TimestampedPoseEstimator.TimestampedVisionUpdate> poseUpdates = getLatestVisionUpdates();
     RingVisionUpdate ringVisionUpdate = getLatestRingVisionUpdate();
 
     if (!poseUpdates.isEmpty()) {
