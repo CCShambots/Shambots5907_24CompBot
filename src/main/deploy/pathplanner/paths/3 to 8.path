@@ -16,19 +16,25 @@
     },
     {
       "anchor": {
-        "x": 7.468994245885563,
-        "y": 7.2982836069478365
+        "x": 7.352447003030652,
+        "y": 7.3
       },
       "prevControl": {
-        "x": 6.468994245885563,
-        "y": 7.2982836069478365
+        "x": 6.352447003030652,
+        "y": 7.3
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Note 8 Start"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.55,
+      "rotationDegrees": 180.0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -38,8 +44,8 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 3.0,
-    "rotation": -176.8764703664947,
+    "velocity": 5.0,
+    "rotation": -178.29018595585845,
     "rotateFast": false
   },
   "reversed": false,

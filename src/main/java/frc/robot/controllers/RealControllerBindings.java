@@ -121,6 +121,6 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger resetGyro() {
-    return leftFlightStick.topBase();
+    return leftFlightStick.topLeft();
   }
 }
