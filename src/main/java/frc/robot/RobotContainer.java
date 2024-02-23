@@ -127,6 +127,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
+    vision.setOverallEstimateSupplier(drivetrain::getBotPose);
+
     climbers =
         new Climbers(
             getLeftClimberIO(),
