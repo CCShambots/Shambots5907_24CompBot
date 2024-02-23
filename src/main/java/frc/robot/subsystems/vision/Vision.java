@@ -12,11 +12,11 @@ import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
 import frc.robot.ShamLib.vision.Limelight.Limelight;
 import frc.robot.ShamLib.vision.PhotonVision.Apriltag.PVApriltagCam;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.function.Consumer;
+
+import frc.robot.ShamLib.vision.PhotonVision.Apriltag.PVApriltagIO;
 import org.photonvision.PhotonPoseEstimator;
 
 public class Vision extends StateMachine<Vision.State> {
@@ -50,6 +50,16 @@ public class Vision extends StateMachine<Vision.State> {
     }
 
     registerTransitions();
+  }
+
+  private void applyPreAndPostProcesses(PVApriltagCam cam) {
+    HashMap<Integer, Double[]> ambiguityAverages = new HashMap<>();
+
+    cam.setPreProcess((pipelineData) -> {
+      for (var tag : pipelineData.getTargets()) {
+
+      }
+    });
   }
 
   public void addVisionUpdateConsumers(
