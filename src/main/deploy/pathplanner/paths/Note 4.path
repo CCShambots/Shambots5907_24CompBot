@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.604758510555082,
-        "y": 0.8194390368019482
+        "x": 7.410720624458108,
+        "y": 0.7357044705216299
       },
       "isLocked": false,
       "linkedName": "Note 4 Start"
     },
     {
       "anchor": {
-        "x": 7.984088494128545,
-        "y": 0.8194390368019482
+        "x": 8.241119729799353,
+        "y": 0.6628624437373098
       },
       "prevControl": {
-        "x": 8.464572619832332,
-        "y": 0.8376852694236108
+        "x": 8.72160385550314,
+        "y": 0.6811086763589724
       },
       "nextControl": {
-        "x": 6.175506440978279,
-        "y": 0.7507587056696604
+        "x": 6.432537676649087,
+        "y": 0.5941821126050221
       },
       "isLocked": false,
       "linkedName": null
@@ -41,10 +41,16 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 4 End"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.4,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
