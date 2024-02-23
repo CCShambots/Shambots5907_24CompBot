@@ -1,6 +1,5 @@
 package frc.robot.subsystems.lights;
 
-import static frc.robot.Constants.Lights.Hardware.NUM_LIGHTS;
 import static frc.robot.Constants.Lights.Settings.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,7 +40,7 @@ public class Lights extends StateMachine<Lights.State> {
     registerStateCommand(
         State.AUTO,
         new TimedColorFlowCommand(
-            NUM_LIGHTS,
+            NUM_LIGHTS_WITHOUT_CANDLE,
             8,
             (segs) -> io.setMultipleSegs(segs),
             Constants.AUTO_TIME,
