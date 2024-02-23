@@ -103,19 +103,33 @@ public class Constants {
               Units.inchesToMeters(10.788134),
               new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
 
-      public static Pose3d LEFT_CAM_POSE =
+      public static Pose3d LEFT_SHOOTER_CAM_POSE =
           new Pose3d(
               Units.inchesToMeters(12.198133),
               Units.inchesToMeters(12.293625),
               Units.inchesToMeters(8.881022),
               new Rotation3d(Math.toRadians(0), Math.toRadians(-30), Math.toRadians(0)));
 
-      public static Pose3d RIGHT_CAM_POSE =
+      public static Pose3d RIGHT_SHOOTER_CAM_POSE =
           new Pose3d(
               Units.inchesToMeters(11.994638),
               Units.inchesToMeters(-12.276838),
               Units.inchesToMeters(8.712641),
               new Rotation3d(0, Math.toRadians(-60), Math.toRadians(0)));
+
+      public static Pose3d LEFT_INTAKE_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(-11.832791),
+              Units.inchesToMeters(11.802600),
+              Units.inchesToMeters(8.920582),
+              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180 - 45)));
+
+      public static Pose3d RIGHT_INTAKE_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(-11.832791),
+              Units.inchesToMeters(-11.802600),
+              Units.inchesToMeters(8.920582),
+              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180 + 45)));
     }
 
     public static final class Settings {

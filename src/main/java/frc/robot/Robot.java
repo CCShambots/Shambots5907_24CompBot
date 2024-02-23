@@ -120,8 +120,14 @@ public class Robot extends LoggedRobot {
 
     // Log Camera Poses
     Logger.recordOutput("Vision/limelight-pose", Constants.Vision.Hardware.RING_CAMERA_POSE);
-    Logger.recordOutput("Vision/left-cam-pose", Constants.Vision.Hardware.LEFT_CAM_POSE);
-    Logger.recordOutput("Vision/right-cam-pose", Constants.Vision.Hardware.RIGHT_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/left-shooter-cam-pose", Constants.Vision.Hardware.LEFT_SHOOTER_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/right-shooter-cam-pose", Constants.Vision.Hardware.RIGHT_SHOOTER_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/right-intake-cam-pose", Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/left-intake-cam-pose", Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
   }
 
   @Override
