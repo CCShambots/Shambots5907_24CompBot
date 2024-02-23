@@ -20,9 +20,9 @@ import java.util.function.Consumer;
 import org.photonvision.PhotonPoseEstimator;
 
 public class Vision extends StateMachine<Vision.State> {
-  private List<Consumer<List<TimestampedPoseEstimator.TimestampedVisionUpdate>>>
+  private final List<Consumer<List<TimestampedPoseEstimator.TimestampedVisionUpdate>>>
       visionUpdateConsumers = new ArrayList<>();
-  private List<Consumer<RingVisionUpdate>> ringVisionUpdateConsumers = new ArrayList<>();
+  private final List<Consumer<RingVisionUpdate>> ringVisionUpdateConsumers = new ArrayList<>();
   private final Limelight limelight;
   private final PVApriltagCam[] pvApriltagCams;
 
@@ -49,7 +49,6 @@ public class Vision extends StateMachine<Vision.State> {
           PhotonPoseEstimator.PoseStrategy.AVERAGE_BEST_TARGETS);
     }
 
-    registerStateCommand();
     registerTransitions();
   }
 
@@ -62,10 +61,6 @@ public class Vision extends StateMachine<Vision.State> {
     ringVisionUpdateConsumers.addAll(Arrays.stream(consumers).toList());
   }
 
-  private void registerStateCommand() {
-    registerStateCommand(State.ENABLED, enabledCommand());
-  }
-
   private void registerTransitions() {
     addOmniTransition(State.ENABLED, () -> limelight.setPipeline(LIMELIGHT_NOTE_TRACK_PIPELINE));
     addOmniTransition(State.DISABLED);
@@ -75,7 +70,7 @@ public class Vision extends StateMachine<Vision.State> {
     List<TimestampedPoseEstimator.TimestampedVisionUpdate> updates = new ArrayList<>();
 
     for (PVApriltagCam cam : pvApriltagCams) {
-      updates.add(cam.getLatestEstimate());
+      cam.getLatestEstimate().ifPresent(updates::add);
     }
 
     return updates;
@@ -91,37 +86,6 @@ public class Vision extends StateMachine<Vision.State> {
         Rotation2d.fromDegrees(inputs.tx), Rotation2d.fromDegrees(inputs.ty), inputs.ta);
   }
 
-  private Command enabledCommand() {
-    return new RunCommand(
-        () -> {
-          List<TimestampedPoseEstimator.TimestampedVisionUpdate> poseUpdates =
-              getLatestVisionUpdates();
-          RingVisionUpdate ringVisionUpdate = getLatestRingVisionUpdate();
-
-          if (!poseUpdates.isEmpty()) {
-            for (var c : visionUpdateConsumers) {
-              c.accept(poseUpdates);
-            }
-          }
-
-          if (ringVisionUpdate != null) {
-            setFlag(State.HAS_RING_TARGET);
-          } else {
-            clearFlag(State.HAS_RING_TARGET);
-          }
-
-          for (var c : ringVisionUpdateConsumers) {
-            c.accept(ringVisionUpdate);
-          }
-
-          if (Arrays.stream(pvApriltagCams).anyMatch((cam) -> !cam.isConnected())) {
-            setFlag(State.PV_INSTANCE_DISCONNECT);
-          } else {
-            clearFlag(State.PV_INSTANCE_DISCONNECT);
-          }
-        });
-  }
-
   @Override
   protected void determineSelf() {
     setState(State.ENABLED);
@@ -134,6 +98,36 @@ public class Vision extends StateMachine<Vision.State> {
     }
 
     limelight.update();
+
+    updateConsumers();
+  }
+
+  private void updateConsumers() {
+    List<TimestampedPoseEstimator.TimestampedVisionUpdate> poseUpdates =
+            getLatestVisionUpdates();
+    RingVisionUpdate ringVisionUpdate = getLatestRingVisionUpdate();
+
+    if (!poseUpdates.isEmpty()) {
+      for (var c : visionUpdateConsumers) {
+        c.accept(poseUpdates);
+      }
+    }
+
+    if (ringVisionUpdate != null) {
+      setFlag(State.HAS_RING_TARGET);
+    } else {
+      clearFlag(State.HAS_RING_TARGET);
+    }
+
+    for (var c : ringVisionUpdateConsumers) {
+      c.accept(ringVisionUpdate);
+    }
+
+    if (Arrays.stream(pvApriltagCams).anyMatch((cam) -> !cam.isConnected())) {
+      setFlag(State.PV_INSTANCE_DISCONNECT);
+    } else {
+      clearFlag(State.PV_INSTANCE_DISCONNECT);
+    }
   }
 
   public double getLimelightLatency() {
