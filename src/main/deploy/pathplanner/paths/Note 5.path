@@ -12,7 +12,7 @@
         "y": 2.456320262121492
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 5 Start"
     },
     {
       "anchor": {
@@ -44,7 +44,13 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.45,
+      "rotationDegrees": 180.0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -79,7 +85,7 @@
   "reversed": false,
   "folder": "NOTES",
   "previewStartingState": {
-    "rotation": 175.95551442581885,
+    "rotation": -179.0469587061157,
     "velocity": 0
   },
   "useDefaultConstraints": true
