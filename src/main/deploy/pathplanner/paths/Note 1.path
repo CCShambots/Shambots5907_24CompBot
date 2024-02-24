@@ -16,15 +16,15 @@
     },
     {
       "anchor": {
-        "x": 2.7633993156185066,
+        "x": 2.8726623557949864,
         "y": 4.1
       },
       "prevControl": {
-        "x": 2.6533993156185067,
+        "x": 2.7626623557949865,
         "y": 4.1
       },
       "nextControl": {
-        "x": 2.8073776892895395,
+        "x": 2.9166407294660193,
         "y": 4.1
       },
       "isLocked": false,
@@ -41,7 +41,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 1 End"
     }
   ],
   "rotationTargets": [

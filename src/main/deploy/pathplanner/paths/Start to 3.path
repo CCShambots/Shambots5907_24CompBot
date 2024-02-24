@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0401990173989217,
-        "y": 6.985550368616265
+        "x": 0.7238225656575535,
+        "y": 6.701466464157418
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.040199017398922,
-        "y": 6.985550368616265
+        "x": 1.6343479004615507,
+        "y": 6.570350815945643
       },
       "isLocked": false,
-      "linkedName": "Note 3 End"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.2723207735679,
-        "y": 7.400749921286889
+        "x": 2.0276948450968773,
+        "y": 6.33725633023582
       },
       "prevControl": {
-        "x": 6.2723207735679,
-        "y": 7.400749921286889
+        "x": 1.6343479004615507,
+        "y": 6.490224586482891
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Note 8 Start"
+      "linkedName": "Note 3 Start"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.55,
-      "rotationDegrees": 180.0,
-      "rotateFast": true
+      "waypointRelativePos": 1,
+      "rotationDegrees": -129.58813084768286,
+      "rotateFast": false
     }
   ],
   "constraintZones": [],
@@ -44,14 +44,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 5.0,
-    "rotation": -178.29018595585845,
+    "velocity": 0,
+    "rotation": -132.78524487268075,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": -177.99079984810695,
+    "rotation": -120.81570575172914,
     "velocity": 0
   },
   "useDefaultConstraints": true

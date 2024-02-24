@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6946857549438256,
-      "y": 4.377805809737618
+      "x": 0.7238225656575535,
+      "y": 6.701466464157418
     },
-    "rotation": 122.78428086586914
+    "rotation": -117.36821042888826
   },
   "command": {
     "type": "sequential",
@@ -20,37 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to 1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Note 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Note 2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2 to 3"
+            "pathName": "Start to 3"
           }
         },
         {
@@ -80,13 +50,31 @@
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "8 to 7 "
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Note 7"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
           }
         }
       ]

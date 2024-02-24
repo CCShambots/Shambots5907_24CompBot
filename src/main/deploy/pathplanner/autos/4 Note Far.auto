@@ -5,7 +5,7 @@
       "x": 0.6946857549438256,
       "y": 4.377805809737618
     },
-    "rotation": 122.78428086586914
+    "rotation": 122.27564431457765
   },
   "command": {
     "type": "sequential",
@@ -38,7 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note 2"
+            "pathName": "1 to 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Note 4"
           }
         },
         {
@@ -50,37 +56,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 to 3"
+            "pathName": "4 to 5"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Note 3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "3 to 8"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Note 8"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
+            "pathName": "Note 5"
           }
         },
         {

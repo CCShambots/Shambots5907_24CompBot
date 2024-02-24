@@ -372,7 +372,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     // Flip by 180 if we're on red alliance
     if (flipPath) newAngle = newAngle.plus(new Rotation2d(Math.PI));
 
-    drive.resetRotationOffset(newAngle);
+    drive.resetFieldOrientedRotationOffset(newAngle);
   }
 
   private Command notifyWaypointCommand() {

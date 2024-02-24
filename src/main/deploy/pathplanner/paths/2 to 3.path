@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9600727879361703,
-        "y": 5.463152008823982
+        "x": 2.9017991665087144,
+        "y": 5.586983454357327
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6322836674067314,
-        "y": 5.820077940067149
+        "x": 2.5740100459792754,
+        "y": 5.943909385600493
       },
       "isLocked": false,
       "linkedName": "Note 2 End"
@@ -38,7 +38,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": -142.21426203920674,
     "rotateFast": false
   },

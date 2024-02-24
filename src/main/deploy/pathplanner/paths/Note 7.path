@@ -32,19 +32,30 @@
     },
     {
       "anchor": {
-        "x": 4.49283832823721,
-        "y": 6.256631918108127
+        "x": 5.371143874497155,
+        "y": 6.832582112369194
       },
       "prevControl": {
-        "x": 5.460086325016941,
-        "y": 6.674437265829549
+        "x": 6.338391871276886,
+        "y": 7.250387460090616
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 8 End"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.3,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -73,7 +84,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -168.9388175384082,
+    "rotation": -162.73520642362627,
     "rotateFast": false
   },
   "reversed": false,
