@@ -172,8 +172,8 @@ public class Constants {
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), 0.0);
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(2.5));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(3.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(4));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(4.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(6.5));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(4));
 
         // FLYWHEEL TRAP VALUES
@@ -412,7 +412,7 @@ public class Constants {
       public static final double EXPECT_SPEED = 1500 / 60.0;
       public static final double PASS_THROUGH_SPEED = 33;
       public static final double INDEX_SPEED = 500 / 60.0;
-      public static final double FEED_SPEED = 33;
+      public static final double FEED_SPEED = 50;
 
       // seconds
       public static final double INDEX_TIMEOUT = 4;
@@ -491,7 +491,7 @@ public class Constants {
               20, // DRIVE MOTOR ID
               21, // TURN MOTOR ID
               20, // ENCODER ID
-              -108.545, // ENCODER OFFSET
+              -109.4, // ENCODER OFFSET //-108.5
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -504,7 +504,7 @@ public class Constants {
               22, // DRIVE MOTOR ID
               23, // TURN MOTOR ID
               21, // ENCODER ID
-              -92.021, // ENCODER OFFSET
+              -92.3, // ENCODER OFFSET //-92.0
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -517,7 +517,7 @@ public class Constants {
               24, // DRIVE MOTOR ID
               25, // TURN MOTOR ID
               22, // ENCODER ID
-              32.607, // ENCODER OFFSET
+              32.87, // ENCODER OFFSET //32.5
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -530,10 +530,10 @@ public class Constants {
               26, // DRIVE MOTOR ID
               27, // TURN MOTOR ID
               23, // ENCODER ID
-              -55.811, // ENCODER OFFSET
+              125.3, // ENCODER OFFSET //-52.8
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              false // DRIVE MOTOR INVERTED
+              true // DRIVE MOTOR INVERTED
               );
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
@@ -625,6 +625,8 @@ public class Constants {
 
       // seconds
       public static double LOST_RING_TARGET_TIMEOUT = 0.5;
+
+      public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(4);
     }
   }
 

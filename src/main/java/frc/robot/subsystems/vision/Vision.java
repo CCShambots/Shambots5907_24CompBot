@@ -45,8 +45,9 @@ public class Vision extends StateMachine<Vision.State> {
 
     for (var cam : pvApriltagCams) {
       cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
-      cam.setMultiTagFallbackEstimationStrategy(
-          PhotonPoseEstimator.PoseStrategy.AVERAGE_BEST_TARGETS);
+      cam.setMultiTagFallbackEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+
+      // applyPreAndPostProcesses(cam);
     }
 
     registerStateCommand();
