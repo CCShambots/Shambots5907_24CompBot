@@ -14,6 +14,7 @@ import frc.robot.ShamLib.vision.PhotonVision.Apriltag.PVApriltagCam;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -44,9 +45,8 @@ public class Vision extends StateMachine<Vision.State> {
             .toArray(PVApriltagCam[]::new);
 
     for (var cam : pvApriltagCams) {
-      cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
-      cam.setMultiTagFallbackEstimationStrategy(
-          PhotonPoseEstimator.PoseStrategy.AVERAGE_BEST_TARGETS);
+      cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
+      cam.setMultiTagFallbackEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
 
       applyPreAndPostProcesses(cam);
     }
@@ -60,7 +60,7 @@ public class Vision extends StateMachine<Vision.State> {
 
   private void applyPreAndPostProcesses(PVApriltagCam cam) {
     HashMap<Integer, Double[]> ambiguityAverages = new HashMap<>();
-    int avgLength = 10;
+    int avgLength = 100;
     double ambiguityThreshold = 0.6;
     double distanceFromLastEstimateScalar = 1.0;
 
@@ -79,8 +79,8 @@ public class Vision extends StateMachine<Vision.State> {
               ambiguityAverages.put(tag.getFiducialId(), arr);
             } else {
               var arr = ambiguityAverages.get(tag.getFiducialId());
-              System.arraycopy(arr, 0, arr, 1, arr.length);
-              arr[avgLength] = tag.getPoseAmbiguity();
+              System.arraycopy(arr, 0, arr, 1, arr.length - 1);
+              arr[0] = tag.getPoseAmbiguity();
             }
 
             double avg = 0;
@@ -108,6 +108,10 @@ public class Vision extends StateMachine<Vision.State> {
                     tag.getDetectedCorners());
 
             pipelineData.targets.set(idx, target);
+
+            Logger.recordOutput(
+                "Vision/" + cam.getName() + "/target-" + target.getFiducialId() + "-avg-ambiguity",
+                target.getPoseAmbiguity());
 
             idx++;
           }
@@ -157,7 +161,13 @@ public class Vision extends StateMachine<Vision.State> {
     List<TimestampedPoseEstimator.TimestampedVisionUpdate> updates = new ArrayList<>();
 
     for (PVApriltagCam cam : pvApriltagCams) {
-      cam.getLatestEstimate().ifPresent(updates::add);
+      cam.getLatestEstimate()
+          .ifPresent(
+              (update) -> {
+                updates.add(update);
+
+                Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimate", update.pose());
+              });
     }
 
     return updates;

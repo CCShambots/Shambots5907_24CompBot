@@ -141,6 +141,8 @@ public class Robot extends LoggedRobot {
       moduleCheckCounter = 0;
       checkModulesLoop.poll();
     }
+
+    Logger.recordOutput("LoggedRobot/ModuleCheck", moduleCheckCounter / 10.0);
   }
 
   private void updatePoses() {
