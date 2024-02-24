@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.040199017398922,
-        "y": 6.985550368616265
+        "x": 4.5261763637990455,
+        "y": 6.803445301655466
       },
       "isLocked": false,
       "linkedName": "Note 3 End"
     },
     {
       "anchor": {
-        "x": 7.2723207735679,
-        "y": 7.400749921286889
+        "x": 6.121416750375649,
+        "y": 7.342476299859433
       },
       "prevControl": {
-        "x": 6.2723207735679,
-        "y": 7.400749921286889
+        "x": 5.218175618250084,
+        "y": 7.2550658677182485
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Note 8 Start"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -44,7 +44,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 5.0,
+    "velocity": 2.0,
     "rotation": -178.29018595585845,
     "rotateFast": false
   },

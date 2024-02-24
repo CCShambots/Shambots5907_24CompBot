@@ -209,6 +209,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                           .schedule();
                     }))));
 
+    NamedCommands.registerCommand(
+        "visionIntake",
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE).withTimeout(2),
+            indexer.waitForState(Indexer.State.INDEXING),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
+
     drivetrain.configurePathplanner();
   }
 

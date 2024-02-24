@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.9839896290262855,
-        "y": 6.410098357020138
+        "x": 2.0276948450968773,
+        "y": 6.446519370412299
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9839896290262855,
-        "y": 6.410098357020138
+        "x": 2.0276948450968773,
+        "y": 6.446519370412299
       },
       "isLocked": false,
       "linkedName": "Note 3 Start"
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -148.9677897615327,
+    "rotation": -149.47325619381877,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "NOTES",
   "previewStartingState": {
-    "rotation": -152.98381027613473,
+    "rotation": -150.85192815428698,
     "velocity": 0
   },
   "useDefaultConstraints": true

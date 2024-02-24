@@ -45,7 +45,7 @@ public class Vision extends StateMachine<Vision.State> {
             .toArray(PVApriltagCam[]::new);
 
     for (var cam : pvApriltagCams) {
-      cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
+      cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
       cam.setMultiTagFallbackEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
 
       applyPreAndPostProcesses(cam);
@@ -61,8 +61,8 @@ public class Vision extends StateMachine<Vision.State> {
   private void applyPreAndPostProcesses(PVApriltagCam cam) {
     HashMap<Integer, Double[]> ambiguityAverages = new HashMap<>();
     int avgLength = 100;
-    double ambiguityThreshold = 0.6;
-    double distanceFromLastEstimateScalar = 1.0;
+    double ambiguityThreshold = 0.4;
+    double distanceFromLastEstimateScalar = 2.0;
 
     cam.setPreProcess(
         (pipelineData) -> {

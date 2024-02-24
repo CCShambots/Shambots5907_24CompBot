@@ -137,7 +137,7 @@ public class Constants {
 
       public static final double AUTO_START_TOLERANCE = 0.5;
 
-      public static final double VISION_TRUST_CUTOFF = Units.feetToMeters(25);
+      public static final double VISION_TRUST_CUTOFF = Units.feetToMeters(18);
     }
   }
 
@@ -170,8 +170,8 @@ public class Constants {
         // ARM SPEAKER OFFSETS
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), 0.0);
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(2.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(3.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(3.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(4));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(5));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(6.5));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(4));
@@ -281,7 +281,7 @@ public class Constants {
     public static final class Settings {
       public static final double BASE_SHOT_VELOCITY = 5800 / 60.0; // RPS
 
-      public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 2;
+      public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 1.5;
 
       public static final double SPIN_UP_READY_TOLERANCE = 5; // RPS
 
@@ -544,7 +544,7 @@ public class Constants {
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(8, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
-          new PIDSVGains(.25, 0, 0, 0.08045, 0.118675);
+          new PIDSVGains(.25, 0, 0.0, 0.08045, 0.118675);
       public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(10, 0, 0, 0.1176, 0.1182);
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
