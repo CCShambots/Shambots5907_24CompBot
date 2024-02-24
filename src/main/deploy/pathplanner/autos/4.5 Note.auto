@@ -88,18 +88,6 @@
           "data": {
             "pathName": "4.5 YEET"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
-          }
         }
       ]
     }
