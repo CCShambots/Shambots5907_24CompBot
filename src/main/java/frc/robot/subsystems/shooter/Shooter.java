@@ -20,6 +20,7 @@ import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.util.StageSide;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Shooter extends StateMachine<Shooter.State> {
   private final Arm arm;
@@ -43,16 +44,9 @@ public class Shooter extends StateMachine<Shooter.State> {
     this.botTranslationProvider = botTranslationProvider;
     this.targetStageSideSupplier = targetStageSideSupplier;
 
-    arm = new Arm(armIO, this::armSpeakerAA, this::armTrapAA, tuningInc, tuningDec, tuningStop);
+    arm = new Arm(armIO, this::armSpeakerAA, tuningInc, tuningDec, tuningStop);
 
-    flywheel =
-        new Flywheel(
-            flywheelIO,
-            this::flywheelSpeakerAA,
-            this::flywheelTrapAA,
-            tuningInc,
-            tuningDec,
-            tuningStop);
+    flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, tuningInc, tuningDec, tuningStop);
 
     addChildSubsystem(arm);
     addChildSubsystem(flywheel);
@@ -99,15 +93,8 @@ public class Shooter extends StateMachine<Shooter.State> {
     registerStateCommand(
         State.TRAP,
         new ParallelCommandGroup(
-            arm.transitionCommand(Arm.State.TRAP_ACTIVE_ADJUST),
-            flywheel.transitionCommand(Flywheel.State.PASS_THROUGH),
-            watchReadyCommand()));
-
-    registerStateCommand(
-        State.TRAP_PREP,
-        new ParallelCommandGroup(
-            arm.transitionCommand(Arm.State.TRAP_PREP),
-            flywheel.transitionCommand(Flywheel.State.PASS_THROUGH),
+            arm.transitionCommand(Arm.State.TRAP),
+            flywheel.transitionCommand(Flywheel.State.TRAP),
             watchReadyCommand()));
 
     registerStateCommand(
@@ -140,16 +127,11 @@ public class Shooter extends StateMachine<Shooter.State> {
             arm.transitionCommand(Arm.State.PARTIAL_STOW)));
 
     registerStateCommand(
-        State.TRAP_AA,
-        new ParallelCommandGroup(
-            flywheel.transitionCommand(Flywheel.State.TRAP_ACTIVE_ADJUST_SPIN),
-            arm.transitionCommand(Arm.State.TRAP_ACTIVE_ADJUST)));
-
-    registerStateCommand(
         State.SPEAKER_AA,
         new ParallelCommandGroup(
             flywheel.transitionCommand(Flywheel.State.SPEAKER_ACTIVE_ADJUST_SPIN),
-            arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST)));
+            arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST),
+            watchReadyCommand()));
   }
 
   private void registerTransitions() {
@@ -160,16 +142,18 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.STOW);
     addOmniTransition(State.PARTIAL_STOW);
     addOmniTransition(State.TRAP);
-    addOmniTransition(State.TRAP_PREP);
     addOmniTransition(State.CHUTE_INTAKE);
     addOmniTransition(State.AMP);
     addOmniTransition(State.PASS_THROUGH);
     addOmniTransition(State.SPEAKER_AA);
-    addOmniTransition(State.TRAP_AA);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.ARM_VOLTAGE_CALC);
+  }
+
+  public Command partialFlywheelSpinup() {
+    return flywheel.transitionCommand(Flywheel.State.PARTIAL_SPINUP);
   }
 
   private Command watchReadyCommand() {
@@ -212,6 +196,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     return FLYWHEEL_SPEAKER_DISTANCE_LUT.get(getSpeakerDistance());
   }
 
+  @AutoLogOutput(key = "Shooter/SpeakerDistance")
   private double getSpeakerDistance() {
     Pose2d speaker =
         AllianceManager.getAlliance() == DriverStation.Alliance.Blue
@@ -259,14 +244,12 @@ public class Shooter extends StateMachine<Shooter.State> {
     PARTIAL_STOW,
     CHUTE_INTAKE,
     TRAP,
-    TRAP_PREP,
     FLYWHEEL_VOLTAGE_CALC,
     BOTTOM_FLYWHEEL_VOLTAGE_CALC,
     ARM_VOLTAGE_CALC,
     AMP,
     PASS_THROUGH,
     SPEAKER_AA,
-    TRAP_AA,
     // flags
     READY
   }

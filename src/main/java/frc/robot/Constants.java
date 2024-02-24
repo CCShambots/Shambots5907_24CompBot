@@ -26,11 +26,17 @@ import frc.robot.ShamLib.swerve.module.ModuleInfo;
 import java.util.function.UnaryOperator;
 
 public class Constants {
+  public static final double LOOP_PERIOD = 0.02;
+
   public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
   public static final boolean ALLOW_TUNING = true;
+
+  public static final double AUTO_TIME = 15;
+  public static final double GAP_TIME = 3;
+  public static final double TELE_TIME = 135;
 
   public static final class Controller {
     public static final int LEFT_FLIGHT_STICK_ID = 1;
@@ -40,6 +46,10 @@ public class Constants {
     public static final UnaryOperator<Double> DRIVE_CONVERSION =
         (input) -> (Math.copySign(input * input, input));
     public static final double DEADBAND = 0.075;
+
+    public static final String AUTO_SHUFFLEBOARD_TAB = "Auto";
+    public static final String TELE_SHUFFLEBOARD_TAB_ID = "Tele";
+    public static final String TEST_SHUFFLEBOARD_TAB_ID = "Test";
   }
 
   public static final class PhysicalConstants {
@@ -65,7 +75,9 @@ public class Constants {
     public static Pose2d BLUE_LEFT_TRAP =
         new Pose2d(new Translation2d(4.597, 4.513), Rotation2d.fromDegrees(120));
     public static Pose2d BLUE_RIGHT_TRAP =
-        new Pose2d(new Translation2d(15.652, 4.512), Rotation2d.fromDegrees(-120));
+        new Pose2d(new Translation2d(4.5969682, 3.717244813), Rotation2d.fromDegrees(-120));
+
+    public static double TRAP_SHOT_DISTANCE = 1; // Meters
 
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
 
@@ -82,10 +94,50 @@ public class Constants {
   public static final class Vision {
     public static final class Sim {}
 
-    public static final class Hardware {}
+    public static final class Hardware {
+
+      public static Pose3d RING_CAMERA_POSE =
+          new Pose3d(
+              Units.inchesToMeters(-13.647090),
+              0,
+              Units.inchesToMeters(10.788134),
+              new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
+
+      public static Pose3d LEFT_SHOOTER_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(12.198133),
+              Units.inchesToMeters(12.293625),
+              Units.inchesToMeters(8.881022),
+              new Rotation3d(Math.toRadians(0), Math.toRadians(-30), Math.toRadians(0)));
+
+      public static Pose3d RIGHT_SHOOTER_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(11.994638),
+              Units.inchesToMeters(-12.276838),
+              Units.inchesToMeters(8.712641),
+              new Rotation3d(0, Math.toRadians(-60), Math.toRadians(0)));
+
+      public static Pose3d LEFT_INTAKE_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(-11.832791),
+              Units.inchesToMeters(11.802600),
+              Units.inchesToMeters(8.920582),
+              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180 - 45)));
+
+      public static Pose3d RIGHT_INTAKE_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(-11.832791),
+              Units.inchesToMeters(-11.802600),
+              Units.inchesToMeters(8.920582),
+              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180 + 45)));
+    }
 
     public static final class Settings {
       public static final int LIMELIGHT_NOTE_TRACK_PIPELINE = 0;
+
+      public static final double AUTO_START_TOLERANCE = 0.5;
+
+      public static final double VISION_TRUST_CUTOFF = Units.feetToMeters(18);
     }
   }
 
@@ -107,7 +159,7 @@ public class Constants {
       public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT =
           new InterpolatingDoubleTreeMap();
 
-      public static final double SPEAKER_TARGET_HEIGHT = 2.05;
+      public static final double SPEAKER_TARGET_HEIGHT = 2.2;
       public static final double TRAP_TARGET_HEIGHT = 1.52;
 
       static {
@@ -117,7 +169,12 @@ public class Constants {
 
         // ARM SPEAKER OFFSETS
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(20.0, 0.0);
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), 0.0);
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(3.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(4));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(6.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(4));
 
         // FLYWHEEL TRAP VALUES
         FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
@@ -149,7 +206,7 @@ public class Constants {
       public static final boolean LEADER_INVERTED = true;
       public static final boolean FOLLOWER_INVERTED = true;
 
-      public static final double POTENTIOMETER_OFFSET = 5.64 + Math.toRadians(20);
+      public static final double POTENTIOMETER_OFFSET = Math.toRadians(275.8) + Math.toRadians(20);
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
@@ -162,17 +219,17 @@ public class Constants {
 
     public static final class Settings {
       public static final double VELOCITY = 100; // RAD/s
-      public static final double ACCELERATION = 50; // RAD/s/s
+      public static final double ACCELERATION = 150; // RAD/s/s
       public static final double JERK = 10_000; // RAD/s/s/s
 
       public static final double POSITION_READY_TOLERANCE = 2 * (Math.PI / 180); // RAD
 
       public static final double BASE_SHOT_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
-      public static final double TRAP_PREP_POSITION = 50 * (Math.PI / 180); // RAD
+      public static final double TRAP_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
-      public static final double CHUTE_INTAKE_POSITION = 59 * (Math.PI / 180); // RAD
+      public static final double CHUTE_INTAKE_POSITION = 30 * (Math.PI / 180); // RAD
 
       public static final double AUTO_SYNC_TOLERANCE = 0.1;
       public static final double AUTO_SYNC_MAX_VELOCITY = 0.1; // RAD/s
@@ -189,13 +246,13 @@ public class Constants {
 
   public static final class Flywheel {
     public static final class Sim {
-      public static final double TOP_INERTIA = 0.0001;
-      public static final double BOTTOM_INERTIA = 0.0001;
+      public static final double TOP_INERTIA = 0.00001;
+      public static final double BOTTOM_INERTIA = 0.00001;
     }
 
     public static final class Hardware {
-      public static final int TOP_MOTOR_ID = 10;
-      public static final int BOTTOM_MOTOR_ID = 11;
+      public static final int TOP_MOTOR_ID = 11;
+      public static final int BOTTOM_MOTOR_ID = 10;
 
       public static final double TOP_MOTOR_RATIO = 1;
       public static final double BOTTOM_MOTOR_RATIO = 1;
@@ -209,23 +266,35 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains", new PIDSVGains(.5, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
+              "Top Flywheel Gains", new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
-              new PIDSVGains(.5, 0, 0, 0.2301, 0.1171),
+              new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171),
               () -> ALLOW_TUNING);
+
+      public static final double ACCELERATION = 1600;
+      public static final double JERK = 100;
     }
 
     public static final class Settings {
       public static final double BASE_SHOT_VELOCITY = 5800 / 60.0; // RPS
-      public static final double SPIN_UP_READY_TOLERANCE = 60 / 60.0; // RPS
 
-      public static final double PASS_THROUGH_SPEED = 5 / 60.0; // RPS
+      public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 1.5;
+
+      public static final double SPIN_UP_READY_TOLERANCE = 5; // RPS
+
+      public static final double PASS_THROUGH_SPEED = 500 / 60.0; // RPS
 
       public static final double CHUTE_INTAKE_SPEED = -500 / 60.0; // RPS
-      public static final double AMP_SPEED = 1000 / 60.0; // RPS
+
+      public static final double AMP_SPEED_TOP = 250 / 60.0; // RPS
+      public static final double AMP_SPEED_BOTTOM = 750 / 60.0; // RPS
+
+      // TODO: MAKE FINAL
+      public static double TRAP_SPEED_TOP = 700 / 60.0; // RPS
+      public static double TRAP_SPEED_BOTTOM = 1700 / 60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
@@ -257,7 +326,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BELT_SPEED = 1000 / 60.0; // RPS
+      public static final double BELT_SPEED = 1500 / 60.0; // RPS
 
       public static final double VOLTAGE_INC = 0.25;
     }
@@ -272,7 +341,7 @@ public class Constants {
       public static final int LEFT_CLIMBER_ID = 40;
       public static final int RIGHT_CLIMBER_ID = 41;
 
-      public static final boolean LEFT_INVERTED = false;
+      public static final boolean LEFT_INVERTED = true;
       public static final boolean RIGHT_INVERTED = false;
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
@@ -280,26 +349,28 @@ public class Constants {
       // rotations to meters
       public static final double CLIMBER_RATIO =
           (1 / 30.0) // Gear ratio is 30:1
-              * (Units.inchesToMeters(1) * Math.PI) // Circumference of the spool
+              * (Units.inchesToMeters(1.125) * Math.PI) // Circumference of the spool
           ;
     }
 
     public static final class Settings {
+      public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
+
       public static final LoggedTunablePIDSV FREE_GAINS =
           new LoggedTunablePIDSV(
-              "Climber Free Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Climber Free Gains", new PIDSVGains(.5, 0, 0, 0.1055, 0.11535), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV LOADED_GAINS =
           new LoggedTunablePIDSV(
-              "Climber Loaded Gains", new PIDSVGains(0, 0, 0, 0, 0), () -> ALLOW_TUNING);
+              "Climber Loaded Gains", new PIDSVGains(.5, 0, 0, 0.0138, 0.1225), () -> ALLOW_TUNING);
 
       // all in meters
-      public static double FREE_VELOCITY = 1;
-      public static double FREE_ACCELERATION = 1;
+      public static double FREE_VELOCITY = 5500 / 60.0;
+      public static double FREE_ACCELERATION = 20000 / 60.0;
       public static double FREE_JERK = 0;
 
-      public static double LOADED_VELOCITY = 1;
-      public static double LOADED_ACCELERATION = 1;
+      public static double LOADED_VELOCITY = 5500 / 60.0;
+      public static double LOADED_ACCELERATION = 20000 / 60.0;
       public static double LOADED_JERK = 0;
 
       // meters
@@ -308,7 +379,9 @@ public class Constants {
       public static int FREE_SLOT = 0;
       public static int LOADED_SLOT = 1;
 
-      public static double EXTENSION_SETPOINT = 0;
+      public static double EXTENSION_SETPOINT = 0.45;
+
+      public static double RETRACT_SETPOINT = 0.0;
 
       public static double VOLTAGE_INCREMENT = 0.125;
     }
@@ -336,10 +409,10 @@ public class Constants {
 
     public static final class Settings {
       // rps
-      public static final double EXPECT_SPEED = 1000 / 60.0;
+      public static final double EXPECT_SPEED = 1500 / 60.0;
       public static final double PASS_THROUGH_SPEED = 33;
       public static final double INDEX_SPEED = 500 / 60.0;
-      public static final double FEED_SPEED = 33;
+      public static final double FEED_SPEED = 50;
 
       // seconds
       public static final double INDEX_TIMEOUT = 4;
@@ -356,7 +429,7 @@ public class Constants {
     public static final class Hardware {
       public static final int CANDLE_ID = 0;
 
-      public static final int NUM_LIGHTS = 200;
+      public static final int NUM_LIGHTS = 71;
 
       public static final double BRIGHTNESS = 1.0;
     }
@@ -364,13 +437,16 @@ public class Constants {
     public static final class Settings {
       public static final int NUM_LIGHTS_WITHOUT_CANDLE = NUM_LIGHTS - 8;
 
-      public static final double BOUNCE_SPEED = 0.75;
+      public static final double BOUNCE_SPEED = 0.5;
       public static final double BLINK_SPEED = .075;
 
       public static final RGB NO_RING_RGB = new RGB(0, 0, 0);
       public static final RGB ERROR_RGB = new RGB(255, 0, 0);
       public static final RGB HOLDING_RING = new RGB(0, 0, 255);
+      public static final RGB AUTO_RGB = new RGB(0, 0, 255);
+      public static final RGB AUTO_BACKGROUND_RGB = new RGB(0, 0, 0);
       public static final RGB READY_TO_SHOOT = new RGB(0, 255, 0);
+      public static final RGB CLIMB_RGB = new RGB(255, 0, 255);
 
       public static final Animation DISABLED_ANIMATION =
           new LarsonAnimation(0, 0, 255, 0, BOUNCE_SPEED, NUM_LIGHTS_WITHOUT_CANDLE, Front, 7, 8);
@@ -415,7 +491,7 @@ public class Constants {
               20, // DRIVE MOTOR ID
               21, // TURN MOTOR ID
               20, // ENCODER ID
-              -108.545, // ENCODER OFFSET
+              -109.4, // ENCODER OFFSET //-108.5
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -428,7 +504,7 @@ public class Constants {
               22, // DRIVE MOTOR ID
               23, // TURN MOTOR ID
               21, // ENCODER ID
-              -92.021, // ENCODER OFFSET
+              -92.3, // ENCODER OFFSET //-92.0
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -441,7 +517,7 @@ public class Constants {
               24, // DRIVE MOTOR ID
               25, // TURN MOTOR ID
               22, // ENCODER ID
-              32.607, // ENCODER OFFSET
+              32.87, // ENCODER OFFSET //32.5
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -454,22 +530,22 @@ public class Constants {
               26, // DRIVE MOTOR ID
               27, // TURN MOTOR ID
               23, // ENCODER ID
-              -55.811, // ENCODER OFFSET
+              125.3, // ENCODER OFFSET //-52.8
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              false // DRIVE MOTOR INVERTED
+              true // DRIVE MOTOR INVERTED
               );
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
     }
 
     public static final class Settings {
-      public static final PIDGains AUTO_THETA_GAINS = new PIDGains(10, 0, 0);
-      public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
+      public static final PIDGains AUTO_THETA_GAINS = new PIDGains(5, 0, 0);
+      public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(8, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
-          new PIDSVGains(.1, 0, 0, 0.08045, 0.118675);
-      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(1, 0, 0, 0.1176, 0.1182);
+          new PIDSVGains(.25, 0, 0.0, 0.08045, 0.118675);
+      public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(10, 0, 0, 0.1176, 0.1182);
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
 
@@ -489,10 +565,7 @@ public class Constants {
       // meters and radians
       public static final SwerveSpeedLimits PATH_FIND_SPEED =
           new SwerveSpeedLimits(
-              MAX_CHASSIS_SPEED / 2,
-              MAX_CHASSIS_ACCELERATION,
-              MAX_CHASSIS_ROTATIONAL_SPEED / 2,
-              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+              1, 3, MAX_CHASSIS_ROTATIONAL_SPEED / 2, MAX_CHASSIS_ROTATIONAL_ACCELERATION / 2);
       public static final SwerveSpeedLimits TRAVERSE_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED,
@@ -507,8 +580,8 @@ public class Constants {
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits INTAKE_SPEED =
           new SwerveSpeedLimits(
-              MAX_CHASSIS_SPEED / 1.25,
-              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_SPEED / 2.5,
+              MAX_CHASSIS_ACCELERATION / 2.5,
               MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits SPEAKER_SPEED =
@@ -540,6 +613,7 @@ public class Constants {
 
       // meters
       public static final double AMP_ROTATIONAL_DELAY = 0;
+      public static final double TRAP_ROTATIONAL_DELAY = 0;
       public static final double CLIMB_ROTATION_DELAY = 0;
       public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
 
@@ -548,6 +622,11 @@ public class Constants {
 
       public static final double TURN_VOLTAGE_INCREMENT = 0.125;
       public static final double DRIVE_VOLTAGE_INCREMENT = 0.125;
+
+      // seconds
+      public static double LOST_RING_TARGET_TIMEOUT = 0.5;
+
+      public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(4);
     }
   }
 
@@ -562,13 +641,17 @@ public class Constants {
   public static Pose2d mirror(Pose2d pose) {
     return new Pose2d(
         new Translation2d(
-            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(),
-            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth() - pose.getY()),
+            PhysicalConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() - pose.getX(), pose.getY()),
         new Rotation2d(Math.PI).minus(pose.getRotation()));
   }
 
   public static Rotation2d rotationBetween(Pose2d pose1, Pose2d pose2) {
     return Rotation2d.fromRadians(
         Math.atan2(pose2.getY() - pose1.getY(), pose2.getX() - pose1.getX()));
+  }
+
+  public static Pose3d convertPose2dToPose3d(Pose2d pose) {
+    return new Pose3d(
+        pose.getX(), pose.getY(), 0, new Rotation3d(0, 0, pose.getRotation().getRadians()));
   }
 }

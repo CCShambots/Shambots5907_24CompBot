@@ -20,6 +20,34 @@ public interface ControllerBindings {
 
   Trigger resetGyro();
 
+  Trigger groundIntake();
+
+  Trigger manualGroundIntake();
+
+  Trigger shoot();
+
+  Trigger humanPlayerIntake();
+
+  Trigger traversing();
+
+  Trigger xShape();
+
+  Trigger ampScore();
+
+  Trigger trapScore();
+
+  Trigger startClimb();
+
+  Trigger retractClimb();
+
+  Trigger cleanse();
+
+  Trigger targetLeftStage();
+
+  Trigger targetRightStage();
+
+  Trigger targetCenterStage();
+
   // Simulated prox sensors for running in sim mode
   default Trigger simProx1() {
     return new Trigger(() -> false);

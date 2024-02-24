@@ -88,7 +88,10 @@ public class FacePointCommand extends Command {
 
   @Override
   public void execute() {
-    thetaController.setSetpoint(Constants.rotationBetween(poseSupplier.get(), pose).getRadians());
+    thetaController.setSetpoint(
+        Constants.rotationBetween(poseSupplier.get(), pose)
+            .minus(Constants.Drivetrain.Settings.SHOT_OFFSET)
+            .getRadians());
 
     int currentSpeedMode = drivetrain.getSpeedMode();
 
@@ -100,9 +103,7 @@ public class FacePointCommand extends Command {
         convertRawInput(xSupplier.getAsDouble()) * maxLinearSpeeds.get(currentSpeedMode);
     double correctedY =
         convertRawInput(ySupplier.getAsDouble()) * maxLinearSpeeds.get(currentSpeedMode);
-    double correctedRot =
-        thetaController.calculate(poseSupplier.get().getRotation().getRadians())
-            * maxRotationalSpeeds.get(currentSpeedMode);
+    double correctedRot = thetaController.calculate(poseSupplier.get().getRotation().getRadians());
 
     ChassisSpeeds speeds;
 

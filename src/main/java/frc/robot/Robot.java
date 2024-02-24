@@ -42,6 +42,8 @@ public class Robot extends LoggedRobot {
 
   private final EventLoop checkModulesLoop = new EventLoop();
 
+  private boolean firstLoop = true;
+
   @Override
   public void robotInit() {
     if (isReal()) currentBuildMode = ShamLibConstants.BuildMode.REAL;
@@ -96,15 +98,36 @@ public class Robot extends LoggedRobot {
 
     // AKit shims the Driver Station using their logged driver station, so this shouldn't be a
     // problem
-    new Trigger(DriverStation::isDSAttached)
-        .or(DriverStation::isFMSAttached)
+    new Trigger(
+            () -> {
+              if (firstLoop) {
+                firstLoop = false;
+                return false;
+              } else {
+                return true;
+              }
+            })
+        .and(() -> DriverStation.isFMSAttached() || DriverStation.isDSAttached())
         .onTrue(
             new WaitCommand(2)
                 .andThen(
                     new WhileDisabledInstantCommand(
                         () -> {
+                          System.out.println("Getting alliance!");
                           AllianceManager.applyAlliance(DriverStation.getAlliance());
+                          System.out.println("Alliance got: " + AllianceManager.getAlliance());
                         })));
+
+    // Log Camera Poses
+    Logger.recordOutput("Vision/limelight-pose", Constants.Vision.Hardware.RING_CAMERA_POSE);
+    Logger.recordOutput(
+        "Vision/left-shooter-cam-pose", Constants.Vision.Hardware.LEFT_SHOOTER_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/right-shooter-cam-pose", Constants.Vision.Hardware.RIGHT_SHOOTER_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/right-intake-cam-pose", Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/left-intake-cam-pose", Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
   }
 
   @Override
@@ -118,6 +141,8 @@ public class Robot extends LoggedRobot {
       moduleCheckCounter = 0;
       checkModulesLoop.poll();
     }
+
+    Logger.recordOutput("LoggedRobot/ModuleCheck", moduleCheckCounter / 10.0);
   }
 
   private void updatePoses() {
@@ -125,7 +150,10 @@ public class Robot extends LoggedRobot {
         new Pose3d()
             .transformBy(
                 new Transform3d(new Pose3d(), Constants.PhysicalConstants.CHASSIS_TO_SHOOTER))
-            .rotateBy(new Rotation3d(0, -robotContainer.getShooterAngle(), 0));
+            .transformBy(
+                new Transform3d(
+                    new Pose3d(),
+                    new Pose3d(0, 0, 0, new Rotation3d(0, 0, -robotContainer.getShooterAngle()))));
 
     botPose = robotContainer.getBotPose();
 
@@ -136,6 +164,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
+
+    robotContainer.returnLightsToIdle();
   }
 
   @Override
@@ -153,7 +183,9 @@ public class Robot extends LoggedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+    robotContainer.resetFieldOriented();
+  }
 
   @Override
   public void teleopInit() {

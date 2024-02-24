@@ -85,13 +85,18 @@ public class Indexer extends StateMachine<Indexer.State> {
             () -> inputs.beltVoltage,
             VOLTAGE_INCREMENT));
 
+    registerStateCommand(State.IDLE, idleWatchCommand());
+
     registerStateCommand(State.HOLDING_RING, () -> io.stop());
     registerStateCommand(State.LOST_RING, () -> io.stop());
   }
 
   private void registerTransitions() {
-    addOmniTransition(State.IDLE);
+    addOmniTransition(State.IDLE, () -> io.stop());
     addOmniTransition(State.CLEANSE);
+
+    addTransition(State.IDLE, State.HOLDING_RING);
+    addTransition(State.IDLE, State.INDEXING);
 
     addTransition(State.IDLE, State.EXPECT_RING_BACK);
     addTransition(State.IDLE, State.EXPECT_RING_FRONT);
@@ -134,6 +139,17 @@ public class Indexer extends StateMachine<Indexer.State> {
         isFinished::get);
   }
 
+  private Command idleWatchCommand() {
+    return new RunCommand(
+        () -> {
+          if (inputs.prox1 && inputs.prox2 && !inputs.prox3) {
+            requestTransition(State.HOLDING_RING);
+          } else if (inputs.prox1 || inputs.prox2 || inputs.prox3) {
+            requestTransition(State.INDEXING);
+          }
+        });
+  }
+
   private Command proxClearCommand() {
     return new RunCommand(
         () -> {
@@ -143,6 +159,22 @@ public class Indexer extends StateMachine<Indexer.State> {
             clearFlag(State.PROX_CLEAR);
           }
         });
+  }
+
+  public boolean ringPresent() {
+    return getState() == State.HOLDING_RING || getState() == State.INDEXING;
+  }
+
+  public boolean isProx1Active() {
+    return inputs.prox1;
+  }
+
+  public boolean isProx2Active() {
+    return inputs.prox2;
+  }
+
+  public boolean isProx3Active() {
+    return inputs.prox3;
   }
 
   @Override

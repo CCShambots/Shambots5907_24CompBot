@@ -3,8 +3,11 @@ package frc.robot.subsystems.shooter.flywheel;
 import static frc.robot.Constants.Flywheel.Settings.*;
 import static frc.robot.Constants.doubleEqual;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.motors.tuning.LinearTuningCommand;
 import java.util.function.DoubleSupplier;
@@ -15,23 +18,22 @@ public class Flywheel extends StateMachine<Flywheel.State> {
   private final FlywheelInputsAutoLogged inputs = new FlywheelInputsAutoLogged();
 
   private final DoubleSupplier speakerAAProvider;
-  private final DoubleSupplier trapAAProvider;
 
   public Flywheel(
       FlywheelIO io,
       DoubleSupplier speakerAAProvider,
-      DoubleSupplier trapAAProvider,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
     super("Shooter Flywheel", State.UNDETERMINED, State.class);
 
     this.speakerAAProvider = speakerAAProvider;
-    this.trapAAProvider = trapAAProvider;
     this.io = io;
 
     registerStateCommands(tuningInc, tuningDec, tuningStop);
     registerTransitions();
+
+    SmartDashboard.putData("flywheel", this);
   }
 
   private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
@@ -62,22 +64,25 @@ public class Flywheel extends StateMachine<Flywheel.State> {
             new RunCommand(() -> io.setFlywheelTarget(speakerAAProvider.getAsDouble())),
             atSpeedCommand(speakerAAProvider, SPIN_UP_READY_TOLERANCE)));
 
-    registerStateCommand(
-        State.TRAP_ACTIVE_ADJUST_SPIN,
-        new ParallelCommandGroup(
-            new RunCommand(() -> io.setFlywheelTarget(trapAAProvider.getAsDouble())),
-            atSpeedCommand(trapAAProvider, SPIN_UP_READY_TOLERANCE)));
-
     registerStateCommand(State.PASS_THROUGH, () -> io.setFlywheelTarget(PASS_THROUGH_SPEED));
 
     registerStateCommand(State.CHUTE_INTAKE, () -> io.setFlywheelTarget(CHUTE_INTAKE_SPEED));
 
     registerStateCommand(
         State.AMP,
-        () ->
-            new ParallelCommandGroup(
-                new InstantCommand(() -> io.setFlywheelTarget(AMP_SPEED)),
-                atSpeedCommand(() -> AMP_SPEED, SPIN_UP_READY_TOLERANCE)));
+        new ParallelCommandGroup(
+            new InstantCommand(() -> io.setFlywheelTargets(AMP_SPEED_TOP, AMP_SPEED_BOTTOM)),
+            atSpeedCommand(() -> AMP_SPEED_TOP, SPIN_UP_READY_TOLERANCE)));
+
+    registerStateCommand(
+        State.TRAP,
+        new ParallelCommandGroup(
+            new InstantCommand(() -> io.setFlywheelTargets(TRAP_SPEED_TOP, TRAP_SPEED_BOTTOM)),
+            atSpeedCommand(() -> TRAP_SPEED_TOP, SPIN_UP_READY_TOLERANCE)));
+
+    registerStateCommand(
+        State.PARTIAL_SPINUP,
+        new InstantCommand(() -> io.setFlywheelTarget(PARTIAL_SPINUP_VELOCITY)));
   }
 
   private void registerTransitions() {
@@ -85,10 +90,11 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.IDLE);
     addOmniTransition(State.BASE_SHOT_SPIN);
     addOmniTransition(State.SPEAKER_ACTIVE_ADJUST_SPIN);
-    addOmniTransition(State.TRAP_ACTIVE_ADJUST_SPIN);
+    addOmniTransition(State.TRAP);
     addOmniTransition(State.PASS_THROUGH);
     addOmniTransition(State.CHUTE_INTAKE);
     addOmniTransition(State.AMP);
+    addOmniTransition(State.PARTIAL_SPINUP);
 
     addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
@@ -122,13 +128,32 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     BASE_SHOT_SPIN,
     IDLE,
     SPEAKER_ACTIVE_ADJUST_SPIN,
-    TRAP_ACTIVE_ADJUST_SPIN,
+    TRAP,
     PASS_THROUGH,
     CHUTE_INTAKE,
     AMP,
+    PARTIAL_SPINUP,
     VOLTAGE_CALC,
 
     // flags
     AT_SPEED
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+
+    builder.addDoubleProperty(
+        "TRAP_TOP_SPEED",
+        () -> Constants.Flywheel.Settings.TRAP_SPEED_TOP * 60.0,
+        (val) -> {
+          Constants.Flywheel.Settings.TRAP_SPEED_TOP = val / 60.0;
+        });
+    builder.addDoubleProperty(
+        "TRAP_BOTTOM_SPEED",
+        () -> Constants.Flywheel.Settings.TRAP_SPEED_BOTTOM * 60.0,
+        (val) -> {
+          Constants.Flywheel.Settings.TRAP_SPEED_BOTTOM = val / 60.0;
+        });
   }
 }

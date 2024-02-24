@@ -28,6 +28,27 @@ public class Climbers extends StateMachine<Climbers.State> {
     registerTransitions();
   }
 
+  public void zeroLeft() {
+    leftClimber.zero();
+  }
+
+  public void zeroRight() {
+    rightClimber.zero();
+  }
+
+  public void zero() {
+    zeroLeft();
+    zeroRight();
+  }
+
+  public double getLeftPos() {
+    return leftClimber.getPos();
+  }
+
+  public double getRightPos() {
+    return rightClimber.getPos();
+  }
+
   private void registerStateCommands() {
     registerStateCommand(
         State.SOFT_E_STOP,

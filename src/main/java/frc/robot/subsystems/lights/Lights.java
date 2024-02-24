@@ -3,6 +3,8 @@ package frc.robot.subsystems.lights;
 import static frc.robot.Constants.Lights.Settings.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.ShamLib.Candle.TimedColorFlowCommand;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
 
@@ -14,19 +16,40 @@ public class Lights extends StateMachine<Lights.State> {
     super("Lights", State.UNDETERMINED, State.class);
 
     this.io = io;
+
+    registerStateCommmands();
+    registerTransitions();
   }
 
   private void registerTransitions() {
-    addOmniTransition(State.RESTING, setLights(State.RESTING));
-    addOmniTransition(State.AUTO, setLights(State.AUTO));
-    addOmniTransition(State.NO_RING, setLights(State.NO_RING));
-    addOmniTransition(State.HAVE_RING, setLights(State.HAVE_RING));
-    addOmniTransition(State.TARGETING, setLights(State.TARGETING));
-    addOmniTransition(State.READY, setLights(State.READY));
-    addOmniTransition(State.INTAKE, setLights(State.INTAKE));
-    addOmniTransition(State.AUTOMATIC_SCORE, setLights(State.AUTOMATIC_SCORE));
-    addOmniTransition(State.EJECT, setLights(State.EJECT));
-    addOmniTransition(State.ERROR, setLights(State.ERROR));
+    addOmniTransitions(State.values());
+  }
+
+  private void registerStateCommmands() {
+    registerStandardState(State.RESTING);
+    registerStandardState(State.NO_RING);
+    registerStandardState(State.HAVE_RING);
+    registerStandardState(State.TARGETING);
+    registerStandardState(State.READY);
+    registerStandardState(State.INTAKE);
+    registerStandardState(State.AUTOMATIC_SCORE);
+    registerStandardState(State.EJECT);
+    registerStandardState(State.CLIMB);
+    registerStandardState(State.ERROR);
+
+    registerStateCommand(
+        State.AUTO,
+        new TimedColorFlowCommand(
+            NUM_LIGHTS_WITHOUT_CANDLE,
+            8,
+            (segs) -> io.setMultipleSegs(segs),
+            Constants.AUTO_TIME,
+            AUTO_RGB,
+            AUTO_BACKGROUND_RGB));
+  }
+
+  private void registerStandardState(State state) {
+    registerStateCommand(state, setLights(state));
   }
 
   @Override
@@ -47,7 +70,7 @@ public class Lights extends StateMachine<Lights.State> {
   public enum State {
     UNDETERMINED(new LEDData(DISABLED_ANIMATION)),
     RESTING(new LEDData(DISABLED_ANIMATION)), // Disabled
-    AUTO(new LEDData(AUTO_ANIMATION)), // Autonomous
+    AUTO(new LEDData(DISABLED_ANIMATION)), // Autonomous
     NO_RING(new LEDData(NO_RING_RGB)),
     HAVE_RING(new LEDData(HOLDING_RING)),
     TARGETING(new LEDData(TARGETING_ANIMATION)),
@@ -55,6 +78,7 @@ public class Lights extends StateMachine<Lights.State> {
     INTAKE(new LEDData(INTAKE_ANIMATION)),
     AUTOMATIC_SCORE(new LEDData(AUTOMATIC_SCORE_ANIMATION)),
     EJECT(new LEDData(EJECT_ANIMATION)),
+    CLIMB(new LEDData(CLIMB_RGB)),
     ERROR(new LEDData(ERROR_RGB));
 
     private final LEDData data;
