@@ -206,7 +206,8 @@ public class Constants {
       public static final boolean LEADER_INVERTED = true;
       public static final boolean FOLLOWER_INVERTED = true;
 
-      public static final double POTENTIOMETER_OFFSET = 5.64 + Math.toRadians(20);
+      // public static final double POTENTIOMETER_OFFSET = 5.64 + Math.toRadians(20);
+      public static final double POTENTIOMETER_OFFSET = Math.toRadians(275.8) + Math.toRadians(20);
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
