@@ -88,7 +88,10 @@ public class FacePointCommand extends Command {
 
   @Override
   public void execute() {
-    thetaController.setSetpoint(Constants.rotationBetween(poseSupplier.get(), pose).getRadians());
+    thetaController.setSetpoint(
+        Constants.rotationBetween(poseSupplier.get(), pose)
+            .minus(Constants.Drivetrain.Settings.SHOT_OFFSET)
+            .getRadians());
 
     int currentSpeedMode = drivetrain.getSpeedMode();
 
