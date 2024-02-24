@@ -66,6 +66,8 @@ public class Vision extends StateMachine<Vision.State> {
 
     cam.setPreProcess(
         (pipelineData) -> {
+          if (!pipelineData.hasTargets()) return pipelineData;
+
           int idx = 0;
 
           for (var tag : pipelineData.getTargets()) {
