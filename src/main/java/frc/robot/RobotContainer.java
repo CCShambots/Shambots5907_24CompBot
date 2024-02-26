@@ -264,6 +264,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
             intake.transitionCommand(Intake.State.INTAKE),
             indexer.waitForState(Indexer.State.INDEXING),
+            lights.transitionCommand(Lights.State.INTAKE),
             transitionCommand(State.TRAVERSING)));
 
     registerStateCommand(
@@ -330,6 +331,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new SequentialCommandGroup(
             shooter.transitionCommand(Shooter.State.PASS_THROUGH),
             indexer.transitionCommand(Indexer.State.CLEANSE),
+            intake.transitionCommand(Intake.State.INTAKE),
             lights.transitionCommand(Lights.State.EJECT),
             new WaitCommand(2),
             transitionCommand(State.TRAVERSING)));
@@ -402,6 +404,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () ->
                 controllerBindings.feedOnPress().getAsBoolean()
                     && shooter.isFlag(Shooter.State.READY)),
+        new WaitCommand(0.5),
         indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
         indexer.waitForState(Indexer.State.IDLE),
         transitionCommand(onEnd));
@@ -475,12 +478,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .onTrue(transitionCommand(State.HUMAN_PLAYER_INTAKE, false));
 
     controllerBindings
-        .ampScore()
+        .autoAmp()
         .onTrue(
             new ConditionalCommand(
                 transitionCommand(State.AUTO_AMP, false),
                 transitionCommand(State.AMP, false),
-                () -> poseWorking));
+                () -> poseWorking))
+        .onFalse(transitionCommand(State.TRAVERSING));
+
+    controllerBindings.manualAmp().onTrue(transitionCommand(State.AMP));
 
     controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
 

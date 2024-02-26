@@ -60,7 +60,12 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger ampScore() {
+  public Trigger autoAmp() {
+    return rightFlightStick.pov(0);
+  }
+
+  @Override
+  public Trigger manualAmp() {
     return operatorController.y();
   }
 

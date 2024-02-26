@@ -32,7 +32,9 @@ public interface ControllerBindings {
 
   Trigger xShape();
 
-  Trigger ampScore();
+  Trigger autoAmp();
+
+  Trigger manualAmp();
 
   Trigger trapScore();
 
