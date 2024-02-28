@@ -282,7 +282,7 @@ public class Constants {
     public static final class Settings {
       public static final double BASE_SHOT_VELOCITY = 5800 / 60.0; // RPS
 
-      public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 1.5;
+      public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 1;
 
       public static final double SPIN_UP_READY_TOLERANCE = 5; // RPS
 
