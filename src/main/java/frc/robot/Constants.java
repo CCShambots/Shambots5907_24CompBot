@@ -492,7 +492,7 @@ public class Constants {
               20, // DRIVE MOTOR ID
               21, // TURN MOTOR ID
               20, // ENCODER ID
-              -109.4, // ENCODER OFFSET //-108.5
+              -109.4, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -505,7 +505,7 @@ public class Constants {
               22, // DRIVE MOTOR ID
               23, // TURN MOTOR ID
               21, // ENCODER ID
-              -92.3, // ENCODER OFFSET //-92.0
+              -92.3, // ENCODER OFFSET 
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -518,7 +518,7 @@ public class Constants {
               24, // DRIVE MOTOR ID
               25, // TURN MOTOR ID
               22, // ENCODER ID
-              32.87, // ENCODER OFFSET //32.5
+              32.87, // ENCODER OFFSET 
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -531,7 +531,7 @@ public class Constants {
               26, // DRIVE MOTOR ID
               27, // TURN MOTOR ID
               23, // ENCODER ID
-              125.3, // ENCODER OFFSET //-52.8
+              125.3, // ENCODER OFFSET 
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -566,7 +566,7 @@ public class Constants {
       // meters and radians
       public static final SwerveSpeedLimits PATH_FIND_SPEED =
           new SwerveSpeedLimits(
-              1, 3, MAX_CHASSIS_ROTATIONAL_SPEED / 2, MAX_CHASSIS_ROTATIONAL_ACCELERATION / 2);
+              3, 3, MAX_CHASSIS_ROTATIONAL_SPEED / 2, MAX_CHASSIS_ROTATIONAL_ACCELERATION / 2);
       public static final SwerveSpeedLimits TRAVERSE_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED,
