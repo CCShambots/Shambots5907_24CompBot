@@ -341,7 +341,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     registerStateCommand(
         State.CLIMB,
         new SequentialCommandGroup(
-            drivetrain.transitionCommand(Drivetrain.State.CHAIN_ORIENTED_DRIVE),
+            new ConditionalCommand(
+                drivetrain.transitionCommand(Drivetrain.State.CHAIN_ORIENTED_DRIVE),
+                Commands.none(),
+                () -> poseWorking),
             lights.transitionCommand(Lights.State.CLIMB),
             climbers.transitionCommand(Climbers.State.FREE_EXTEND),
             new WaitUntilCommand(controllerBindings.retractClimb()),
