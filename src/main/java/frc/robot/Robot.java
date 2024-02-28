@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -185,11 +186,15 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousExit() {
     robotContainer.resetFieldOriented();
+
+    Shuffleboard.selectTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
   }
 
   @Override
   public void teleopInit() {
     SubsystemManagerFactory.getInstance().notifyTeleopStart();
+
+    Shuffleboard.selectTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
   }
 
   @Override
@@ -201,13 +206,17 @@ public class Robot extends LoggedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+
+    Shuffleboard.selectTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
   }
 
   @Override
   public void testPeriodic() {}
 
   @Override
-  public void testExit() {}
+  public void testExit() {
+    Shuffleboard.selectTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
+  }
 
   @Override
   public void simulationPeriodic() {

@@ -3,19 +3,27 @@ package frc.robot.subsystems.lights;
 import static frc.robot.Constants.Lights.Settings.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.ShamLib.Candle.TimedColorFlowCommand;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
+import java.util.function.BooleanSupplier;
 
 public class Lights extends StateMachine<Lights.State> {
   private final LightsIO io;
   private final LightsInputsAutoLogged inputs = new LightsInputsAutoLogged();
 
-  public Lights(LightsIO io) {
+  private final BooleanSupplier flashAutoError;
+
+  public Lights(LightsIO io, BooleanSupplier flashAutoError) {
     super("Lights", State.UNDETERMINED, State.class);
 
     this.io = io;
+
+    this.flashAutoError = flashAutoError;
 
     registerStateCommmands();
     registerTransitions();
@@ -26,7 +34,6 @@ public class Lights extends StateMachine<Lights.State> {
   }
 
   private void registerStateCommmands() {
-    registerStandardState(State.RESTING);
     registerStandardState(State.NO_RING);
     registerStandardState(State.HAVE_RING);
     registerStandardState(State.TARGETING);
@@ -35,7 +42,21 @@ public class Lights extends StateMachine<Lights.State> {
     registerStandardState(State.AUTOMATIC_SCORE);
     registerStandardState(State.EJECT);
     registerStandardState(State.CLIMB);
-    registerStandardState(State.ERROR);
+
+    registerStateCommand(
+        State.RESTING,
+        new ParallelCommandGroup(
+            setLights(State.RESTING),
+            new SequentialCommandGroup(
+                new WaitUntilCommand(flashAutoError), transitionCommand(State.ERROR))));
+
+    registerStateCommand(
+        State.ERROR,
+        new ParallelCommandGroup(
+            setLights(State.ERROR),
+            new SequentialCommandGroup(
+                new WaitUntilCommand(() -> !flashAutoError.getAsBoolean()),
+                transitionCommand(State.RESTING))));
 
     registerStateCommand(
         State.AUTO,

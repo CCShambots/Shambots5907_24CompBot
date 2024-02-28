@@ -72,6 +72,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private boolean poseWorking = true;
   private boolean autoIntakeWorking = true;
 
+  private boolean hasBeenEnabled = false;
+
   public RobotContainer(EventLoop checkModulesLoop) {
     super("RobotContainer", State.UNDETERMINED, State.class);
 
@@ -139,7 +141,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    lights = new Lights(getLightsIO());
+    lights = new Lights(getLightsIO(), () -> !autoReady() && !hasBeenEnabled);
 
     shooter =
         new Shooter(
@@ -602,7 +604,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   @Override
-  protected void onEnable() {}
+  protected void onEnable() {
+    hasBeenEnabled = true;
+  }
 
   @Override
   protected void onTeleopStart() {
@@ -657,7 +661,30 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public boolean autoReady() {
-    return false;
+    return shooterGood() && photonVisionGood() && prox1Good() && prox2Good() && prox3Good();
+  }
+
+  private boolean shooterGood() {
+    return Constants.doubleEqual(
+        shooter.getArmAbsoluteAngle(),
+        shooter.getArmAngle(),
+        Constants.Arm.Settings.AUTO_SYNC_TOLERANCE);
+  }
+
+  private boolean photonVisionGood() {
+    return !vision.isFlag(Vision.State.PV_INSTANCE_DISCONNECT);
+  }
+
+  private boolean prox1Good() {
+    return indexer.isProx1Active();
+  }
+
+  private boolean prox2Good() {
+    return indexer.isProx2Active();
+  }
+
+  private boolean prox3Good() {
+    return !indexer.isProx3Active();
   }
 
   private void initializeDriveTab() {
@@ -688,21 +715,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(6, 0)
         .withSize(1, 1);
 
-    autoTab
-        .addBoolean(
-            "shooter good",
-            () ->
-                Constants.doubleEqual(
-                    shooter.getArmAbsoluteAngle(),
-                    shooter.getArmAngle(),
-                    Constants.Arm.Settings.AUTO_SYNC_TOLERANCE))
-        .withPosition(7, 0)
-        .withSize(1, 1);
+    autoTab.addBoolean("shooter good", this::shooterGood).withPosition(7, 0).withSize(1, 1);
 
-    autoTab
-        .addBoolean("pv good", () -> !vision.isFlag(Vision.State.PV_INSTANCE_DISCONNECT))
-        .withPosition(7, 1)
-        .withSize(1, 1);
+    autoTab.addBoolean("pv good", this::photonVisionGood).withPosition(7, 1).withSize(1, 1);
 
     autoTab
         .addNumber("ll latency", () -> vision.getLimelightLatency())
@@ -725,20 +740,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(7, 2)
         .withSize(1, 1);
 
-    autoTab
-        .addBoolean("prox 1 good", () -> indexer.isProx1Active())
-        .withPosition(5, 3)
-        .withSize(1, 1);
-    autoTab
-        .addBoolean("prox 2 good", () -> indexer.isProx2Active())
-        .withPosition(6, 3)
-        .withSize(1, 1);
-    autoTab
-        .addBoolean("prox 3 good", () -> !indexer.isProx3Active())
-        .withPosition(7, 3)
-        .withSize(1, 1);
+    autoTab.addBoolean("prox 1 good", this::prox1Good).withPosition(5, 3).withSize(1, 1);
+    autoTab.addBoolean("prox 2 good", this::prox2Good).withPosition(6, 3).withSize(1, 1);
+    autoTab.addBoolean("prox 3 good", this::prox3Good).withPosition(7, 3).withSize(1, 1);
 
     autoTab.addBoolean("GOOD TO GO", this::autoReady).withPosition(9, 0).withSize(3, 3);
+
+    // Teleop tab stuff
 
     teleTab.addBoolean("POSE WORKING", () -> poseWorking).withPosition(0, 0).withSize(2, 2);
     teleTab.addBoolean("AUTO INTAKE", () -> autoIntakeWorking).withPosition(2, 0).withSize(2, 2);
@@ -769,6 +777,19 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
 
+    teleTab
+        .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))
+        .withPosition(5, 0)
+        .withSize(1, 1);
+
+    teleTab
+        .addNumber("arm relative", () -> Math.toDegrees(shooter.getArmAngle()))
+        .withPosition(6, 0)
+        .withSize(1, 1);
+
+    teleTab.addBoolean("shooter good", this::shooterGood).withPosition(7, 0).withSize(1, 1);
+
+    // Test stuff
     testTab
         .add("zero climbers", new InstantCommand(() -> climbers.zero()))
         .withPosition(5, 0)
