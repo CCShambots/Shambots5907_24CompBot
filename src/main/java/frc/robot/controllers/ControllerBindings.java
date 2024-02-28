@@ -34,7 +34,7 @@ public interface ControllerBindings {
 
   Trigger autoAmp();
 
-  Trigger manualAmp();
+  Trigger indicateAmpIntention();
 
   Trigger trapScore();
 

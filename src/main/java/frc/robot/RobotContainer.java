@@ -491,7 +491,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 () -> poseWorking))
         .onFalse(transitionCommand(State.TRAVERSING));
 
-    controllerBindings.manualAmp().onTrue(transitionCommand(State.AMP));
+    controllerBindings.indicateAmpIntention().onTrue(shooter.indicateAmpIntention());
 
     controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
 

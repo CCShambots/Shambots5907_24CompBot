@@ -65,7 +65,7 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger manualAmp() {
+  public Trigger indicateAmpIntention() {
     return operatorController.y();
   }
 

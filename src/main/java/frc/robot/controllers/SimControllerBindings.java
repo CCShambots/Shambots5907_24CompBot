@@ -39,7 +39,7 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger manualAmp() {
+  public Trigger indicateAmpIntention() {
     return new Trigger(() -> false);
   }
 
