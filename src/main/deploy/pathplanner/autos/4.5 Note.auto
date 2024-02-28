@@ -20,13 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to 1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Note 1"
+            "pathName": "Start and Note 1"
           }
         },
         {
