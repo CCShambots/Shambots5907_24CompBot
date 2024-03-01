@@ -164,11 +164,10 @@ public class Constants {
 
       static {
         // FLYWHEEL SPEAKER VALUES
-        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 3000 / 60.0);
-        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(Units.feetToMeters(5), 3000 / 60.0);
-        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(Units.feetToMeters(10), 4000 / 60.0);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 4000 / 60.0);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(Units.feetToMeters(5), 4000 / 60.0);
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(
-            Units.feetToMeters(15), Flywheel.Settings.BASE_SHOT_VELOCITY);
+            Units.feetToMeters(10), Flywheel.Settings.BASE_SHOT_VELOCITY);
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
 
         // ARM SPEAKER OFFSETS
@@ -179,7 +178,8 @@ public class Constants {
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(5));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(6));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(7));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(4));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(10));
 
         // FLYWHEEL TRAP VALUES
         FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
@@ -230,6 +230,7 @@ public class Constants {
       public static final double POSITION_READY_TOLERANCE = 2 * (Math.PI / 180); // RAD
 
       public static final double BASE_SHOT_POSITION = 59 * (Math.PI / 180); // RAD
+      public static final double AUTO_START_POSITION = 55 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
       public static final double TRAP_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
@@ -409,12 +410,12 @@ public class Constants {
 
       public static final LoggedTunablePIDSV BELT_GAINS =
           new LoggedTunablePIDSV(
-              "Indexer Belt Gains", new PIDSVGains(0.5, 0, 0, 0.1454, 0.1204), () -> ALLOW_TUNING);
+              "Indexer Belt Gains", new PIDSVGains(0.25, 0, 0, 0.1454, 0.1204), () -> ALLOW_TUNING);
     }
 
     public static final class Settings {
       // rps
-      public static final double EXPECT_SPEED = 1500 / 60.0;
+      public static final double EXPECT_SPEED = 500 / 60.0;
       public static final double PASS_THROUGH_SPEED = 33;
       public static final double INDEX_SPEED = 500 / 60.0;
       public static final double FEED_SPEED = 50;

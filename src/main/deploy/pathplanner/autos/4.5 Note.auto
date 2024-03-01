@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6946857549438256,
-      "y": 4.377805809737618
+      "x": 1.279567587960127,
+      "y": 4.747843305801994
     },
-    "rotation": 122.78428086586914
+    "rotation": 145.05910362843233
   },
   "command": {
     "type": "sequential",
@@ -54,9 +54,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Note 3"
+            "name": "visionIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aim"
           }
         },
         {

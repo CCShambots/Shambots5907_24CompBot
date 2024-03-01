@@ -4,8 +4,6 @@ import static frc.robot.Constants.Lights.Settings.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.ShamLib.Candle.TimedColorFlowCommand;
 import frc.robot.ShamLib.SMF.StateMachine;
@@ -46,17 +44,19 @@ public class Lights extends StateMachine<Lights.State> {
     registerStateCommand(
         State.RESTING,
         new ParallelCommandGroup(
-            setLights(State.RESTING),
-            new SequentialCommandGroup(
-                new WaitUntilCommand(flashAutoError), transitionCommand(State.ERROR))));
+            setLights(State.RESTING)
+            // new SequentialCommandGroup(
+            //     new WaitUntilCommand(flashAutoError), transitionCommand(State.ERROR))
+            ));
 
     registerStateCommand(
         State.ERROR,
         new ParallelCommandGroup(
-            setLights(State.ERROR),
-            new SequentialCommandGroup(
-                new WaitUntilCommand(() -> !flashAutoError.getAsBoolean()),
-                transitionCommand(State.RESTING))));
+            setLights(State.ERROR)
+            // new SequentialCommandGroup(
+            //     new WaitUntilCommand(() -> !flashAutoError.getAsBoolean()),
+            //     transitionCommand(State.RESTING))
+            ));
 
     registerStateCommand(
         State.AUTO,
@@ -91,7 +91,7 @@ public class Lights extends StateMachine<Lights.State> {
   public enum State {
     UNDETERMINED(new LEDData(DISABLED_ANIMATION)),
     RESTING(new LEDData(DISABLED_ANIMATION)), // Disabled
-    AUTO(new LEDData(DISABLED_ANIMATION)), // Autonomous
+    AUTO(new LEDData(AUTO_ANIMATION)), // Autonomous
     NO_RING(new LEDData(NO_RING_RGB)),
     HAVE_RING(new LEDData(HOLDING_RING)),
     TARGETING(new LEDData(TARGETING_ANIMATION)),
