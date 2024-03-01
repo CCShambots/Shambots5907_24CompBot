@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -120,8 +121,14 @@ public class Robot extends LoggedRobot {
 
     // Log Camera Poses
     Logger.recordOutput("Vision/limelight-pose", Constants.Vision.Hardware.RING_CAMERA_POSE);
-    Logger.recordOutput("Vision/left-cam-pose", Constants.Vision.Hardware.LEFT_CAM_POSE);
-    Logger.recordOutput("Vision/right-cam-pose", Constants.Vision.Hardware.RIGHT_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/left-shooter-cam-pose", Constants.Vision.Hardware.LEFT_SHOOTER_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/right-shooter-cam-pose", Constants.Vision.Hardware.RIGHT_SHOOTER_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/right-intake-cam-pose", Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE);
+    Logger.recordOutput(
+        "Vision/left-intake-cam-pose", Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
   }
 
   @Override
@@ -135,6 +142,8 @@ public class Robot extends LoggedRobot {
       moduleCheckCounter = 0;
       checkModulesLoop.poll();
     }
+
+    Logger.recordOutput("LoggedRobot/ModuleCheck", moduleCheckCounter / 10.0);
   }
 
   private void updatePoses() {
@@ -156,6 +165,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
+
+    robotContainer.returnLightsToIdle();
+
+    Shuffleboard.selectTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
   }
 
   @Override
@@ -173,11 +186,15 @@ public class Robot extends LoggedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+    robotContainer.resetFieldOriented();
+  }
 
   @Override
   public void teleopInit() {
     SubsystemManagerFactory.getInstance().notifyTeleopStart();
+
+    Shuffleboard.selectTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
   }
 
   @Override
@@ -189,13 +206,17 @@ public class Robot extends LoggedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+
+    Shuffleboard.selectTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
   }
 
   @Override
   public void testPeriodic() {}
 
   @Override
-  public void testExit() {}
+  public void testExit() {
+    Shuffleboard.selectTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
+  }
 
   @Override
   public void simulationPeriodic() {

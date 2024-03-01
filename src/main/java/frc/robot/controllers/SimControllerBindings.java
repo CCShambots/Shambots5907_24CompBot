@@ -34,12 +34,22 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger manualGroundIntake() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
+  public Trigger indicateAmpIntention() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
   public Trigger humanPlayerIntake() {
     return new Trigger(() -> false);
   }
 
   @Override
-  public Trigger ampScore() {
+  public Trigger autoAmp() {
     return operatorController.y();
   }
 

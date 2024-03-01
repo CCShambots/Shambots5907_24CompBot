@@ -77,6 +77,13 @@ public class Shooter extends StateMachine<Shooter.State> {
             watchReadyCommand()));
 
     registerStateCommand(
+        State.AUTO_START_SHOT,
+        new ParallelCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.BASE_SHOT_SPIN),
+            arm.transitionCommand(Arm.State.AUTO_START_SHOT),
+            watchReadyCommand()));
+
+    registerStateCommand(
         State.CHUTE_INTAKE,
         new ParallelCommandGroup(
             arm.transitionCommand(Arm.State.CHUTE_INTAKE),
@@ -139,6 +146,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.SOFT_E_STOP);
 
     addOmniTransition(State.BASE_SHOT);
+    addOmniTransition(State.AUTO_START_SHOT);
     addOmniTransition(State.STOW);
     addOmniTransition(State.PARTIAL_STOW);
     addOmniTransition(State.TRAP);
@@ -150,6 +158,14 @@ public class Shooter extends StateMachine<Shooter.State> {
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.ARM_VOLTAGE_CALC);
+  }
+
+  public Command partialFlywheelSpinup() {
+    return flywheel.transitionCommand(Flywheel.State.PARTIAL_SPINUP);
+  }
+
+  public Command indicateAmpIntention() {
+    return flywheel.transitionCommand(Flywheel.State.AMP);
   }
 
   private Command watchReadyCommand() {
@@ -236,6 +252,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     UNDETERMINED,
     SOFT_E_STOP,
     BASE_SHOT,
+    AUTO_START_SHOT,
     STOW,
     PARTIAL_STOW,
     CHUTE_INTAKE,

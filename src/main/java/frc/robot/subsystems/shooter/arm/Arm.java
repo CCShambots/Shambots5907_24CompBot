@@ -42,6 +42,7 @@ public class Arm extends StateMachine<Arm.State> {
 
     registerStateCommand(State.AMP, holdPositionCommand(() -> AMP_POSITION));
     registerStateCommand(State.BASE_SHOT, holdPositionCommand(() -> BASE_SHOT_POSITION));
+    registerStateCommand(State.AUTO_START_SHOT, holdPositionCommand(() -> AUTO_START_POSITION));
     registerStateCommand(State.CHUTE_INTAKE, holdPositionCommand(() -> CHUTE_INTAKE_POSITION));
     registerStateCommand(State.PARTIAL_STOW, holdPositionCommand(() -> PARTIAL_STOW_POSITION));
     registerStateCommand(State.FULL_STOW, holdPositionCommand(() -> FULL_STOW_POSITION));
@@ -71,6 +72,7 @@ public class Arm extends StateMachine<Arm.State> {
     // it going from one to the other wont conflict with anything within the arm subsystem
     addOmniTransition(State.AMP);
     addOmniTransition(State.BASE_SHOT);
+    addOmniTransition(State.AUTO_START_SHOT);
     addOmniTransition(State.CHUTE_INTAKE);
     addOmniTransition(State.PARTIAL_STOW);
     addOmniTransition(State.FULL_STOW);
@@ -141,6 +143,7 @@ public class Arm extends StateMachine<Arm.State> {
     CHUTE_INTAKE,
     TRAP,
     BASE_SHOT,
+    AUTO_START_SHOT,
     SHOT_ACTIVE_ADJUST,
     PARTIAL_STOW,
     FULL_STOW,

@@ -22,6 +22,8 @@ public interface ControllerBindings {
 
   Trigger groundIntake();
 
+  Trigger manualGroundIntake();
+
   Trigger shoot();
 
   Trigger humanPlayerIntake();
@@ -30,7 +32,9 @@ public interface ControllerBindings {
 
   Trigger xShape();
 
-  Trigger ampScore();
+  Trigger autoAmp();
+
+  Trigger indicateAmpIntention();
 
   Trigger trapScore();
 

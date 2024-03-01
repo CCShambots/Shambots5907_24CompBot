@@ -70,8 +70,6 @@ public class FacePointCommand extends Command {
 
     this.deadband = deadband;
     this.controllerConversion = controllerConversion;
-
-    addRequirements(subsystem);
   }
 
   public boolean atAngle(double tolerance) {
@@ -88,7 +86,10 @@ public class FacePointCommand extends Command {
 
   @Override
   public void execute() {
-    thetaController.setSetpoint(Constants.rotationBetween(poseSupplier.get(), pose).getRadians());
+    thetaController.setSetpoint(
+        Constants.rotationBetween(poseSupplier.get(), pose)
+            .minus(Constants.Drivetrain.Settings.SHOT_OFFSET)
+            .getRadians());
 
     int currentSpeedMode = drivetrain.getSpeedMode();
 
@@ -107,7 +108,7 @@ public class FacePointCommand extends Command {
     if (drivetrain.isFieldRelative()) {
       speeds =
           ChassisSpeeds.fromFieldRelativeSpeeds(
-              correctedX, correctedY, correctedRot, drivetrain.getCurrentAngle());
+              correctedX, correctedY, correctedRot, drivetrain.getCurrentFieldOrientedAngle());
     } else {
       speeds = new ChassisSpeeds(correctedX, correctedY, correctedRot);
     }

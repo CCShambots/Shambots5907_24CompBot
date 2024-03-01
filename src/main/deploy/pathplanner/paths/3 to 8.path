@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.8788505466284287,
+        "y": 6.869031537371034
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.3648278930285525,
+        "y": 6.686926470410234
+      },
+      "isLocked": false,
+      "linkedName": "Note 3 End"
+    },
+    {
+      "anchor": {
+        "x": 6.121416750375649,
+        "y": 7.342476299859433
+      },
+      "prevControl": {
+        "x": 5.218175618250084,
+        "y": 7.2550658677182485
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.55,
+      "rotationDegrees": 180.0,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": -178.29018595585845,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "BETWEEN NOTES",
+  "previewStartingState": {
+    "rotation": -177.99079984810695,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

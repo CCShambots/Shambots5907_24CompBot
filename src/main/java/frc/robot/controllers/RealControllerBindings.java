@@ -45,6 +45,11 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger manualGroundIntake() {
+    return operatorController.a();
+  }
+
+  @Override
   public Trigger humanPlayerIntake() {
     return operatorController.x();
   }
@@ -55,7 +60,12 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger ampScore() {
+  public Trigger autoAmp() {
+    return rightFlightStick.pov(0);
+  }
+
+  @Override
+  public Trigger indicateAmpIntention() {
     return operatorController.y();
   }
 
@@ -116,6 +126,6 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger resetGyro() {
-    return leftFlightStick.topBase();
+    return leftFlightStick.topLeft();
   }
 }

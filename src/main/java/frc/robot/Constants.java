@@ -34,6 +34,10 @@ public class Constants {
 
   public static final boolean ALLOW_TUNING = true;
 
+  public static final double AUTO_TIME = 15;
+  public static final double GAP_TIME = 3;
+  public static final double TELE_TIME = 135;
+
   public static final class Controller {
     public static final int LEFT_FLIGHT_STICK_ID = 1;
     public static final int RIGHT_FLIGHT_STICK_ID = 2;
@@ -99,23 +103,41 @@ public class Constants {
               Units.inchesToMeters(10.788134),
               new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
 
-      public static Pose3d LEFT_CAM_POSE =
+      public static Pose3d LEFT_SHOOTER_CAM_POSE =
           new Pose3d(
               Units.inchesToMeters(12.198133),
               Units.inchesToMeters(12.293625),
               Units.inchesToMeters(8.881022),
               new Rotation3d(Math.toRadians(0), Math.toRadians(-30), Math.toRadians(0)));
 
-      public static Pose3d RIGHT_CAM_POSE =
+      public static Pose3d RIGHT_SHOOTER_CAM_POSE =
           new Pose3d(
               Units.inchesToMeters(11.994638),
               Units.inchesToMeters(-12.276838),
               Units.inchesToMeters(8.712641),
               new Rotation3d(0, Math.toRadians(-60), Math.toRadians(0)));
+
+      public static Pose3d LEFT_INTAKE_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(-11.832791),
+              Units.inchesToMeters(11.802600),
+              Units.inchesToMeters(8.920582),
+              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180 - 45)));
+
+      public static Pose3d RIGHT_INTAKE_CAM_POSE =
+          new Pose3d(
+              Units.inchesToMeters(-11.832791),
+              Units.inchesToMeters(-11.802600),
+              Units.inchesToMeters(8.920582),
+              new Rotation3d(0, Math.toRadians(-30), Math.toRadians(180 + 45)));
     }
 
     public static final class Settings {
       public static final int LIMELIGHT_NOTE_TRACK_PIPELINE = 0;
+
+      public static final double AUTO_START_TOLERANCE = 0.5;
+
+      public static final double VISION_TRUST_CUTOFF = Units.feetToMeters(18);
     }
   }
 
@@ -142,17 +164,22 @@ public class Constants {
 
       static {
         // FLYWHEEL SPEAKER VALUES
-        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 4000 / 60.0);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(Units.feetToMeters(5), 4000 / 60.0);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(
+            Units.feetToMeters(10), Flywheel.Settings.BASE_SHOT_VELOCITY);
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
 
         // ARM SPEAKER OFFSETS
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), 0.0);
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(2.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(3.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(4));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(4.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(4));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(8), Math.toRadians(1));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), Math.toRadians(2));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(4));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(6));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(7));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(10));
 
         // FLYWHEEL TRAP VALUES
         FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
@@ -184,7 +211,7 @@ public class Constants {
       public static final boolean LEADER_INVERTED = true;
       public static final boolean FOLLOWER_INVERTED = true;
 
-      public static final double POTENTIOMETER_OFFSET = 5.64 + Math.toRadians(20);
+      public static final double POTENTIOMETER_OFFSET = Math.toRadians(275.8) + Math.toRadians(20);
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
@@ -203,6 +230,7 @@ public class Constants {
       public static final double POSITION_READY_TOLERANCE = 2 * (Math.PI / 180); // RAD
 
       public static final double BASE_SHOT_POSITION = 59 * (Math.PI / 180); // RAD
+      public static final double AUTO_START_POSITION = 55 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
       public static final double TRAP_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
@@ -224,8 +252,8 @@ public class Constants {
 
   public static final class Flywheel {
     public static final class Sim {
-      public static final double TOP_INERTIA = 0.0001;
-      public static final double BOTTOM_INERTIA = 0.0001;
+      public static final double TOP_INERTIA = 0.00001;
+      public static final double BOTTOM_INERTIA = 0.00001;
     }
 
     public static final class Hardware {
@@ -258,6 +286,9 @@ public class Constants {
 
     public static final class Settings {
       public static final double BASE_SHOT_VELOCITY = 5800 / 60.0; // RPS
+
+      public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 1;
+
       public static final double SPIN_UP_READY_TOLERANCE = 5; // RPS
 
       public static final double PASS_THROUGH_SPEED = 500 / 60.0; // RPS
@@ -265,7 +296,7 @@ public class Constants {
       public static final double CHUTE_INTAKE_SPEED = -500 / 60.0; // RPS
 
       public static final double AMP_SPEED_TOP = 250 / 60.0; // RPS
-      public static final double AMP_SPEED_BOTTOM = 750 / 60.0; // RPS
+      public static final double AMP_SPEED_BOTTOM = 1000 / 60.0; // RPS
 
       // TODO: MAKE FINAL
       public static double TRAP_SPEED_TOP = 700 / 60.0; // RPS
@@ -301,7 +332,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BELT_SPEED = 1500 / 60.0; // RPS
+      public static final double BELT_SPEED = 3000 / 60.0; // RPS
 
       public static final double VOLTAGE_INC = 0.25;
     }
@@ -388,15 +419,15 @@ public class Constants {
 
       public static final LoggedTunablePIDSV BELT_GAINS =
           new LoggedTunablePIDSV(
-              "Indexer Belt Gains", new PIDSVGains(0.5, 0, 0, 0.1454, 0.1204), () -> ALLOW_TUNING);
+              "Indexer Belt Gains", new PIDSVGains(0.25, 0, 0, 0.1454, 0.1204), () -> ALLOW_TUNING);
     }
 
     public static final class Settings {
       // rps
-      public static final double EXPECT_SPEED = 1500 / 60.0;
+      public static final double EXPECT_SPEED = 500 / 60.0;
       public static final double PASS_THROUGH_SPEED = 33;
       public static final double INDEX_SPEED = 500 / 60.0;
-      public static final double FEED_SPEED = 33;
+      public static final double FEED_SPEED = 50;
 
       // seconds
       public static final double INDEX_TIMEOUT = 4;
@@ -413,7 +444,7 @@ public class Constants {
     public static final class Hardware {
       public static final int CANDLE_ID = 0;
 
-      public static final int NUM_LIGHTS = 200;
+      public static final int NUM_LIGHTS = 70;
 
       public static final double BRIGHTNESS = 1.0;
     }
@@ -421,13 +452,16 @@ public class Constants {
     public static final class Settings {
       public static final int NUM_LIGHTS_WITHOUT_CANDLE = NUM_LIGHTS - 8;
 
-      public static final double BOUNCE_SPEED = 0.75;
+      public static final double BOUNCE_SPEED = 0.5;
       public static final double BLINK_SPEED = .075;
 
       public static final RGB NO_RING_RGB = new RGB(0, 0, 0);
       public static final RGB ERROR_RGB = new RGB(255, 0, 0);
       public static final RGB HOLDING_RING = new RGB(0, 0, 255);
+      public static final RGB AUTO_RGB = new RGB(0, 0, 255);
+      public static final RGB AUTO_BACKGROUND_RGB = new RGB(0, 0, 0);
       public static final RGB READY_TO_SHOOT = new RGB(0, 255, 0);
+      public static final RGB CLIMB_RGB = new RGB(255, 0, 255);
 
       public static final Animation DISABLED_ANIMATION =
           new LarsonAnimation(0, 0, 255, 0, BOUNCE_SPEED, NUM_LIGHTS_WITHOUT_CANDLE, Front, 7, 8);
@@ -472,7 +506,7 @@ public class Constants {
               20, // DRIVE MOTOR ID
               21, // TURN MOTOR ID
               20, // ENCODER ID
-              -108.545, // ENCODER OFFSET
+              -109.4, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -485,7 +519,7 @@ public class Constants {
               22, // DRIVE MOTOR ID
               23, // TURN MOTOR ID
               21, // ENCODER ID
-              -92.021, // ENCODER OFFSET
+              -92.3, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -498,7 +532,7 @@ public class Constants {
               24, // DRIVE MOTOR ID
               25, // TURN MOTOR ID
               22, // ENCODER ID
-              32.607, // ENCODER OFFSET
+              32.87, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -511,21 +545,23 @@ public class Constants {
               26, // DRIVE MOTOR ID
               27, // TURN MOTOR ID
               23, // ENCODER ID
-              -55.811, // ENCODER OFFSET
+              125.3, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              false // DRIVE MOTOR INVERTED
+              true // DRIVE MOTOR INVERTED
               );
 
-      public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
+      public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
+          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true);
+      ;
     }
 
     public static final class Settings {
       public static final PIDGains AUTO_THETA_GAINS = new PIDGains(5, 0, 0);
-      public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(6, 0, 0);
+      public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(8, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
-          new PIDSVGains(.25, 0, 0, 0.08045, 0.118675);
+          new PIDSVGains(.25, 0, 0.0, 0.08045, 0.118675);
       public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(10, 0, 0, 0.1176, 0.1182);
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
@@ -546,7 +582,7 @@ public class Constants {
       // meters and radians
       public static final SwerveSpeedLimits PATH_FIND_SPEED =
           new SwerveSpeedLimits(
-              1, 3, MAX_CHASSIS_ROTATIONAL_SPEED / 2, MAX_CHASSIS_ROTATIONAL_ACCELERATION / 2);
+              3, 3, MAX_CHASSIS_ROTATIONAL_SPEED / 2, MAX_CHASSIS_ROTATIONAL_ACCELERATION / 2);
       public static final SwerveSpeedLimits TRAVERSE_SPEED =
           new SwerveSpeedLimits(
               MAX_CHASSIS_SPEED,
@@ -606,6 +642,8 @@ public class Constants {
 
       // seconds
       public static double LOST_RING_TARGET_TIMEOUT = 0.5;
+
+      public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(4);
     }
   }
 

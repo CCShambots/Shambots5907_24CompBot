@@ -209,17 +209,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             AMP_SPEED));
 
     registerStateCommand(
-        State.AUTO_AMP,
-        getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
-
-    registerStateCommand(
-        State.AUTO_HUMAN_PLAYER_INTAKE,
-        getPathfindCommand(
-            "AUTO_HUMAN_PLAYER_INTAKE",
-            HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY,
-            State.FIELD_ORIENTED_DRIVE));
-
-    registerStateCommand(
         State.TURN_VOLTAGE_CALC,
         drive.getTurnVoltageCalcCommand(stop, incrementUp, incrementDown, TURN_VOLTAGE_INCREMENT));
     registerStateCommand(
@@ -228,7 +217,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             stop, incrementUp, incrementDown, DRIVE_VOLTAGE_INCREMENT));
 
     registerFaceCommands();
-    registerAutoClimb();
   }
 
   @Override
@@ -256,6 +244,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.TRAP);
     addOmniTransition(State.FACE_AMP);
     addOmniTransition(State.FACE_SPEAKER);
+    addOmniTransition(State.FACE_SPEAKER_AUTO);
 
     addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
   }
@@ -269,17 +258,41 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         State.FACE_SPEAKER,
         getFacePointCommand(
             flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED));
+
+    registerStateCommand(
+        State.FACE_SPEAKER_AUTO,
+        getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED, true));
+  }
+
+  private void registerPathFollowStateCommands() {
+    registerStateCommand(
+        State.AUTO_AMP,
+        getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
+
+    registerStateCommand(
+        State.AUTO_HUMAN_PLAYER_INTAKE,
+        getPathfindCommand(
+            "AUTO_HUMAN_PLAYER_INTAKE",
+            HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY,
+            State.FIELD_ORIENTED_DRIVE));
+
+    registerAutoClimb();
   }
 
   private Command getFacePointCommand(Pose2d pose, SwerveSpeedLimits limits) {
+    return getFacePointCommand(pose, limits, false);
+  }
+
+  private Command getFacePointCommand(Pose2d pose, SwerveSpeedLimits limits, boolean usedInAuto) {
     FacePointCommand facePointCommand =
         new FacePointCommand(
             drive,
             AUTO_THETA_GAINS,
             pose,
             drive::getPose,
-            xSupplier,
-            ySupplier,
+            !usedInAuto ? xSupplier : () -> 0,
+            !usedInAuto ? ySupplier : () -> 0,
             Constants.Controller.DEADBAND,
             Constants.Controller.DRIVE_CONVERSION,
             this,
@@ -363,11 +376,26 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         });
   }
 
+  public void resetFieldOriented() {
+    Rotation2d newAngle = drive.getPose().getRotation();
+
+    // Flip by 180 if we're on red alliance
+    if (flipPath) newAngle = newAngle.plus(new Rotation2d(Math.PI));
+
+    drive.resetFieldOrientedRotationOffset(newAngle);
+  }
+
   private Command notifyWaypointCommand() {
     return new InstantCommand(
         () -> {
           if (waypointConsumer != null) waypointConsumer.accept(currentWaypoint.getAndIncrement());
         });
+  }
+
+  public void configurePathplanner() {
+    drive.configurePathplanner();
+
+    registerPathFollowStateCommands();
   }
 
   public void addVisionMeasurements(
@@ -403,6 +431,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     CHAIN_ORIENTED_DRIVE,
     FOLLOWING_AUTONOMOUS_TRAJECTORY,
     FACE_SPEAKER,
+    FACE_SPEAKER_AUTO,
     FACE_AMP,
     TRAP,
     AUTO_AMP,

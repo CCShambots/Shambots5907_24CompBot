@@ -36,6 +36,7 @@ import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.lights.Lights;
 import frc.robot.subsystems.lights.LightsIO;
+import frc.robot.subsystems.lights.LightsIOReal;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.arm.ArmIOReal;
@@ -71,6 +72,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private boolean poseWorking = true;
   private boolean autoIntakeWorking = true;
 
+  private boolean hasBeenEnabled = false;
+
   public RobotContainer(EventLoop checkModulesLoop) {
     super("RobotContainer", State.UNDETERMINED, State.class);
 
@@ -102,9 +105,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             ? Map.of()
             : Map.of(
                 "pv_instance_1",
-                Constants.Vision.Hardware.RIGHT_CAM_POSE,
-                "pv_instance_2",
-                Constants.Vision.Hardware.LEFT_CAM_POSE);
+                Constants.Vision.Hardware.LEFT_SHOOTER_CAM_POSE,
+                "pv_instance_4",
+                Constants.Vision.Hardware.RIGHT_SHOOTER_CAM_POSE,
+                "pv_instance_3",
+                Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE,
+                // "pv_instance_2",
+                // Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE
+                );
 
     vision = new Vision("limelight", photonMap);
 
@@ -126,6 +134,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     vision.addVisionUpdateConsumers(drivetrain::addVisionMeasurements);
 
+    vision.setOverallEstimateSupplier(drivetrain::getBotPose);
+
     climbers =
         new Climbers(
             getLeftClimberIO(),
@@ -134,7 +144,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    lights = new Lights(getLightsIO());
+    lights = new Lights(getLightsIO(), () -> !autoReady() && !hasBeenEnabled);
 
     shooter =
         new Shooter(
@@ -152,14 +162,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addChildSubsystem(shooter);
     addChildSubsystem(indexer);
     addChildSubsystem(climbers);
-    addChildSubsystem(lights);
+
+    lights.enable();
 
     registerStateCommands();
     registerTransitions();
 
     configureBindings();
 
-    NamedCommands.registerCommand("raiseClimber", new InstantCommand());
+    registerNamedCommands();
 
     // Important to instatiate after drivetrain consructor is called so that auto builder is
     // configured
@@ -167,6 +178,61 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     initializeDriveTab();
+  }
+
+  private void registerNamedCommands() {
+    // TODO: set up if we ever use automatic climbing
+    NamedCommands.registerCommand("raiseClimber", new InstantCommand());
+
+    NamedCommands.registerCommand(
+        "intake",
+        new ParallelCommandGroup(
+            intake.transitionCommand(Intake.State.INTAKE, false),
+            indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK)));
+    NamedCommands.registerCommand("stopIntake", intake.transitionCommand(Intake.State.IDLE, false));
+
+    NamedCommands.registerCommand(
+        "shoot",
+        new SequentialCommandGroup(
+            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(3),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false)));
+
+    NamedCommands.registerCommand(
+        "fireSequence",
+        new SequentialCommandGroup(
+            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(3),
+            intake.transitionCommand(Intake.State.IDLE, false),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
+            new WaitCommand(0.25),
+            new ParallelCommandGroup(
+                intake.transitionCommand(Intake.State.INTAKE, false),
+                new InstantCommand(
+                    () -> {
+                      new SequentialCommandGroup(
+                              indexer.waitForState(Indexer.State.IDLE),
+                              indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
+                          .schedule();
+                    }))));
+
+    NamedCommands.registerCommand(
+        "visionIntake",
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE).withTimeout(2),
+            indexer
+                .waitForState(Indexer.State.INDEXING)
+                .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING)),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
+
+    NamedCommands.registerCommand(
+        "aim",
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
+            new WaitCommand(0.5),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
+
+    drivetrain.configurePathplanner();
   }
 
   private void registerStateCommands() {
@@ -186,6 +252,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             climbers.transitionCommand(Climbers.State.FREE_RETRACT),
             intake.transitionCommand(Intake.State.IDLE),
+            new ConditionalCommand(
+                shooter.partialFlywheelSpinup(), new InstantCommand(), () -> indexer.ringPresent()),
             new DetermineRingStatusCommand(shooter, indexer, lights)));
 
     registerStateCommand(
@@ -211,6 +279,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
             intake.transitionCommand(Intake.State.INTAKE),
             indexer.waitForState(Indexer.State.INDEXING),
+            lights.transitionCommand(Lights.State.INTAKE),
             transitionCommand(State.TRAVERSING)));
 
     registerStateCommand(
@@ -228,6 +297,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new ParallelCommandGroup(
                 drivetrain.transitionCommand(Drivetrain.State.HUMAN_PLAYER_INTAKE),
                 intake.transitionCommand(Intake.State.IDLE),
+                lights.transitionCommand(Lights.State.INTAKE),
                 shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT))
             .andThen(
@@ -242,6 +312,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new ParallelCommandGroup(
                 drivetrain.transitionCommand(Drivetrain.State.AUTO_HUMAN_PLAYER_INTAKE),
                 intake.transitionCommand(Intake.State.IDLE),
+                lights.transitionCommand(Lights.State.INTAKE),
                 shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT))
             .andThen(
@@ -275,13 +346,19 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new SequentialCommandGroup(
             shooter.transitionCommand(Shooter.State.PASS_THROUGH),
             indexer.transitionCommand(Indexer.State.CLEANSE),
+            intake.transitionCommand(Intake.State.INTAKE),
+            lights.transitionCommand(Lights.State.EJECT),
             new WaitCommand(2),
             transitionCommand(State.TRAVERSING)));
 
     registerStateCommand(
         State.CLIMB,
         new SequentialCommandGroup(
-            drivetrain.transitionCommand(Drivetrain.State.CHAIN_ORIENTED_DRIVE),
+            new ConditionalCommand(
+                drivetrain.transitionCommand(Drivetrain.State.CHAIN_ORIENTED_DRIVE),
+                Commands.none(),
+                () -> poseWorking),
+            lights.transitionCommand(Lights.State.CLIMB),
             climbers.transitionCommand(Climbers.State.FREE_EXTEND),
             new WaitUntilCommand(controllerBindings.retractClimb()),
             climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
@@ -294,6 +371,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new DetermineRingStatusCommand(shooter, indexer, lights),
             shooter.transitionCommand(Shooter.State.AMP),
             drivetrain.waitForState(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            lights.transitionCommand(Lights.State.TARGETING),
             new ParallelCommandGroup(
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
 
@@ -305,6 +383,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 new WaitUntilCommand(() -> vision.isFlag(Vision.State.HAS_RING_TARGET)),
                 drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE)),
             new SequentialCommandGroup(
+                lights.transitionCommand(Lights.State.INTAKE),
                 shooter.transitionCommand(Shooter.State.STOW),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
                 intake.transitionCommand(Intake.State.INTAKE),
@@ -325,6 +404,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_GROUND_INTAKE);
     addOmniTransition(State.AUTO_HP_INTAKE);
+
+    addTransition(State.SOFT_E_STOP, State.AUTONOMOUS);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -337,10 +418,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private Command feedOnPress(State onEnd) {
     return new SequentialCommandGroup(
-        new WaitUntilCommand(controllerBindings.feedOnPress()),
+        new WaitUntilCommand(
+            () ->
+                controllerBindings.feedOnPress().getAsBoolean()
+                    && shooter.isFlag(Shooter.State.READY)),
+        new WaitCommand(0.5),
         indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
         indexer.waitForState(Indexer.State.IDLE),
-        new WaitCommand(1),
         transitionCommand(onEnd));
   }
 
@@ -388,7 +472,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new ConditionalCommand(
                 transitionCommand(State.SPEAKER_SCORE, false),
                 transitionCommand(State.BASE_SHOT, false),
-                () -> poseWorking));
+                () -> poseWorking))
+        .onFalse(transitionCommand(State.TRAVERSING, false));
+
     controllerBindings
         .groundIntake()
         .onTrue(
@@ -397,6 +483,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 transitionCommand(State.GROUND_INTAKE, false),
                 () -> autoIntakeWorking))
         .onFalse(transitionCommand(State.TRAVERSING, false));
+
+    controllerBindings
+        .manualGroundIntake()
+        .onTrue(transitionCommand(State.GROUND_INTAKE, false))
+        .onFalse(transitionCommand(State.TRAVERSING, false));
+
     controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING, false));
 
     controllerBindings
@@ -404,12 +496,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .onTrue(transitionCommand(State.HUMAN_PLAYER_INTAKE, false));
 
     controllerBindings
-        .ampScore()
+        .autoAmp()
         .onTrue(
             new ConditionalCommand(
                 transitionCommand(State.AUTO_AMP, false),
                 transitionCommand(State.AMP, false),
-                () -> poseWorking));
+                () -> poseWorking))
+        .onFalse(transitionCommand(State.TRAVERSING));
+
+    controllerBindings.indicateAmpIntention().onTrue(shooter.indicateAmpIntention());
 
     controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
 
@@ -514,13 +609,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private LightsIO getLightsIO() {
     switch (Constants.currentBuildMode) {
-        // case REAL -> {
-        // return new LightsIOReal();
-        // }
-
-        // case SIM -> {
-        // return new LightsIOSim();
-        // }
+      case REAL -> {
+        return new LightsIOReal();
+      }
 
       default -> {
         return new LightsIO() {};
@@ -529,11 +620,44 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   @Override
-  protected void onEnable() {}
+  protected void onEnable() {
+    hasBeenEnabled = true;
+  }
 
   @Override
   protected void onTeleopStart() {
     requestTransition(State.TRAVERSING);
+  }
+
+  @Override
+  protected void onAutonomousStart() {
+
+    Command selectedAutoCommand = autoChooser.get();
+
+    registerStateCommand(
+        State.AUTONOMOUS,
+        new SequentialCommandGroup(
+            lights.transitionCommand(Lights.State.AUTO),
+            shooter.transitionCommand(Shooter.State.AUTO_START_SHOT),
+            shooter.waitForFlag(Shooter.State.READY).withTimeout(1.25),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
+            indexer.waitForState(Indexer.State.IDLE),
+            shooter.transitionCommand(Shooter.State.SPEAKER_AA),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
+            new InstantCommand(
+                () -> {
+                  selectedAutoCommand.schedule();
+                })));
+
+    requestTransition(State.AUTONOMOUS);
+  }
+
+  public void resetFieldOriented() {
+    drivetrain.resetFieldOriented();
+  }
+
+  public void returnLightsToIdle() {
+    lights.requestTransition(Lights.State.RESTING);
   }
 
   @Override
@@ -552,12 +676,39 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new Rotation3d(0, 0, pose.getRotation().getRadians()));
   }
 
+  public boolean autoReady() {
+    return shooterGood() && photonVisionGood() && prox1Good() && prox2Good() && prox3Good();
+  }
+
+  private boolean shooterGood() {
+    return Constants.doubleEqual(
+        shooter.getArmAbsoluteAngle(),
+        shooter.getArmAngle(),
+        Constants.Arm.Settings.AUTO_SYNC_TOLERANCE);
+  }
+
+  private boolean photonVisionGood() {
+    return !vision.isFlag(Vision.State.PV_INSTANCE_DISCONNECT);
+  }
+
+  private boolean prox1Good() {
+    return indexer.isProx1Active();
+  }
+
+  private boolean prox2Good() {
+    return indexer.isProx2Active();
+  }
+
+  private boolean prox3Good() {
+    return !indexer.isProx3Active();
+  }
+
   private void initializeDriveTab() {
     ShuffleboardTab autoTab = Shuffleboard.getTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
     ShuffleboardTab teleTab = Shuffleboard.getTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
     ShuffleboardTab testTab = Shuffleboard.getTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
 
-    autoTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(3, 0).withSize(2, 1);
+    autoTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(2, 0).withSize(2, 1);
 
     autoTab
         .addString("ALLIANCE", () -> AllianceManager.getAlliance().name())
@@ -569,17 +720,50 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(2, 1);
     autoTab.add("SYNC ALLIANCE", AllianceManager.syncAlliance()).withPosition(0, 2).withSize(2, 1);
 
+    // Auto condition checks
     autoTab
         .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))
-        .withPosition(1, 2)
+        .withPosition(5, 0)
         .withSize(1, 1);
 
     autoTab
         .addNumber("arm relative", () -> Math.toDegrees(shooter.getArmAngle()))
-        .withPosition(1, 2)
+        .withPosition(6, 0)
         .withSize(1, 1);
 
-    // Teleop info
+    autoTab.addBoolean("shooter good", this::shooterGood).withPosition(7, 0).withSize(1, 1);
+
+    autoTab.addBoolean("pv good", this::photonVisionGood).withPosition(7, 1).withSize(1, 1);
+
+    autoTab
+        .addNumber("ll latency", () -> vision.getLimelightLatency())
+        .withPosition(5, 2)
+        .withSize(1, 1);
+
+    autoTab
+        .addNumber("ll offset", () -> vision.getLimelightTargetOffset().getDegrees())
+        .withPosition(6, 2)
+        .withSize(1, 1);
+
+    autoTab
+        .addBoolean(
+            "ll good",
+            () ->
+                Constants.doubleEqual(
+                    vision.getLimelightTargetOffset().getDegrees(),
+                    0,
+                    Constants.Vision.Settings.AUTO_START_TOLERANCE))
+        .withPosition(7, 2)
+        .withSize(1, 1);
+
+    autoTab.addBoolean("prox 1 good", this::prox1Good).withPosition(5, 3).withSize(1, 1);
+    autoTab.addBoolean("prox 2 good", this::prox2Good).withPosition(6, 3).withSize(1, 1);
+    autoTab.addBoolean("prox 3 good", this::prox3Good).withPosition(7, 3).withSize(1, 1);
+
+    autoTab.addBoolean("GOOD TO GO", this::autoReady).withPosition(9, 0).withSize(3, 3);
+
+    // Teleop tab stuff
+
     teleTab.addBoolean("POSE WORKING", () -> poseWorking).withPosition(0, 0).withSize(2, 2);
     teleTab.addBoolean("AUTO INTAKE", () -> autoIntakeWorking).withPosition(2, 0).withSize(2, 2);
 
@@ -609,7 +793,19 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
 
-    // Climber zero stuff
+    teleTab
+        .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))
+        .withPosition(5, 0)
+        .withSize(1, 1);
+
+    teleTab
+        .addNumber("arm relative", () -> Math.toDegrees(shooter.getArmAngle()))
+        .withPosition(6, 0)
+        .withSize(1, 1);
+
+    teleTab.addBoolean("shooter good", this::shooterGood).withPosition(7, 0).withSize(1, 1);
+
+    // Test stuff
     testTab
         .add("zero climbers", new InstantCommand(() -> climbers.zero()))
         .withPosition(4, 1)
