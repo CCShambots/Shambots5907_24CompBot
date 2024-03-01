@@ -434,7 +434,7 @@ public class Constants {
     public static final class Hardware {
       public static final int CANDLE_ID = 0;
 
-      public static final int NUM_LIGHTS = 71;
+      public static final int NUM_LIGHTS = 70;
 
       public static final double BRIGHTNESS = 1.0;
     }
