@@ -542,7 +542,9 @@ public class Constants {
               true // DRIVE MOTOR INVERTED
               );
 
-      public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = DEFAULT_CURRENT_LIMIT;
+      public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
+          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true);
+      ;
     }
 
     public static final class Settings {
