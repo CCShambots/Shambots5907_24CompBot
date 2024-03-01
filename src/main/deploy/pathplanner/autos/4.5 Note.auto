@@ -80,7 +80,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4.5 YEET"
+            "pathName": "Shoot 8"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         },
         {

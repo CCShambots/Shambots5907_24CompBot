@@ -164,7 +164,11 @@ public class Constants {
 
       static {
         // FLYWHEEL SPEAKER VALUES
-        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 3000 / 60.0);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(Units.feetToMeters(5), 3000 / 60.0);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(Units.feetToMeters(10), 4000 / 60.0);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(
+            Units.feetToMeters(15), Flywheel.Settings.BASE_SHOT_VELOCITY);
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
 
         // ARM SPEAKER OFFSETS
@@ -327,7 +331,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BELT_SPEED = 1500 / 60.0; // RPS
+      public static final double BELT_SPEED = 3000 / 60.0; // RPS
 
       public static final double VOLTAGE_INC = 0.25;
     }
@@ -505,7 +509,7 @@ public class Constants {
               22, // DRIVE MOTOR ID
               23, // TURN MOTOR ID
               21, // ENCODER ID
-              -92.3, // ENCODER OFFSET 
+              -92.3, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -518,7 +522,7 @@ public class Constants {
               24, // DRIVE MOTOR ID
               25, // TURN MOTOR ID
               22, // ENCODER ID
-              32.87, // ENCODER OFFSET 
+              32.87, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED
@@ -531,7 +535,7 @@ public class Constants {
               26, // DRIVE MOTOR ID
               27, // TURN MOTOR ID
               23, // ENCODER ID
-              125.3, // ENCODER OFFSET 
+              125.3, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true // DRIVE MOTOR INVERTED

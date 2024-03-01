@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 2.8726623557949864,
+        "x": 2.707149718797708,
         "y": 5.55
       },
       "prevControl": {
-        "x": 2.5594416406224116,
+        "x": 2.393929003625133,
         "y": 5.571852608035297
       },
       "nextControl": null,
@@ -51,7 +51,7 @@
   "reversed": false,
   "folder": "NOTES",
   "previewStartingState": {
-    "rotation": -178.47247455778705,
+    "rotation": -179.0615457411782,
     "velocity": 0
   },
   "useDefaultConstraints": true

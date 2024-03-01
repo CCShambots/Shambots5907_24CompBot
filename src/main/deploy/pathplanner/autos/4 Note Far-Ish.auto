@@ -42,9 +42,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Note 8"
+            "pathName": "Shoot 8"
           }
         },
         {
@@ -60,9 +66,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Note 7"
+            "pathName": "7 Shoot"
           }
         },
         {
