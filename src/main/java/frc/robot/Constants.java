@@ -392,7 +392,7 @@ public class Constants {
       public static double VOLTAGE_INCREMENT = 0.125;
 
       // 0, 1
-      public static double AUTO_ZERO_POWER = 0.25;
+      public static double AUTO_ZERO_POWER = -0.25;
 
       // m/s
       public static double AUTO_ZERO_VELO_THRESHOLD = .05;
