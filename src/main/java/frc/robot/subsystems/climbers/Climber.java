@@ -80,7 +80,7 @@ public class Climber extends StateMachine<Climber.State> {
     registerStateCommand(
         State.AUTOMATIC_ZERO,
         new AutomaticZeroCommand(
-            this, io, AUTO_ZERO_POWER, AUTO_ZERO_VELO_THRESHOLD, AUTO_ZERO_VELO_THRESHOLD));
+            this, io, AUTO_ZERO_POWER, MIN_ZERO_TIME, AUTO_ZERO_VELO_THRESHOLD));
   }
 
   private void registerTransitions() {

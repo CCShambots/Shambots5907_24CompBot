@@ -35,7 +35,9 @@ public class AutomaticZeroCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(minRetractTime) && climber.getClimberVelo() < stallVeloThrehold;
+    System.out.println(climber.getClimberVelo());
+    return timer.hasElapsed(minRetractTime)
+        && Math.abs(climber.getClimberVelo()) < Math.abs(stallVeloThrehold);
   }
 
   @Override
