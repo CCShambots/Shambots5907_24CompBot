@@ -65,7 +65,8 @@ public class Indexer extends StateMachine<Indexer.State> {
         new SequentialCommandGroup(
             new InstantCommand(() -> io.setTargetVelocity(FEED_SPEED)), // spin up
             new WaitUntilCommand(
-                () -> !(inputs.prox1 || inputs.prox2)), // wait for neither prox to be tripped
+                () -> !(inputs.prox1 || inputs.prox2 || inputs.prox3)), // wait for neither prox to be tripped
+            new WaitCommand(0.2),
             transitionCommand(State.IDLE))); // go to idle
 
     registerStateCommand(
