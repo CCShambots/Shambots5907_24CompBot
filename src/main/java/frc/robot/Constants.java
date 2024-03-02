@@ -235,7 +235,7 @@ public class Constants {
       public static final double TRAP_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
-      public static final double CHUTE_INTAKE_POSITION = 30 * (Math.PI / 180); // RAD
+      public static final double CHUTE_INTAKE_POSITION = 40 * (Math.PI / 180); // RAD
 
       public static final double AUTO_SYNC_TOLERANCE = 0.1;
       public static final double AUTO_SYNC_MAX_VELOCITY = 0.1; // RAD/s
