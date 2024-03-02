@@ -44,7 +44,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note 4"
+            "pathName": "4 Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
           }
         },
         {
@@ -62,7 +68,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note 5"
+            "pathName": "5 Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
           }
         },
         {
