@@ -109,10 +109,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 "pv_instance_4",
                 Constants.Vision.Hardware.RIGHT_SHOOTER_CAM_POSE,
                 "pv_instance_3",
-                Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE
-                // "pv_instance_2",
-                // Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE
-                );
+                Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE,
+                "pv_instance_2",
+                Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
 
     vision = new Vision("limelight", photonMap);
 

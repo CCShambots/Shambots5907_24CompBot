@@ -109,10 +109,6 @@ public class Vision extends StateMachine<Vision.State> {
 
             pipelineData.targets.set(idx, target);
 
-            Logger.recordOutput(
-                "Vision/" + cam.getName() + "/target-" + target.getFiducialId() + "-avg-ambiguity",
-                target.getPoseAmbiguity());
-
             idx++;
           }
 

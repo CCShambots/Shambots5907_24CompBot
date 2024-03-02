@@ -63,6 +63,7 @@ public class ArmIOReal implements ArmIO {
 
   @Override
   public void stop() {
+    leaderMotor.setTarget(leaderMotor.getEncoderPosition());
     leaderMotor.stopMotor();
     followerMotor.stopMotor();
   }

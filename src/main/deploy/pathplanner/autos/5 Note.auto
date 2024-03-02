@@ -92,6 +92,12 @@
         {
           "type": "named",
           "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "shoot"
           }
         },
