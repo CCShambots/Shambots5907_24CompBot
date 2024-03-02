@@ -207,6 +207,8 @@ public class Robot extends LoggedRobot {
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
 
+    SubsystemManagerFactory.getInstance().notifyTestStart();
+
     Shuffleboard.selectTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
   }
 
