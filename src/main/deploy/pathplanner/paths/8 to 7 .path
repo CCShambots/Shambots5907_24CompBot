@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.671850679341497,
-        "y": 6.897648342009488
+        "x": 5.684364589669729,
+        "y": 6.5776350186240755
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.201491921293468,
-        "y": 6.275911260326894
+        "x": 6.594889924473726,
+        "y": 6.716034869514282
       },
       "isLocked": false,
-      "linkedName": "Note 8 End"
+      "linkedName": "8 Side Shot Position"
     },
     {
       "anchor": {

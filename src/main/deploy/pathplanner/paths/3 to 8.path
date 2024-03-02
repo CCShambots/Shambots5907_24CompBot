@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8788505466284287,
-        "y": 6.869031537371034
+        "x": 3.4262617593558167,
+        "y": 6.985550368616265
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.3648278930285525,
-        "y": 6.686926470410234
+        "x": 4.351355499516678,
+        "y": 7.167655435577065
       },
       "isLocked": false,
-      "linkedName": "Note 3 End"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -44,7 +44,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 2.0,
+    "velocity": 3.0,
     "rotation": -178.29018595585845,
     "rotateFast": false
   },

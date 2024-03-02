@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.237834122727069,
-        "y": 2.662361255518358
+        "x": 2.6905572888341873,
+        "y": 2.840839044588471
       },
       "isLocked": false,
       "linkedName": "Source Side Start"
@@ -20,8 +20,8 @@
         "y": 0.6706316526819898
       },
       "prevControl": {
-        "x": 5.410166565315523,
-        "y": 0.6160338971153989
+        "x": 4.9705127271833955,
+        "y": 0.6410098357020145
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 5.0,
-        "maxAcceleration": 5.0,
+        "maxAcceleration": 4.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
       }
