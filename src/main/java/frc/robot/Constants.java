@@ -465,7 +465,7 @@ public class Constants {
           new StrobeAnimation(255, 255, 0, 0, BLINK_SPEED, NUM_LIGHTS);
 
       public static final Animation INTAKE_ANIMATION =
-          new StrobeAnimation(0, 0, 255, 0, BLINK_SPEED, NUM_LIGHTS);
+          new StrobeAnimation(0, 255, 255, 0, BLINK_SPEED, NUM_LIGHTS);
 
       public static final Animation EJECT_ANIMATION =
           new StrobeAnimation(255, 0, 0, 0, BLINK_SPEED, NUM_LIGHTS);
