@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.704851409702819,
-        "y": 1.6631537786510628
+        "x": 7.022563858276506,
+        "y": 3.881437133116481
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.159295232085274,
-        "y": 2.3761932091338225
+        "x": 4.378371109683396,
+        "y": 4.659814219282418
       },
       "prevControl": {
-        "x": 4.650703119588057,
-        "y": 1.6232017918581303
+        "x": 5.6260637919199725,
+        "y": 3.698289583430377
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Note 4 End"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 130.78419224335352,
+    "rotation": 167.4302081923213,
     "rotateFast": false
   },
   "reversed": false,

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.604129222099275,
-        "y": 4.1
+        "x": 1.279567587960127,
+        "y": 4.747843305801994
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.348591639151882,
-        "y": 2.707503630269017
+        "x": 2.237834122727069,
+        "y": 2.662361255518358
       },
       "isLocked": false,
-      "linkedName": "Note 1 End"
+      "linkedName": "Source Side Start"
     },
     {
       "anchor": {
@@ -32,7 +32,7 @@
     {
       "waypointRelativePos": 0.5,
       "rotationDegrees": 180.0,
-      "rotateFast": true
+      "rotateFast": false
     }
   ],
   "constraintZones": [],
@@ -51,7 +51,7 @@
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": 157.47684048319917,
+    "rotation": 144.7878253436943,
     "velocity": 0
   },
   "useDefaultConstraints": true

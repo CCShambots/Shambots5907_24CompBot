@@ -506,7 +506,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     controllerBindings.indicateAmpIntention().onTrue(shooter.indicateAmpIntention());
 
-    controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
+    // controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
 
     controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
 
