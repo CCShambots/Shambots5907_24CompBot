@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6946857549438256,
-        "y": 4.377805809737618
+        "x": 1.279567587960127,
+        "y": 4.747843305801994
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8476540111908971,
-        "y": 4.253974364204274
+        "x": 1.3669780201013106,
+        "y": 4.634209744018455
       },
       "isLocked": false,
       "linkedName": "Source Side Start"
     },
     {
       "anchor": {
-        "x": 1.5760742790340947,
-        "y": 4.1
+        "x": 2.156585590443337,
+        "y": 4.112660832242725
       },
       "prevControl": {
-        "x": 1.0760742790340947,
-        "y": 4.1
+        "x": 1.7253607918801641,
+        "y": 4.101006107957234
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,7 +56,7 @@
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": 123.31063082456079,
+    "rotation": 147.18863320193194,
     "velocity": 0
   },
   "useDefaultConstraints": true

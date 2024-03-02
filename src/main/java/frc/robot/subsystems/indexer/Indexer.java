@@ -88,7 +88,12 @@ public class Indexer extends StateMachine<Indexer.State> {
     registerStateCommand(State.IDLE, idleWatchCommand());
 
     registerStateCommand(State.HOLDING_RING, () -> io.stop());
-    registerStateCommand(State.LOST_RING, () -> io.stop());
+    registerStateCommand(
+        State.LOST_RING,
+        () -> {
+          io.stop();
+          requestTransition(State.INDEXING);
+        });
   }
 
   private void registerTransitions() {

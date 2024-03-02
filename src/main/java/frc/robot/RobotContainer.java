@@ -109,7 +109,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 "pv_instance_4",
                 Constants.Vision.Hardware.RIGHT_SHOOTER_CAM_POSE,
                 "pv_instance_3",
-                Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE);
+                Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE,
+                // "pv_instance_2",
+                // Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE
+                );
 
     vision = new Vision("limelight", photonMap);
 
@@ -215,7 +218,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         "visionIntake",
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE).withTimeout(2),
-            indexer.waitForState(Indexer.State.INDEXING),
+            indexer
+                .waitForState(Indexer.State.INDEXING)
+                .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING)),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
+
+    NamedCommands.registerCommand(
+        "aim",
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
+            new WaitCommand(0.5),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
@@ -625,7 +638,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         State.AUTONOMOUS,
         new SequentialCommandGroup(
             lights.transitionCommand(Lights.State.AUTO),
-            shooter.transitionCommand(Shooter.State.BASE_SHOT),
+            shooter.transitionCommand(Shooter.State.AUTO_START_SHOT),
             shooter.waitForFlag(Shooter.State.READY).withTimeout(1.25),
             indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
             indexer.waitForState(Indexer.State.IDLE),

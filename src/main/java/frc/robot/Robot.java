@@ -167,6 +167,8 @@ public class Robot extends LoggedRobot {
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
 
     robotContainer.returnLightsToIdle();
+
+    Shuffleboard.selectTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
   }
 
   @Override
@@ -186,8 +188,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousExit() {
     robotContainer.resetFieldOriented();
-
-    Shuffleboard.selectTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
   }
 
   @Override

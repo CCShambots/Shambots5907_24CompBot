@@ -70,8 +70,6 @@ public class FacePointCommand extends Command {
 
     this.deadband = deadband;
     this.controllerConversion = controllerConversion;
-
-    addRequirements(subsystem);
   }
 
   public boolean atAngle(double tolerance) {

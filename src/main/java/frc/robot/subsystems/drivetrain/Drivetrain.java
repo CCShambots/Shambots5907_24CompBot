@@ -244,6 +244,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.TRAP);
     addOmniTransition(State.FACE_AMP);
     addOmniTransition(State.FACE_SPEAKER);
+    addOmniTransition(State.FACE_SPEAKER_AUTO);
 
     addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
   }
@@ -257,6 +258,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         State.FACE_SPEAKER,
         getFacePointCommand(
             flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED));
+
+    registerStateCommand(
+        State.FACE_SPEAKER_AUTO,
+        getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED, true));
   }
 
   private void registerPathFollowStateCommands() {
@@ -275,14 +281,18 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private Command getFacePointCommand(Pose2d pose, SwerveSpeedLimits limits) {
+    return getFacePointCommand(pose, limits, false);
+  }
+
+  private Command getFacePointCommand(Pose2d pose, SwerveSpeedLimits limits, boolean usedInAuto) {
     FacePointCommand facePointCommand =
         new FacePointCommand(
             drive,
             AUTO_THETA_GAINS,
             pose,
             drive::getPose,
-            xSupplier,
-            ySupplier,
+            !usedInAuto ? xSupplier : () -> 0,
+            !usedInAuto ? ySupplier : () -> 0,
             Constants.Controller.DEADBAND,
             Constants.Controller.DRIVE_CONVERSION,
             this,
@@ -421,6 +431,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     CHAIN_ORIENTED_DRIVE,
     FOLLOWING_AUTONOMOUS_TRAJECTORY,
     FACE_SPEAKER,
+    FACE_SPEAKER_AUTO,
     FACE_AMP,
     TRAP,
     AUTO_AMP,
