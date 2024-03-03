@@ -29,6 +29,11 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger manualBaseShot() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
   public Trigger groundIntake() {
     return operatorController.a();
   }
@@ -39,7 +44,7 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger indicateAmpIntention() {
+  public Trigger manualAmp() {
     return new Trigger(() -> false);
   }
 

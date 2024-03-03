@@ -40,6 +40,11 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger manualBaseShot() {
+    return operatorController.b();
+  }
+
+  @Override
   public Trigger groundIntake() {
     return leftFlightStick.trigger();
   }
@@ -65,7 +70,7 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
-  public Trigger indicateAmpIntention() {
+  public Trigger manualAmp() {
     return operatorController.y();
   }
 

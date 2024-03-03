@@ -473,6 +473,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 transitionCommand(State.BASE_SHOT, false),
                 () -> poseWorking))
         .onFalse(transitionCommand(State.TRAVERSING, false));
+    
+        controllerBindings.manualBaseShot().onTrue(transitionCommand(State.BASE_SHOT, false));
 
     controllerBindings
         .groundIntake()
@@ -503,7 +505,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 () -> poseWorking))
         .onFalse(transitionCommand(State.TRAVERSING));
 
-    controllerBindings.indicateAmpIntention().onTrue(shooter.indicateAmpIntention());
+    controllerBindings.manualAmp().onTrue(transitionCommand(State.AMP, false));
 
     // controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
 
