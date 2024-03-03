@@ -199,7 +199,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     NamedCommands.registerCommand(
         "fireSequence",
         new SequentialCommandGroup(
-            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(3),
+            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
             intake.transitionCommand(Intake.State.IDLE, false),
             indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
             new WaitCommand(0.25),

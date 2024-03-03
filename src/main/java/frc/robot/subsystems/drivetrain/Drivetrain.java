@@ -381,7 +381,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     Rotation2d newAngle = drive.getPose().getRotation();
 
     // Flip by 180 if we're on red alliance
-    if (flipPath) newAngle = newAngle.plus(new Rotation2d(Math.PI));
+    // if (flipPath)
+    newAngle = newAngle.plus(new Rotation2d(Math.PI));
 
     drive.resetFieldOrientedRotationOffset(newAngle);
   }
