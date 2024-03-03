@@ -372,8 +372,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   public Command resetGyro() {
     return new WhileDisabledInstantCommand(
         () -> {
-          drive.resetFieldOrientedRotationOffset(
-              Rotation2d.fromDegrees(180).plus(drive.getCurrentFieldOrientedAngle()));
+          drive.resetGyro(
+              Rotation2d.fromDegrees(180));
         });
   }
 
