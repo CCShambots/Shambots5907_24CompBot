@@ -464,7 +464,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     })
                 .andThen(drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)))
         .onFalse(new InstantCommand(() -> drivetrain.requestTransition(prevDTState)));
-        
+
     controllerBindings
         .shoot()
         .onTrue(

@@ -372,8 +372,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   public Command resetGyro() {
     return new WhileDisabledInstantCommand(
         () -> {
-          drive.resetGyro(
-              Rotation2d.fromDegrees(180));
+          drive.resetGyro(Rotation2d.fromDegrees(180));
         });
   }
 

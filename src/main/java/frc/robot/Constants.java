@@ -28,11 +28,11 @@ import java.util.function.UnaryOperator;
 public class Constants {
   public static final double LOOP_PERIOD = 0.02;
 
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REPLAY;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
-  public static final boolean ALLOW_TUNING = true;
+  public static final boolean ALLOW_TUNING = false;
 
   public static final double AUTO_TIME = 15;
   public static final double GAP_TIME = 3;
