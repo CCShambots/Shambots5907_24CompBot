@@ -473,8 +473,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 transitionCommand(State.BASE_SHOT, false),
                 () -> poseWorking))
         .onFalse(transitionCommand(State.TRAVERSING, false));
-    
-        controllerBindings.manualBaseShot().onTrue(transitionCommand(State.BASE_SHOT, false));
+
+    controllerBindings.manualBaseShot().onTrue(transitionCommand(State.BASE_SHOT, false));
 
     controllerBindings
         .groundIntake()
