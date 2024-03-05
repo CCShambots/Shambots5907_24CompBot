@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.419393510067297,
-      "y": 5.661402381628293
+      "x": 1.3678832617180807,
+      "y": 5.541211802146789
     },
-    "rotation": -150.64224645720864
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3 to 8"
+            "pathName": "2 to 6"
           }
         },
         {
@@ -50,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot 8"
+            "pathName": "6 Shoot"
           }
         },
         {
@@ -68,7 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "8 to 7 "
+            "pathName": "6 to 5"
           }
         },
         {
@@ -80,7 +80,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7 Shoot"
+            "pathName": "5 Shoot"
           }
         },
         {

@@ -143,7 +143,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    lights = new Lights(getLightsIO(), () -> !autoReady() && !hasBeenEnabled);
+    lights =
+        new Lights(getLightsIO(), () -> !autoReady() && !hasBeenEnabled, () -> !hasBeenEnabled);
 
     shooter =
         new Shooter(
