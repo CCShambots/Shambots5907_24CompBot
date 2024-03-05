@@ -216,10 +216,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     NamedCommands.registerCommand(
         "visionIntake",
         new SequentialCommandGroup(
-            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE).withTimeout(2),
+            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
             indexer
                 .waitForState(Indexer.State.INDEXING)
-                .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING)),
+                .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
+                .withTimeout(3),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
@@ -357,6 +358,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 Commands.none(),
                 () -> poseWorking),
             lights.transitionCommand(Lights.State.CLIMB),
+            shooter.flywheelSpinDown(),
             climbers.transitionCommand(Climbers.State.FREE_EXTEND),
             new WaitUntilCommand(controllerBindings.retractClimb()),
             climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
@@ -793,18 +795,22 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(8, 1);
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
+    teleTab
+        .addBoolean("KIND OF INTAK-ED", () -> intake.ringPresent())
+        .withSize(3, 1)
+        .withPosition(5, 0);
 
     teleTab
         .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))
-        .withPosition(5, 0)
+        .withPosition(8, 0)
         .withSize(1, 1);
 
     teleTab
         .addNumber("arm relative", () -> Math.toDegrees(shooter.getArmAngle()))
-        .withPosition(6, 0)
+        .withPosition(9, 0)
         .withSize(1, 1);
 
-    teleTab.addBoolean("shooter good", this::shooterGood).withPosition(7, 0).withSize(1, 1);
+    teleTab.addBoolean("shooter good", this::shooterGood).withPosition(10, 0).withSize(1, 1);
 
     // Test stuff
     testTab

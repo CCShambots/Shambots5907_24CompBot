@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6905572888341873,
-        "y": 2.840839044588471
+        "x": 2.362768168304748,
+        "y": 1.9303137097844736
       },
       "isLocked": false,
       "linkedName": "Source Side Start"
     },
     {
       "anchor": {
-        "x": 6.621928593338156,
-        "y": 0.6706316526819898
+        "x": 5.706217197705025,
+        "y": 0.6847150517726062
       },
       "prevControl": {
-        "x": 4.9705127271833955,
-        "y": 0.6410098357020145
+        "x": 4.054801331550265,
+        "y": 0.6550932347926308
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 180.0,
+      "rotationDegrees": 165.3551097989397,
       "rotateFast": false
     }
   ],
@@ -56,8 +56,8 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 3.0,
-    "rotation": 180.0,
+    "velocity": 1.5,
+    "rotation": 179.16968451374197,
     "rotateFast": true
   },
   "reversed": false,
