@@ -253,8 +253,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             climbers.transitionCommand(Climbers.State.FREE_RETRACT),
             intake.transitionCommand(Intake.State.IDLE),
-            shooter.partialFlywheelSpinup(),
-            new DetermineRingStatusCommand(shooter, indexer, lights)));
+            new SequentialCommandGroup(
+                new DetermineRingStatusCommand(shooter, indexer, lights),
+                shooter.partialFlywheelSpinup())));
 
     registerStateCommand(
         State.SPEAKER_SCORE,
