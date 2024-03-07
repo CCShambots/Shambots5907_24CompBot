@@ -802,6 +802,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(3, 1)
         .withPosition(5, 0);
 
+    teleTab.addBoolean("pv good", this::photonVisionGood).withPosition(0, 3).withSize(4, 1);
+
     teleTab
         .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))
         .withPosition(8, 0)
