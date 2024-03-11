@@ -205,7 +205,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
               indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
               intake.transitionCommand(Intake.State.IDLE, false),
               indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
-              new WaitCommand(0.25),
+              // new WaitCommand(0.25),
               new ParallelCommandGroup(
                   intake.transitionCommand(Intake.State.INTAKE, false),
                   new InstantCommand(
