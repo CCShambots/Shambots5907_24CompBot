@@ -225,7 +225,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             indexer
                 .waitForState(Indexer.State.INDEXING)
                 .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
-                .raceWith(new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
+                .raceWith(
+                    new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
                 .withTimeout(3),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
