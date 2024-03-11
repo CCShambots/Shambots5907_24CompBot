@@ -144,7 +144,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningStop());
 
     lights =
-        new Lights(getLightsIO(), () -> !autoReady() && !hasBeenEnabled, () -> !hasBeenEnabled);
+        new Lights(
+            getLightsIO(),
+            () -> !autoReady() && !hasBeenEnabled,
+            () -> !hasBeenEnabled,
+            intake::ringPresent);
 
     shooter =
         new Shooter(

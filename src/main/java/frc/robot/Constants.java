@@ -28,7 +28,7 @@ import java.util.function.UnaryOperator;
 public class Constants {
   public static final double LOOP_PERIOD = 0.02;
 
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REAL;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
@@ -447,6 +447,7 @@ public class Constants {
       public static final double BLINK_SPEED = .075;
 
       public static final RGB NO_RING_RGB = new RGB(0, 0, 0);
+      public static final RGB PARTIAL_HOLD_RGB = new RGB(255, 255, 255);
       public static final RGB ERROR_RGB = new RGB(255, 0, 0);
       public static final RGB HOLDING_RING = new RGB(0, 0, 255);
       public static final RGB AUTO_RGB = new RGB(0, 0, 255);
@@ -466,6 +467,9 @@ public class Constants {
 
       public static final Animation INTAKE_ANIMATION =
           new StrobeAnimation(0, 255, 255, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation PARTIAL_INTAKE_ANIAMTION =
+          new StrobeAnimation(255, 255, 255, 0, BLINK_SPEED, NUM_LIGHTS);
 
       public static final Animation EJECT_ANIMATION =
           new StrobeAnimation(255, 0, 0, 0, BLINK_SPEED, NUM_LIGHTS);

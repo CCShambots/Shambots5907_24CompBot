@@ -20,13 +20,20 @@ public class Lights extends StateMachine<Lights.State> {
   private final BooleanSupplier flashAutoError;
   private final BooleanSupplier displayAutoInfo;
 
-  public Lights(LightsIO io, BooleanSupplier flashAutoError, BooleanSupplier displayAutoInfo) {
+  private final BooleanSupplier intakeTripped;
+
+  public Lights(
+      LightsIO io,
+      BooleanSupplier flashAutoError,
+      BooleanSupplier displayAutoInfo,
+      BooleanSupplier intakeTripped) {
     super("Lights", State.UNDETERMINED, State.class);
 
     this.io = io;
 
     this.flashAutoError = flashAutoError;
     this.displayAutoInfo = displayAutoInfo;
+    this.intakeTripped = intakeTripped;
 
     registerStateCommmands();
     registerTransitions();
@@ -37,11 +44,30 @@ public class Lights extends StateMachine<Lights.State> {
   }
 
   private void registerStateCommmands() {
-    registerStandardState(State.NO_RING);
+
+    registerStateCommand(
+        State.NO_RING,
+        new ParallelCommandGroup(
+                setLights(getState()),
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(intakeTripped),
+                    setLights(State.PARTIAL_HOLD),
+                    new WaitUntilCommand(() -> !intakeTripped.getAsBoolean())))
+            .repeatedly());
+
+    registerStateCommand(
+        State.INTAKE,
+        new ParallelCommandGroup(
+                setLights(State.INTAKE),
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(intakeTripped),
+                    setLights(State.PARTIAL_INTAKE),
+                    new WaitUntilCommand(() -> !intakeTripped.getAsBoolean())))
+            .repeatedly());
+
     registerStandardState(State.HAVE_RING);
     registerStandardState(State.TARGETING);
     registerStandardState(State.READY);
-    registerStandardState(State.INTAKE);
     registerStandardState(State.AUTOMATIC_SCORE);
     registerStandardState(State.EJECT);
     registerStandardState(State.CLIMB);
@@ -96,7 +122,11 @@ public class Lights extends StateMachine<Lights.State> {
   }
 
   private Command setLights(State state) {
-    return new WhileDisabledInstantCommand(() -> state.data.applyToCANdle(io));
+    return new WhileDisabledInstantCommand(
+        () -> {
+          Logger.recordOutput("Lights/currentRGB", state.name());
+          state.data.applyToCANdle(io);
+        });
   }
 
   @Override
@@ -118,7 +148,9 @@ public class Lights extends StateMachine<Lights.State> {
     EJECT(new LEDData(EJECT_ANIMATION)),
     CLIMB(new LEDData(CLIMB_RGB)),
     ERROR(new LEDData(ERROR_RGB)),
-    AUTO_ERROR(new LEDData(ERROR_RGB));
+    AUTO_ERROR(new LEDData(ERROR_RGB)),
+    PARTIAL_HOLD(new LEDData(PARTIAL_HOLD_RGB)),
+    PARTIAL_INTAKE(new LEDData(PARTIAL_INTAKE_ANIAMTION));
 
     private final LEDData data;
 
