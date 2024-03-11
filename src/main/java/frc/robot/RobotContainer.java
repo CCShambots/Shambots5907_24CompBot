@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.*;
@@ -201,33 +200,32 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     NamedCommands.registerCommand(
         "fireSequence",
         new ConditionalCommand(
-          new SequentialCommandGroup(
-              indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
-              intake.transitionCommand(Intake.State.IDLE, false),
-              indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
-              // new WaitCommand(0.25),
-              new ParallelCommandGroup(
-                  intake.transitionCommand(Intake.State.INTAKE, false),
-                  new InstantCommand(
-                      () -> {
-                        new SequentialCommandGroup(
-                                indexer.waitForState(Indexer.State.IDLE),
-                                indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
-                            .schedule();
-                      }
-                  )
-              )
-            )
-        , new InstantCommand(), () -> ringSomewhereInBot())
-    );
+            new SequentialCommandGroup(
+                indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
+                intake.transitionCommand(Intake.State.IDLE, false),
+                indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
+                // new WaitCommand(0.25),
+                new ParallelCommandGroup(
+                    intake.transitionCommand(Intake.State.INTAKE, false),
+                    new InstantCommand(
+                        () -> {
+                          new SequentialCommandGroup(
+                                  indexer.waitForState(Indexer.State.IDLE),
+                                  indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
+                              .schedule();
+                        }))),
+            new InstantCommand(),
+            () -> ringSomewhereInBot()));
 
     NamedCommands.registerCommand(
         "visionIntake",
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+            drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
             indexer
                 .waitForState(Indexer.State.INDEXING)
                 .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
+                .raceWith(new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
                 .withTimeout(3),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
@@ -700,7 +698,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private boolean ringSomewhereInBot() {
-    return intake.ringPresent() || indexer.isProx1Active() || indexer.isProx2Active() || indexer.isProx3Active();
+    return intake.ringPresent()
+        || indexer.isProx1Active()
+        || indexer.isProx2Active()
+        || indexer.isProx3Active();
   }
 
   private boolean photonVisionGood() {
