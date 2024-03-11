@@ -236,7 +236,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         "aim",
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
-            new WaitCommand(0.5),
+            drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE).withTimeout(0.5),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
