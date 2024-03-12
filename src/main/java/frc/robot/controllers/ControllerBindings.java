@@ -26,6 +26,8 @@ public interface ControllerBindings {
 
   Trigger shoot();
 
+  Trigger manualBaseShot();
+
   Trigger humanPlayerIntake();
 
   Trigger traversing();
@@ -34,7 +36,7 @@ public interface ControllerBindings {
 
   Trigger autoAmp();
 
-  Trigger indicateAmpIntention();
+  Trigger manualAmp();
 
   Trigger trapScore();
 

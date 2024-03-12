@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.159295232085274,
-        "y": 2.3761932091338225
+        "x": 3.681208853100936,
+        "y": 2.622312964235512
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.666640447744072,
-        "y": 1.3184406847961874
+        "x": 4.188554068759735,
+        "y": 1.5645604398978765
       },
       "isLocked": false,
       "linkedName": "Note 4 End"
     },
     {
       "anchor": {
-        "x": 6.7249490900365885,
-        "y": 2.456320262121492
+        "x": 6.09227993966192,
+        "y": 1.6680824133609227
       },
       "prevControl": {
-        "x": 6.1287009530540795,
-        "y": 1.4422721303295314
+        "x": 5.112761616988911,
+        "y": 1.4535212569658835
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,12 +31,12 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.55,
-      "rotationDegrees": 177.86687379817874,
+      "rotationDegrees": -158.0,
       "rotateFast": true
     },
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": 180.0,
+      "rotationDegrees": -158.19859051364818,
       "rotateFast": false
     }
   ],
@@ -49,8 +49,8 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": -179.20965434691686,
+    "velocity": 3.0,
+    "rotation": -159.3255752391261,
     "rotateFast": false
   },
   "reversed": false,

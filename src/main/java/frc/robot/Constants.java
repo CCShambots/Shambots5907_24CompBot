@@ -28,11 +28,11 @@ import java.util.function.UnaryOperator;
 public class Constants {
   public static final double LOOP_PERIOD = 0.02;
 
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REAL;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
-  public static final boolean ALLOW_TUNING = true;
+  public static final boolean ALLOW_TUNING = false;
 
   public static final double AUTO_TIME = 15;
   public static final double GAP_TIME = 3;
@@ -235,7 +235,7 @@ public class Constants {
       public static final double TRAP_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
-      public static final double CHUTE_INTAKE_POSITION = 30 * (Math.PI / 180); // RAD
+      public static final double CHUTE_INTAKE_POSITION = 40 * (Math.PI / 180); // RAD
 
       public static final double AUTO_SYNC_TOLERANCE = 0.1;
       public static final double AUTO_SYNC_MAX_VELOCITY = 0.1; // RAD/s
@@ -295,8 +295,8 @@ public class Constants {
 
       public static final double CHUTE_INTAKE_SPEED = -500 / 60.0; // RPS
 
-      public static final double AMP_SPEED_TOP = 250 / 60.0; // RPS
-      public static final double AMP_SPEED_BOTTOM = 1000 / 60.0; // RPS
+      public static final double AMP_SPEED_TOP = 125 / 60.0; // RPS
+      public static final double AMP_SPEED_BOTTOM = 875 / 60.0; // RPS
 
       // TODO: MAKE FINAL
       public static double TRAP_SPEED_TOP = 700 / 60.0; // RPS
@@ -474,7 +474,7 @@ public class Constants {
           new StrobeAnimation(255, 255, 0, 0, BLINK_SPEED, NUM_LIGHTS);
 
       public static final Animation INTAKE_ANIMATION =
-          new StrobeAnimation(0, 0, 255, 0, BLINK_SPEED, NUM_LIGHTS);
+          new StrobeAnimation(0, 255, 255, 0, BLINK_SPEED, NUM_LIGHTS);
 
       public static final Animation EJECT_ANIMATION =
           new StrobeAnimation(255, 0, 0, 0, BLINK_SPEED, NUM_LIGHTS);

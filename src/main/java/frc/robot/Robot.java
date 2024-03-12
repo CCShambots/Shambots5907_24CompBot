@@ -129,6 +129,9 @@ public class Robot extends LoggedRobot {
         "Vision/right-intake-cam-pose", Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE);
     Logger.recordOutput(
         "Vision/left-intake-cam-pose", Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
+
+    CommandScheduler.getInstance()
+        .onCommandInitialize((cmd) -> Logger.recordOutput("LastInitializedCommand", cmd.getName()));
   }
 
   @Override
@@ -206,6 +209,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+
+    SubsystemManagerFactory.getInstance().notifyTestStart();
 
     Shuffleboard.selectTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
   }

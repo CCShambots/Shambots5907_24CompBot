@@ -59,6 +59,8 @@ public class IntakeIOReal implements IntakeIO {
 
   @Override
   public void stop() {
+    topMotor.setTarget(0);
+
     topMotor.stopMotor();
     bottomMotor.stopMotor();
   }

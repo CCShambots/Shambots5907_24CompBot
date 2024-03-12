@@ -5,7 +5,7 @@
       "x": 1.279567587960127,
       "y": 4.747843305801994
     },
-    "rotation": 145.92350764410867
+    "rotation": 145.05910362843233
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to 1"
+            "pathName": "Start and Note 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Note 1"
+            "pathName": "1 to 2"
           }
         },
         {
@@ -62,6 +62,12 @@
         {
           "type": "named",
           "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "fireSequence"
           }
         },
@@ -72,21 +78,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Note 8"
+            "pathName": "Shoot 8"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "aim"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
           }
         }
       ]

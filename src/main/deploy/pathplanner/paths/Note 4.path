@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.604758510555084,
-        "y": 0.8194390368019482
+        "x": 5.706217197705025,
+        "y": 0.6847150517726062
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.410720624458108,
-        "y": 0.7357044705216299
+        "x": 6.480503109913214,
+        "y": 0.702851060941294
       },
       "isLocked": false,
       "linkedName": "Note 4 Start"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 3.159295232085274,
-        "y": 2.3761932091338225
+        "x": 3.681208853100936,
+        "y": 2.622312964235512
       },
       "prevControl": {
-        "x": 3.9205022354681383,
-        "y": 1.5119657090525245
+        "x": 4.442415856483801,
+        "y": 1.758085464154214
       },
       "nextControl": null,
       "isLocked": false,
@@ -85,7 +85,7 @@
   "reversed": false,
   "folder": "NOTES",
   "previewStartingState": {
-    "rotation": -177.36150817458883,
+    "rotation": -177.93432653185513,
     "velocity": 0
   },
   "useDefaultConstraints": true

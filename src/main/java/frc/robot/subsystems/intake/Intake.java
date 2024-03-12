@@ -74,6 +74,10 @@ public class Intake extends StateMachine<Intake.State> {
         });
   }
 
+  public boolean ringPresent() {
+    return inputs.proxTripped;
+  }
+
   @Override
   protected void update() {
     io.updateInputs(inputs);

@@ -109,10 +109,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 "pv_instance_4",
                 Constants.Vision.Hardware.RIGHT_SHOOTER_CAM_POSE,
                 "pv_instance_3",
-                Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE
-                // "pv_instance_2",
-                // Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE
-                );
+                Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE,
+                "pv_instance_2",
+                Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
 
     vision = new Vision("limelight", photonMap);
 
@@ -144,7 +143,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    lights = new Lights(getLightsIO(), () -> !autoReady() && !hasBeenEnabled);
+    lights =
+        new Lights(getLightsIO(), () -> !autoReady() && !hasBeenEnabled, () -> !hasBeenEnabled);
 
     shooter =
         new Shooter(
@@ -200,7 +200,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     NamedCommands.registerCommand(
         "fireSequence",
         new SequentialCommandGroup(
-            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(3),
+            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
             intake.transitionCommand(Intake.State.IDLE, false),
             indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
             new WaitCommand(0.25),
@@ -217,10 +217,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     NamedCommands.registerCommand(
         "visionIntake",
         new SequentialCommandGroup(
-            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE).withTimeout(2),
+            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
             indexer
                 .waitForState(Indexer.State.INDEXING)
-                .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING)),
+                .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
+                .withTimeout(3),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
@@ -252,9 +253,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             climbers.transitionCommand(Climbers.State.FREE_RETRACT),
             intake.transitionCommand(Intake.State.IDLE),
-            new ConditionalCommand(
-                shooter.partialFlywheelSpinup(), new InstantCommand(), () -> indexer.ringPresent()),
-            new DetermineRingStatusCommand(shooter, indexer, lights)));
+            new SequentialCommandGroup(
+                new DetermineRingStatusCommand(shooter, indexer, lights),
+                shooter.partialFlywheelSpinup())));
 
     registerStateCommand(
         State.SPEAKER_SCORE,
@@ -359,6 +360,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 Commands.none(),
                 () -> poseWorking),
             lights.transitionCommand(Lights.State.CLIMB),
+            shooter.flywheelSpinDown(),
             climbers.transitionCommand(Climbers.State.FREE_EXTEND),
             new WaitUntilCommand(controllerBindings.retractClimb()),
             climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
@@ -466,6 +468,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     })
                 .andThen(drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)))
         .onFalse(new InstantCommand(() -> drivetrain.requestTransition(prevDTState)));
+
     controllerBindings
         .shoot()
         .onTrue(
@@ -474,6 +477,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 transitionCommand(State.BASE_SHOT, false),
                 () -> poseWorking))
         .onFalse(transitionCommand(State.TRAVERSING, false));
+
+    controllerBindings.manualBaseShot().onTrue(transitionCommand(State.BASE_SHOT, false));
 
     controllerBindings
         .groundIntake()
@@ -504,9 +509,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 () -> poseWorking))
         .onFalse(transitionCommand(State.TRAVERSING));
 
-    controllerBindings.indicateAmpIntention().onTrue(shooter.indicateAmpIntention());
+    controllerBindings.manualAmp().onTrue(transitionCommand(State.AMP, false));
 
-    controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
+    // controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
 
     controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
 
@@ -792,18 +797,24 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(8, 1);
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
+    teleTab
+        .addBoolean("KIND OF INTAK-ED", () -> intake.ringPresent())
+        .withSize(3, 1)
+        .withPosition(5, 0);
+
+    teleTab.addBoolean("pv good", this::photonVisionGood).withPosition(0, 3).withSize(4, 1);
 
     teleTab
         .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))
-        .withPosition(5, 0)
+        .withPosition(8, 0)
         .withSize(1, 1);
 
     teleTab
         .addNumber("arm relative", () -> Math.toDegrees(shooter.getArmAngle()))
-        .withPosition(6, 0)
+        .withPosition(9, 0)
         .withSize(1, 1);
 
-    teleTab.addBoolean("shooter good", this::shooterGood).withPosition(7, 0).withSize(1, 1);
+    teleTab.addBoolean("shooter good", this::shooterGood).withPosition(10, 0).withSize(1, 1);
 
     // Test stuff
     testTab

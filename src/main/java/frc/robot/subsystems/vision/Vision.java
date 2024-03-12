@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
@@ -14,6 +15,7 @@ import frc.robot.ShamLib.vision.PhotonVision.Apriltag.PVApriltagCam;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -171,6 +173,18 @@ public class Vision extends StateMachine<Vision.State> {
     }
 
     return updates;
+  }
+
+  @AutoLogOutput(key = "Vision/RingTarget")
+  public Translation2d[] getCurrentRingTarget() {
+    RingVisionUpdate update = getLatestRingVisionUpdate();
+
+    if (update != null) {
+      return new Translation2d[] {
+        new Translation2d(update.centerOffsetX.getDegrees(), update.centerOffsetY.getDegrees())
+      };
+
+    } else return new Translation2d[] {};
   }
 
   private RingVisionUpdate getLatestRingVisionUpdate() {

@@ -164,6 +164,10 @@ public class Shooter extends StateMachine<Shooter.State> {
     return flywheel.transitionCommand(Flywheel.State.PARTIAL_SPINUP);
   }
 
+  public Command flywheelSpinDown() {
+    return flywheel.transitionCommand(Flywheel.State.IDLE);
+  }
+
   public Command indicateAmpIntention() {
     return flywheel.transitionCommand(Flywheel.State.AMP);
   }
