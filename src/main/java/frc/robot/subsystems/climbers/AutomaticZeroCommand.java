@@ -8,22 +8,16 @@ public class AutomaticZeroCommand extends Command {
   private final Climber climber;
   private final ClimberIO climberIO;
   private final double runPower;
-  private final double minRetractTime;
-  private final double stallVeloThrehold;
 
   private final Timer timer = new Timer();
 
   public AutomaticZeroCommand(
       Climber climber,
       ClimberIO climberIO,
-      double runPower,
-      double minRetractTime,
-      double stallVeloThreshold) {
+      double runPower) {
     this.climberIO = climberIO;
     this.climber = climber;
     this.runPower = runPower;
-    this.minRetractTime = minRetractTime;
-    this.stallVeloThrehold = stallVeloThreshold;
   }
 
   @Override
@@ -36,14 +30,12 @@ public class AutomaticZeroCommand extends Command {
   @Override
   public boolean isFinished() {
     System.out.println(climber.getClimberVelo());
-    return timer.hasElapsed(minRetractTime)
-        && Math.abs(climber.getClimberVelo()) < Math.abs(stallVeloThrehold);
+    return climber.isTouchTripped();
   }
 
   @Override
   public void end(boolean interrupted) {
     climberIO.stop();
-    timer.stop();
 
     if (!interrupted) {
       climber.zero();

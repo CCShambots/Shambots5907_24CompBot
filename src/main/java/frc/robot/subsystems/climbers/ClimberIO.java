@@ -14,6 +14,8 @@ public interface ClimberIO {
 
     public double velocity = 0;
     public double rotorVelocity = 0;
+
+    public boolean touchTripped = false;
   }
 
   public default void updateInputs(ClimberInputs inputs) {}

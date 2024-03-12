@@ -80,7 +80,7 @@ public class Climber extends StateMachine<Climber.State> {
     registerStateCommand(
         State.AUTOMATIC_ZERO,
         new AutomaticZeroCommand(
-            this, io, AUTO_ZERO_POWER, MIN_ZERO_TIME, AUTO_ZERO_VELO_THRESHOLD));
+            this, io, AUTO_ZERO_POWER));
   }
 
   private void registerTransitions() {
@@ -122,6 +122,10 @@ public class Climber extends StateMachine<Climber.State> {
 
   public double getPos() {
     return inputs.position;
+  }
+
+  public boolean isTouchTripped() {
+    return inputs.touchTripped;
   }
 
   public enum State {

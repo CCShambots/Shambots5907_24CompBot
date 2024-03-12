@@ -49,6 +49,14 @@ public class Climbers extends StateMachine<Climbers.State> {
     return rightClimber.getPos();
   }
 
+  public boolean isLeftTouchTripped() {
+    return leftClimber.isTouchTripped();
+  }
+
+  public boolean isRightTouchTripped() {
+    return rightClimber.isTouchTripped();
+  }
+
   private void registerStateCommands() {
     registerStateCommand(
         State.SOFT_E_STOP,

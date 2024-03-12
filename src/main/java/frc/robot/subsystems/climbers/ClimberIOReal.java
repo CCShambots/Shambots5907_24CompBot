@@ -6,6 +6,8 @@ import static frc.robot.Constants.Climbers.Settings.*;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.ShamLib.motors.talonfx.MotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 
@@ -13,16 +15,20 @@ public class ClimberIOReal implements ClimberIO {
   protected MotionMagicTalonFX motor;
   private MotionMagicVoltage mmReq = new MotionMagicVoltage(0);
 
+  private final DigitalInput touchSensor;
+
   private double target = 0;
 
-  public ClimberIOReal(int motorID, boolean inverted) {
-    this(motorID, inverted, false);
+  public ClimberIOReal(int motorID, boolean inverted, int touchSensorPort) {
+    this(motorID, inverted, false, touchSensorPort);
   }
 
-  public ClimberIOReal(int motorID, boolean inverted, boolean sim) {
+  public ClimberIOReal(int motorID, boolean inverted, boolean sim, int touchSensorPort) {
     motor =
         new MotionMagicTalonFX(
             motorID, FREE_GAINS.get(), CLIMBER_RATIO, FREE_VELOCITY, FREE_ACCELERATION, FREE_JERK);
+    
+    touchSensor = new DigitalInput(touchSensorPort);
 
     if (!sim) motor.getConfigurator().apply(CURRENT_LIMITS_CONFIGS);
 
@@ -43,6 +49,8 @@ public class ClimberIOReal implements ClimberIO {
     inputs.velocity = motor.getEncoderVelocity();
 
     inputs.rotorVelocity = motor.getRotorVelocity().getValue();
+
+    inputs.touchTripped = touchSensor.get();
   }
 
   @Override
