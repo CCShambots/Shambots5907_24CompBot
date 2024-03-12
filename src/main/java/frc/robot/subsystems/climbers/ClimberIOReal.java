@@ -6,7 +6,6 @@ import static frc.robot.Constants.Climbers.Settings.*;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.ShamLib.motors.talonfx.MotionMagicTalonFX;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
@@ -27,7 +26,7 @@ public class ClimberIOReal implements ClimberIO {
     motor =
         new MotionMagicTalonFX(
             motorID, FREE_GAINS.get(), CLIMBER_RATIO, FREE_VELOCITY, FREE_ACCELERATION, FREE_JERK);
-    
+
     touchSensor = new DigitalInput(touchSensorPort);
 
     if (!sim) motor.getConfigurator().apply(CURRENT_LIMITS_CONFIGS);

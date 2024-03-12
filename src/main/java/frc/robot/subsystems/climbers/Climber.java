@@ -77,10 +77,7 @@ public class Climber extends StateMachine<Climber.State> {
             () -> inputs.voltage,
             VOLTAGE_INCREMENT));
 
-    registerStateCommand(
-        State.AUTOMATIC_ZERO,
-        new AutomaticZeroCommand(
-            this, io, AUTO_ZERO_POWER));
+    registerStateCommand(State.AUTOMATIC_ZERO, new AutomaticZeroCommand(this, io, AUTO_ZERO_POWER));
   }
 
   private void registerTransitions() {

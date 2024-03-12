@@ -16,7 +16,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.robot.ShamLib.Candle.MultipleColorSegments;
 import frc.robot.ShamLib.Candle.RGB;
+import frc.robot.ShamLib.Candle.RGBSegmentInfo;
 import frc.robot.ShamLib.PIDGains;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
@@ -465,6 +467,22 @@ public class Constants {
       public static final RGB AUTO_BACKGROUND_RGB = new RGB(0, 0, 0);
       public static final RGB READY_TO_SHOOT = new RGB(0, 255, 0);
       public static final RGB CLIMB_RGB = new RGB(255, 0, 255);
+
+      public static final RGB CLIMB_TRIPPED_RGB = new RGB(255, 0, 255);
+      public static final RGB OFF_RGB = new RGB(0, 0, 0);
+
+      public static final MultipleColorSegments LEFT_CLIMB_TRIPPED =
+          new MultipleColorSegments(
+              new RGBSegmentInfo(OFF_RGB, 8),
+              new RGBSegmentInfo(OFF_RGB, NUM_LIGHTS_WITHOUT_CANDLE / 4),
+              new RGBSegmentInfo(CLIMB_TRIPPED_RGB, NUM_LIGHTS_WITHOUT_CANDLE / 2),
+              new RGBSegmentInfo(OFF_RGB, NUM_LIGHTS_WITHOUT_CANDLE / 4));
+      public static final MultipleColorSegments RIGHT_CLIMB_TRIPPED =
+          new MultipleColorSegments(
+              new RGBSegmentInfo(OFF_RGB, 8),
+              new RGBSegmentInfo(CLIMB_TRIPPED_RGB, NUM_LIGHTS_WITHOUT_CANDLE / 4),
+              new RGBSegmentInfo(OFF_RGB, NUM_LIGHTS_WITHOUT_CANDLE / 2),
+              new RGBSegmentInfo(CLIMB_TRIPPED_RGB, NUM_LIGHTS_WITHOUT_CANDLE / 4));
 
       public static final Animation DISABLED_ANIMATION =
           new LarsonAnimation(0, 0, 255, 0, BOUNCE_SPEED, NUM_LIGHTS_WITHOUT_CANDLE, Front, 7, 8);

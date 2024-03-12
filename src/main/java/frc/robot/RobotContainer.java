@@ -144,7 +144,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningStop());
 
     lights =
-        new Lights(getLightsIO(), () -> !autoReady() && !hasBeenEnabled, () -> !hasBeenEnabled);
+        new Lights(
+            getLightsIO(),
+            () -> !autoReady() && !hasBeenEnabled,
+            () -> !hasBeenEnabled,
+            climbers::isLeftTouchTripped,
+            climbers::isRightTouchTripped);
 
     shooter =
         new Shooter(
@@ -538,9 +543,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private ClimberIO getLeftClimberIO() {
     return switch (Constants.currentBuildMode) {
       case REAL -> new ClimberIOReal(
-          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED, Constants.Climbers.Hardware.LEFT_TOUCH_ID);
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID,
+          Constants.Climbers.Hardware.LEFT_INVERTED,
+          Constants.Climbers.Hardware.LEFT_TOUCH_ID);
       case SIM -> new ClimberIOSim(
-          Constants.Climbers.Hardware.LEFT_CLIMBER_ID, Constants.Climbers.Hardware.LEFT_INVERTED, Constants.Climbers.Hardware.LEFT_TOUCH_ID);
+          Constants.Climbers.Hardware.LEFT_CLIMBER_ID,
+          Constants.Climbers.Hardware.LEFT_INVERTED,
+          Constants.Climbers.Hardware.LEFT_TOUCH_ID);
       default -> new ClimberIO() {};
     };
   }
@@ -548,9 +557,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private ClimberIO getRightClimberIO() {
     return switch (Constants.currentBuildMode) {
       case REAL -> new ClimberIOReal(
-          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED, Constants.Climbers.Hardware.RIGHT_TOUCH_ID);
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID,
+          Constants.Climbers.Hardware.RIGHT_INVERTED,
+          Constants.Climbers.Hardware.RIGHT_TOUCH_ID);
       case SIM -> new ClimberIOSim(
-          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID, Constants.Climbers.Hardware.RIGHT_INVERTED, Constants.Climbers.Hardware.RIGHT_TOUCH_ID);
+          Constants.Climbers.Hardware.RIGHT_CLIMBER_ID,
+          Constants.Climbers.Hardware.RIGHT_INVERTED,
+          Constants.Climbers.Hardware.RIGHT_TOUCH_ID);
       default -> new ClimberIO() {};
     };
   }
@@ -828,7 +841,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(2, 1);
 
     testTab.add("run left routine", climbers.leftZeroRoutine()).withSize(2, 1).withPosition(2, 2);
-    testTab.add("left touch tripped", climbers.isLeftTouchTripped()).withSize(2, 1).withPosition(2, 3);
+    testTab
+        .add("left touch tripped", climbers.isLeftTouchTripped())
+        .withSize(2, 1)
+        .withPosition(2, 3);
 
     testTab
         .addNumber("climber right", () -> climbers.getRightPos())
@@ -836,7 +852,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(2, 1);
 
     testTab.add("run right routine", climbers.rightZeroRoutine()).withSize(2, 1).withPosition(6, 2);
-    testTab.add("right touch tripped", climbers.isRightTouchTripped()).withSize(2, 1).withPosition(6, 3);
+    testTab
+        .add("right touch tripped", climbers.isRightTouchTripped())
+        .withSize(2, 1)
+        .withPosition(6, 3);
 
     Shuffleboard.selectTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
   }

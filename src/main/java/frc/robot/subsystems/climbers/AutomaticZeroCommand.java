@@ -11,10 +11,7 @@ public class AutomaticZeroCommand extends Command {
 
   private final Timer timer = new Timer();
 
-  public AutomaticZeroCommand(
-      Climber climber,
-      ClimberIO climberIO,
-      double runPower) {
+  public AutomaticZeroCommand(Climber climber, ClimberIO climberIO, double runPower) {
     this.climberIO = climberIO;
     this.climber = climber;
     this.runPower = runPower;
