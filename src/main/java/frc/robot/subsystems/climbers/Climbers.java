@@ -49,6 +49,14 @@ public class Climbers extends StateMachine<Climbers.State> {
     return rightClimber.getPos();
   }
 
+  public boolean isLeftTouchTripped() {
+    return leftClimber.isTouchTripped();
+  }
+
+  public boolean isRightTouchTripped() {
+    return rightClimber.isTouchTripped();
+  }
+
   private void registerStateCommands() {
     registerStateCommand(
         State.SOFT_E_STOP,
@@ -104,6 +112,14 @@ public class Climbers extends StateMachine<Climbers.State> {
             clearFlag(State.AT_SETPOINT);
           }
         });
+  }
+
+  public Command leftZeroRoutine() {
+    return leftClimber.transitionCommand(Climber.State.AUTOMATIC_ZERO);
+  }
+
+  public Command rightZeroRoutine() {
+    return rightClimber.transitionCommand(Climber.State.AUTOMATIC_ZERO);
   }
 
   @Override

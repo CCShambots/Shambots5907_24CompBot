@@ -21,12 +21,16 @@ public class Lights extends StateMachine<Lights.State> {
   private final BooleanSupplier displayAutoInfo;
 
   private final BooleanSupplier intakeTripped;
+  private final BooleanSupplier leftClimbTripped;
+  private final BooleanSupplier rightClimbTripped;
 
   public Lights(
       LightsIO io,
       BooleanSupplier flashAutoError,
       BooleanSupplier displayAutoInfo,
-      BooleanSupplier intakeTripped) {
+      BooleanSupplier intakeTripped,
+      BooleanSupplier leftClimbTripped,
+      BooleanSupplier rightClimbTripped) {
     super("Lights", State.UNDETERMINED, State.class);
 
     this.io = io;
@@ -34,6 +38,9 @@ public class Lights extends StateMachine<Lights.State> {
     this.flashAutoError = flashAutoError;
     this.displayAutoInfo = displayAutoInfo;
     this.intakeTripped = intakeTripped;
+
+    this.leftClimbTripped = leftClimbTripped;
+    this.rightClimbTripped = rightClimbTripped;
 
     registerStateCommmands();
     registerTransitions();
@@ -108,6 +115,13 @@ public class Lights extends StateMachine<Lights.State> {
             Constants.AUTO_TIME,
             AUTO_RGB,
             AUTO_BACKGROUND_RGB));
+
+    registerStateCommand(
+        State.TEST,
+        new SequentialCommandGroup(
+            setLights(State.TEST),
+            new TestLightCommand(
+                leftClimbTripped, rightClimbTripped, (info) -> info.applyToCANdle(io))));
   }
 
   private void registerStandardState(State state) {
@@ -148,8 +162,8 @@ public class Lights extends StateMachine<Lights.State> {
     AUTOMATIC_SCORE(new LEDData(AUTOMATIC_SCORE_ANIMATION)),
     EJECT(new LEDData(EJECT_ANIMATION)),
     CLIMB(new LEDData(CLIMB_RGB)),
-    TEST(new LEDData(DISABLED_ANIMATION)),
     GRAB_RANDOM_NOTE(new LEDData(GRAB_RANDOM_NOTE_ANIMATION)),
+    TEST(new LEDData(OFF_RGB)),
     ERROR(new LEDData(ERROR_RGB)),
     AUTO_ERROR(new LEDData(ERROR_RGB)),
     PARTIAL_HOLD(new LEDData(PARTIAL_HOLD_RGB)),
