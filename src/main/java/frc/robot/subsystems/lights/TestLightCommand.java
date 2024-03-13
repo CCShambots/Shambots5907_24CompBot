@@ -28,7 +28,7 @@ public class TestLightCommand extends Command {
 
   @Override
   public void execute() {
-    if (leftTouchPressedSupplier.getAsBoolean() && leftTouchPressedSupplier.getAsBoolean()) {
+    if (leftTouchPressedSupplier.getAsBoolean() && rightTouchPressedSupplier.getAsBoolean()) {
       colorSegsAccepter.accept(both);
     } else if (leftTouchPressedSupplier.getAsBoolean()) {
       colorSegsAccepter.accept(leftOnly);

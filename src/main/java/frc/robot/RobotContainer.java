@@ -263,6 +263,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 shooter.partialFlywheelSpinup())));
 
     registerStateCommand(
+        State.TEST, new ParallelCommandGroup(lights.transitionCommand(Lights.State.TEST)));
+
+    registerStateCommand(
         State.SPEAKER_SCORE,
         new SequentialCommandGroup(
             // face speaker and idle intake
@@ -413,6 +416,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.AUTO_HP_INTAKE);
 
     addTransition(State.SOFT_E_STOP, State.AUTONOMOUS);
+    addTransition(State.SOFT_E_STOP, State.TEST);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
   }
 
@@ -670,6 +674,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     requestTransition(State.AUTONOMOUS);
   }
 
+  @Override
+  protected void onTestStart() {
+    requestTransition(State.TEST);
+  }
+
   public void resetFieldOriented() {
     drivetrain.resetFieldOriented();
   }
@@ -842,7 +851,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     testTab.add("run left routine", climbers.leftZeroRoutine()).withSize(2, 1).withPosition(2, 2);
     testTab
-        .add("left touch tripped", climbers.isLeftTouchTripped())
+        .addBoolean("left touch tripped", () -> climbers.isLeftTouchTripped())
         .withSize(2, 1)
         .withPosition(2, 3);
 
@@ -853,7 +862,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     testTab.add("run right routine", climbers.rightZeroRoutine()).withSize(2, 1).withPosition(6, 2);
     testTab
-        .add("right touch tripped", climbers.isRightTouchTripped())
+        .addBoolean("right touch tripped", () -> climbers.isRightTouchTripped())
         .withSize(2, 1)
         .withPosition(6, 3);
 
@@ -875,6 +884,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     AUTO_GROUND_INTAKE,
     AUTO_HP_INTAKE,
     TRAP,
-    CLEANSE
+    CLEANSE,
+    TEST
   }
 }

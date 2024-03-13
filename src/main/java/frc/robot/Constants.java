@@ -477,6 +477,7 @@ public class Constants {
               new RGBSegmentInfo(OFF_RGB, NUM_LIGHTS_WITHOUT_CANDLE / 4),
               new RGBSegmentInfo(CLIMB_TRIPPED_RGB, NUM_LIGHTS_WITHOUT_CANDLE / 2),
               new RGBSegmentInfo(OFF_RGB, NUM_LIGHTS_WITHOUT_CANDLE / 4));
+
       public static final MultipleColorSegments RIGHT_CLIMB_TRIPPED =
           new MultipleColorSegments(
               new RGBSegmentInfo(OFF_RGB, 8),
