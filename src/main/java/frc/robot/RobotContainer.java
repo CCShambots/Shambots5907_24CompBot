@@ -537,8 +537,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .targetRightStage()
         .onTrue(new InstantCommand(() -> setTargetStageSide(StageSide.RIGHT)));
 
-    controllerBindings.indicateNonSourceNote().and(() -> getState() == State.TRAVERSING).onTrue(lights.transitionCommand(Lights.State.GRAB_RANDOM_NOTE));
-    // controllerBindings.indicateSourceNote().and(() -> getState() == State.TRAVERSING).onTrue(lights.transitionCommand());
+    controllerBindings.indicateNonSourceNote().and(() -> getState() == State.TRAVERSING).and(() -> !ringSomewhereInBot()).onTrue(lights.transitionCommand(Lights.State.GRAB_RANDOM_NOTE));
+    controllerBindings.indicateSourceNote().and(() -> getState() == State.TRAVERSING).and(() -> !ringSomewhereInBot()).onTrue(lights.transitionCommand(Lights.State.NO_RING));
   }
 
   private void setTargetStageSide(StageSide newSide) {
