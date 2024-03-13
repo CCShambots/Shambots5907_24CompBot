@@ -25,6 +25,9 @@ public interface ControllerBindings {
   Trigger manualGroundIntake();
 
   Trigger shoot();
+  
+  Trigger indicateNonSourceNote();
+  Trigger indicateSourceNote();
 
   Trigger manualBaseShot();
 

@@ -48,7 +48,19 @@ public class SimControllerBindings implements ControllerBindings {
     return new Trigger(() -> false);
   }
 
+  
+
   @Override
+public Trigger indicateNonSourceNote() {
+    return new Trigger(() -> false);
+}
+
+@Override
+public Trigger indicateSourceNote() {
+    return new Trigger(() -> false);
+}
+
+@Override
   public Trigger humanPlayerIntake() {
     return new Trigger(() -> false);
   }
