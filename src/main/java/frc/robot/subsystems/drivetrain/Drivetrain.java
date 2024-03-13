@@ -175,14 +175,17 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     registerStateCommand(
         State.AUTO_GROUND_INTAKE,
-        new AutoIntakeCommand(
-            drive,
-            () -> ringVisionUpdate,
-            INTAKE_SPEED,
-            AUTO_THETA_GAINS,
-            intakeProxTripped,
-            LOST_RING_TARGET_TIMEOUT,
-            indexerReceivedRing));
+        new SequentialCommandGroup(
+            setFlagCommand(State.AUTO_INTAKING),
+            new AutoIntakeCommand(
+                drive,
+                () -> ringVisionUpdate,
+                INTAKE_SPEED,
+                AUTO_THETA_GAINS,
+                intakeProxTripped,
+                LOST_RING_TARGET_TIMEOUT,
+                indexerReceivedRing),
+            clearFlagCommand(State.AUTO_INTAKING)));
 
     registerStateCommand(
         State.HUMAN_PLAYER_INTAKE,
@@ -447,6 +450,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     // flags for non-autonomous operations
     PATHFINDING,
     AT_ANGLE,
-    AT_TRAP_POSE
+    AT_TRAP_POSE,
+    AUTO_INTAKING
   }
 }

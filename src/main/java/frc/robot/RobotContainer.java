@@ -203,28 +203,34 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     NamedCommands.registerCommand(
         "fireSequence",
-        new SequentialCommandGroup(
-            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
-            intake.transitionCommand(Intake.State.IDLE, false),
-            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
-            new WaitCommand(0.25),
-            new ParallelCommandGroup(
-                intake.transitionCommand(Intake.State.INTAKE, false),
-                new InstantCommand(
-                    () -> {
-                      new SequentialCommandGroup(
-                              indexer.waitForState(Indexer.State.IDLE),
-                              indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
-                          .schedule();
-                    }))));
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
+                intake.transitionCommand(Intake.State.IDLE, false),
+                indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
+                // new WaitCommand(0.25),
+                new ParallelCommandGroup(
+                    intake.transitionCommand(Intake.State.INTAKE, false),
+                    new InstantCommand(
+                        () -> {
+                          new SequentialCommandGroup(
+                                  indexer.waitForState(Indexer.State.IDLE),
+                                  indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
+                              .schedule();
+                        }))),
+            new InstantCommand(),
+            () -> ringSomewhereInBot()));
 
     NamedCommands.registerCommand(
         "visionIntake",
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+            drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
             indexer
                 .waitForState(Indexer.State.INDEXING)
                 .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
+                .raceWith(
+                    new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
                 .withTimeout(3),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
@@ -233,7 +239,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         "aim",
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
-            new WaitCommand(0.5),
+            drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE).withTimeout(0.5),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
@@ -697,6 +703,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         shooter.getArmAbsoluteAngle(),
         shooter.getArmAngle(),
         Constants.Arm.Settings.AUTO_SYNC_TOLERANCE);
+  }
+
+  private boolean ringSomewhereInBot() {
+    return intake.ringPresent()
+        || indexer.isProx1Active()
+        || indexer.isProx2Active()
+        || indexer.isProx3Active();
   }
 
   private boolean photonVisionGood() {
