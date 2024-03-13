@@ -148,7 +148,7 @@ public class Lights extends StateMachine<Lights.State> {
     AUTOMATIC_SCORE(new LEDData(AUTOMATIC_SCORE_ANIMATION)),
     EJECT(new LEDData(EJECT_ANIMATION)),
     CLIMB(new LEDData(CLIMB_RGB)),
-    TEST(new LEDData(OFF_RGB)),
+    TEST(new LEDData(DISABLED_ANIMATION)),
     GRAB_RANDOM_NOTE(new LEDData(GRAB_RANDOM_NOTE_ANIMATION)),
     ERROR(new LEDData(ERROR_RGB)),
     AUTO_ERROR(new LEDData(ERROR_RGB)),
