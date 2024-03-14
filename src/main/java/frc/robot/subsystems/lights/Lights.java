@@ -55,7 +55,7 @@ public class Lights extends StateMachine<Lights.State> {
     registerStateCommand(
         State.NO_RING,
         new ParallelCommandGroup(
-                setLights(getState()),
+                setLights(State.NO_RING),
                 new SequentialCommandGroup(
                     new WaitUntilCommand(intakeTripped),
                     setLights(State.PARTIAL_HOLD),

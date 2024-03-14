@@ -74,16 +74,14 @@ public class RealControllerBindings implements ControllerBindings {
     return operatorController.y();
   }
 
-  
-
   @Override
   public Trigger indicateNonSourceNote() {
-    return new Trigger(() -> operatorController.getLeftY() > 0.25);
+    return new Trigger(() -> operatorController.getLeftY() < -0.25);
   }
 
   @Override
   public Trigger indicateSourceNote() {
-    return new Trigger(() -> operatorController.getLeftY() < -.25);
+    return new Trigger(() -> operatorController.getLeftY() > 0.25);
   }
 
   @Override

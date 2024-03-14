@@ -509,7 +509,8 @@ public class Constants {
           new TwinkleAnimation(
               0, 0, 255, 0, 0.5, NUM_LIGHTS, TwinkleAnimation.TwinklePercent.Percent76);
 
-      public static final Animation GRAB_RANDOM_NOTE_ANIMATION = new RainbowAnimation(1, BLINK_SPEED, NUM_LIGHTS);
+      public static final Animation GRAB_RANDOM_NOTE_ANIMATION =
+          new RainbowAnimation(1, .75, NUM_LIGHTS);
     }
   }
 
