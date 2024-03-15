@@ -165,19 +165,17 @@ public class Vision extends StateMachine<Vision.State> {
 
     boolean onlyOneForTrap = getState() == State.TRAP;
 
-
     for (PVApriltagCam cam : pvApriltagCams) {
-      if(!onlyOneForTrap || cam.getName() == Constants.Vision.Settings.TRAP_CAMERA) {
+      if (!onlyOneForTrap || cam.getName() == Constants.Vision.Settings.TRAP_CAMERA) {
         cam.getLatestEstimate()
             .ifPresent(
                 (update) -> {
                   updates.add(update);
-  
+
                   Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimate", update.pose());
                 });
       }
     }
-
 
     return updates;
   }

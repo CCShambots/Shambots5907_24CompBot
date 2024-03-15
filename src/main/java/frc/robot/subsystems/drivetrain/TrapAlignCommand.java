@@ -58,9 +58,8 @@ public class TrapAlignCommand extends Command {
                 botPose.getRotation().getRadians(), botPoseTarget.getRotation().getRadians()));
 
     ChassisSpeeds chassisRelativeField =
-        ChassisSpeeds.fromFieldRelativeSpeeds(fieldSpeeds, drive.getCurrentAngle());
+        ChassisSpeeds.fromFieldRelativeSpeeds(fieldSpeeds, drive.getPose().getRotation());
 
-    // Logger.recordOutput("Drivetrain/Bot Target", botPoseTarget);
     drive.drive(chassisRelativeField);
 
     finished =

@@ -478,14 +478,14 @@ public class Constants {
           new MultipleColorSegments(
               new RGBSegmentInfo(OFF_RGB, 8),
               new RGBSegmentInfo(OFF_RGB, 21),
-              new RGBSegmentInfo(CLIMB_TRIPPED_RGB, NUM_LIGHTS_WITHOUT_CANDLE-21-11),
+              new RGBSegmentInfo(CLIMB_TRIPPED_RGB, NUM_LIGHTS_WITHOUT_CANDLE - 21 - 11),
               new RGBSegmentInfo(OFF_RGB, 11));
 
       public static final MultipleColorSegments RIGHT_CLIMB_TRIPPED =
           new MultipleColorSegments(
               new RGBSegmentInfo(OFF_RGB, 8),
               new RGBSegmentInfo(CLIMB_TRIPPED_RGB, 21),
-              new RGBSegmentInfo(OFF_RGB, NUM_LIGHTS_WITHOUT_CANDLE-21-11),
+              new RGBSegmentInfo(OFF_RGB, NUM_LIGHTS_WITHOUT_CANDLE - 21 - 11),
               new RGBSegmentInfo(CLIMB_TRIPPED_RGB, 11));
 
       public static final Animation DISABLED_ANIMATION =
