@@ -86,7 +86,7 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger trapScore() {
-    return operatorController.leftTrigger(0.5);
+    return leftFlightStick.pov(0).or(leftFlightStick.pov(45)).or(leftFlightStick.pov(315));
   }
 
   @Override
