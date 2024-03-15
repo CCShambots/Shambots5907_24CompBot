@@ -157,6 +157,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             getArmIO(),
             getFlywheelIO(),
             () -> drivetrain.getBotPose().getTranslation(),
+            () -> drivetrain.getCurrentLobPose(),
             () -> targetStageSide,
             tuningIncrement(),
             tuningDecrement(),
@@ -210,7 +211,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
                 intake.transitionCommand(Intake.State.IDLE, false),
                 indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
-                // new WaitCommand(0.25),
                 new ParallelCommandGroup(
                     intake.transitionCommand(Intake.State.INTAKE, false),
                     new InstantCommand(
@@ -265,6 +265,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             climbers.transitionCommand(Climbers.State.FREE_RETRACT),
             intake.transitionCommand(Intake.State.IDLE),
+            vision.transitionCommand(Vision.State.ENABLED),
             new SequentialCommandGroup(
                 new DetermineRingStatusCommand(shooter, indexer, lights)
                 // shooter.partialFlywheelSpinup()
@@ -283,6 +284,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new DetermineRingStatusCommand(shooter, indexer, lights),
             // have shooter start to track
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
+            // lights show green on ready and feed ring on press, transition to traversing after
+            // ring is fed
+            new ParallelCommandGroup(
+                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+
+    registerStateCommand(
+        State.LOB,
+        new SequentialCommandGroup(
+            // face speaker and idle intake
+            drivetrain.transitionCommand(Drivetrain.State.LOB),
+            intake.transitionCommand(Intake.State.IDLE),
+            // figure out ring issues (if there are any)
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            // have shooter start to track
+            shooter.transitionCommand(Shooter.State.LOB),
             // lights show green on ready and feed ring on press, transition to traversing after
             // ring is fed
             new ParallelCommandGroup(
@@ -352,6 +368,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     registerStateCommand(
         State.TRAP,
         new SequentialCommandGroup(
+            vision.transitionCommand(Vision.State.TRAP),
             drivetrain.transitionCommand(Drivetrain.State.TRAP),
             new DetermineRingStatusCommand(shooter, indexer, lights),
             shooter.transitionCommand(Shooter.State.TRAP),
@@ -410,22 +427,31 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void registerTransitions() {
-    addOmniTransition(State.TRAVERSING);
-    addOmniTransition(State.SOFT_E_STOP);
     addOmniTransition(State.SPEAKER_SCORE);
     addOmniTransition(State.BASE_SHOT);
     addOmniTransition(State.HUMAN_PLAYER_INTAKE);
     addOmniTransition(State.AMP);
     addOmniTransition(State.TRAP);
     addOmniTransition(State.CLEANSE);
-    addOmniTransition(State.CLIMB);
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_GROUND_INTAKE);
     addOmniTransition(State.AUTO_HP_INTAKE);
+    addOmniTransition(State.LOB);
+
+    // Make sure we can't enter other states from the climb state
+    removeAllTransitionsFromState(State.CLIMB);
+    addTransition(State.TRAVERSING, State.CLIMB);
+
+    // Make sure we can't enter other states from the trap state
+    removeAllTransitionsFromState(State.TRAP);
+    addTransition(State.TRAVERSING, State.TRAP);
 
     addTransition(State.SOFT_E_STOP, State.AUTONOMOUS);
     addTransition(State.SOFT_E_STOP, State.TEST);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
+
+    addOmniTransition(State.SOFT_E_STOP);
+    addOmniTransition(State.TRAVERSING);
   }
 
   private Command flashError(Lights.State onEnd) {
@@ -543,6 +569,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings
         .targetRightStage()
         .onTrue(new InstantCommand(() -> setTargetStageSide(StageSide.RIGHT)));
+
+    controllerBindings
+        .lobShot()
+        .onTrue(transitionCommand(State.LOB, false))
+        .onFalse(transitionCommand(State.TRAVERSING, false));
 
     controllerBindings
         .indicateNonSourceNote()
@@ -910,6 +941,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     AUTO_GROUND_INTAKE,
     AUTO_HP_INTAKE,
     TRAP,
+    LOB,
     CLEANSE,
     TEST
   }

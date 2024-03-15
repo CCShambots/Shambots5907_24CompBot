@@ -279,6 +279,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.FACE_SPEAKER);
     addOmniTransition(State.FACE_SPEAKER_AUTO);
 
+    addOmniTransition(State.LOB);
+
     addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
   }
 
@@ -291,6 +293,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         State.FACE_SPEAKER,
         getFacePointCommand(
             flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED));
+
+    registerStateCommand(
+        State.LOB,
+        getFacePointCommand(
+            flipPath ? Constants.mirror(BLUE_LOB_CORNER) : BLUE_LOB_CORNER, LOB_SPEED));
 
     registerStateCommand(
         State.FACE_SPEAKER_AUTO,
@@ -441,6 +448,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     this.ringVisionUpdate = visionUpdate;
   }
 
+  public Pose2d getCurrentLobPose() {
+    return flipPath ? BLUE_LOB_CORNER : Constants.mirror(BLUE_LOB_CORNER);
+  }
+
   public void registerMisalignedSwerveTriggers(EventLoop loop) {
     for (SwerveModule module : drive.getModules()) {
       loop.bind(
@@ -476,6 +487,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     DRIVE_VOLTAGE_CALC,
     GROUND_INTAKE,
     HUMAN_PLAYER_INTAKE,
+    LOB,
 
     // flags for non-autonomous operations
     PATHFINDING,

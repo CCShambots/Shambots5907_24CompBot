@@ -23,10 +23,12 @@ public class Arm extends StateMachine<Arm.State> {
 
   // AA stands for active adjust
   private final DoubleSupplier distanceAAProvider;
+  private final DoubleSupplier lobAASupplier;
 
   public Arm(
       ArmIO io,
       DoubleSupplier distanceAAProvider,
+      DoubleSupplier lobAASupplier,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
@@ -34,6 +36,7 @@ public class Arm extends StateMachine<Arm.State> {
 
     this.io = io;
     this.distanceAAProvider = distanceAAProvider;
+    this.lobAASupplier = lobAASupplier;
 
     registerStateCommands(tuningInc, tuningDec, tuningStop);
     registerTransitions();
@@ -49,6 +52,8 @@ public class Arm extends StateMachine<Arm.State> {
     registerStateCommand(State.PARTIAL_STOW, holdPositionCommand(() -> PARTIAL_STOW_POSITION));
     registerStateCommand(State.FULL_STOW, holdPositionCommand(() -> FULL_STOW_POSITION));
     registerStateCommand(State.TRAP, holdPositionCommand(() -> TRAP_POSITION));
+
+    registerStateCommand(State.LOB, holdPositionCommand(lobAASupplier));
 
     registerStateCommand(State.SHOT_ACTIVE_ADJUST, holdPositionCommand(distanceAAProvider));
 
@@ -79,6 +84,7 @@ public class Arm extends StateMachine<Arm.State> {
     addOmniTransition(State.PARTIAL_STOW);
     addOmniTransition(State.FULL_STOW);
     addOmniTransition(State.TRAP);
+    addOmniTransition(State.LOB);
     addOmniTransition(State.SHOT_ACTIVE_ADJUST);
   }
 
@@ -162,6 +168,7 @@ public class Arm extends StateMachine<Arm.State> {
     PARTIAL_STOW,
     FULL_STOW,
     VOLTAGE_CALC,
+    LOB,
     // flags
     AT_TARGET
   }

@@ -79,6 +79,8 @@ public class Constants {
     public static Pose2d BLUE_RIGHT_TRAP =
         new Pose2d(new Translation2d(4.5969682, 3.717244813), Rotation2d.fromDegrees(-120));
 
+    public static Pose2d BLUE_LOB_CORNER = new Pose2d(2, Units.feetToMeters(25), new Rotation2d(0));
+
     public static double TRAP_SHOT_DISTANCE = 1; // Meters
 
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
@@ -140,6 +142,8 @@ public class Constants {
       public static final double AUTO_START_TOLERANCE = 0.5;
 
       public static final double VISION_TRUST_CUTOFF = Units.feetToMeters(18);
+
+      public static final String TRAP_CAMERA = "pv_instance_4";
     }
   }
 
@@ -237,6 +241,7 @@ public class Constants {
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
       public static final double CHUTE_INTAKE_POSITION = 40 * (Math.PI / 180); // RAD
+      public static final double LOB_POSITION = 45 * (Math.PI / 180);
 
       public static double TRAP_POSITION = 58 * (Math.PI / 180); // RAD
 
@@ -303,6 +308,8 @@ public class Constants {
 
       public static double TRAP_SPEED_TOP = 1500 / 60.0; // RPS
       public static double TRAP_SPEED_BOTTOM = 2600 / 60.0; // RPS
+
+      public static final double LOB_SPEED = 4000 / 60.0;
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
@@ -390,7 +397,7 @@ public class Constants {
       public static int FREE_SLOT = 0;
       public static int LOADED_SLOT = 1;
 
-      public static double EXTENSION_SETPOINT = 0.45;
+      public static double EXTENSION_SETPOINT = 0.54;
 
       public static double RETRACT_SETPOINT = 0.0;
 
@@ -638,6 +645,13 @@ public class Constants {
               MAX_CHASSIS_SPEED / 1.25,
               MAX_CHASSIS_ACCELERATION,
               MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
+              MAX_CHASSIS_ROTATIONAL_ACCELERATION);
+
+      public static final SwerveSpeedLimits LOB_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED,
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED =
           new SwerveSpeedLimits(
