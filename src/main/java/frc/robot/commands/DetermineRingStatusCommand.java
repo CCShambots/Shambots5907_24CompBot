@@ -55,6 +55,8 @@ public class DetermineRingStatusCommand extends Command {
         isFinished = true;
       }
     }
+
+    shooter.transitionCommand(Shooter.State.STOW);
   }
 
   @Override
