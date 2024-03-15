@@ -436,9 +436,9 @@ public class Constants {
 
     public static final class Settings {
       // rps
-      public static final double EXPECT_SPEED = 500 / 60.0;
+      public static final double EXPECT_SPEED = 1000 / 60.0;
       public static final double PASS_THROUGH_SPEED = 33;
-      public static final double INDEX_SPEED = 500 / 60.0;
+      public static final double INDEX_SPEED = 1000 / 60.0;
       public static final double FEED_SPEED = 50;
 
       // seconds

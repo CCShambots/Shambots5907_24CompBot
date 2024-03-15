@@ -39,14 +39,14 @@ public class DetermineRingStatusCommand extends Command {
         lights.requestTransition(Lights.State.ERROR);
         isFinished = true;
       }
-        /*case INDEXING -> {
-          // Indicate we have a ring and stow the shooter, but wait since the robot isn't done
-          // indexing yet
-          shooter.requestTransition(Shooter.State.STOW);
-          lights.requestTransition(Lights.State.HAVE_RING);
+      case INDEXING -> {
+        // Indicate we have a ring and stow the shooter, but wait since the robot isn't done
+        // indexing yet
+        shooter.requestTransition(Shooter.State.STOW);
+        lights.requestTransition(Lights.State.HAVE_RING);
 
-          isFinished = true;
-        }*/
+        isFinished = true;
+      }
       default -> {
         indexer.requestTransition(Indexer.State.IDLE);
         shooter.requestTransition(Shooter.State.STOW);

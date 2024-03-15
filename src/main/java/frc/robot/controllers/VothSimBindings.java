@@ -38,6 +38,11 @@ public class VothSimBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger lobShot() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
   public double getDriveTurnValue() {
     return rightKeyboard.getRawAxis(1);
   }

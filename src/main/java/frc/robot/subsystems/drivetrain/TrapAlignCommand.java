@@ -78,6 +78,10 @@ public class TrapAlignCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     drive.stopModules();
+
+    if (!interrupted) {
+      dt.setFlag(Drivetrain.State.AT_ANGLE);
+    }
     // dt.requestTransition(Drivetrain.State.X_SHAPE);
   }
 }

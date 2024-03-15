@@ -226,8 +226,6 @@ public class Shooter extends StateMachine<Shooter.State> {
 
     double angle = .5 * Math.asin((9.8 * distanceToTarget) / Math.pow(9.698, 2));
 
-    // angle = Math.PI / 2 - angle;
-
     Logger.recordOutput("Shooter/calculated-angle", angle);
 
     return angle;

@@ -264,11 +264,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new ParallelCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             climbers.transitionCommand(Climbers.State.FREE_RETRACT),
-            intake.transitionCommand(Intake.State.IDLE),
+            new ConditionalCommand(
+                intake.transitionCommand(Intake.State.IDLE),
+                new SequentialCommandGroup(
+                    indexer.waitForState(Indexer.State.HOLDING_RING),
+                    intake.transitionCommand(Intake.State.IDLE)),
+                () -> indexer.getState() != Indexer.State.INDEXING),
             vision.transitionCommand(Vision.State.ENABLED),
+            new SequentialCommandGroup(
+                indexer.waitForState(Indexer.State.HOLDING_RING),
+                lights.transitionCommand(Lights.State.HAVE_RING)),
             new SequentialCommandGroup(
                 new DetermineRingStatusCommand(shooter, indexer, lights)
                 // shooter.partialFlywheelSpinup()
+
                 )));
 
     registerStateCommand(
@@ -307,10 +316,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     registerStateCommand(
         State.GROUND_INTAKE,
         new SequentialCommandGroup(
-            drivetrain.transitionCommand(Drivetrain.State.GROUND_INTAKE),
-            shooter.transitionCommand(Shooter.State.STOW),
-            indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
-            intake.transitionCommand(Intake.State.INTAKE),
+            new ParallelCommandGroup(
+                drivetrain.transitionCommand(Drivetrain.State.GROUND_INTAKE),
+                shooter.transitionCommand(Shooter.State.STOW),
+                indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
+                intake.transitionCommand(Intake.State.INTAKE)),
             indexer.waitForState(Indexer.State.INDEXING),
             lights.transitionCommand(Lights.State.INTAKE),
             transitionCommand(State.TRAVERSING)));
@@ -418,10 +428,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 new WaitUntilCommand(() -> vision.isFlag(Vision.State.HAS_RING_TARGET)),
                 drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE)),
             new SequentialCommandGroup(
-                lights.transitionCommand(Lights.State.INTAKE),
-                shooter.transitionCommand(Shooter.State.STOW),
-                indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
-                intake.transitionCommand(Intake.State.INTAKE),
+                new ParallelCommandGroup(
+                    lights.transitionCommand(Lights.State.INTAKE),
+                    shooter.transitionCommand(Shooter.State.STOW),
+                    indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
+                    intake.transitionCommand(Intake.State.INTAKE)),
                 indexer.waitForState(Indexer.State.INDEXING),
                 transitionCommand(State.TRAVERSING))));
   }
@@ -554,7 +565,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     controllerBindings.manualAmp().onTrue(transitionCommand(State.AMP, false));
 
-    controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
+    controllerBindings
+        .trapScore()
+        .and(() -> poseWorking)
+        .onTrue(transitionCommand(State.TRAP, false));
 
     controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
 
