@@ -30,11 +30,11 @@ import java.util.function.UnaryOperator;
 public class Constants {
   public static final double LOOP_PERIOD = 0.02;
 
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REAL;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
-  public static final boolean ALLOW_TUNING = false;
+  public static final boolean ALLOW_TUNING = true;
 
   public static final double AUTO_TIME = 15;
   public static final double GAP_TIME = 3;
@@ -234,10 +234,11 @@ public class Constants {
       public static final double BASE_SHOT_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double AUTO_START_POSITION = 55 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
-      public static final double TRAP_POSITION = 59 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
       public static final double CHUTE_INTAKE_POSITION = 40 * (Math.PI / 180); // RAD
+
+      public static double TRAP_POSITION = 58 * (Math.PI / 180); // RAD
 
       public static final double AUTO_SYNC_TOLERANCE = 0.1;
       public static final double AUTO_SYNC_MAX_VELOCITY = 0.1; // RAD/s
@@ -300,9 +301,8 @@ public class Constants {
       public static final double AMP_SPEED_TOP = 125 / 60.0; // RPS
       public static final double AMP_SPEED_BOTTOM = 875 / 60.0; // RPS
 
-      // TODO: MAKE FINAL
-      public static double TRAP_SPEED_TOP = 700 / 60.0; // RPS
-      public static double TRAP_SPEED_BOTTOM = 1700 / 60.0; // RPS
+      public static double TRAP_SPEED_TOP = 1500 / 60.0; // RPS
+      public static double TRAP_SPEED_BOTTOM = 2600 / 60.0; // RPS
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
@@ -510,7 +510,7 @@ public class Constants {
               0, 0, 255, 0, 0.5, NUM_LIGHTS, TwinkleAnimation.TwinklePercent.Percent76);
 
       public static final Animation GRAB_RANDOM_NOTE_ANIMATION =
-          new RainbowAnimation(1, .75, NUM_LIGHTS);
+          new RainbowAnimation(1, .9, NUM_LIGHTS);
     }
   }
 
@@ -588,6 +588,9 @@ public class Constants {
     public static final class Settings {
       public static final PIDGains AUTO_THETA_GAINS = new PIDGains(5, 0, 0);
       public static final PIDGains AUTO_TRANSLATION_GAINS = new PIDGains(8, 0, 0);
+
+      public static final PIDGains TRAP_THETA_GAINS = new PIDGains(5, 0, 0);
+      public static final PIDGains TRAP_TRANSLATION_GAINS = new PIDGains(2.5, 0, 0);
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
           new PIDSVGains(.25, 0, 0.0, 0.08045, 0.118675);
@@ -673,6 +676,9 @@ public class Constants {
       public static double LOST_RING_TARGET_TIMEOUT = 0.5;
 
       public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(4);
+
+      public static final Translation2d TRAP_OFFSET =
+          new Translation2d(Units.inchesToMeters(29), Units.inchesToMeters(6.0));
     }
   }
 

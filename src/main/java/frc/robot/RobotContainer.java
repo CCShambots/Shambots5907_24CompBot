@@ -266,8 +266,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             climbers.transitionCommand(Climbers.State.FREE_RETRACT),
             intake.transitionCommand(Intake.State.IDLE),
             new SequentialCommandGroup(
-                new DetermineRingStatusCommand(shooter, indexer, lights),
-                shooter.partialFlywheelSpinup())));
+                new DetermineRingStatusCommand(shooter, indexer, lights)
+                // shooter.partialFlywheelSpinup()
+                )));
 
     registerStateCommand(
         State.TEST, new ParallelCommandGroup(lights.transitionCommand(Lights.State.TEST)));
@@ -527,7 +528,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     controllerBindings.manualAmp().onTrue(transitionCommand(State.AMP, false));
 
-    // controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
+    controllerBindings.trapScore().onTrue(transitionCommand(State.TRAP, false));
 
     controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
 

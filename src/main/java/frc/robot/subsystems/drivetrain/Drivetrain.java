@@ -33,6 +33,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final SwerveDrive drive;
@@ -134,9 +135,20 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     System.out.println("Path Flipping:" + flipPath);
   }
 
+  public Pose2d getCurrentTrapPose() {
+    switch (targetStageSideSupplier.get()) {
+      case LEFT:
+        return !flipPath ? BLUE_LEFT_TRAP : Constants.mirror(BLUE_RIGHT_TRAP);
+      case RIGHT:
+        return !flipPath ? BLUE_RIGHT_TRAP : Constants.mirror(BLUE_LEFT_TRAP);
+      default:
+        return !flipPath ? BLUE_CENTER_TRAP : Constants.mirror(BLUE_CENTER_TRAP);
+    }
+  }
+
   public void syncTargetStageSide() {
-    registerStateCommand(
-        State.TRAP, getPathFindCommand(getTrapTarget(), TRAP_ROTATIONAL_DELAY, State.X_SHAPE));
+    // registerStateCommand(
+    // State.TRAP, getPathFindCommand(getTrapTarget(), TRAP_ROTATIONAL_DELAY, State.X_SHAPE));
   }
 
   public void setAutonomousCommand(Command command) {
@@ -219,12 +231,30 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         drive.getDriveVoltageCalcCommand(
             stop, incrementUp, incrementDown, DRIVE_VOLTAGE_INCREMENT));
 
+    registerStateCommand(
+        State.TRAP, new TrapAlignCommand(drive, this, TRAP_TRANSLATION_GAINS, TRAP_THETA_GAINS));
+
     registerFaceCommands();
   }
 
   @Override
   protected void update() {
     drive.update();
+
+    Logger.recordOutput(
+        "Drivetrain/trap-distance",
+        getCurrentTrapPose().getTranslation().getDistance(drive.getPose().getTranslation()));
+    Logger.recordOutput(
+        "Drivetrain/trap-distance-x",
+        Math.abs(
+            getCurrentTrapPose().getTranslation().getX()
+                - drive.getPose().getTranslation().getX()));
+    Logger.recordOutput(
+        "Drivetrain/trap-distance-y",
+        Math.abs(
+            getCurrentTrapPose().getTranslation().getY()
+                - drive.getPose().getTranslation().getY()));
+    Logger.recordOutput("Drivetrain/trap-pose", getCurrentTrapPose());
   }
 
   private void registerTransitions() {

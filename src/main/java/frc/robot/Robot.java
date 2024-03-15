@@ -72,6 +72,7 @@ public class Robot extends LoggedRobot {
         Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs"));
         Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
         new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+        Logger.setReplaySource(null);
         break;
       case SIM:
         // Running a physics simulator, log to NT

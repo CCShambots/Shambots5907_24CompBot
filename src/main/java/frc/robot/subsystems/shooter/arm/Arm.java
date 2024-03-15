@@ -3,12 +3,14 @@ package frc.robot.subsystems.shooter.arm;
 import static frc.robot.Constants.Arm.Settings.*;
 import static frc.robot.Constants.doubleEqual;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.motors.tuning.LinearTuningCommand;
 import java.util.function.DoubleSupplier;
@@ -134,6 +136,18 @@ public class Arm extends StateMachine<Arm.State> {
 
   public double getAbsoluteAngle() {
     return inputs.encoderPosition;
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+
+    builder.addDoubleProperty(
+        "TRAP_POSITION",
+        () -> Constants.Arm.Settings.TRAP_POSITION * 180 / Math.PI,
+        (val) -> {
+          Constants.Arm.Settings.TRAP_POSITION = val * Math.PI / 180;
+        });
   }
 
   public enum State {
