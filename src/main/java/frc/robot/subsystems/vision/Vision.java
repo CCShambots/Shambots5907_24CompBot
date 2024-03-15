@@ -157,20 +157,27 @@ public class Vision extends StateMachine<Vision.State> {
   private void registerTransitions() {
     addOmniTransition(State.ENABLED, () -> limelight.setPipeline(LIMELIGHT_NOTE_TRACK_PIPELINE));
     addOmniTransition(State.DISABLED);
+    addOmniTransition(State.TRAP);
   }
 
   private List<TimestampedPoseEstimator.TimestampedVisionUpdate> getLatestVisionUpdates() {
     List<TimestampedPoseEstimator.TimestampedVisionUpdate> updates = new ArrayList<>();
 
-    for (PVApriltagCam cam : pvApriltagCams) {
-      cam.getLatestEstimate()
-          .ifPresent(
-              (update) -> {
-                updates.add(update);
+    boolean onlyOneForTrap = getState() == State.TRAP;
 
-                Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimate", update.pose());
-              });
+
+    for (PVApriltagCam cam : pvApriltagCams) {
+      if(!onlyOneForTrap || cam.getName() == Constants.Vision.Settings.TRAP_CAMERA) {
+        cam.getLatestEstimate()
+            .ifPresent(
+                (update) -> {
+                  updates.add(update);
+  
+                  Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimate", update.pose());
+                });
+      }
     }
+
 
     return updates;
   }
@@ -255,6 +262,7 @@ public class Vision extends StateMachine<Vision.State> {
     UNDETERMINED,
     ENABLED,
     DISABLED,
+    TRAP,
 
     // FLAGS
     HAS_RING_TARGET,

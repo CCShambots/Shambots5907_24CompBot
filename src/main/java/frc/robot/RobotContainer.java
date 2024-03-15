@@ -265,6 +265,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             climbers.transitionCommand(Climbers.State.FREE_RETRACT),
             intake.transitionCommand(Intake.State.IDLE),
+            vision.transitionCommand(Vision.State.ENABLED),
             new SequentialCommandGroup(
                 new DetermineRingStatusCommand(shooter, indexer, lights)
                 // shooter.partialFlywheelSpinup()
@@ -352,6 +353,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     registerStateCommand(
         State.TRAP,
         new SequentialCommandGroup(
+            vision.transitionCommand(Vision.State.TRAP),
             drivetrain.transitionCommand(Drivetrain.State.TRAP),
             new DetermineRingStatusCommand(shooter, indexer, lights),
             shooter.transitionCommand(Shooter.State.TRAP),
@@ -411,21 +413,31 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private void registerTransitions() {
     addOmniTransition(State.TRAVERSING);
-    addOmniTransition(State.SOFT_E_STOP);
     addOmniTransition(State.SPEAKER_SCORE);
     addOmniTransition(State.BASE_SHOT);
     addOmniTransition(State.HUMAN_PLAYER_INTAKE);
     addOmniTransition(State.AMP);
     addOmniTransition(State.TRAP);
     addOmniTransition(State.CLEANSE);
-    addOmniTransition(State.CLIMB);
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_GROUND_INTAKE);
     addOmniTransition(State.AUTO_HP_INTAKE);
 
+    //Make sure we can't enter other states from the climb state
+    removeAllTransitionsFromState(State.CLIMB);
+    addTransition(State.TRAVERSING, State.CLIMB);
+
+    //Make sure we can't enter other states from the trap state
+    removeAllTransitionsFromState(State.TRAP);
+    addTransition(State.TRAVERSING, State.TRAP);
+
+
     addTransition(State.SOFT_E_STOP, State.AUTONOMOUS);
     addTransition(State.SOFT_E_STOP, State.TEST);
     addTransition(State.TRAVERSING, State.GROUND_INTAKE);
+
+    addOmniTransition(State.SOFT_E_STOP);
+
   }
 
   private Command flashError(Lights.State onEnd) {

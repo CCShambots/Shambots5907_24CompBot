@@ -140,6 +140,8 @@ public class Constants {
       public static final double AUTO_START_TOLERANCE = 0.5;
 
       public static final double VISION_TRUST_CUTOFF = Units.feetToMeters(18);
+
+      public static final String TRAP_CAMERA = "pv_instance_4";
     }
   }
 
