@@ -40,6 +40,8 @@ public interface ControllerBindings {
 
   Trigger autoAmp();
 
+  Trigger lobShot();
+
   Trigger manualAmp();
 
   Trigger trapScore();

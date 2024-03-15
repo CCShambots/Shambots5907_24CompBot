@@ -157,6 +157,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             getArmIO(),
             getFlywheelIO(),
             () -> drivetrain.getBotPose().getTranslation(),
+            () -> drivetrain.getCurrentLobPose(),
             () -> targetStageSide,
             tuningIncrement(),
             tuningDecrement(),
@@ -266,8 +267,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             intake.transitionCommand(Intake.State.IDLE),
             vision.transitionCommand(Vision.State.ENABLED),
             new SequentialCommandGroup(
-                new DetermineRingStatusCommand(shooter, indexer, lights),
-                shooter.partialFlywheelSpinup())));
+                new DetermineRingStatusCommand(shooter, indexer, lights)
+                // shooter.partialFlywheelSpinup()
+                )));
 
     registerStateCommand(
         State.TEST, new ParallelCommandGroup(lights.transitionCommand(Lights.State.TEST)));
@@ -282,6 +284,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new DetermineRingStatusCommand(shooter, indexer, lights),
             // have shooter start to track
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
+            // lights show green on ready and feed ring on press, transition to traversing after
+            // ring is fed
+            new ParallelCommandGroup(
+                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+
+    registerStateCommand(
+        State.LOB,
+        new SequentialCommandGroup(
+            // face speaker and idle intake
+            drivetrain.transitionCommand(Drivetrain.State.LOB),
+            intake.transitionCommand(Intake.State.IDLE),
+            // figure out ring issues (if there are any)
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            // have shooter start to track
+            shooter.transitionCommand(Shooter.State.LOB),
             // lights show green on ready and feed ring on press, transition to traversing after
             // ring is fed
             new ParallelCommandGroup(
@@ -419,6 +436,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_GROUND_INTAKE);
     addOmniTransition(State.AUTO_HP_INTAKE);
+    addOmniTransition(State.LOB);
 
     // Make sure we can't enter other states from the climb state
     removeAllTransitionsFromState(State.CLIMB);
@@ -551,6 +569,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings
         .targetRightStage()
         .onTrue(new InstantCommand(() -> setTargetStageSide(StageSide.RIGHT)));
+
+    controllerBindings
+        .lobShot()
+        .onTrue(transitionCommand(State.LOB, false))
+        .onFalse(transitionCommand(State.TRAVERSING, false));
 
     controllerBindings
         .indicateNonSourceNote()
@@ -918,6 +941,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     AUTO_GROUND_INTAKE,
     AUTO_HP_INTAKE,
     TRAP,
+    LOB,
     CLEANSE,
     TEST
   }

@@ -22,6 +22,7 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.util.StageSide;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends StateMachine<Shooter.State> {
   private final Arm arm;
@@ -29,6 +30,7 @@ public class Shooter extends StateMachine<Shooter.State> {
 
   // odom
   private final Supplier<Translation2d> botTranslationProvider;
+  private final Supplier<Pose2d> lobCornerSupplier;
 
   private final Supplier<StageSide> targetStageSideSupplier;
 
@@ -36,6 +38,7 @@ public class Shooter extends StateMachine<Shooter.State> {
       ArmIO armIO,
       FlywheelIO flywheelIO,
       Supplier<Translation2d> botTranslationProvider,
+      Supplier<Pose2d> lobCornerSupplier,
       Supplier<StageSide> targetStageSideSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
@@ -44,8 +47,9 @@ public class Shooter extends StateMachine<Shooter.State> {
 
     this.botTranslationProvider = botTranslationProvider;
     this.targetStageSideSupplier = targetStageSideSupplier;
+    this.lobCornerSupplier = lobCornerSupplier;
 
-    arm = new Arm(armIO, this::armSpeakerAA, tuningInc, tuningDec, tuningStop);
+    arm = new Arm(armIO, this::armSpeakerAA, this::armLobAA, tuningInc, tuningDec, tuningStop);
 
     flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, tuningInc, tuningDec, tuningStop);
 
@@ -143,6 +147,13 @@ public class Shooter extends StateMachine<Shooter.State> {
             flywheel.transitionCommand(Flywheel.State.SPEAKER_ACTIVE_ADJUST_SPIN),
             arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST),
             watchReadyCommand()));
+
+    registerStateCommand(
+        State.LOB,
+        new ParallelCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.LOB),
+            arm.transitionCommand(Arm.State.LOB),
+            watchReadyCommand()));
   }
 
   private void registerTransitions() {
@@ -158,6 +169,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.AMP);
     addOmniTransition(State.PASS_THROUGH);
     addOmniTransition(State.SPEAKER_AA);
+    addOmniTransition(State.LOB);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
@@ -206,6 +218,19 @@ public class Shooter extends StateMachine<Shooter.State> {
     // angle of shooter to face directly at speaker target height plus lut offset
     return Math.atan2(SPEAKER_TARGET_HEIGHT, distance)
         + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
+  }
+
+  private double armLobAA() {
+    double distanceToTarget =
+        botTranslationProvider.get().getDistance(lobCornerSupplier.get().getTranslation());
+
+    double angle = .5 * Math.asin((9.8 * distanceToTarget) / Math.pow(9.698, 2));
+
+    // angle = Math.PI / 2 - angle;
+
+    Logger.recordOutput("Shooter/calculated-angle", angle);
+
+    return angle;
   }
 
   private double flywheelTrapAA() {
@@ -271,6 +296,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     AMP,
     PASS_THROUGH,
     SPEAKER_AA,
+    LOB,
     // flags
     READY
   }

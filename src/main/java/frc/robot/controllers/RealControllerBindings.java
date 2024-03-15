@@ -65,6 +65,11 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger lobShot() {
+    return operatorController.leftTrigger();
+  }
+
+  @Override
   public Trigger autoAmp() {
     return rightFlightStick.pov(0).or(rightFlightStick.pov(45)).or(rightFlightStick.pov(315));
   }

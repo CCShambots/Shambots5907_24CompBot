@@ -83,6 +83,12 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     registerStateCommand(
         State.PARTIAL_SPINUP,
         new InstantCommand(() -> io.setFlywheelTarget(PARTIAL_SPINUP_VELOCITY)));
+
+    registerStateCommand(
+        State.LOB,
+        new ParallelCommandGroup(
+            new InstantCommand(() -> io.setFlywheelTarget(LOB_SPEED)),
+            atSpeedCommand(() -> LOB_SPEED, SPIN_UP_READY_TOLERANCE)));
   }
 
   private void registerTransitions() {
@@ -95,6 +101,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.CHUTE_INTAKE);
     addOmniTransition(State.AMP);
     addOmniTransition(State.PARTIAL_SPINUP);
+    addOmniTransition(State.LOB);
 
     addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
@@ -134,6 +141,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     AMP,
     PARTIAL_SPINUP,
     VOLTAGE_CALC,
+    LOB,
 
     // flags
     AT_SPEED
