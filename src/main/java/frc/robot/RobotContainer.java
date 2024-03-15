@@ -267,8 +267,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             intake.transitionCommand(Intake.State.IDLE),
             vision.transitionCommand(Vision.State.ENABLED),
             new SequentialCommandGroup(
-                new DetermineRingStatusCommand(shooter, indexer, lights)
-                // shooter.partialFlywheelSpinup()
+                new DetermineRingStatusCommand(shooter, indexer, lights),
+                shooter.partialFlywheelSpinup()
                 )));
 
     registerStateCommand(
