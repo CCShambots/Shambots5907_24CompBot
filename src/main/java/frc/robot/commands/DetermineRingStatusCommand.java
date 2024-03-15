@@ -33,16 +33,20 @@ public class DetermineRingStatusCommand extends Command {
       }
       case LOST_RING -> {
         // Clear the robot of any potential ring if the indexer has lost it
-        shooter.requestTransition(Shooter.State.PASS_THROUGH);
+        /*shooter.requestTransition(Shooter.State.PASS_THROUGH);
         indexer.requestTransition(Indexer.State.CLEANSE);
-        lights.requestTransition(Lights.State.EJECT);
+        lights.requestTransition(Lights.State.EJECT);*/
+        lights.requestTransition(Lights.State.ERROR);
+        isFinished = true;
       }
-      case INDEXING -> {
-        // Indicate we have a ring and stow the shooter, but wait since the robot isn't done
-        // indexing yet
-        shooter.requestTransition(Shooter.State.STOW);
-        lights.requestTransition(Lights.State.HAVE_RING);
-      }
+        /*case INDEXING -> {
+          // Indicate we have a ring and stow the shooter, but wait since the robot isn't done
+          // indexing yet
+          shooter.requestTransition(Shooter.State.STOW);
+          lights.requestTransition(Lights.State.HAVE_RING);
+
+          isFinished = true;
+        }*/
       default -> {
         indexer.requestTransition(Indexer.State.IDLE);
         shooter.requestTransition(Shooter.State.STOW);
@@ -55,14 +59,15 @@ public class DetermineRingStatusCommand extends Command {
 
   @Override
   public void execute() {
-    if (indexer.getState() == Indexer.State.PASS_THROUGH
+    /*if (indexer.getState() == Indexer.State.PASS_THROUGH
         && indexer.isFlag(Indexer.State.PROX_CLEAR)) {
       lights.requestTransition(Lights.State.NO_RING);
       indexer.requestTransition(Indexer.State.IDLE);
       shooter.requestTransition(Shooter.State.PARTIAL_STOW);
 
       isFinished = true;
-    }
+    }*/
+    // ????
   }
 
   @Override

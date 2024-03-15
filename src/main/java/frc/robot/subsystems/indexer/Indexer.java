@@ -119,6 +119,9 @@ public class Indexer extends StateMachine<Indexer.State> {
     addTransition(State.EXPECT_RING_BACK, State.INDEXING);
     addTransition(State.EXPECT_RING_FRONT, State.INDEXING);
 
+    addTransition(State.LOST_RING, State.EXPECT_RING_BACK);
+    addTransition(State.LOST_RING, State.EXPECT_RING_FRONT);
+
     addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
 

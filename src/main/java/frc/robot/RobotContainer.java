@@ -20,7 +20,7 @@ import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.commands.DetermineRingStatusCommand;
 import frc.robot.controllers.ControllerBindings;
 import frc.robot.controllers.RealControllerBindings;
-import frc.robot.controllers.SimControllerBindings;
+import frc.robot.controllers.VothSimBindings;
 import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
@@ -78,7 +78,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     super("RobotContainer", State.UNDETERMINED, State.class);
 
     if (Constants.currentBuildMode == ShamLibConstants.BuildMode.SIM) {
-      controllerBindings = new SimControllerBindings();
+      controllerBindings = new VothSimBindings();
     } else {
       controllerBindings = new RealControllerBindings();
     }
