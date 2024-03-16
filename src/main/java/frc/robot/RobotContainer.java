@@ -199,9 +199,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             intake.transitionCommand(Intake.State.INTAKE, false),
             new ConditionalCommand(
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
-                new SequentialCommandGroup(
-                    indexer.waitForState(Indexer.State.IDLE),
-                    indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK)),
+                new InstantCommand(
+                    () ->
+                        new SequentialCommandGroup(
+                                indexer.waitForState(Indexer.State.IDLE).withTimeout(2),
+                                indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
+                            .schedule()),
                 () -> indexer.getState() == Indexer.State.IDLE)));
 
     NamedCommands.registerCommand("stopIntake", intake.transitionCommand(Intake.State.IDLE, false));
@@ -258,6 +261,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
     NamedCommands.registerCommand(
+        "dumbVisionIntake",
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+            drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
+            new WaitUntilCommand(() -> intake.ringPresent()),
+            new WaitCommand(0.25),
+            new WaitUntilCommand(() -> !indexer.ringPresent()),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
+
+    NamedCommands.registerCommand(
         "aim",
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
@@ -295,10 +309,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 indexer.waitForState(Indexer.State.HOLDING_RING),
                 lights.transitionCommand(Lights.State.HAVE_RING)),
             new SequentialCommandGroup(
-                new DetermineRingStatusCommand(shooter, indexer, lights)
-                // shooter.partialFlywheelSpinup()
-
-                )));
+                new DetermineRingStatusCommand(shooter, indexer, lights),
+                shooter.partialFlywheelSpinup())));
 
     registerStateCommand(
         State.TEST, new ParallelCommandGroup(lights.transitionCommand(Lights.State.TEST)));

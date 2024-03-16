@@ -24,12 +24,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Note 2"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "fireSequence"
