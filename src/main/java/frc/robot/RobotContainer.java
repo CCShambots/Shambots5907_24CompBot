@@ -47,8 +47,10 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
@@ -195,7 +197,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         "intake",
         new ParallelCommandGroup(
             intake.transitionCommand(Intake.State.INTAKE, false),
-            indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK)));
+            new ConditionalCommand(
+                indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
+                new SequentialCommandGroup(
+                    indexer.waitForState(Indexer.State.IDLE),
+                    indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK)),
+                () -> indexer.getState() == Indexer.State.IDLE)));
+
     NamedCommands.registerCommand("stopIntake", intake.transitionCommand(Intake.State.IDLE, false));
 
     NamedCommands.registerCommand(
@@ -203,6 +211,18 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new SequentialCommandGroup(
             indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(3),
             indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false)));
+
+    NamedCommands.registerCommand(
+        "slowDownShooterForClown",
+        new ParallelCommandGroup(
+            indexer.transitionCommand(Indexer.State.BLIND_FEED),
+            shooter.transitionCommand(Shooter.State.PASS_THROUGH)));
+
+    NamedCommands.registerCommand(
+        "backToNormalShooting",
+        new ParallelCommandGroup(
+            indexer.transitionCommand(Indexer.State.IDLE),
+            shooter.transitionCommand(Shooter.State.SPEAKER_AA)));
 
     NamedCommands.registerCommand(
         "fireSequence",
@@ -726,14 +746,33 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     Command selectedAutoCommand = autoChooser.get();
 
+    String selectedAutoKey = autoChooser.getSendableChooser().getSelected();
+
+    AtomicBoolean runDefaultStartShot = new AtomicBoolean(true);
+
+    switch (selectedAutoKey) {
+      case "Clown Route":
+        runDefaultStartShot.set(false);
+        break;
+
+      default:
+        // use normal default shot
+        break;
+    }
+
+    Logger.recordOutput("RobotContainer/AutoKey", selectedAutoKey);
+
     registerStateCommand(
         State.AUTONOMOUS,
         new SequentialCommandGroup(
             lights.transitionCommand(Lights.State.AUTO),
-            shooter.transitionCommand(Shooter.State.AUTO_START_SHOT),
-            shooter.waitForFlag(Shooter.State.READY).withTimeout(1.25),
-            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
-            indexer.waitForState(Indexer.State.IDLE),
+            new ConditionalCommand(
+                new SequentialCommandGroup(
+                    shooter.transitionCommand(Shooter.State.AUTO_START_SHOT),
+                    shooter.waitForFlag(Shooter.State.READY).withTimeout(1.25),
+                    indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false)),
+                new InstantCommand(),
+                () -> runDefaultStartShot.get()),
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
             new InstantCommand(

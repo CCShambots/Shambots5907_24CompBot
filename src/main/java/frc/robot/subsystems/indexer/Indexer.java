@@ -98,11 +98,14 @@ public class Indexer extends StateMachine<Indexer.State> {
           io.stop();
           requestTransition(State.INDEXING);
         });
+
+    registerStateCommand(State.BLIND_FEED, () -> io.setTargetVelocity(BLIND_FEED_SPEED));
   }
 
   private void registerTransitions() {
     addOmniTransition(State.IDLE, () -> io.stop());
     addOmniTransition(State.CLEANSE);
+    addOmniTransition(State.BLIND_FEED);
 
     addTransition(State.IDLE, State.HOLDING_RING);
     addTransition(State.IDLE, State.INDEXING);
@@ -212,6 +215,7 @@ public class Indexer extends StateMachine<Indexer.State> {
     CLEANSE,
     LOST_RING,
     VOLTAGE_CALC,
+    BLIND_FEED,
 
     // flags
     PROX_CLEAR
