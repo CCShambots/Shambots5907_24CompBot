@@ -53,7 +53,7 @@ public class Arm extends StateMachine<Arm.State> {
     registerStateCommand(State.FULL_STOW, holdPositionCommand(() -> FULL_STOW_POSITION));
     registerStateCommand(State.TRAP, holdPositionCommand(() -> TRAP_POSITION));
 
-    registerStateCommand(State.LOB, holdPositionCommand(lobAASupplier));
+    registerStateCommand(State.LOB, holdPositionCommand(() -> LOB_POSITION));
 
     registerStateCommand(State.SHOT_ACTIVE_ADJUST, holdPositionCommand(distanceAAProvider));
 

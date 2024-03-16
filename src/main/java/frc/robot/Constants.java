@@ -79,7 +79,8 @@ public class Constants {
     public static Pose2d BLUE_RIGHT_TRAP =
         new Pose2d(new Translation2d(4.5969682, 3.717244813), Rotation2d.fromDegrees(-120));
 
-    public static Pose2d BLUE_LOB_CORNER = new Pose2d(2, Units.feetToMeters(25), new Rotation2d(0));
+    public static Pose2d BLUE_LOB_CORNER =
+        new Pose2d(2, Units.feetToMeters(27) - 2.25, new Rotation2d(0));
 
     public static double TRAP_SHOT_DISTANCE = 1; // Meters
 
@@ -241,7 +242,7 @@ public class Constants {
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
       public static final double CHUTE_INTAKE_POSITION = 40 * (Math.PI / 180); // RAD
-      public static final double LOB_POSITION = 45 * (Math.PI / 180);
+      public static final double LOB_POSITION = 50 * (Math.PI / 180);
 
       public static double TRAP_POSITION = 58 * (Math.PI / 180); // RAD
 
@@ -301,7 +302,7 @@ public class Constants {
 
       public static final double PASS_THROUGH_SPEED = 500 / 60.0; // RPS
 
-      public static final double CHUTE_INTAKE_SPEED = -500 / 60.0; // RPS
+      public static final double CHUTE_INTAKE_SPEED = -1000 / 60.0; // RPS
 
       public static final double AMP_SPEED_TOP = 125 / 60.0; // RPS
       public static final double AMP_SPEED_BOTTOM = 875 / 60.0; // RPS
@@ -309,7 +310,7 @@ public class Constants {
       public static double TRAP_SPEED_TOP = 1500 / 60.0; // RPS
       public static double TRAP_SPEED_BOTTOM = 2600 / 60.0; // RPS
 
-      public static final double LOB_SPEED = 4000 / 60.0;
+      public static final double LOB_SPEED = 3500 / 60.0;
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }

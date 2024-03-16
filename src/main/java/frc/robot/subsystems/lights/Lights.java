@@ -166,7 +166,7 @@ public class Lights extends StateMachine<Lights.State> {
     TEST(new LEDData(OFF_RGB)),
     ERROR(new LEDData(ERROR_RGB)),
     AUTO_ERROR(new LEDData(ERROR_RGB)),
-    PARTIAL_HOLD(new LEDData(PARTIAL_HOLD_RGB)),
+    PARTIAL_HOLD(new LEDData(PARTIAL_INTAKE_ANIAMTION)),
     PARTIAL_INTAKE(new LEDData(PARTIAL_INTAKE_ANIAMTION));
 
     private final LEDData data;

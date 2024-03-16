@@ -302,7 +302,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         State.LOB,
         new SequentialCommandGroup(
             // face speaker and idle intake
-            drivetrain.transitionCommand(Drivetrain.State.LOB),
+            new ConditionalCommand(
+                drivetrain.transitionCommand(Drivetrain.State.LOB),
+                drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+                () -> poseWorking),
             intake.transitionCommand(Intake.State.IDLE),
             // figure out ring issues (if there are any)
             new DetermineRingStatusCommand(shooter, indexer, lights),
@@ -424,9 +427,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         State.AUTO_GROUND_INTAKE,
         new ParallelCommandGroup(
             new SequentialCommandGroup(
-                drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
-                new WaitUntilCommand(() -> vision.isFlag(Vision.State.HAS_RING_TARGET)),
-                drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE)),
+                    drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+                    new WaitUntilCommand(() -> vision.isFlag(Vision.State.HAS_RING_TARGET)),
+                    drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+                    new WaitUntilCommand(() -> !vision.isFlag(Vision.State.HAS_RING_TARGET)),
+                    flashError(Lights.State.INTAKE))
+                .repeatedly(),
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     lights.transitionCommand(Lights.State.INTAKE),
