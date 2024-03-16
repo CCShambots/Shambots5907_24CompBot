@@ -764,6 +764,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     switch (selectedAutoKey) {
       case "Clown Route":
+      case "3 Note Far":
         runDefaultStartShot.set(false);
         break;
 

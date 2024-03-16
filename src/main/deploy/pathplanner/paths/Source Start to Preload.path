@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.698250033178267,
+        "y": 4.362199451042501
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4193935100672967,
+        "y": 3.4750785072504398
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.49697352681479,
+        "y": 2.942805940971704
+      },
+      "prevControl": {
+        "x": 2.5526189737458225,
+        "y": 3.040103076742446
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Clown Preload End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 140.81933537140796,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "BETWEEN NOTES",
+  "previewStartingState": {
+    "rotation": 121.84905131905528,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
