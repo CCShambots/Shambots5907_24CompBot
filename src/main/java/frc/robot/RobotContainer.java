@@ -275,7 +275,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         "aim",
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
-            drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE).withTimeout(0.5),
+            new WaitCommand(0.1),
+            drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE).withTimeout(0.4),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
+
+    NamedCommands.registerCommand(
+        "aimPreload",
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
+            new WaitCommand(1.25),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
@@ -355,9 +364,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 drivetrain.transitionCommand(Drivetrain.State.GROUND_INTAKE),
                 shooter.transitionCommand(Shooter.State.STOW),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
+                lights.transitionCommand(Lights.State.INTAKE),
                 intake.transitionCommand(Intake.State.INTAKE)),
             indexer.waitForState(Indexer.State.INDEXING),
-            lights.transitionCommand(Lights.State.INTAKE),
             transitionCommand(State.TRAVERSING)));
 
     registerStateCommand(
@@ -764,7 +773,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     switch (selectedAutoKey) {
       case "Clown Route":
-      case "3 Note Far":
+      case "3.5 Note Far":
+      case "4.5 Note Far-Ish":
+      case "5.5 Note":
         runDefaultStartShot.set(false);
         break;
 

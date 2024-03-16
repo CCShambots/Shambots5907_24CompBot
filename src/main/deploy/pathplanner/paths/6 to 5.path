@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.6999845365259985,
-        "y": 3.8699850583491306
+        "x": 5.866444950882981,
+        "y": 4.1103715702241095
       },
       "isLocked": false,
       "linkedName": "6 Shoot End"
     },
     {
       "anchor": {
-        "x": 6.7535658946750425,
-        "y": 3.4292916198289145
+        "x": 6.856586391373475,
+        "y": 3.1717403780828324
       },
       "prevControl": {
-        "x": 6.026699056858322,
-        "y": 4.001627712597985
+        "x": 6.129719553556755,
+        "y": 3.744076470851903
       },
       "nextControl": null,
       "isLocked": false,
@@ -40,7 +40,7 @@
   "goalEndState": {
     "velocity": 2.0,
     "rotation": 142.72182580013094,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "BETWEEN NOTES",

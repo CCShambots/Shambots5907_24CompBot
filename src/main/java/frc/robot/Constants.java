@@ -181,10 +181,10 @@ public class Constants {
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(8), Math.toRadians(1));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), Math.toRadians(2));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(4));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(6));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(7));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(4.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(5.25));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(10));
 
@@ -294,7 +294,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BASE_SHOT_VELOCITY = 5800 / 60.0; // RPS
+      public static final double BASE_SHOT_VELOCITY = 5700 / 60.0; // RPS
 
       public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 1;
 
@@ -694,7 +694,7 @@ public class Constants {
       public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(4);
 
       public static final Translation2d TRAP_OFFSET =
-          new Translation2d(Units.inchesToMeters(29), Units.inchesToMeters(6.0));
+          new Translation2d(Units.inchesToMeters(29.75), Units.inchesToMeters(6.0));
     }
   }
 

@@ -82,6 +82,11 @@ public class FacePointCommand extends Command {
     resetSpeedLimiters();
 
     prevSpeedMode = drivetrain.getSpeedMode();
+
+    thetaController.setSetpoint(
+        Constants.rotationBetween(poseSupplier.get(), pose)
+            .minus(Constants.Drivetrain.Settings.SHOT_OFFSET)
+            .getRadians());
   }
 
   @Override
