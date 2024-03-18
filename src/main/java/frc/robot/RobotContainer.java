@@ -271,6 +271,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
+    NamedCommands.registerCommand("", new SequentialCommandGroup());
+
     NamedCommands.registerCommand(
         "aim",
         new SequentialCommandGroup(
@@ -281,7 +283,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
     NamedCommands.registerCommand(
-        "aimPreload",
+        "aimLong",
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
             new WaitCommand(1.25),
