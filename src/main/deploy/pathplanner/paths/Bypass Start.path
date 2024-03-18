@@ -81,6 +81,40 @@
           ]
         }
       }
+    },
+    {
+      "name": "Aim",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "enableAimWhileMove"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stop Aiming",
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "disableAimWhileMove"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {

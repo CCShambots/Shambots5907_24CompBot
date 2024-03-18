@@ -6,6 +6,7 @@ import static frc.robot.Constants.PhysicalConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,6 +29,7 @@ import frc.robot.ShamLib.swerve.module.SwerveModule;
 import frc.robot.subsystems.vision.Vision.RingVisionUpdate;
 import frc.robot.util.StageSide;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -111,6 +113,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     // Make sure the alliaince flipping gets passed on to the drivetrain
     AllianceManager.addAllianceChangeHook(this::syncAlliance);
+
+    PPHolonomicDriveController.setRotationTargetOverride(null);
   }
 
   public Pose2d getBotPose() {
@@ -258,7 +262,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private void registerTransitions() {
-    addOmniTransition(State.IDLE);
+    addOmniTransition(State.IDLE, () -> PPHolonomicDriveController.setRotationTargetOverride(null));
     addOmniTransition(State.X_SHAPE);
     addOmniTransition(State.FIELD_ORIENTED_DRIVE);
     addOmniTransition(State.GROUND_INTAKE);
@@ -266,6 +270,16 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.HUMAN_PLAYER_INTAKE);
 
     addTransition(State.IDLE, State.FOLLOWING_AUTONOMOUS_TRAJECTORY);
+    addTransition(
+        State.IDLE, State.FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING, this::ppRotationOverride);
+    addTransition(
+        State.FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING,
+        State.FOLLOWING_AUTONOMOUS_TRAJECTORY,
+        () -> PPHolonomicDriveController.setRotationTargetOverride(null));
+    addTransition(
+        State.FOLLOWING_AUTONOMOUS_TRAJECTORY,
+        State.FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING,
+        this::ppRotationOverride);
 
     addTransition(State.IDLE, State.TURN_VOLTAGE_CALC);
     addTransition(State.IDLE, State.DRIVE_VOLTAGE_CALC);
@@ -282,6 +296,20 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.LOB);
 
     addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
+  }
+
+  private void ppRotationOverride() {
+    PPHolonomicDriveController.setRotationTargetOverride(
+        () -> Optional.of(getTargetRotationToSpeaker()));
+  }
+
+  private Rotation2d getTargetRotationToSpeaker() {
+    return Constants.rotationBetween(
+            drive.getPose(),
+            flipPath
+                ? Constants.PhysicalConstants.BLUE_SPEAKER
+                : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
+        .minus(Constants.Drivetrain.Settings.SHOT_OFFSET);
   }
 
   private void registerFaceCommands() {
@@ -475,6 +503,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     FIELD_ORIENTED_DRIVE,
     CHAIN_ORIENTED_DRIVE,
     FOLLOWING_AUTONOMOUS_TRAJECTORY,
+    FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING,
     FACE_SPEAKER,
     FACE_SPEAKER_AUTO,
     FACE_AMP,
