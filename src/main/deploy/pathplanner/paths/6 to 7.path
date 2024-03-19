@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.66516844452374,
-        "y": 5.764422878326726
+        "x": 4.635439403975525,
+        "y": 4.625468700804305
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.617793394756339,
-        "y": 6.039144202855879
+        "x": 5.603170348209209,
+        "y": 4.207668705994852
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "6 Shoot End"
     },
     {
       "anchor": {
-        "x": 4.510008411020283,
-        "y": 6.342482332023487
+        "x": 6.9710536099272895,
+        "y": 4.957428987522335
       },
       "prevControl": {
-        "x": 6.02097569593063,
-        "y": 6.393992580372704
+        "x": 6.438781043652052,
+        "y": 4.425156421247098
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "8 Side Shot Position"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -147.19682619094445,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -38,14 +44,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -172.79817970311566,
+    "velocity": 2.0,
+    "rotation": -143.83190865096932,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": 179.32596310201555,
+    "rotation": 163.19774296885237,
     "velocity": 0
   },
   "useDefaultConstraints": true

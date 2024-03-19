@@ -306,7 +306,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   private Rotation2d getTargetRotationToSpeaker() {
     return Constants.rotationBetween(
             drive.getPose(),
-            flipPath
+            !flipPath
                 ? Constants.PhysicalConstants.BLUE_SPEAKER
                 : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
         .minus(Constants.Drivetrain.Settings.SHOT_OFFSET);

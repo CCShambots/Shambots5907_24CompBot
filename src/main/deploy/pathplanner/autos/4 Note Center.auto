@@ -86,13 +86,19 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6 to 7"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "visionIntake"
           }
         }
       ]
