@@ -634,7 +634,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
 
-    controllerBindings.startClimb().debounce(0.5).onTrue(transitionCommand(State.CLIMB, false));
+    controllerBindings.startClimb().onTrue(transitionCommand(State.CLIMB, false));
 
     controllerBindings
         .targetLeftStage()
