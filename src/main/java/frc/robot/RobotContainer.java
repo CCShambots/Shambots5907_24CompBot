@@ -18,9 +18,9 @@ import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.ShamLibConstants.BuildMode;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.commands.DetermineRingStatusCommand;
+import frc.robot.controllers.BartaSimBindings;
 import frc.robot.controllers.ControllerBindings;
 import frc.robot.controllers.RealControllerBindings;
-import frc.robot.controllers.VothSimBindings;
 import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
@@ -80,7 +80,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     super("RobotContainer", State.UNDETERMINED, State.class);
 
     if (Constants.currentBuildMode == ShamLibConstants.BuildMode.SIM) {
-      controllerBindings = new VothSimBindings();
+      controllerBindings = new BartaSimBindings();
     } else {
       controllerBindings = new RealControllerBindings();
     }
@@ -426,6 +426,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new DetermineRingStatusCommand(shooter, indexer, lights),
             shooter.transitionCommand(Shooter.State.AMP),
             new ParallelCommandGroup(
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(drivetrain::closeEnoughForAmpAlign),
+                    drivetrain.transitionCommand(Drivetrain.State.FACE_AMP)),
                 lightsOnReadyCommand(Lights.State.TARGETING),
                 feedOnPress(State.TRAVERSING, false))));
 

@@ -682,6 +682,8 @@ public class Constants {
       public static final double CLIMB_ROTATION_DELAY = 0;
       public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
 
+      public static final double AMP_ANGLE_DISTANCE = 4;
+
       // radians
       public static final double FACE_ANGLE_TOLERANCE = 0.02;
 
