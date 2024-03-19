@@ -426,7 +426,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new DetermineRingStatusCommand(shooter, indexer, lights),
             shooter.transitionCommand(Shooter.State.AMP),
             new ParallelCommandGroup(
-                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+                lightsOnReadyCommand(Lights.State.TARGETING),
+                feedOnPress(State.TRAVERSING, false))));
 
     registerStateCommand(
         State.TRAP,
@@ -471,7 +472,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.waitForState(Drivetrain.State.FIELD_ORIENTED_DRIVE),
             lights.transitionCommand(Lights.State.TARGETING),
             new ParallelCommandGroup(
-                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+                lightsOnReadyCommand(Lights.State.TARGETING),
+                feedOnPress(State.TRAVERSING, false))));
 
     registerStateCommand(
         State.AUTO_GROUND_INTAKE,
@@ -528,16 +530,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         lights.transitionCommand(onEnd));
   }
 
-  private Command feedOnPress(State onEnd) {
+  private Command feedOnPress(State onEnd, boolean useDelay) {
     return new SequentialCommandGroup(
         new WaitUntilCommand(
             () ->
                 controllerBindings.feedOnPress().getAsBoolean()
                     && shooter.isFlag(Shooter.State.READY)),
-        new WaitCommand(0.5),
+        new ConditionalCommand(new WaitCommand(0.5), new InstantCommand(), () -> useDelay),
         indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
         indexer.waitForState(Indexer.State.IDLE),
         transitionCommand(onEnd));
+  }
+
+  private Command feedOnPress(State onEnd) {
+    return feedOnPress(onEnd, true);
   }
 
   private Command lightsOnReadyCommand(Lights.State alt) {
@@ -785,6 +791,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       case "3.5 Note Far":
       case "4.5 Note Far-Ish":
       case "5.5 Note":
+      case "3.5 Note Bypass":
         runDefaultStartShot.set(false);
         break;
 
