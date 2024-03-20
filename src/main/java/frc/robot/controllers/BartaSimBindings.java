@@ -3,10 +3,10 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-public class SimControllerBindings implements ControllerBindings {
+public class BartaSimBindings implements ControllerBindings {
   private final CommandXboxController operatorController = new CommandXboxController(0);
 
-  public SimControllerBindings() {}
+  public BartaSimBindings() {}
 
   @Override
   public double getDriveXValue() {
@@ -45,7 +45,7 @@ public class SimControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger manualAmp() {
-    return new Trigger(() -> false);
+    return operatorController.y();
   }
 
   @Override
@@ -65,7 +65,7 @@ public class SimControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger autoAmp() {
-    return operatorController.y();
+    return new Trigger(() -> false);
   }
 
   @Override

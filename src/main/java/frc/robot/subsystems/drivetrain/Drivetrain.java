@@ -259,6 +259,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             getCurrentTrapPose().getTranslation().getY()
                 - drive.getPose().getTranslation().getY()));
     Logger.recordOutput("Drivetrain/trap-pose", getCurrentTrapPose());
+    Logger.recordOutput("Drivetrain/flip-path", flipPath);
   }
 
   private void registerTransitions() {
@@ -313,9 +314,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private void registerFaceCommands() {
-    registerStateCommand(
-        State.FACE_AMP,
-        getFacePointCommand(flipPath ? Constants.mirror(BLUE_AMP) : BLUE_AMP, AMP_SPEED));
+    registerStateCommand(State.FACE_AMP, getFaceAmpCommand(AMP_SPEED));
 
     registerStateCommand(
         State.FACE_SPEAKER,
@@ -376,6 +375,48 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
                 clearFlag(State.AT_ANGLE);
               }
             }));
+  }
+
+  private Command getFaceAmpCommand(SwerveSpeedLimits limits) {
+    FaceAmpCommand faceAmpCommand =
+        new FaceAmpCommand(
+            drive,
+            AUTO_THETA_GAINS,
+            drive::getPose,
+            xSupplier,
+            ySupplier,
+            Constants.Controller.DEADBAND,
+            Constants.Controller.DRIVE_CONVERSION,
+            this,
+            limits);
+
+    return new ParallelCommandGroup(
+        faceAmpCommand,
+        new RunCommand(
+            () -> {
+              if (faceAmpCommand.atAngle(FACE_ANGLE_TOLERANCE)) {
+                setFlag(State.AT_ANGLE);
+              } else {
+                clearFlag(State.AT_ANGLE);
+              }
+            }));
+  }
+
+  public double distanceToAmp() {
+    Pose2d ampPose =
+        flipPath
+            ? Constants.mirror(Constants.PhysicalConstants.BLUE_AMP)
+            : Constants.PhysicalConstants.BLUE_AMP;
+
+    Logger.recordOutput("amp pose", ampPose);
+
+    return drive.getPose().getTranslation().getDistance(ampPose.getTranslation());
+  }
+
+  public boolean closeEnoughForAmpAlign() {
+
+    Logger.recordOutput("amp distance", distanceToAmp());
+    return distanceToAmp() < AMP_ANGLE_DISTANCE;
   }
 
   private Command getPathfindCommand(String nextPath, double rotationalDelay, State endState) {
