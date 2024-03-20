@@ -259,6 +259,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             getCurrentTrapPose().getTranslation().getY()
                 - drive.getPose().getTranslation().getY()));
     Logger.recordOutput("Drivetrain/trap-pose", getCurrentTrapPose());
+    Logger.recordOutput("Drivetrain/flip-path", flipPath);
   }
 
   private void registerTransitions() {
@@ -407,10 +408,14 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             ? Constants.mirror(Constants.PhysicalConstants.BLUE_AMP)
             : Constants.PhysicalConstants.BLUE_AMP;
 
+    Logger.recordOutput("amp pose", ampPose);
+
     return drive.getPose().getTranslation().getDistance(ampPose.getTranslation());
   }
 
   public boolean closeEnoughForAmpAlign() {
+
+    Logger.recordOutput("amp distance", distanceToAmp());
     return distanceToAmp() < AMP_ANGLE_DISTANCE;
   }
 

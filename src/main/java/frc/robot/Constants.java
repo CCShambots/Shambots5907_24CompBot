@@ -71,7 +71,7 @@ public class Constants {
     public static Pose2d BLUE_SPEAKER =
         new Pose2d(new Translation2d(-0.039243, 5.557), Rotation2d.fromDegrees(0));
     public static Pose2d BLUE_AMP =
-        new Pose2d(new Translation2d(1.799, 0.0218), Rotation2d.fromDegrees(-90));
+        new Pose2d(new Translation2d(1.799, Units.feetToMeters(27)), Rotation2d.fromDegrees(-90));
     public static Pose2d BLUE_CENTER_TRAP =
         new Pose2d(new Translation2d(5.286, 4.115), Rotation2d.fromDegrees(0));
     public static Pose2d BLUE_LEFT_TRAP =
