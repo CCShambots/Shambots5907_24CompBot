@@ -426,9 +426,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new DetermineRingStatusCommand(shooter, indexer, lights),
             shooter.transitionCommand(Shooter.State.AMP),
             new ParallelCommandGroup(
-                new SequentialCommandGroup(
-                    new WaitUntilCommand(drivetrain::closeEnoughForAmpAlign),
-                    drivetrain.transitionCommand(Drivetrain.State.FACE_AMP)),
+                new ConditionalCommand(
+                  new SequentialCommandGroup(
+                      new WaitUntilCommand(drivetrain::closeEnoughForAmpAlign),
+                      drivetrain.transitionCommand(Drivetrain.State.FACE_AMP))
+                  , new InstantCommand(), () -> poseWorking),
                 lightsOnReadyCommand(Lights.State.TARGETING),
                 feedOnPress(State.TRAVERSING, false))));
 
