@@ -148,6 +148,11 @@ public class VothSimBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger ejectIntake() {
+    return new Trigger(() -> false);
+  }
+
+  @Override
   public Trigger targetLeftStage() {
     return new Trigger(() -> false);
   }

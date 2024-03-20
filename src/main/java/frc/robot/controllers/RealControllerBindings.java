@@ -121,7 +121,12 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger cleanse() {
-    return operatorController.button(7).and(operatorController.button(8));
+    return operatorController.button(7);
+  }
+
+  @Override
+  public Trigger ejectIntake() {
+    return operatorController.button(8);
   }
 
   @Override

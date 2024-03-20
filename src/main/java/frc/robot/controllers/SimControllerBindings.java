@@ -119,6 +119,11 @@ public class SimControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger ejectIntake() {
+    return operatorController.button(8);
+  }
+
+  @Override
   public Trigger retractClimb() {
     return new Trigger(() -> false);
   }

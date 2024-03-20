@@ -450,6 +450,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             transitionCommand(State.TRAVERSING)));
 
     registerStateCommand(
+        State.EJECT_INTAKE,
+        new SequentialCommandGroup(
+            intake.transitionCommand(Intake.State.EXPEL),
+            lights.transitionCommand(Lights.State.EJECT),
+            new WaitCommand(2),
+            transitionCommand(State.TRAVERSING)));
+
+    registerStateCommand(
         State.CLIMB,
         new SequentialCommandGroup(
             new ConditionalCommand(
@@ -502,6 +510,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.AMP);
     addOmniTransition(State.TRAP);
     addOmniTransition(State.CLEANSE);
+    addOmniTransition(State.EJECT_INTAKE);
     addOmniTransition(State.AUTO_AMP);
     addOmniTransition(State.AUTO_GROUND_INTAKE);
     addOmniTransition(State.AUTO_HP_INTAKE);
@@ -632,7 +641,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .and(() -> poseWorking)
         .onTrue(transitionCommand(State.TRAP, false));
 
-    controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
+    controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));    
+    controllerBindings.ejectIntake().onTrue(transitionCommand(State.EJECT_INTAKE, false));    
+
 
     controllerBindings.startClimb().onTrue(transitionCommand(State.CLIMB, false));
 
@@ -1042,6 +1053,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     TRAP,
     LOB,
     CLEANSE,
+    EJECT_INTAKE,
     TEST
   }
 }

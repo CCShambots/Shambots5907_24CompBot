@@ -51,6 +51,7 @@ public interface ControllerBindings {
   Trigger retractClimb();
 
   Trigger cleanse();
+  Trigger ejectIntake();
 
   Trigger targetLeftStage();
 
