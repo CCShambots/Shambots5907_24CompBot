@@ -183,8 +183,8 @@ public class Constants {
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), Math.toRadians(2));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(4.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(5.25));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(5.75));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(7));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(10));
 
@@ -218,7 +218,9 @@ public class Constants {
       public static final boolean LEADER_INVERTED = true;
       public static final boolean FOLLOWER_INVERTED = true;
 
-      public static final double POTENTIOMETER_OFFSET = Math.toRadians(275.8) + Math.toRadians(20);
+      public static final double POTENTIOMETER_OFFSET = Math.toRadians(276.2) + Math.toRadians(20);
+      // public static final double POTENTIOMETER_OFFSET = Math.toRadians(275.8) +
+      // Math.toRadians(20);
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
@@ -281,12 +283,12 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains", new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
+              "Top Flywheel Gains", new PIDSVGains(0.3, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
-              new PIDSVGains(0.25, 0, 0, 0.2301, 0.1171),
+              new PIDSVGains(0.3, 0, 0, 0.2301, 0.1171),
               () -> ALLOW_TUNING);
 
       public static final double ACCELERATION = 1600;
@@ -294,7 +296,7 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BASE_SHOT_VELOCITY = 5700 / 60.0; // RPS
+      public static final double BASE_SHOT_VELOCITY = 5520 / 60.0; // RPS
 
       public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 1;
 
