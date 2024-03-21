@@ -647,9 +647,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .and(() -> poseWorking)
         .onTrue(transitionCommand(State.TRAP, false));
 
-    controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));    
-    controllerBindings.ejectIntake().onTrue(transitionCommand(State.EJECT_INTAKE, false));    
-
+    controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
+    controllerBindings.ejectIntake().onTrue(transitionCommand(State.EJECT_INTAKE, false));
 
     controllerBindings.startClimb().onTrue(transitionCommand(State.CLIMB, false));
 
