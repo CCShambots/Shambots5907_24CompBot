@@ -244,7 +244,9 @@ public class Constants {
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
       public static final double PARTIAL_STOW_POSITION = 40 * (Math.PI / 180); // RAD
       public static final double CHUTE_INTAKE_POSITION = 40 * (Math.PI / 180); // RAD
-      public static final double LOB_POSITION = 50 * (Math.PI / 180);
+      public static final double LOB_POSITION_STRAIGHT = 20.1 * (Math.PI / 180);
+
+      public static final double LOB_POSITION_ARC = 50 * (Math.PI / 180);
 
       public static double TRAP_POSITION = 58 * (Math.PI / 180); // RAD
 
@@ -312,7 +314,10 @@ public class Constants {
       public static double TRAP_SPEED_TOP = 1500 / 60.0; // RPS
       public static double TRAP_SPEED_BOTTOM = 2600 / 60.0; // RPS
 
-      public static final double LOB_SPEED = 3500 / 60.0;
+      public static final double LOB_SPEED_STRAIGHT_TOP = 5200 / 60.0;
+      public static final double LOB_SPEED_STRAIGHT_BOTTOM = 2250 / 60.0;
+
+      public static final double LOB_SPEED_ARC = 3500 / 60.0;
 
       public static final double VOLTAGE_INCREMENT = 0.25;
     }
@@ -515,6 +520,9 @@ public class Constants {
 
       public static final Animation EJECT_ANIMATION =
           new StrobeAnimation(255, 0, 0, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation TOGGLE_LOB_ANIMATION =
+          new StrobeAnimation(255, 16, 240, 0, BLINK_SPEED * 1.5, NUM_LIGHTS);
 
       public static final Animation AUTOMATIC_SCORE_ANIMATION =
           new TwinkleAnimation(

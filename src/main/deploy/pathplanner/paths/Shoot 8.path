@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.581865066844319,
-        "y": 7.218156553960168
+        "x": 6.827969586735022,
+        "y": 6.972052034069466
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.105237947500116,
-        "y": 7.412750825501652
+        "x": 5.20825844419855,
+        "y": 6.771734401600291
       },
       "prevControl": {
-        "x": 5.980912169436795,
-        "y": 7.286836885092455
+        "x": 6.123996192629064,
+        "y": 6.994945477780228
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,13 +36,48 @@
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 5.0,
-        "maxAcceleration": 5.0,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
       }
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "enableAimWhileMove"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "disableAimWhileMove"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 4.0,
@@ -51,7 +86,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -159.82206584868652,
+    "rotation": -168.6900675259798,
     "rotateFast": false
   },
   "reversed": false,

@@ -73,6 +73,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private boolean poseWorking = true;
   private boolean autoIntakeWorking = true;
+  private Shooter.State autoLobState = Shooter.State.LOB_STRAIGHT;
 
   private boolean hasBeenEnabled = false;
 
@@ -360,11 +361,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             // figure out ring issues (if there are any)
             new DetermineRingStatusCommand(shooter, indexer, lights),
             // have shooter start to track
-            shooter.transitionCommand(Shooter.State.LOB),
-            // lights show green on ready and feed ring on press, transition to traversing after
-            // ring is fed
+            new InstantCommand(
+                () -> {
+                  shooter.requestTransition(autoLobState);
+                }),
             new ParallelCommandGroup(
-                lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
+                new RunCommand(
+                    () -> {
+                      if (shooter.getState() != autoLobState && !shooter.isTransitioning()) {
+                        shooter.requestTransition(autoLobState);
+                      }
+                    }),
+                // lights show green on ready and feed ring on press, transition to traversing after
+                // ring is fed
+                lightsOnReadyCommand(Lights.State.TARGETING),
+                feedOnPress(State.TRAVERSING))));
 
     registerStateCommand(
         State.GROUND_INTAKE,
@@ -539,10 +550,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private Command flashError(Lights.State onEnd) {
+    return flash(Lights.State.ERROR, onEnd, 0.5);
+  }
+
+  private Command flash(Lights.State flashState, Lights.State onEnd, double duration) {
     return new SequentialCommandGroup(
-        lights.transitionCommand(Lights.State.ERROR),
-        new WaitCommand(0.5),
-        lights.transitionCommand(onEnd));
+        lights.transitionCommand(flashState), new WaitCommand(1), lights.transitionCommand(onEnd));
   }
 
   private Command feedOnPress(State onEnd, boolean useDelay) {
@@ -666,6 +679,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .lobShot()
         .onTrue(transitionCommand(State.LOB, false))
         .onFalse(transitionCommand(State.TRAVERSING, false));
+
+    controllerBindings
+        .toggleLobMode()
+        .onTrue(
+            new ParallelCommandGroup(
+                toggleLobMode(),
+                new InstantCommand(
+                    () -> {
+                      flash(Lights.State.LOB_TOGGLE, lights.getState(), 1).schedule();
+                    })));
 
     controllerBindings
         .indicateNonSourceNote()
@@ -872,6 +895,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     return shooterGood() && photonVisionGood() && prox1Good() && prox2Good() && prox3Good();
   }
 
+  private Command toggleLobMode() {
+    return new InstantCommand(
+        () ->
+            autoLobState =
+                autoLobState == Shooter.State.LOB_STRAIGHT
+                    ? Shooter.State.LOB_ARC
+                    : Shooter.State.LOB_STRAIGHT);
+  }
+
   private boolean shooterGood() {
     return Constants.doubleEqual(
         shooter.getArmAbsoluteAngle(),
@@ -997,6 +1029,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(5, 0);
 
     teleTab.addBoolean("pv good", this::photonVisionGood).withPosition(0, 3).withSize(4, 1);
+    teleTab
+        .addBoolean("STRAIGHT LOB", () -> autoLobState == Shooter.State.LOB_STRAIGHT)
+        .withPosition(4, 0)
+        .withSize(1, 2);
 
     teleTab
         .addNumber("arm absolute", () -> Math.toDegrees(shooter.getArmAbsoluteAngle()))

@@ -46,6 +46,10 @@ public interface ControllerBindings {
 
   Trigger trapScore();
 
+  default Trigger toggleLobMode() {
+    return new Trigger(() -> false);
+  }
+
   Trigger startClimb();
 
   Trigger retractClimb();

@@ -53,7 +53,8 @@ public class Arm extends StateMachine<Arm.State> {
     registerStateCommand(State.FULL_STOW, holdPositionCommand(() -> FULL_STOW_POSITION));
     registerStateCommand(State.TRAP, holdPositionCommand(() -> TRAP_POSITION));
 
-    registerStateCommand(State.LOB, holdPositionCommand(() -> LOB_POSITION));
+    registerStateCommand(State.LOB_STRAIGHT, holdPositionCommand(() -> LOB_POSITION_STRAIGHT));
+    registerStateCommand(State.LOB_ARC, holdPositionCommand(() -> LOB_POSITION_ARC));
 
     registerStateCommand(State.SHOT_ACTIVE_ADJUST, holdPositionCommand(distanceAAProvider));
 
@@ -84,7 +85,8 @@ public class Arm extends StateMachine<Arm.State> {
     addOmniTransition(State.PARTIAL_STOW);
     addOmniTransition(State.FULL_STOW);
     addOmniTransition(State.TRAP);
-    addOmniTransition(State.LOB);
+    addOmniTransition(State.LOB_STRAIGHT);
+    addOmniTransition(State.LOB_ARC);
     addOmniTransition(State.SHOT_ACTIVE_ADJUST);
   }
 
@@ -168,7 +170,8 @@ public class Arm extends StateMachine<Arm.State> {
     PARTIAL_STOW,
     FULL_STOW,
     VOLTAGE_CALC,
-    LOB,
+    LOB_STRAIGHT,
+    LOB_ARC,
     // flags
     AT_TARGET
   }

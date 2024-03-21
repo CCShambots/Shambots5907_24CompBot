@@ -149,10 +149,17 @@ public class Shooter extends StateMachine<Shooter.State> {
             watchReadyCommand()));
 
     registerStateCommand(
-        State.LOB,
+        State.LOB_STRAIGHT,
         new ParallelCommandGroup(
-            flywheel.transitionCommand(Flywheel.State.LOB),
-            arm.transitionCommand(Arm.State.LOB),
+            flywheel.transitionCommand(Flywheel.State.LOB_STRAIGHT),
+            arm.transitionCommand(Arm.State.LOB_STRAIGHT),
+            watchReadyCommand()));
+
+    registerStateCommand(
+        State.LOB_ARC,
+        new ParallelCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.LOB_ARC),
+            arm.transitionCommand(Arm.State.LOB_ARC),
             watchReadyCommand()));
   }
 
@@ -169,7 +176,8 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.AMP);
     addOmniTransition(State.PASS_THROUGH);
     addOmniTransition(State.SPEAKER_AA);
-    addOmniTransition(State.LOB);
+    addOmniTransition(State.LOB_STRAIGHT);
+    addOmniTransition(State.LOB_ARC);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
@@ -294,7 +302,8 @@ public class Shooter extends StateMachine<Shooter.State> {
     AMP,
     PASS_THROUGH,
     SPEAKER_AA,
-    LOB,
+    LOB_STRAIGHT,
+    LOB_ARC,
     // flags
     READY
   }

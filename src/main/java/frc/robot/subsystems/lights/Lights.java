@@ -79,6 +79,7 @@ public class Lights extends StateMachine<Lights.State> {
     registerStandardState(State.EJECT);
     registerStandardState(State.CLIMB);
     registerStandardState(State.GRAB_RANDOM_NOTE);
+    registerStandardState(State.LOB_TOGGLE);
 
     registerStateCommand(
         State.RESTING,
@@ -166,6 +167,7 @@ public class Lights extends StateMachine<Lights.State> {
     TEST(new LEDData(OFF_RGB)),
     ERROR(new LEDData(ERROR_RGB)),
     AUTO_ERROR(new LEDData(ERROR_RGB)),
+    LOB_TOGGLE(new LEDData(TOGGLE_LOB_ANIMATION)),
     PARTIAL_HOLD(new LEDData(PARTIAL_INTAKE_ANIAMTION)),
     PARTIAL_INTAKE(new LEDData(PARTIAL_INTAKE_ANIAMTION));
 
