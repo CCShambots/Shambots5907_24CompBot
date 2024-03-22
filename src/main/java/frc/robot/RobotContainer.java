@@ -279,7 +279,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
             new WaitCommand(0.1),
-            drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE).withTimeout(0.4),
+            new ParallelCommandGroup(
+                    drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE),
+                    shooter.waitForFlag(Shooter.State.READY))
+                .withTimeout(0.4),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
@@ -992,6 +995,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     autoTab.addBoolean("prox 3 good", this::prox3Good).withPosition(7, 3).withSize(1, 1);
 
     autoTab.addBoolean("GOOD TO GO", this::autoReady).withPosition(9, 0).withSize(3, 3);
+
+    autoTab.add("Field", drivetrain.getField()).withPosition(2, 1).withSize(3, 2);
 
     // Teleop tab stuff
 

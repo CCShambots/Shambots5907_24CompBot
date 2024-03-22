@@ -82,7 +82,7 @@ public class AutoIntakeCommand extends Command {
           thetaController.calculate(
               drive.getCurrentAngle().getRadians(),
               drive.getCurrentAngle().getRadians()
-                  - 0.4 * currentRingData.centerOffsetX().getRadians());
+                  - 0.5 * currentRingData.centerOffsetX().getRadians());
 
       ChassisSpeeds speeds =
           new ChassisSpeeds(

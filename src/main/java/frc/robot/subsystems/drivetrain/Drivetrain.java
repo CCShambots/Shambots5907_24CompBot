@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
@@ -54,6 +55,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
   private final BooleanSupplier intakeProxTripped;
   private final BooleanSupplier indexerReceivedRing;
+
+  private final Field2d field = new Field2d();
 
   public Drivetrain(
       DoubleSupplier x,
@@ -245,6 +248,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   protected void update() {
     drive.update();
 
+    field.setRobotPose(drive.getPose());
+
     Logger.recordOutput(
         "Drivetrain/trap-distance",
         getCurrentTrapPose().getTranslation().getDistance(drive.getPose().getTranslation()));
@@ -311,6 +316,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
                 ? Constants.PhysicalConstants.BLUE_SPEAKER
                 : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
         .minus(Constants.Drivetrain.Settings.SHOT_OFFSET);
+  }
+
+  public Field2d getField() {
+    return field;
   }
 
   private void registerFaceCommands() {

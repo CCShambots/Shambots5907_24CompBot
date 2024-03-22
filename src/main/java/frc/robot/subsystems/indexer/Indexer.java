@@ -91,13 +91,31 @@ public class Indexer extends StateMachine<Indexer.State> {
 
     registerStateCommand(State.IDLE, idleWatchCommand());
 
-    registerStateCommand(State.HOLDING_RING, () -> io.stop());
+    registerStateCommand(
+        State.HOLDING_RING,
+        new SequentialCommandGroup(
+            new InstantCommand(() -> io.stop()),
+            new RunCommand(
+                () -> {
+                  if (!ringPresent()) requestTransition(State.IDLE);
+                })));
+
     registerStateCommand(
         State.LOST_RING,
-        () -> {
-          io.stop();
-          requestTransition(State.INDEXING);
-        });
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () -> {
+                  io.stop();
+                  requestTransition(State.INDEXING);
+                }),
+            new RunCommand(
+                () -> {
+                  if (inputs.prox1) {
+                    requestTransition(State.INDEXING);
+                  } else if (!ringPresent()) {
+                    requestTransition(State.IDLE);
+                  }
+                })));
 
     registerStateCommand(State.BLIND_FEED, () -> io.setTargetVelocity(BLIND_FEED_SPEED));
   }
@@ -124,6 +142,7 @@ public class Indexer extends StateMachine<Indexer.State> {
 
     addTransition(State.LOST_RING, State.EXPECT_RING_BACK);
     addTransition(State.LOST_RING, State.EXPECT_RING_FRONT);
+    addTransition(State.LOST_RING, State.INDEXING);
 
     addTransition(State.IDLE, State.VOLTAGE_CALC);
   }

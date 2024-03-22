@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.20825844419855,
-        "y": 6.771734401600291
+        "x": 5.604238360206978,
+        "y": 6.723319072192714
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.889338394593745,
-        "y": 7.0693491698402084
+        "x": 6.285318310602173,
+        "y": 7.020933840432631
       },
       "isLocked": false,
       "linkedName": "8 Side Shot Position"
     },
     {
       "anchor": {
-        "x": 6.7135023681812065,
-        "y": 6.245185196252745
+        "x": 6.973668463752189,
+        "y": 6.140582857918155
       },
       "prevControl": {
-        "x": 6.301420381387475,
-        "y": 6.382545858517322
+        "x": 6.223395587873696,
+        "y": 6.410098357020138
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +30,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.1,
-      "rotationDegrees": 149.34315683967057,
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 155.3865997523317,
       "rotateFast": false
     }
   ],
@@ -44,8 +44,8 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 3.0,
-    "rotation": 163.3611943295737,
+    "velocity": 2.0,
+    "rotation": 158.19859051364807,
     "rotateFast": false
   },
   "reversed": false,

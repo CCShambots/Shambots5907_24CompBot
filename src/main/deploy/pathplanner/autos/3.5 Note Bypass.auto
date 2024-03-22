@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.3850533445011526,
-      "y": 6.542799964492663
-    },
-    "rotation": 180.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -32,7 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "aimLong"
+            "name": "aim"
           }
         },
         {
@@ -62,7 +56,7 @@
         {
           "type": "named",
           "data": {
-            "name": "aimLong"
+            "name": "aim"
           }
         },
         {
