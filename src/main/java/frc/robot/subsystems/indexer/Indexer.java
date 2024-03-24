@@ -106,7 +106,6 @@ public class Indexer extends StateMachine<Indexer.State> {
             new InstantCommand(
                 () -> {
                   io.stop();
-                  requestTransition(State.INDEXING);
                 }),
             new RunCommand(
                 () -> {
