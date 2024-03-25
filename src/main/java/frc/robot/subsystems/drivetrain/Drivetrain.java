@@ -494,6 +494,15 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         });
   }
 
+  public Command resetFieldOrientedTele() {
+    return new WhileDisabledInstantCommand(
+        () -> {
+          Rotation2d currentAngle = drive.getCurrentAngle();
+
+          drive.resetFieldOrientedRotationOffset(new Rotation2d(Math.PI).minus(currentAngle));
+        });
+  }
+
   public void resetFieldOriented() {
     Rotation2d newAngle = drive.getPose().getRotation();
 
