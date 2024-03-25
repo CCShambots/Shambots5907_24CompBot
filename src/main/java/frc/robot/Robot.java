@@ -131,8 +131,6 @@ public class Robot extends LoggedRobot {
     Logger.recordOutput(
         "Vision/left-intake-cam-pose", Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
 
-    CommandScheduler.getInstance()
-        .onCommandInitialize((cmd) -> Logger.recordOutput("LastInitializedCommand", cmd.getName()));
   }
 
   @Override

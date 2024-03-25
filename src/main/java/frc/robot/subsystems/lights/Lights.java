@@ -133,8 +133,6 @@ public class Lights extends StateMachine<Lights.State> {
   protected void update() {
     io.updateInputs(inputs);
     super.update();
-
-    Logger.recordOutput("display auto info", displayAutoInfo.getAsBoolean());
   }
 
   private Command setLights(State state) {

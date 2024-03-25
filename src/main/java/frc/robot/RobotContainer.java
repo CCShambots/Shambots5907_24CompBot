@@ -604,7 +604,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private void configureBindings() {
 
-    controllerBindings.resetGyro().onTrue(drivetrain.resetFieldOrientedTele());
+    controllerBindings.resetGyro().onTrue(drivetrain.resetGyro());
 
     controllerBindings
         .xShape()

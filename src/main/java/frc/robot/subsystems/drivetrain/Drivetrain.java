@@ -111,6 +111,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             MODULE_3_INFO,
             MODULE_4_INFO);
 
+    drive.setOdometryBoundingBox(FIELD_BOUNDING_BOX);
+
     registerStateCommands(stop, incrementUp, incrementDown);
     registerTransitions();
 
@@ -423,8 +425,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   public boolean closeEnoughForAmpAlign() {
-
-    Logger.recordOutput("amp distance", distanceToAmp());
     return distanceToAmp() < AMP_ANGLE_DISTANCE;
   }
 
