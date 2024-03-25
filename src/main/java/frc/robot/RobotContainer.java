@@ -834,6 +834,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       case "4.5 Note Far-Ish":
       case "5.5 Note":
       case "3.5 Note Bypass":
+      case "3 Note Bypass":
         runDefaultStartShot.set(false);
         break;
 
