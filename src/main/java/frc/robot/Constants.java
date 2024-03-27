@@ -291,15 +291,15 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains", new PIDSVGains(0.3, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
+              "Top Flywheel Gains", new PIDSVGains(0.5, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
-              new PIDSVGains(0.3, 0, 0, 0.2301, 0.1171),
+              new PIDSVGains(0.5, 0, 0, 0.2301, 0.1171),
               () -> ALLOW_TUNING);
 
-      public static final double ACCELERATION = 3200;
+      public static final double ACCELERATION = 5000;
       public static final double JERK = 500;
     }
 

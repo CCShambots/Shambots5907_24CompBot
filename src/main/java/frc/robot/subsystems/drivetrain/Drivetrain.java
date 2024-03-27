@@ -499,7 +499,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         () -> {
           Rotation2d currentAngle = drive.getCurrentAngle();
 
-          drive.resetFieldOrientedRotationOffset(new Rotation2d(Math.PI).minus(currentAngle));
+          drive.resetFieldOrientedRotationOffset(new Rotation2d(Math.PI).plus(currentAngle));
         });
   }
 
