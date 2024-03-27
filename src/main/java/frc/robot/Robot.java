@@ -188,7 +188,13 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousExit() {
-    robotContainer.resetFieldOriented();
+    new WaitCommand(2)
+        .andThen(
+            new WhileDisabledInstantCommand(
+                () -> {
+                  robotContainer.resetFieldOriented();
+                }))
+        .schedule();
   }
 
   @Override
