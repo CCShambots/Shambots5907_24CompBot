@@ -12,6 +12,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -110,6 +111,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             MODULE_2_INFO,
             MODULE_3_INFO,
             MODULE_4_INFO);
+
+    drive.setOdometryBoundingBox(FIELD_BOUNDING_BOX);
 
     registerStateCommands(stop, incrementUp, incrementDown);
     registerTransitions();
@@ -306,12 +309,46 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
   private void ppRotationOverride() {
     PPHolonomicDriveController.setRotationTargetOverride(
-        () -> Optional.of(getTargetRotationToSpeaker()));
+        () -> Optional.of(getTartgetRotationWhileMove()));
   }
 
   private Rotation2d getTargetRotationToSpeaker() {
     return Constants.rotationBetween(
             drive.getPose(),
+            !flipPath
+                ? Constants.PhysicalConstants.BLUE_SPEAKER
+                : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
+        .minus(Constants.Drivetrain.Settings.SHOT_OFFSET);
+  }
+
+  private Rotation2d getTartgetRotationWhileMove() {
+    double speakerDist = getDistanceToSpeaker();
+
+    Pose2d robotPose = drive.getPose();
+
+    // seconds
+    double timeToSpeaker = speakerDist / Constants.Flywheel.Settings.EXIT_VELOCITY;
+
+    Logger.recordOutput("Shot time", timeToSpeaker);
+
+    // Field relative speeds
+    ChassisSpeeds speeds =
+        ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), robotPose.getRotation());
+
+    Logger.recordOutput("Dirvetrain/Field Relative Speeds", speeds);
+
+    // Where we would functionally be shooting from
+    Pose2d functionalShootPose =
+        robotPose.transformBy(
+            new Transform2d(
+                -speeds.vxMetersPerSecond * timeToSpeaker,
+                -speeds.vyMetersPerSecond * timeToSpeaker,
+                new Rotation2d()));
+
+    Logger.recordOutput("Drivetrain/Functional Pose", functionalShootPose);
+
+    return Constants.rotationBetween(
+            functionalShootPose,
             !flipPath
                 ? Constants.PhysicalConstants.BLUE_SPEAKER
                 : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
@@ -411,20 +448,28 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             }));
   }
 
+  public double getDistanceToSpeaker() {
+    Pose2d speakerPose = getSpeakerPosition();
+
+    return drive.getPose().getTranslation().getDistance(speakerPose.getTranslation());
+  }
+
+  public Pose2d getSpeakerPosition() {
+    return flipPath
+        ? Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER)
+        : Constants.PhysicalConstants.BLUE_SPEAKER;
+  }
+
   public double distanceToAmp() {
     Pose2d ampPose =
         flipPath
             ? Constants.mirror(Constants.PhysicalConstants.BLUE_AMP)
             : Constants.PhysicalConstants.BLUE_AMP;
 
-    Logger.recordOutput("amp pose", ampPose);
-
     return drive.getPose().getTranslation().getDistance(ampPose.getTranslation());
   }
 
   public boolean closeEnoughForAmpAlign() {
-
-    Logger.recordOutput("amp distance", distanceToAmp());
     return distanceToAmp() < AMP_ANGLE_DISTANCE;
   }
 
@@ -494,12 +539,19 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         });
   }
 
+  public Command resetFieldOrientedTele() {
+    return new WhileDisabledInstantCommand(
+        () -> {
+          Rotation2d currentAngle = drive.getCurrentAngle();
+
+          drive.resetFieldOrientedRotationOffset(new Rotation2d(Math.PI).plus(currentAngle));
+        });
+  }
+
   public void resetFieldOriented() {
     Rotation2d newAngle = drive.getPose().getRotation();
 
     // Flip by 180 if we're on red alliance
-    // if (flipPath)
-    newAngle = newAngle.plus(new Rotation2d(Math.PI));
 
     drive.resetFieldOrientedRotationOffset(newAngle);
   }

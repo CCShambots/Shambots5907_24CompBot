@@ -130,9 +130,6 @@ public class Robot extends LoggedRobot {
         "Vision/right-intake-cam-pose", Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE);
     Logger.recordOutput(
         "Vision/left-intake-cam-pose", Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
-
-    CommandScheduler.getInstance()
-        .onCommandInitialize((cmd) -> Logger.recordOutput("LastInitializedCommand", cmd.getName()));
   }
 
   @Override
@@ -191,7 +188,13 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousExit() {
-    robotContainer.resetFieldOriented();
+    new WaitCommand(2)
+        .andThen(
+            new WhileDisabledInstantCommand(
+                () -> {
+                  robotContainer.resetFieldOriented();
+                }))
+        .schedule();
   }
 
   @Override

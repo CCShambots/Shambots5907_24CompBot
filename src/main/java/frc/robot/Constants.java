@@ -25,6 +25,7 @@ import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
+import frc.robot.ShamLib.swerve.odometry.OdometryBoundingBox;
 import java.util.function.UnaryOperator;
 
 public class Constants {
@@ -85,6 +86,10 @@ public class Constants {
     public static double TRAP_SHOT_DISTANCE = 1; // Meters
 
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
+
+    public static final OdometryBoundingBox FIELD_BOUNDING_BOX =
+        new OdometryBoundingBox(
+            new Translation2d(), new Translation2d(Units.feetToMeters(54), Units.feetToMeters(27)));
 
     static {
       try {
@@ -321,6 +326,9 @@ public class Constants {
       public static final double LOB_SPEED_ARC = 3500 / 60.0;
 
       public static final double VOLTAGE_INCREMENT = 0.25;
+
+      // m/s
+      public static final double EXIT_VELOCITY = 19.2;
     }
   }
 
