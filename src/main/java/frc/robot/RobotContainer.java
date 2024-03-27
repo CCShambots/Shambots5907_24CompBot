@@ -831,6 +831,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     switch (selectedAutoKey) {
       case "Clown Route":
       case "3.5 Note Far":
+      case "3.5 Far OTM":
       case "4.5 Note Far-Ish":
       case "5.5 Note":
       case "3.5 Note Bypass":
