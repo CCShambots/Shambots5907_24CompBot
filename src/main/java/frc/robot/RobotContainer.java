@@ -415,6 +415,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     () ->
                         indexer.getState() == Indexer.State.HOLDING_RING
                             || indexer.getState() == Indexer.State.LOST_RING))
+            .andThen(
+                new InstantCommand(
+                    () -> {
+                      new WaitCommand(1)
+                          .andThen(indexer.transitionCommand(Indexer.State.INDEXING, false))
+                          .schedule();
+                    }))
             .andThen(transitionCommand(State.TRAVERSING)));
 
     registerStateCommand(

@@ -135,6 +135,7 @@ public class Indexer extends StateMachine<Indexer.State> {
 
     addTransition(State.HOLDING_RING, State.FEED_TO_SHOOTER);
     addTransition(State.HOLDING_RING, State.PASS_THROUGH);
+    addTransition(State.HOLDING_RING, State.INDEXING);
 
     addTransition(State.EXPECT_RING_BACK, State.INDEXING);
     addTransition(State.EXPECT_RING_FRONT, State.INDEXING);
