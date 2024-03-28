@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.617793394756339,
-        "y": 6.039144202855879
+        "x": 7.594899951045577,
+        "y": 5.999080676362044
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.604238360206978,
-        "y": 6.723319072192714
+        "x": 5.339895745535436,
+        "y": 6.19939830883122
       },
       "prevControl": {
-        "x": 7.209395920835114,
-        "y": 6.179577960651763
+        "x": 6.73067245096428,
+        "y": 6.268078639963509
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "8 Side Shot Position"
+      "linkedName": "7 Shoot"
     }
   ],
   "rotationTargets": [],
@@ -51,7 +51,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -172.79817970311566,
+    "rotation": -175.005002770826,
     "rotateFast": false
   },
   "reversed": false,

@@ -75,7 +75,19 @@
             {
               "type": "named",
               "data": {
-                "name": "fireSequence"
+                "name": "stopIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "shoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
               }
             }
           ]
