@@ -128,12 +128,20 @@ public class Shooter extends StateMachine<Shooter.State> {
             .andThen(transitionCommand(State.SOFT_E_STOP)));
 
     registerStateCommand(
-        State.FLYWHEEL_VOLTAGE_CALC,
+        State.FLYWHEEL_VOLTAGE_CALC_TOP,
         new ParallelCommandGroup(
                 arm.transitionCommand(Arm.State.SOFT_E_STOP),
-                flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC))
+                flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC_TOP))
             .andThen(flywheel.waitForState(Flywheel.State.IDLE))
             .andThen(transitionCommand(State.SOFT_E_STOP)));
+
+    registerStateCommand(
+            State.FLYWHEEL_VOLTAGE_CALC_BOTTOM,
+            new ParallelCommandGroup(
+                    arm.transitionCommand(Arm.State.SOFT_E_STOP),
+                    flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC_BOTTOM))
+                    .andThen(flywheel.waitForState(Flywheel.State.IDLE))
+                    .andThen(transitionCommand(State.SOFT_E_STOP)));
 
     registerStateCommand(
         State.PASS_THROUGH,
@@ -179,8 +187,8 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.LOB_STRAIGHT);
     addOmniTransition(State.LOB_ARC);
 
-    addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
-    addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
+    addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC_TOP);
+    addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC_BOTTOM);
     addTransition(State.SOFT_E_STOP, State.ARM_VOLTAGE_CALC);
   }
 
@@ -296,8 +304,8 @@ public class Shooter extends StateMachine<Shooter.State> {
     PARTIAL_STOW,
     CHUTE_INTAKE,
     TRAP,
-    FLYWHEEL_VOLTAGE_CALC,
-    BOTTOM_FLYWHEEL_VOLTAGE_CALC,
+    FLYWHEEL_VOLTAGE_CALC_TOP,
+    FLYWHEEL_VOLTAGE_CALC_BOTTOM,
     ARM_VOLTAGE_CALC,
     AMP,
     PASS_THROUGH,

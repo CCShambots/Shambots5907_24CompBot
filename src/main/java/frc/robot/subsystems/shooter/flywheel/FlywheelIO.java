@@ -11,12 +11,10 @@ public interface FlywheelIO {
     public double topTargetVelocity = 0.0;
     public double topVoltage = 0.0;
 
-
     public double bottomVelocity = 0.0;
     public double bottomRotorVelocity = 0.0;
     public double bottomTargetVelocity = 0.0;
     public double bottomVoltage = 0.0;
-
   }
 
   public default void setFlywheelTarget(double target) {}
@@ -26,6 +24,7 @@ public interface FlywheelIO {
   public default void stop() {}
 
   public default void setTopVoltage(double voltage) {}
+
   public default void setBottomVoltage(double voltage) {}
 
   public default void setTopGains(PIDSVGains gains) {}
