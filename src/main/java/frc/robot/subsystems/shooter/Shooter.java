@@ -136,12 +136,12 @@ public class Shooter extends StateMachine<Shooter.State> {
             .andThen(transitionCommand(State.SOFT_E_STOP)));
 
     registerStateCommand(
-            State.FLYWHEEL_VOLTAGE_CALC_BOTTOM,
-            new ParallelCommandGroup(
-                    arm.transitionCommand(Arm.State.SOFT_E_STOP),
-                    flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC_BOTTOM))
-                    .andThen(flywheel.waitForState(Flywheel.State.IDLE))
-                    .andThen(transitionCommand(State.SOFT_E_STOP)));
+        State.FLYWHEEL_VOLTAGE_CALC_BOTTOM,
+        new ParallelCommandGroup(
+                arm.transitionCommand(Arm.State.SOFT_E_STOP),
+                flywheel.transitionCommand(Flywheel.State.VOLTAGE_CALC_BOTTOM))
+            .andThen(flywheel.waitForState(Flywheel.State.IDLE))
+            .andThen(transitionCommand(State.SOFT_E_STOP)));
 
     registerStateCommand(
         State.PASS_THROUGH,
