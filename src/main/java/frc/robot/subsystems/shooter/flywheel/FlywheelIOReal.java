@@ -9,10 +9,10 @@ import frc.robot.ShamLib.motors.talonfx.VelocityMotionMagicTalonFX;
 public class FlywheelIOReal implements FlywheelIO {
   protected final VelocityMotionMagicTalonFX topMotor =
       new VelocityMotionMagicTalonFX(
-          TOP_MOTOR_ID, GAINS.get(), TOP_MOTOR_RATIO, ACCELERATION, JERK);
+          TOP_MOTOR_ID, TOP_FLYWHEEL_GAINS.get(), TOP_MOTOR_RATIO, ACCELERATION, JERK);
   protected final VelocityMotionMagicTalonFX bottomMotor =
       new VelocityMotionMagicTalonFX(
-          BOTTOM_MOTOR_ID, GAINS.get(), BOTTOM_MOTOR_RATIO, ACCELERATION, JERK);
+          BOTTOM_MOTOR_ID, TOP_FLYWHEEL_GAINS.get(), BOTTOM_MOTOR_RATIO, ACCELERATION, JERK);
 
   public FlywheelIOReal() {
     this(false);
@@ -22,18 +22,21 @@ public class FlywheelIOReal implements FlywheelIO {
     if (!sim) configureCurrentLimits();
     configureHardware();
 
-    GAINS.setOnChange(this::setGains);
+    TOP_FLYWHEEL_GAINS.setOnChange(this::setTopGains);
+    BOTTOM_FLYWHEEL_GAINS.setOnChange(this::setBottomGains);
   }
 
   @Override
   public void updateInputs(FlywheelInputs inputs) {
-    inputs.targetVelocity = topMotor.getTarget();
-    inputs.velocity = topMotor.getEncoderVelocity();
-    inputs.voltage = topMotor.getMotorVoltage().getValueAsDouble();
-    inputs.rotorVelocity = topMotor.getRotorVelocity().getValueAsDouble();
+    inputs.topTargetVelocity = topMotor.getTarget();
+    inputs.topVelocity = topMotor.getEncoderVelocity();
+    inputs.topVoltage = topMotor.getMotorVoltage().getValueAsDouble();
+    inputs.topRotorVelocity = topMotor.getRotorVelocity().getValueAsDouble();
 
-    inputs.velocityBottom = bottomMotor.getEncoderVelocity();
-    inputs.targetVeloBottom = bottomMotor.getTarget();
+    inputs.bottomVelocity = bottomMotor.getEncoderVelocity();
+    inputs.bottomRotorVelocity = bottomMotor.getRotorVelocity().getValueAsDouble();
+    inputs.bottomTargetVelocity = bottomMotor.getTarget();
+    inputs.bottomVoltage = bottomMotor.getMotorVoltage().getValueAsDouble();
   }
 
   @Override
@@ -49,8 +52,13 @@ public class FlywheelIOReal implements FlywheelIO {
   }
 
   @Override
-  public void setVoltage(double voltage) {
+  public void setTopVoltage(double voltage) {
     topMotor.setVoltage(voltage);
+  }
+
+  @Override
+  public void setBottomVoltage(double voltage) {
+    bottomMotor.setVoltage(voltage);
   }
 
   @Override
@@ -65,8 +73,21 @@ public class FlywheelIOReal implements FlywheelIO {
   }
 
   @Override
-  public void setGains(PIDSVGains gains) {
+  public void setTopGains(PIDSVGains gains) {
     topMotor
+        .getConfigurator()
+        .apply(
+            new Slot0Configs()
+                .withKP(gains.getP())
+                .withKI(gains.getI())
+                .withKD(gains.getD())
+                .withKS(gains.getS())
+                .withKV(gains.getV()));
+  }
+
+  @Override
+  public void setBottomGains(PIDSVGains gains) {
+    bottomMotor
         .getConfigurator()
         .apply(
             new Slot0Configs()

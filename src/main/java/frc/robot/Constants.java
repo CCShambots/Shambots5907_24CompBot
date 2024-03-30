@@ -287,11 +287,11 @@ public class Constants {
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
           new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true);
 
-      public static final LoggedTunablePIDSV GAINS =
+      public static final LoggedTunablePIDSV TOP_FLYWHEEL_GAINS =
           new LoggedTunablePIDSV(
               "Top Flywheel Gains", new PIDSVGains(0.3, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
 
-      public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
+      public static final LoggedTunablePIDSV BOTTOM_FLYWHEEL_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
               new PIDSVGains(0.3, 0, 0, 0.2301, 0.1171),

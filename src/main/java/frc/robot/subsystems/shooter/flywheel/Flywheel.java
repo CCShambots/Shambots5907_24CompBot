@@ -38,15 +38,28 @@ public class Flywheel extends StateMachine<Flywheel.State> {
 
   private void registerStateCommands(Trigger tuningInc, Trigger tuningDec, Trigger tuningStop) {
     registerStateCommand(
-        State.VOLTAGE_CALC,
+        State.VOLTAGE_CALC_TOP,
         new SequentialCommandGroup(
             new LinearTuningCommand(
                 tuningStop,
                 tuningInc,
                 tuningDec,
-                io::setVoltage,
-                () -> inputs.rotorVelocity,
-                () -> inputs.voltage,
+                io::setTopVoltage,
+                () -> inputs.topRotorVelocity,
+                () -> inputs.topVoltage,
+                VOLTAGE_INCREMENT),
+            transitionCommand(State.IDLE)));
+
+    registerStateCommand(
+        State.VOLTAGE_CALC_BOTTOM,
+        new SequentialCommandGroup(
+            new LinearTuningCommand(
+                tuningStop,
+                tuningInc,
+                tuningDec,
+                io::setBottomVoltage,
+                () -> inputs.bottomRotorVelocity,
+                () -> inputs.bottomVoltage,
                 VOLTAGE_INCREMENT),
             transitionCommand(State.IDLE)));
 
@@ -111,13 +124,14 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.LOB_STRAIGHT);
     addOmniTransition(State.LOB_ARC);
 
-    addTransition(State.IDLE, State.VOLTAGE_CALC);
+    addTransition(State.IDLE, State.VOLTAGE_CALC_TOP);
+    addTransition(State.IDLE, State.VOLTAGE_CALC_BOTTOM);
   }
 
   private Command atSpeedCommand(DoubleSupplier speedProvider, double accuracy) {
     return new RunCommand(
         () -> {
-          if (doubleEqual(inputs.velocity, speedProvider.getAsDouble(), accuracy)) {
+          if (doubleEqual(inputs.topVelocity, speedProvider.getAsDouble(), accuracy)) {
             setFlag(State.AT_SPEED);
           } else {
             clearFlag(State.AT_SPEED);
@@ -148,7 +162,8 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     CHUTE_INTAKE,
     AMP,
     PARTIAL_SPINUP,
-    VOLTAGE_CALC,
+    VOLTAGE_CALC_TOP,
+    VOLTAGE_CALC_BOTTOM,
     LOB_STRAIGHT,
     LOB_ARC,
 
