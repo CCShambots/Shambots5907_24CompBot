@@ -567,9 +567,8 @@ public class Constants {
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true, // DRIVE MOTOR INVERTED
-                  true,
-                  true
-              );
+              true,
+              true);
 
       public static final ModuleInfo MODULE_2_INFO = // BACK LEFT
           ModuleInfo.generateModuleInfo(
@@ -582,9 +581,8 @@ public class Constants {
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true, // DRIVE MOTOR INVERTED
-                  true,
-                  true
-              );
+              true,
+              true);
 
       public static final ModuleInfo MODULE_3_INFO = // BACK RIGHT
           ModuleInfo.generateModuleInfo(
@@ -597,9 +595,8 @@ public class Constants {
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true, // DRIVE MOTOR INVERTED
-                  true,
-                  true
-              );
+              true,
+              true);
 
       public static final ModuleInfo MODULE_4_INFO = // FRONT RIGHT
           ModuleInfo.generateModuleInfo(
@@ -612,9 +609,8 @@ public class Constants {
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true, // DRIVE MOTOR INVERTED
-                  true,
-                  true
-              );
+              true,
+              true);
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
           new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true);
