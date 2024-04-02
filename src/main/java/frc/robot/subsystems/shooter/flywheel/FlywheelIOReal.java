@@ -12,7 +12,7 @@ public class FlywheelIOReal implements FlywheelIO {
           TOP_MOTOR_ID, GAINS.get(), TOP_MOTOR_RATIO, ACCELERATION, JERK);
   protected final VelocityMotionMagicTalonFX bottomMotor =
       new VelocityMotionMagicTalonFX(
-          BOTTOM_MOTOR_ID, GAINS.get(), BOTTOM_MOTOR_RATIO, ACCELERATION, JERK);
+          BOTTOM_MOTOR_ID, BOTTOM_MOTOR_GAINS.get(), BOTTOM_MOTOR_RATIO, ACCELERATION, JERK);
 
   public FlywheelIOReal() {
     this(false);

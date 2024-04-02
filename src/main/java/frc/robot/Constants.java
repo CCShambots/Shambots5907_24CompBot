@@ -291,16 +291,16 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains", new PIDSVGains(0.3, 0, 0, 0.2301, 0.1171), () -> ALLOW_TUNING);
+              "Top Flywheel Gains", new PIDSVGains(0.3, 0, 0, 0.3664, 0.115), () -> ALLOW_TUNING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
-              new PIDSVGains(0.3, 0, 0, 0.2301, 0.1171),
+              new PIDSVGains(0.3, 0, 0, 0.3664, 0.107),
               () -> ALLOW_TUNING);
 
-      public static final double ACCELERATION = 3200;
-      public static final double JERK = 500;
+      public static final double ACCELERATION = 10000;
+      public static final double JERK = 1500;
     }
 
     public static final class Settings {
@@ -314,8 +314,8 @@ public class Constants {
 
       public static final double CHUTE_INTAKE_SPEED = -1000 / 60.0; // RPS
 
-      public static final double AMP_SPEED_TOP = 125 / 60.0; // RPS
-      public static final double AMP_SPEED_BOTTOM = 875 / 60.0; // RPS
+      public static final double AMP_SPEED_TOP = 250 / 60.0; // RPS
+      public static final double AMP_SPEED_BOTTOM = 1025 / 60.0; // RPS
 
       public static double TRAP_SPEED_TOP = 1500 / 60.0; // RPS
       public static double TRAP_SPEED_BOTTOM = 2600 / 60.0; // RPS
