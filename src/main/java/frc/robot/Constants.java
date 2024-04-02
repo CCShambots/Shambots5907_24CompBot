@@ -712,7 +712,7 @@ public class Constants {
       // seconds
       public static double LOST_RING_TARGET_TIMEOUT = 0.5;
 
-      public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(4);
+      public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(1);
 
       public static final Translation2d TRAP_OFFSET =
           new Translation2d(Units.inchesToMeters(29.75), Units.inchesToMeters(6.0));
