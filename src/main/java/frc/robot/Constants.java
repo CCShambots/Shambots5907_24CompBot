@@ -566,7 +566,9 @@ public class Constants {
               -109.4, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              true // DRIVE MOTOR INVERTED
+              true, // DRIVE MOTOR INVERTED
+                  true,
+                  true
               );
 
       public static final ModuleInfo MODULE_2_INFO = // BACK LEFT
@@ -579,7 +581,9 @@ public class Constants {
               -92.3, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              true // DRIVE MOTOR INVERTED
+              true, // DRIVE MOTOR INVERTED
+                  true,
+                  true
               );
 
       public static final ModuleInfo MODULE_3_INFO = // BACK RIGHT
@@ -592,7 +596,9 @@ public class Constants {
               20, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              true // DRIVE MOTOR INVERTED
+              true, // DRIVE MOTOR INVERTED
+                  true,
+                  true
               );
 
       public static final ModuleInfo MODULE_4_INFO = // FRONT RIGHT
@@ -605,7 +611,9 @@ public class Constants {
               125.3, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              true // DRIVE MOTOR INVERTED
+              true, // DRIVE MOTOR INVERTED
+                  true,
+                  true
               );
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
