@@ -23,6 +23,9 @@ public class FlywheelIOReal implements FlywheelIO {
     configureHardware();
 
     GAINS.setOnChange(this::setGains);
+
+    topMotor.setFOC(ENABLE_FOC);
+    bottomMotor.setFOC(ENABLE_FOC);
   }
 
   @Override

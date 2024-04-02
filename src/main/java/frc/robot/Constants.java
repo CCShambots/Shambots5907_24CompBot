@@ -299,6 +299,8 @@ public class Constants {
 
       public static final double ACCELERATION = 3200;
       public static final double JERK = 500;
+
+      public static final boolean ENABLE_FOC = true;
     }
 
     public static final class Settings {
