@@ -864,6 +864,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false)),
                 new InstantCommand(),
                 () -> runDefaultStartShot.get()),
+            shooter.enableRapidSpinup(),
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
             new InstantCommand(

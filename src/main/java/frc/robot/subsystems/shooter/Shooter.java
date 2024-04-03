@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import static frc.robot.Constants.Flywheel.Settings.BASE_SHOT_VELOCITY;
 import static frc.robot.Constants.Shooter.Settings.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -8,12 +9,16 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.ShamLib.AllianceManager;
+import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.subsystems.shooter.arm.Arm;
 import frc.robot.subsystems.shooter.arm.ArmIO;
@@ -33,6 +38,8 @@ public class Shooter extends StateMachine<Shooter.State> {
   private final Supplier<Pose2d> lobCornerSupplier;
 
   private final Supplier<StageSide> targetStageSideSupplier;
+  
+  private boolean doRapidSpinup = false;
 
   public Shooter(
       ArmIO armIO,
@@ -144,8 +151,16 @@ public class Shooter extends StateMachine<Shooter.State> {
     registerStateCommand(
         State.SPEAKER_AA,
         new ParallelCommandGroup(
-            flywheel.transitionCommand(Flywheel.State.SPEAKER_ACTIVE_ADJUST_SPIN),
-            arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST),
+            new ConditionalCommand(
+              flywheel.transitionCommand(Flywheel.State.SPEAKER_ACTIVE_ADJUST_SPIN), 
+              new SequentialCommandGroup(
+                disableRapidSpinup(),
+                flywheel.transitionCommand(Flywheel.State.FULL_POWER),
+                new WaitUntilCommand(() -> flywheel.getCurrentTopSpeed() >= .90 * BASE_SHOT_VELOCITY).withTimeout(3),
+                flywheel.transitionCommand(Flywheel.State.SPEAKER_ACTIVE_ADJUST_SPIN)
+              )
+              , () -> !doRapidSpinup),
+              arm.transitionCommand(Arm.State.SHOT_ACTIVE_ADJUST),
             watchReadyCommand()));
 
     registerStateCommand(
@@ -161,6 +176,18 @@ public class Shooter extends StateMachine<Shooter.State> {
             flywheel.transitionCommand(Flywheel.State.LOB_ARC),
             arm.transitionCommand(Arm.State.LOB_ARC),
             watchReadyCommand()));
+  }
+
+  public Command enableRapidSpinup() {
+    return new WhileDisabledInstantCommand(() -> {
+      doRapidSpinup = true;
+    });
+  }
+
+  public Command disableRapidSpinup() {
+    return new WhileDisabledInstantCommand(() -> {
+      doRapidSpinup = false;
+    });
   }
 
   private void registerTransitions() {

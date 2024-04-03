@@ -285,7 +285,7 @@ public class Constants {
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
-          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true);
+          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true).withSupplyTimeThreshold(1.275);
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(

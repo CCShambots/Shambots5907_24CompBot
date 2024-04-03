@@ -96,6 +96,12 @@ public class Flywheel extends StateMachine<Flywheel.State> {
         new ParallelCommandGroup(
             new InstantCommand(() -> io.setFlywheelTarget(LOB_SPEED_ARC)),
             atSpeedCommand(() -> LOB_SPEED_ARC, SPIN_UP_READY_TOLERANCE)));
+
+    registerStateCommand(State.FULL_POWER, new InstantCommand(
+      () -> {
+        io.setDutyCycle(1);
+      }
+    ));
   }
 
   private void registerTransitions() {
@@ -110,6 +116,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.PARTIAL_SPINUP);
     addOmniTransition(State.LOB_STRAIGHT);
     addOmniTransition(State.LOB_ARC);
+    addOmniTransition(State.FULL_POWER);
 
     addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
@@ -138,6 +145,10 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     setState(State.IDLE);
   }
 
+  public double getCurrentTopSpeed() {
+    return inputs.velocity;
+  }
+
   public enum State {
     UNDETERMINED,
     BASE_SHOT_SPIN,
@@ -151,6 +162,7 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     VOLTAGE_CALC,
     LOB_STRAIGHT,
     LOB_ARC,
+    FULL_POWER,
 
     // flags
     AT_SPEED
