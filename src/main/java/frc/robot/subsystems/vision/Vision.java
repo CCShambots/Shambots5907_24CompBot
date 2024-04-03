@@ -47,7 +47,7 @@ public class Vision extends StateMachine<Vision.State> {
             .toArray(PVApriltagCam[]::new);
 
     for (var cam : pvApriltagCams) {
-      cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+      cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
       cam.setMultiTagFallbackEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
 
       applyPreAndPostProcesses(cam);
