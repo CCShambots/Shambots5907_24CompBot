@@ -12,39 +12,35 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Far Start to Preload"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "aim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "slowDownShooterForClown"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Source Preload to 4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Far Start to 4"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "slowDownShooterForClown"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
@@ -87,12 +83,6 @@
           "type": "path",
           "data": {
             "pathName": "Shoot 8"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.0
           }
         },
         {
