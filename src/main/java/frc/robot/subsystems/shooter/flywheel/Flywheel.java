@@ -97,11 +97,12 @@ public class Flywheel extends StateMachine<Flywheel.State> {
             new InstantCommand(() -> io.setFlywheelTarget(LOB_SPEED_ARC)),
             atSpeedCommand(() -> LOB_SPEED_ARC, SPIN_UP_READY_TOLERANCE)));
 
-    registerStateCommand(State.FULL_POWER, new InstantCommand(
-      () -> {
-        io.setDutyCycle(1);
-      }
-    ));
+    registerStateCommand(
+        State.FULL_POWER,
+        new InstantCommand(
+            () -> {
+              io.setDutyCycle(1);
+            }));
   }
 
   private void registerTransitions() {

@@ -189,7 +189,8 @@ public class Constants {
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(6));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(7));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(8));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(22), Math.toRadians(9));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(10));
 
@@ -223,7 +224,7 @@ public class Constants {
       public static final boolean LEADER_INVERTED = true;
       public static final boolean FOLLOWER_INVERTED = true;
 
-      public static final double POTENTIOMETER_OFFSET = Math.toRadians(213.2) + Math.toRadians(20);
+      public static final double POTENTIOMETER_OFFSET = Math.toRadians(188.9) + Math.toRadians(20);
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
@@ -285,7 +286,10 @@ public class Constants {
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
-          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true).withSupplyTimeThreshold(1.275);
+          new CurrentLimitsConfigs()
+              .withSupplyCurrentLimit(40)
+              .withSupplyCurrentLimitEnable(true)
+              .withSupplyTimeThreshold(1.275);
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
@@ -716,7 +720,7 @@ public class Constants {
       // seconds
       public static double LOST_RING_TARGET_TIMEOUT = 0.5;
 
-      public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(4);
+      public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(5);
 
       public static final Translation2d TRAP_OFFSET =
           new Translation2d(Units.inchesToMeters(29.75), Units.inchesToMeters(6.0));

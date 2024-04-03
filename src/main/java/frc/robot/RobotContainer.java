@@ -833,21 +833,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     String selectedAutoKey = autoChooser.getSendableChooser().getSelected();
 
-    AtomicBoolean runDefaultStartShot = new AtomicBoolean(true);
+    AtomicBoolean runDefaultStartShot = new AtomicBoolean(false);
 
     switch (selectedAutoKey) {
-      case "Clown Route":
-      case "3.5 Note Far":
-      case "3.5 Far OTM":
-      case "4.5 Note Far-Ish":
-      case "5.5 Note":
-      case "3.5 Note Bypass":
-      case "3 Note Bypass":
-        runDefaultStartShot.set(false);
+      case "5 Note Center":
+        runDefaultStartShot.set(true);
         break;
 
       default:
-        // use normal default shot
+        // don't use normal default shot
         break;
     }
 

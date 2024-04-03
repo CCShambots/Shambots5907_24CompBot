@@ -4,7 +4,6 @@ import static frc.robot.Constants.Flywheel.Hardware.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityMotionMagicTalonFX;
 
@@ -57,8 +56,6 @@ public class FlywheelIOReal implements FlywheelIO {
   public void setVoltage(double voltage) {
     topMotor.setVoltage(voltage);
   }
-
-  
 
   @Override
   public void setDutyCycle(double dutyCycle) {
