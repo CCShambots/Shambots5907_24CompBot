@@ -229,6 +229,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             shooter.transitionCommand(Shooter.State.SPEAKER_AA)));
 
     NamedCommands.registerCommand(
+        "rawVisionIntake",
+        new ParallelCommandGroup(indexer.transitionCommand(Indexer.State.BLIND_FEED)));
+
+    NamedCommands.registerCommand(
+        "disablePassThrough",
+        new ParallelCommandGroup(indexer.transitionCommand(Indexer.State.IDLE)));
+
+    NamedCommands.registerCommand(
         "fireSequence",
         new ConditionalCommand(
             new SequentialCommandGroup(
@@ -257,6 +265,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
                 .raceWith(
                     new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
+                .withTimeout(3),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
+
+    NamedCommands.registerCommand(
+        "feedVisionIntake",
+        new SequentialCommandGroup(
+            indexer.waitForState(Indexer.State.IDLE),
+            indexer.transitionCommand(Indexer.State.PASS_THROUGH),
+            intake.transitionCommand(Intake.State.INTAKE),
+            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+            drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
+            new SequentialCommandGroup(
+                    new WaitUntilCommand(() -> intake.ringPresent()),
+                    new WaitUntilCommand(() -> !indexer.ringPresent()))
                 .withTimeout(3),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
@@ -836,9 +859,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     AtomicBoolean runDefaultStartShot = new AtomicBoolean(false);
 
     switch (selectedAutoKey) {
-      case "5 Note Center":
-        runDefaultStartShot.set(true);
-        break;
+        // case "4.5 Note Center":
+        // runDefaultStartShot.set(true);
+        // break;
 
       default:
         // don't use normal default shot

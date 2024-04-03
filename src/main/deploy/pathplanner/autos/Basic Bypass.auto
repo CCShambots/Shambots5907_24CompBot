@@ -38,7 +38,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "8 Amp Side to 6"
+            "pathName": "8 to 7 "
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7 Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7 Amp Side to 6"
           }
         },
         {
@@ -62,19 +92,13 @@
         {
           "type": "named",
           "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "6 to 5"
+            "name": "shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "visionIntake"
+            "name": "stopIntake"
           }
         }
       ]

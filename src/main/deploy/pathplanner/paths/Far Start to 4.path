@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.419393510067297,
-        "y": 3.3434412059135536
+        "x": 1.2305225994535034,
+        "y": 3.2175272655043576
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.419393510067297,
-        "y": 3.3434412059135536
+        "x": 2.2305225994535034,
+        "y": 3.2175272655043576
       },
       "isLocked": false,
       "linkedName": "Far Start"
     },
     {
       "anchor": {
-        "x": 6.656268758904299,
-        "y": 0.6820783745373714
+        "x": 6.524631457567414,
+        "y": 0.710695179175825
       },
       "prevControl": {
-        "x": 5.656268758904299,
-        "y": 0.6820783745373714
+        "x": 5.524631457567414,
+        "y": 0.710695179175825
       },
       "nextControl": null,
       "isLocked": false,
@@ -44,9 +44,9 @@
     {
       "name": "New Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.35,
+      "maxWaypointRelativePos": 0.45,
       "constraints": {
-        "maxVelocity": 1.75,
+        "maxVelocity": 1.5,
         "maxAcceleration": 4.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -120,7 +120,7 @@
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": 178.22853025996588,
+    "rotation": 119.03132259710247,
     "velocity": 0
   },
   "useDefaultConstraints": true

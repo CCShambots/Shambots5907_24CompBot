@@ -1,16 +1,22 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.3678832617180807,
-      "y": 5.541211802146789
-    },
-    "rotation": 180.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
         {
           "type": "named",
           "data": {
