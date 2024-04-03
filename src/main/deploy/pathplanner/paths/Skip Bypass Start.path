@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 6.679162202615063,
-        "y": 7.424197547357032
+        "x": 6.850863030445784,
+        "y": 6.331035610168106
       },
       "prevControl": {
-        "x": 5.963742086653724,
-        "y": 7.613068457970825
+        "x": 5.998082252219867,
+        "y": 6.628650378408024
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "8 Pickup Start"
+      "linkedName": "Note 7 Start"
     }
   ],
   "rotationTargets": [
@@ -148,7 +148,7 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 164.74488129694217,
+    "rotation": 155.91254769136782,
     "rotateFast": false
   },
   "reversed": false,

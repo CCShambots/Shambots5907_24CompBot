@@ -8,37 +8,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bypass Start"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "visionIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot 8"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "aim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "8 to 7 "
+            "pathName": "Skip Bypass Start"
           }
         },
         {
@@ -81,6 +51,36 @@
           "type": "path",
           "data": {
             "pathName": "6 Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6 to 5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5 Shoot"
           }
         },
         {
