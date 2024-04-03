@@ -170,6 +170,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     registerStateCommand(State.IDLE, drive::stopModules);
 
+    registerStateCommand(State.CALCULATE_WHEEL_RADIUS, new SequentialCommandGroup(
+            drive.getCalculateWheelRadiusCommand(0.0508 * (1.0 / 1.04) /*wheel radius in mk4i as of this commit*/),
+            transitionCommand(State.IDLE)
+    ));
+
     registerStateCommand(
         State.FIELD_ORIENTED_DRIVE,
         new DriveCommand(
@@ -305,6 +310,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.LOB);
 
     addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
+
+    addTransition(State.IDLE, State.CALCULATE_WHEEL_RADIUS);
   }
 
   private void ppRotationOverride() {
@@ -629,6 +636,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     PATHFINDING,
     AT_ANGLE,
     AT_TRAP_POSE,
-    AUTO_INTAKING
+    AUTO_INTAKING,
+    CALCULATE_WHEEL_RADIUS
   }
 }
