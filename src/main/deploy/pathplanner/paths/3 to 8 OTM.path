@@ -3,29 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3850533445011526,
-        "y": 6.542799964492663
+        "x": 3.7888649341312526,
+        "y": 7.3040069678755275
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3751947849916464,
-        "y": 6.044867563783571
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.378371109683396,
-        "y": 6.542799964492663
-      },
-      "prevControl": {
-        "x": 3.5763851596907346,
-        "y": 6.398285101068472
-      },
-      "nextControl": {
-        "x": 5.180357059676059,
-        "y": 6.687314827916854
+        "x": 4.801411929729045,
+        "y": 7.362767242619069
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +20,8 @@
         "y": 7.502728758784936
       },
       "prevControl": {
-        "x": 5.5600016087122555,
-        "y": 7.371091457448049
+        "x": 5.725979075615287,
+        "y": 7.508452119712627
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,16 +30,16 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7,
-      "rotationDegrees": -167.4424030549176,
-      "rotateFast": false
+      "waypointRelativePos": 0.55,
+      "rotationDegrees": 180.0,
+      "rotateFast": true
     }
   ],
   "constraintZones": [
     {
-      "name": "Slow Part",
-      "minWaypointRelativePos": 0.4,
-      "maxWaypointRelativePos": 0.6,
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.35,
       "constraints": {
         "maxVelocity": 1.75,
         "maxAcceleration": 4.0,
@@ -66,37 +50,8 @@
   ],
   "eventMarkers": [
     {
-      "name": "Fire",
-      "waypointRelativePos": 0.6,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "stopIntake"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "shoot"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Aim",
-      "waypointRelativePos": 0.4,
+      "name": "aim",
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -112,8 +67,25 @@
       }
     },
     {
-      "name": "Stop Aiming",
-      "waypointRelativePos": 0.8,
+      "name": "shoot",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "fireSequence"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop aim",
+      "waypointRelativePos": 0.4,
       "command": {
         "type": "parallel",
         "data": {
@@ -143,8 +115,8 @@
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": 179.3013056170166,
-    "velocity": 0
+    "rotation": -154.13140831962846,
+    "velocity": 2.0
   },
   "useDefaultConstraints": true
 }
