@@ -3,71 +3,64 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3850533445011526,
-        "y": 6.542799964492663
+        "x": 2.604129222099275,
+        "y": 4.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3751947849916464,
-        "y": 6.044867563783571
+        "x": 2.0833033776794196,
+        "y": 4.367922811970192
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 1 End"
     },
     {
       "anchor": {
-        "x": 4.378371109683396,
-        "y": 6.542799964492663
+        "x": 1.7112849173795233,
+        "y": 4.963152348450026
       },
       "prevControl": {
-        "x": 3.5763851596907346,
-        "y": 6.398285101068472
+        "x": 1.745058180571485,
+        "y": 4.625419716530408
       },
       "nextControl": {
-        "x": 5.180357059676059,
-        "y": 6.687314827916854
+        "x": 1.6826681127410696,
+        "y": 5.2493203948345615
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.653163545901182,
-        "y": 7.502728758784936
+        "x": 2.7815534108576867,
+        "y": 5.501148275652953
       },
       "prevControl": {
-        "x": 5.5600016087122555,
-        "y": 7.371091457448049
+        "x": 1.259139404091957,
+        "y": 5.621338855134458
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "8 Pickup Start"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7,
-      "rotationDegrees": -167.4424030549176,
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 157.680559607025,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 1.65,
+      "rotationDegrees": 180.0,
       "rotateFast": false
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Slow Part",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.6,
-      "constraints": {
-        "maxVelocity": 1.75,
-        "maxAcceleration": 4.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Fire",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.95,
       "command": {
         "type": "parallel",
         "data": {
@@ -75,19 +68,7 @@
             {
               "type": "named",
               "data": {
-                "name": "stopIntake"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "shoot"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "intake"
+                "name": "fireSequence"
               }
             }
           ]
@@ -112,8 +93,8 @@
       }
     },
     {
-      "name": "Stop Aiming",
-      "waypointRelativePos": 0.8,
+      "name": "Aim",
+      "waypointRelativePos": 1.65,
       "command": {
         "type": "parallel",
         "data": {
@@ -136,14 +117,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 180.0,
+    "velocity": 0,
+    "rotation": -178.98939349461625,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": 179.3013056170166,
+    "rotation": 178.67679888619207,
     "velocity": 0
   },
   "useDefaultConstraints": true

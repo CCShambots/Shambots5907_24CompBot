@@ -1026,10 +1026,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(2, 2)
         .withSize(2, 1);
 
-    teleTab
-        .addBoolean("SHOOTER READY", () -> shooter.isFlag(Shooter.State.READY))
-        .withSize(3, 3)
-        .withPosition(8, 1);
+    teleTab.add("FIELD", drivetrain.getFieldTele()).withSize(3, 3).withPosition(8, 1);
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
     teleTab

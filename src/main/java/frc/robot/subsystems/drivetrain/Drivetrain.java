@@ -58,6 +58,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final BooleanSupplier indexerReceivedRing;
 
   private final Field2d field = new Field2d();
+  private final Field2d fieldTele = new Field2d();
 
   public Drivetrain(
       DoubleSupplier x,
@@ -170,10 +171,12 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     registerStateCommand(State.IDLE, drive::stopModules);
 
-    registerStateCommand(State.CALCULATE_WHEEL_RADIUS, new SequentialCommandGroup(
-            drive.getCalculateWheelRadiusCommand(0.0508 * (1.0 / 1.04) /*wheel radius in mk4i as of this commit*/),
-            transitionCommand(State.IDLE)
-    ));
+    registerStateCommand(
+        State.CALCULATE_WHEEL_RADIUS,
+        new SequentialCommandGroup(
+            drive.getCalculateWheelRadiusCommand(
+                0.0508 * (1.0 / 1.04) /*wheel radius in mk4i as of this commit*/),
+            transitionCommand(State.IDLE)));
 
     registerStateCommand(
         State.FIELD_ORIENTED_DRIVE,
@@ -257,6 +260,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     drive.update();
 
     field.setRobotPose(drive.getPose());
+    fieldTele.setRobotPose(drive.getPose());
 
     Logger.recordOutput(
         "Drivetrain/trap-distance",
@@ -364,6 +368,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
   public Field2d getField() {
     return field;
+  }
+
+  public Field2d getFieldTele() {
+    return fieldTele;
   }
 
   private void registerFaceCommands() {
