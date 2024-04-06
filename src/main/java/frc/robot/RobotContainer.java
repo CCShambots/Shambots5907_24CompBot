@@ -73,7 +73,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private boolean poseWorking = true;
   private boolean autoIntakeWorking = true;
-  private Shooter.State autoLobState = Shooter.State.LOB_STRAIGHT;
+  private Shooter.State autoLobState = Shooter.State.LOB_ARC;
 
   private boolean hasBeenEnabled = false;
 
