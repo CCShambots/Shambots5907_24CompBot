@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.698250033178267,
-      "y": 6.725947514178765
-    },
-    "rotation": -118.61045966596524
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -15,12 +9,6 @@
           "type": "path",
           "data": {
             "pathName": "Amp Start to Preload"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "aim"
           }
         },
         {
@@ -104,25 +92,19 @@
         {
           "type": "named",
           "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "7 Amp Side to 6"
+            "name": "shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "visionIntake"
+            "name": "stopIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "6 Shoot"
+            "pathName": "end run"
           }
         }
       ]
