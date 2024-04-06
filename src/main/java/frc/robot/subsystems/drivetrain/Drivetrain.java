@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -501,6 +502,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         new InstantCommand(() -> setFlag(State.PATHFINDING)),
         AutoBuilder.pathfindToPose(targetPose, getPathfindingConstraints(), rotationalDelay),
         transitionCommand(endState, false));
+  }
+
+  public void alignModules() {
+    drive.setAllModules(new SwerveModuleState(0, new Rotation2d()));
   }
 
   private Pose2d getTrapTarget() {

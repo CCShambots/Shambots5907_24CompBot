@@ -217,6 +217,8 @@ public class Robot extends LoggedRobot {
     SubsystemManagerFactory.getInstance().notifyTestStart();
 
     Shuffleboard.selectTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
+
+    robotContainer.alignSwerveModules();
   }
 
   @Override

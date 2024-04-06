@@ -632,6 +632,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     return controllerBindings.tuningStop();
   }
 
+  public void alignSwerveModules() {
+    drivetrain.alignModules();
+  }
+
   private void configureBindings() {
 
     controllerBindings.resetGyro().onTrue(drivetrain.resetGyro());
