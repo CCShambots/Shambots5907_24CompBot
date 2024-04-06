@@ -31,7 +31,7 @@ import java.util.function.UnaryOperator;
 public class Constants {
   public static final double LOOP_PERIOD = 0.02;
 
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REPLAY;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
@@ -558,7 +558,7 @@ public class Constants {
           Math.sqrt(Math.pow(TRACK_WIDTH / 2.0, 2) + Math.pow(WHEEL_BASE / 2.0, 2)) * 2 * Math.PI;
 
       public static final String MODULE_CAN_BUS = "drivetrain";
-      public static final String GYRO_CAN_BUS = "";
+      public static final String GYRO_CAN_BUS = "drivetrain";
 
       public static final ModuleInfo MODULE_1_INFO = // FRONT LEFT
           ModuleInfo.generateModuleInfo(
