@@ -401,7 +401,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 // lights show green on ready and feed ring on press, transition to traversing after
                 // ring is fed
                 lightsOnReadyCommand(Lights.State.TARGETING),
-                feedOnPress(State.TRAVERSING))));
+                feedOnPress(State.TRAVERSING, false))));
 
     registerStateCommand(
         State.GROUND_INTAKE,
