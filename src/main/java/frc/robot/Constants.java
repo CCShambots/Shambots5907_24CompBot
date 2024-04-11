@@ -619,7 +619,7 @@ public class Constants {
               true);
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
-          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true);
+          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true).withSupplyTimeThreshold(0.5);
       ;
     }
 
