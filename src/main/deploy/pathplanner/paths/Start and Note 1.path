@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.5468956128223676,
-        "y": 4.058861321874893
+        "x": 2.695702996942326,
+        "y": 4.0989248483687275
       },
       "prevControl": {
-        "x": 2.281470986229446,
-        "y": 4.109296418592838
+        "x": 2.4302783703494044,
+        "y": 4.1493599450866725
       },
       "nextControl": {
-        "x": 2.7925009760956856,
-        "y": 4.0121922150548475
+        "x": 2.941308360215644,
+        "y": 4.052255741548682
       },
       "isLocked": false,
       "linkedName": "Note 1 Start"
@@ -54,8 +54,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 7.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
