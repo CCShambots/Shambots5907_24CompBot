@@ -84,7 +84,5 @@ public interface ControllerBindings {
   }
   ;
 
-  default void setRumble(double rumbleValue) {
-    
-  }
+  default void setRumble(double rumbleValue) {}
 }

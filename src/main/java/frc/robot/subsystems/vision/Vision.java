@@ -256,6 +256,10 @@ public class Vision extends StateMachine<Vision.State> {
     else return new Rotation2d();
   }
 
+  public boolean isConnected(int index) {
+    return pvApriltagCams[index - 1].isConnected();
+  }
+
   public enum State {
     UNDETERMINED,
     ENABLED,

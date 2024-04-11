@@ -160,10 +160,8 @@ public class RealControllerBindings implements ControllerBindings {
     return leftFlightStick.topLeft();
   }
 
-@Override
-public void setRumble(double rumbleValue) {
+  @Override
+  public void setRumble(double rumbleValue) {
     operatorController.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
-}
-
-  
+  }
 }

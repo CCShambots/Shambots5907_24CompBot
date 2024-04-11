@@ -577,6 +577,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     removeAllTransitionsFromState(State.CLIMB);
     addTransition(State.TRAVERSING, State.CLIMB);
 
+    addTransition(
+        State.AUTO_GROUND_INTAKE,
+        State.TRAVERSING,
+        new SequentialCommandGroup(rumbleLoop(), rumbleLoop()));
+
     // Make sure we can't enter other states from the trap state
     removeAllTransitionsFromState(State.TRAP);
     addTransition(State.TRAVERSING, State.TRAP);
@@ -745,7 +750,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .and(() -> !ringSomewhereInBot())
         .onTrue(lights.transitionCommand(Lights.State.NO_RING));
 
-    
     new Trigger(this::lowVoltage)
         .debounce(2)
         .onTrue(new InstantCommand(() -> controllerBindings.setRumble(1)))
@@ -865,8 +869,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     hasBeenEnabled = true;
   }
 
-  
-
   @Override
   protected void onDisable() {
     controllerBindings.setRumble(0);
@@ -878,20 +880,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public void scheduleEndgameBuzz() {
-    new WaitCommand(103.8).andThen(
-            rumbleLoop(),     
-            rumbleLoop(),     
-            rumbleLoop()  
-    ).schedule();
+    new WaitCommand(103.8).andThen(rumbleLoop(), rumbleLoop(), rumbleLoop()).schedule();
   }
 
   private Command rumbleLoop() {
     return new SequentialCommandGroup(
-            new InstantCommand(() -> controllerBindings.setRumble(1)),
-            new WaitCommand(0.25),
-            new InstantCommand(() -> controllerBindings.setRumble(0)),
-            new WaitCommand(0.15)
-    );
+        new InstantCommand(() -> controllerBindings.setRumble(1)),
+        new WaitCommand(0.25),
+        new InstantCommand(() -> controllerBindings.setRumble(0)),
+        new WaitCommand(0.15));
   }
 
   @Override
@@ -1039,7 +1036,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     autoTab.addBoolean("shooter good", this::shooterGood).withPosition(7, 0).withSize(1, 1);
 
-    autoTab.addBoolean("pv good", this::photonVisionGood).withPosition(7, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 1 good", () -> vision.isConnected(1)).withPosition(5, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 2 good", () -> vision.isConnected(2)).withPosition(6, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 3 good", () -> vision.isConnected(3)).withPosition(7, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 4 good", () -> vision.isConnected(4)).withPosition(8, 1).withSize(1, 1);
 
     autoTab
         .addNumber("ll latency", () -> vision.getLimelightLatency())

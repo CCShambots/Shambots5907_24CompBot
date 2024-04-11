@@ -226,9 +226,7 @@ public class Constants {
       public static final boolean LEADER_INVERTED = true;
       public static final boolean FOLLOWER_INVERTED = true;
 
-      // public static final double POTENTIOMETER_OFFSET = Math.toRadians(188.9) +
-      // Math.toRadians(20);
-      public static final double POTENTIOMETER_OFFSET = 0;
+      public static final double POTENTIOMETER_OFFSET = Math.toRadians(336.2) + Math.toRadians(20);
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
@@ -621,7 +619,10 @@ public class Constants {
               true);
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
-          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true).withSupplyTimeThreshold(0.5);
+          new CurrentLimitsConfigs()
+              .withSupplyCurrentLimit(60)
+              .withSupplyCurrentLimitEnable(true)
+              .withSupplyTimeThreshold(0.5);
       ;
     }
 
@@ -640,7 +641,7 @@ public class Constants {
 
       // m/s
       public static final double MAX_CHASSIS_SPEED = 5;
-      public static final double MAX_CHASSIS_ACCELERATION = 10;
+      public static final double MAX_CHASSIS_ACCELERATION = 15;
       public static final double MAX_CHASSIS_ROTATIONAL_SPEED =
           (MAX_CHASSIS_SPEED / Hardware.ROTATION_RADIUS) * (2 * Math.PI);
       public static final double MAX_CHASSIS_ROTATIONAL_ACCELERATION =
