@@ -334,6 +334,19 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private Rotation2d getTartgetRotationWhileMove() {
+    Pose2d functionalShootPose = getMovingSpeakerShootPose();
+
+    Logger.recordOutput("Drivetrain/Functional Pose", functionalShootPose);
+
+    return Constants.rotationBetween(
+            functionalShootPose,
+            !flipPath
+                ? Constants.PhysicalConstants.BLUE_SPEAKER
+                : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
+        .minus(Constants.Drivetrain.Settings.SHOT_OFFSET);
+  }
+
+  public Pose2d getMovingSpeakerShootPose() {
     double speakerDist = getDistanceToSpeaker();
 
     Pose2d robotPose = drive.getPose();
@@ -345,26 +358,17 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     // Field relative speeds
     ChassisSpeeds speeds =
-        ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), robotPose.getRotation());
+            ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), robotPose.getRotation());
 
     Logger.recordOutput("Dirvetrain/Field Relative Speeds", speeds);
 
     // Where we would functionally be shooting from
-    Pose2d functionalShootPose =
-        robotPose.transformBy(
-            new Transform2d(
-                -speeds.vxMetersPerSecond * timeToSpeaker,
-                -speeds.vyMetersPerSecond * timeToSpeaker,
-                new Rotation2d()));
-
-    Logger.recordOutput("Drivetrain/Functional Pose", functionalShootPose);
-
-    return Constants.rotationBetween(
-            functionalShootPose,
-            !flipPath
-                ? Constants.PhysicalConstants.BLUE_SPEAKER
-                : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
-        .minus(Constants.Drivetrain.Settings.SHOT_OFFSET);
+    return
+            robotPose.transformBy(
+                    new Transform2d(
+                            -speeds.vxMetersPerSecond * timeToSpeaker,
+                            -speeds.vyMetersPerSecond * timeToSpeaker,
+                            new Rotation2d()));
   }
 
   public Field2d getField() {

@@ -34,6 +34,7 @@ public class Shooter extends StateMachine<Shooter.State> {
 
   // odom
   private final Supplier<Translation2d> botTranslationProvider;
+  private final Supplier<Translation2d> movingBotTranslationProvider;
   private final Supplier<Pose2d> lobCornerSupplier;
 
   private final Supplier<StageSide> targetStageSideSupplier;
@@ -44,6 +45,7 @@ public class Shooter extends StateMachine<Shooter.State> {
       ArmIO armIO,
       FlywheelIO flywheelIO,
       Supplier<Translation2d> botTranslationProvider,
+      Supplier<Translation2d> movingBotTranslationProvider,
       Supplier<Pose2d> lobCornerSupplier,
       Supplier<StageSide> targetStageSideSupplier,
       Trigger tuningInc,
@@ -52,10 +54,11 @@ public class Shooter extends StateMachine<Shooter.State> {
     super("Shooter", State.UNDETERMINED, State.class);
 
     this.botTranslationProvider = botTranslationProvider;
+    this.movingBotTranslationProvider = movingBotTranslationProvider;
     this.targetStageSideSupplier = targetStageSideSupplier;
     this.lobCornerSupplier = lobCornerSupplier;
 
-    arm = new Arm(armIO, this::armSpeakerAA, this::armLobAA, tuningInc, tuningDec, tuningStop);
+    arm = new Arm(armIO, this::armSpeakerAA, this::armLobAA, this::armMovingSpeakerAA, tuningInc, tuningDec, tuningStop);
 
     flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, tuningInc, tuningDec, tuningStop);
 
@@ -207,6 +210,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.SPEAKER_AA);
     addOmniTransition(State.LOB_STRAIGHT);
     addOmniTransition(State.LOB_ARC);
+    addOmniTransition(State.MOVING_SPEAKER_AA);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
@@ -236,12 +240,6 @@ public class Shooter extends StateMachine<Shooter.State> {
         });
   }
 
-  private double distanceAA(Pose2d pose, InterpolatingDoubleTreeMap map) {
-    double distance = pose.getTranslation().getDistance(botTranslationProvider.get());
-
-    return map.get(distance);
-  }
-
   private double armTrapAA() {
     double distance = getTrapDistance();
 
@@ -268,6 +266,12 @@ public class Shooter extends StateMachine<Shooter.State> {
     return angle;
   }
 
+  private double armMovingSpeakerAA() {
+    double distance = getMovingSpeakerDistance();
+
+    return Math.atan2(SPEAKER_TARGET_HEIGHT, distance) + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
+  }
+
   private double flywheelTrapAA() {
     return FLYWHEEL_TRAP_DISTANCE_LUT.get(getTrapDistance());
   }
@@ -284,6 +288,16 @@ public class Shooter extends StateMachine<Shooter.State> {
             : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
 
     return speaker.getTranslation().getDistance(botTranslationProvider.get());
+  }
+
+  @AutoLogOutput(key = "Shooter/MovingSpeakerDistance")
+  private double getMovingSpeakerDistance() {
+    Pose2d speaker =
+            AllianceManager.getAlliance() == DriverStation.Alliance.Blue
+                    ? Constants.PhysicalConstants.BLUE_SPEAKER
+                    : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
+
+    return speaker.getTranslation().getDistance(movingBotTranslationProvider.get());
   }
 
   private double getTrapDistance() {
@@ -333,6 +347,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     SPEAKER_AA,
     LOB_STRAIGHT,
     LOB_ARC,
+    MOVING_SPEAKER_AA,
     // flags
     READY
   }
