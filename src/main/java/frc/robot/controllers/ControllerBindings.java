@@ -83,4 +83,8 @@ public interface ControllerBindings {
     return new Trigger(() -> false);
   }
   ;
+
+  default void setRumble(double rumbleValue) {
+    
+  }
 }

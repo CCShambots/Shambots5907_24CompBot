@@ -188,6 +188,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     initializeDriveTab();
+
+    operatorCont.getHID().setRumble(kBothRumble, 0);
   }
 
   private void registerNamedCommands() {
@@ -733,6 +735,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .and(() -> getState() == State.TRAVERSING)
         .and(() -> !ringSomewhereInBot())
         .onTrue(lights.transitionCommand(Lights.State.NO_RING));
+
+    
+    new Trigger(this::lowVoltage)
+        .debounce(2)
+        .onTrue(new InstantCommand(() -> controllerBindings.setRumble(1)))
+        .onFalse(new InstantCommand(() -> controllerBindings.setRumble(0)));
+  }
+
+  public boolean lowVoltage() {
+    return pd.getVoltage() <= Constants.VOLTAGE_WARNING;
   }
 
   private void setTargetStageSide(StageSide newSide) {
@@ -842,6 +854,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   @Override
   protected void onEnable() {
     hasBeenEnabled = true;
+  }
+
+  
+
+  @Override
+  protected void onDisable() {
+    controllerBindings.setRumble(0);
   }
 
   @Override
