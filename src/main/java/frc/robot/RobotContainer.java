@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -62,6 +63,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Drivetrain drivetrain;
   private final Lights lights;
 
+  private PowerDistribution pd;
+
   // Controller bindings object that will be created to handle both real control and sim inputs
   private final ControllerBindings controllerBindings;
 
@@ -77,8 +80,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private boolean hasBeenEnabled = false;
 
-  public RobotContainer(EventLoop checkModulesLoop) {
+  public RobotContainer(EventLoop checkModulesLoop, PowerDistribution pd) {
     super("RobotContainer", State.UNDETERMINED, State.class);
+
+    this.pd = pd;
 
     if (Constants.currentBuildMode == ShamLibConstants.BuildMode.SIM) {
       controllerBindings = new BartaSimBindings();
@@ -189,7 +194,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     initializeDriveTab();
 
-    operatorCont.getHID().setRumble(kBothRumble, 0);
+    controllerBindings.setRumble(0);
   }
 
   private void registerNamedCommands() {
@@ -748,7 +753,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public boolean lowVoltage() {
-    return pd.getVoltage() <= Constants.VOLTAGE_WARNING;
+    return pd != null && pd.getVoltage() <= Constants.Controller.VOLTAGE_WARNING;
   }
 
   private void setTargetStageSide(StageSide newSide) {
@@ -870,6 +875,23 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   @Override
   protected void onTeleopStart() {
     requestTransition(State.TRAVERSING);
+  }
+
+  public void scheduleEndgameBuzz() {
+    new WaitCommand(103.8).andThen(
+            rumbleLoop(),     
+            rumbleLoop(),     
+            rumbleLoop()  
+    ).schedule();
+  }
+
+  private Command rumbleLoop() {
+    return new SequentialCommandGroup(
+            new InstantCommand(() -> controllerBindings.setRumble(1)),
+            new WaitCommand(0.25),
+            new InstantCommand(() -> controllerBindings.setRumble(0)),
+            new WaitCommand(0.15)
+    );
   }
 
   @Override
