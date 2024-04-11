@@ -53,6 +53,8 @@ public class Constants {
     public static final String AUTO_SHUFFLEBOARD_TAB = "Auto";
     public static final String TELE_SHUFFLEBOARD_TAB_ID = "Tele";
     public static final String TEST_SHUFFLEBOARD_TAB_ID = "Test";
+
+    public static final double VOLTAGE_WARNING = 9;
   }
 
   public static final class PhysicalConstants {

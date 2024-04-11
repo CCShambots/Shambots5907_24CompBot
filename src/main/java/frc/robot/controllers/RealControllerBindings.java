@@ -1,5 +1,6 @@
 package frc.robot.controllers;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
@@ -158,4 +159,11 @@ public class RealControllerBindings implements ControllerBindings {
   public Trigger resetGyro() {
     return leftFlightStick.topLeft();
   }
+
+@Override
+public void setRumble(double rumbleValue) {
+    operatorController.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
+}
+
+  
 }
