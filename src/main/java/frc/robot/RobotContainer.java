@@ -577,11 +577,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     removeAllTransitionsFromState(State.CLIMB);
     addTransition(State.TRAVERSING, State.CLIMB);
 
-    addTransition(
-        State.AUTO_GROUND_INTAKE,
-        State.TRAVERSING,
-        new SequentialCommandGroup(rumbleLoop(), rumbleLoop()));
-
     // Make sure we can't enter other states from the trap state
     removeAllTransitionsFromState(State.TRAP);
     addTransition(State.TRAVERSING, State.TRAP);
