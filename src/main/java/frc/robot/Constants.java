@@ -71,6 +71,8 @@ public class Constants {
     // how far away climber is from shooter pivot on front/back axis
     public static double CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
 
+    public static Pose2d BLUE_CORNER = new Pose2d(new Translation2d(0, Units.feetToMeters(27)), new Rotation2d());
+
     public static Pose2d BLUE_SPEAKER =
         new Pose2d(new Translation2d(-0.039243, 5.557), Rotation2d.fromDegrees(0));
     public static Pose2d BLUE_AMP =
@@ -199,6 +201,12 @@ public class Constants {
           new InterpolatingDoubleTreeMap();
 
       public static final double SPEAKER_TARGET_HEIGHT = 2.2;
+      public static final InterpolatingDoubleTreeMap ARM_LOB_DISTANCE_LUT =
+              new InterpolatingDoubleTreeMap();
+
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_LOB_DISTANCE_LUT =
+              new InterpolatingDoubleTreeMap();
+
       public static final double TRAP_TARGET_HEIGHT = 1.52;
 
       static {
@@ -221,13 +229,13 @@ public class Constants {
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(10));
 
-        // FLYWHEEL TRAP VALUES
-        FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
-        FLYWHEEL_TRAP_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
+        // FLYWHEEL LOB VALUES
+        FLYWHEEL_LOB_DISTANCE_LUT.put(0.0, 3250 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(50.0, 3250 / 60.0);
 
-        // ARM TRAP OFFSETS
-        ARM_TRAP_DISTANCE_LUT.put(0.0, 0.0);
-        ARM_TRAP_DISTANCE_LUT.put(20.0, 0.0);
+        // ARM LOB OFFSETS
+        ARM_LOB_DISTANCE_LUT.put(0.0, 50 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(50.0, 50 * (Math.PI / 180));
       }
     }
   }
