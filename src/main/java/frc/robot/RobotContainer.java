@@ -964,7 +964,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public boolean autoReady() {
-    return shooterGood() && photonVisionGood() && prox1Good() && prox2Good() && prox3Good();
+    return shooterGood()
+        && photonVisionGood()
+        && prox1Good()
+        && prox2Good()
+        && prox3Good()
+        && llGood();
   }
 
   private Command toggleLobMode() {
@@ -1004,6 +1009,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private boolean prox3Good() {
     return !indexer.isProx3Active();
+  }
+
+  private boolean llGood() {
+    return vision.getLimelightLatency() > 25 && vision.getLimelightLatency() < 100;
   }
 
   private void initializeDriveTab() {
@@ -1051,16 +1060,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(6, 2)
         .withSize(1, 1);
 
-    autoTab
-        .addBoolean(
-            "ll good",
-            () ->
-                Constants.doubleEqual(
-                    vision.getLimelightTargetOffset().getDegrees(),
-                    0,
-                    Constants.Vision.Settings.AUTO_START_TOLERANCE))
-        .withPosition(7, 2)
-        .withSize(1, 1);
+    autoTab.addBoolean("ll good", this::llGood).withPosition(7, 2).withSize(1, 1);
 
     autoTab.addBoolean("prox 1 good", this::prox1Good).withPosition(5, 3).withSize(1, 1);
     autoTab.addBoolean("prox 2 good", this::prox2Good).withPosition(6, 3).withSize(1, 1);

@@ -8,7 +8,7 @@
     "BETWEEN NOTES"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 3.5,
+  "defaultMaxVel": 3.25,
   "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,

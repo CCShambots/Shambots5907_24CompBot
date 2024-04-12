@@ -6,6 +6,18 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Bypass Start"

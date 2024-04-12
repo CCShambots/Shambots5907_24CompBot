@@ -3,13 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3850533445011526,
-        "y": 6.542799964492663
+        "x": 1.2133525166704313,
+        "y": 6.760287679744909
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3751947849916464,
-        "y": 6.044867563783571
+        "x": 2.2034939571609247,
+        "y": 6.262355279035817
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.695702996942326,
+        "y": 6.222291752541983
+      },
+      "prevControl": {
+        "x": 2.3465779803531928,
+        "y": 6.216568391614293
+      },
+      "nextControl": {
+        "x": 3.0003470522464797,
+        "y": 6.227285917383034
       },
       "isLocked": false,
       "linkedName": null
@@ -46,39 +62,21 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7,
-      "rotationDegrees": -167.4424030549176,
+      "waypointRelativePos": 1.4,
+      "rotationDegrees": 180.0,
       "rotateFast": false
-    }
-  ],
-  "constraintZones": [
-    {
-      "name": "Slow Part",
-      "minWaypointRelativePos": 0.4,
-      "maxWaypointRelativePos": 0.6,
-      "constraints": {
-        "maxVelocity": 1.75,
-        "maxAcceleration": 4.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
     },
     {
-      "name": "Fast Part",
-      "minWaypointRelativePos": 0.8,
-      "maxWaypointRelativePos": 2.0,
-      "constraints": {
-        "maxVelocity": 3.5,
-        "maxAcceleration": 4.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0,
+      "rotateFast": true
     }
   ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Fire",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 1.2,
       "command": {
         "type": "parallel",
         "data": {
@@ -107,7 +105,7 @@
     },
     {
       "name": "Aim",
-      "waypointRelativePos": 0.4,
+      "waypointRelativePos": 0.8,
       "command": {
         "type": "parallel",
         "data": {
@@ -124,7 +122,7 @@
     },
     {
       "name": "Stop Aiming",
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 1.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -141,8 +139,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 7.0,
+    "maxVelocity": 3.25,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -154,7 +152,7 @@
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": 179.3013056170166,
+    "rotation": -156.39981013208217,
     "velocity": 0
   },
   "useDefaultConstraints": true
