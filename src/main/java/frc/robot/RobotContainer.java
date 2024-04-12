@@ -108,18 +108,18 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    Map<String, Pose3d> photonMap =
+    Map<String, Vision.CamSettings> photonMap =
         Constants.currentBuildMode == BuildMode.SIM
             ? Map.of()
             : Map.of(
                 "pv_instance_1",
-                Constants.Vision.Hardware.LEFT_SHOOTER_CAM_POSE,
+                Constants.Vision.Settings.LEFT_SHOOTER_CAM_SETTINGS,
                 "pv_instance_4",
-                Constants.Vision.Hardware.RIGHT_SHOOTER_CAM_POSE,
+                Constants.Vision.Settings.RIGHT_SHOOTER_CAM_SETTINGS,
                 "pv_instance_3",
-                Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE,
+                Constants.Vision.Settings.RIGHT_INTAKE_CAM_SETTINGS,
                 "pv_instance_2",
-                Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
+                Constants.Vision.Settings.LEFT_INTAKE_CAM_SETTINGS);
 
     vision = new Vision("limelight", photonMap);
 
