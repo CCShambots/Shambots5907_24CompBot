@@ -29,7 +29,7 @@ public class Vision extends StateMachine<Vision.State> {
 
   Supplier<Pose2d> overallEstimateSupplier = null;
 
-  public Vision(String limelight, Map<String, Pose3d> photonVisionInstances) {
+  public Vision(String limelight, Map<String, CamSettings> photonVisionInstances) {
     super("Vision", State.UNDETERMINED, State.class);
 
     this.limelight = new Limelight(limelight, Constants.currentBuildMode);
@@ -41,9 +41,9 @@ public class Vision extends StateMachine<Vision.State> {
                     new PVApriltagCam(
                         entry.getKey(),
                         Constants.currentBuildMode,
-                        new Transform3d(new Pose3d(), entry.getValue()),
+                        new Transform3d(new Pose3d(), entry.getValue().camPose()),
                         Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT,
-                        VISION_TRUST_CUTOFF))
+                        entry.getValue().trustCutoff()))
             .toArray(PVApriltagCam[]::new);
 
     for (var cam : pvApriltagCams) {
@@ -272,4 +272,6 @@ public class Vision extends StateMachine<Vision.State> {
   }
 
   public record RingVisionUpdate(Rotation2d centerOffsetX, Rotation2d centerOffsetY, double size) {}
+
+  public record CamSettings(Pose3d camPose, double trustCutoff) {}
 }
