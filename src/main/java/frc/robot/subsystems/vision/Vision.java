@@ -36,22 +36,23 @@ public class Vision extends StateMachine<Vision.State> {
 
     pvApriltagCams =
         photonVisionInstances.entrySet().stream()
-            .map(
-                entry ->
-                    new PVApriltagCam(
-                        entry.getKey(),
-                        Constants.currentBuildMode,
-                        new Transform3d(new Pose3d(), entry.getValue().camPose()),
-                        Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT,
-                        entry.getValue().trustCutoff()))
+            .map((entry) -> {
+                  var settings = entry.getValue();
+                  var cam = new PVApriltagCam(
+                          entry.getKey(),
+                          Constants.currentBuildMode,
+                          new Transform3d(new Pose3d(), settings.camPose()),
+                          Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT,
+                          settings.trustCutoff());
+
+                  cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
+                  cam.setMultiTagFallbackEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+
+                  applyPreAndPostProcesses(cam, settings.ambiguityThreshold(), settings.distanceFromLastEstimateScalar());
+
+                  return cam;
+                })
             .toArray(PVApriltagCam[]::new);
-
-    for (var cam : pvApriltagCams) {
-      cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
-      cam.setMultiTagFallbackEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
-
-      applyPreAndPostProcesses(cam);
-    }
 
     registerTransitions();
   }
@@ -60,11 +61,11 @@ public class Vision extends StateMachine<Vision.State> {
     overallEstimateSupplier = supplier;
   }
 
-  private void applyPreAndPostProcesses(PVApriltagCam cam) {
+  private void applyPreAndPostProcesses(PVApriltagCam cam, double ambiguityThreshold, double distanceFromLastEstimateScalar) {
     HashMap<Integer, Double[]> ambiguityAverages = new HashMap<>();
     int avgLength = 100;
-    double ambiguityThreshold = 0.4;
-    double distanceFromLastEstimateScalar = 2.0;
+    /*double ambiguityThreshold = 0.4;
+    double distanceFromLastEstimateScalar = 2.0;*/
 
     cam.setPreProcess(
         (pipelineData) -> {
@@ -273,5 +274,12 @@ public class Vision extends StateMachine<Vision.State> {
 
   public record RingVisionUpdate(Rotation2d centerOffsetX, Rotation2d centerOffsetY, double size) {}
 
-  public record CamSettings(Pose3d camPose, double trustCutoff) {}
+  public record CamSettings(
+          Pose3d camPose,
+          double trustCutoff,
+          double ambiguityThreshold,
+          double distanceFromLastEstimateScalar,
+          double tagDistanceTrustPower,
+          double tagDistanceTrustScalar
+  ) {}
 }
