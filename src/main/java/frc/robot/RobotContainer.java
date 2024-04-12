@@ -173,6 +173,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () -> drivetrain.getMovingSpeakerShootPose().getTranslation(),
             drivetrain::getCurrentLobPose,
             () -> targetStageSide,
+                () -> 0.0,
+                () -> 0.0,
             tuningIncrement(),
             tuningDecrement(),
             tuningStop());

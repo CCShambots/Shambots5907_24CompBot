@@ -23,6 +23,8 @@ import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.util.StageSide;
+
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -46,6 +48,8 @@ public class Shooter extends StateMachine<Shooter.State> {
       Supplier<Translation2d> movingBotTranslationProvider,
       Supplier<Pose2d> lobCornerSupplier,
       Supplier<StageSide> targetStageSideSupplier,
+      DoubleSupplier armTuneSupplier,
+      DoubleSupplier flywheelTuneSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
@@ -62,11 +66,12 @@ public class Shooter extends StateMachine<Shooter.State> {
             this::armSpeakerAA,
             this::armLobAA,
             this::armMovingSpeakerAA,
+            armTuneSupplier,
             tuningInc,
             tuningDec,
             tuningStop);
 
-    flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, this::flywheelLobAA, tuningInc, tuningDec, tuningStop);
+    flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, this::flywheelLobAA, flywheelTuneSupplier, tuningInc, tuningDec, tuningStop);
 
     addChildSubsystem(arm);
     addChildSubsystem(flywheel);
@@ -105,6 +110,13 @@ public class Shooter extends StateMachine<Shooter.State> {
             flywheel.transitionCommand(Flywheel.State.BASE_SHOT_SPIN),
             arm.transitionCommand(Arm.State.AUTO_START_SHOT),
             watchReadyCommand()));
+
+    registerStateCommand(State.TUNE,
+            new ParallelCommandGroup(
+                    arm.transitionCommand(Arm.State.TUNE),
+                    flywheel.transitionCommand(Flywheel.State.TUNE),
+                    watchReadyCommand()
+            ));
 
     registerStateCommand(
         State.CHUTE_INTAKE,
@@ -387,6 +399,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     LOB_ARC,
     MOVING_SPEAKER_AA,
     LOB_ACTIVE_ADJUST,
+    TUNE,
     // flags
     READY
   }
