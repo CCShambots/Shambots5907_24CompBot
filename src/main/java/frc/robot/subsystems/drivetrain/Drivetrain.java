@@ -176,7 +176,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         State.CALCULATE_WHEEL_RADIUS,
         new SequentialCommandGroup(
             drive.getCalculateWheelRadiusCommand(
-                0.0508 * (1.0 / 1.04) /*wheel radius in mk4i as of this commit*/),
+                0.04942946369018648 /*wheel radius in mk4i as of this commit*/),
             transitionCommand(State.IDLE)));
 
     registerStateCommand(
@@ -313,6 +313,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.FACE_SPEAKER_AUTO);
 
     addOmniTransition(State.LOB);
+    addOmniTransition(State.START_CLOSE_4);
 
     addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
 
@@ -398,6 +399,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private void registerPathFollowStateCommands() {
+    registerStateCommand(
+        State.AUTO_AMP,
+        getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
+
     registerStateCommand(
         State.AUTO_AMP,
         getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
@@ -647,6 +652,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     GROUND_INTAKE,
     HUMAN_PLAYER_INTAKE,
     LOB,
+    START_CLOSE_4,
 
     // flags for non-autonomous operations
     PATHFINDING,

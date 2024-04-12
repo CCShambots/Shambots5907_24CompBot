@@ -3,33 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.635439403975525,
-        "y": 4.625468700804305
+        "x": 1.3907767054288434,
+        "y": 1.626432927606339
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.866444950882981,
-        "y": 4.1103715702241095
+        "x": 2.390776705428847,
+        "y": 1.626432927606339
       },
       "isLocked": false,
-      "linkedName": "6 Shoot End"
+      "linkedName": "Drop Start"
     },
     {
       "anchor": {
-        "x": 7.119860994047248,
-        "y": 3.177463739010523
+        "x": 6.524631457567414,
+        "y": 0.710695179175825
       },
       "prevControl": {
-        "x": 6.392994156230528,
-        "y": 3.7497998317795935
+        "x": 5.524631457567414,
+        "y": 0.710695179175825
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 4 Vision Start"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Speed",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 6.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.25,
@@ -39,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 142.72182580013094,
+    "rotation": -178.9,
     "rotateFast": true
   },
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": 163.19774296885237,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

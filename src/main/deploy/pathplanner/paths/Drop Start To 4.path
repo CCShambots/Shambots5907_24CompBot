@@ -1,0 +1,116 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3907767054288434,
+        "y": 1.626432927606339
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.390776705428847,
+        "y": 1.626432927606339
+      },
+      "isLocked": false,
+      "linkedName": "Drop Start"
+    },
+    {
+      "anchor": {
+        "x": 6.524631457567414,
+        "y": 0.710695179175825
+      },
+      "prevControl": {
+        "x": 5.524631457567414,
+        "y": 0.710695179175825
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Note 4 Vision Start"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 160.592674906605,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 180.0,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 6.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "lob",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "enableLob"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fire",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "fireSequence"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "disableLob"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.25,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": -178.9,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "BETWEEN NOTES",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

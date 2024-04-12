@@ -8,7 +8,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far Start to 4"
+            "pathName": "Little Drop Start to 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
           }
         },
         {
@@ -50,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5 Shoot"
+            "pathName": "Drop 5 Shoot"
           }
         },
         {
@@ -68,7 +74,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5 to 6"
+            "pathName": "Retrieve Preload"
           }
         },
         {
@@ -80,7 +86,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6 Shoot"
+            "pathName": "Shoot Drop Preload"
           }
         },
         {

@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.635439403975525,
-        "y": 4.625468700804305
+        "x": 8.288914032373519,
+        "y": 2.4814464174382898
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.866444950882981,
-        "y": 4.1103715702241095
+        "x": 6.244186772110568,
+        "y": 1.1971808580295358
       },
       "isLocked": false,
-      "linkedName": "6 Shoot End"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.119860994047248,
-        "y": 3.177463739010523
+        "x": 2.8216169373515214,
+        "y": 2.925635858192132
       },
       "prevControl": {
-        "x": 6.392994156230528,
-        "y": 3.7497998317795935
+        "x": 4.0693096195881004,
+        "y": 1.9641112223400907
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Drop 5 Shot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -38,14 +44,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 142.72182580013094,
+    "velocity": 0,
+    "rotation": 129.01387878879746,
     "rotateFast": true
   },
   "reversed": false,
   "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": 163.19774296885237,
+    "rotation": -178.82285511401795,
     "velocity": 0
   },
   "useDefaultConstraints": true

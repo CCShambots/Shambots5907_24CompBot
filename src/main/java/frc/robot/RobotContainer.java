@@ -245,6 +245,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new ParallelCommandGroup(indexer.transitionCommand(Indexer.State.IDLE)));
 
     NamedCommands.registerCommand(
+        "enableLob", shooter.transitionCommand(Shooter.State.LOB_STRAIGHT));
+    NamedCommands.registerCommand(
+        "disableLob", shooter.transitionCommand(Shooter.State.SPEAKER_AA));
+
+    NamedCommands.registerCommand(
+        "shortDrop",
+        new SequentialCommandGroup(
+            shooter.transitionCommand(Shooter.State.PASS_THROUGH),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER)));
+
+    NamedCommands.registerCommand(
+        "spinUpAgain", shooter.transitionCommand(Shooter.State.SPEAKER_AA));
+
+    NamedCommands.registerCommand(
         "fireSequence",
         new ConditionalCommand(
             new SequentialCommandGroup(
