@@ -358,17 +358,16 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     // Field relative speeds
     ChassisSpeeds speeds =
-            ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), robotPose.getRotation());
+        ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), robotPose.getRotation());
 
     Logger.recordOutput("Dirvetrain/Field Relative Speeds", speeds);
 
     // Where we would functionally be shooting from
-    return
-            robotPose.transformBy(
-                    new Transform2d(
-                            -speeds.vxMetersPerSecond * timeToSpeaker,
-                            -speeds.vyMetersPerSecond * timeToSpeaker,
-                            new Rotation2d()));
+    return robotPose.transformBy(
+        new Transform2d(
+            -speeds.vxMetersPerSecond * timeToSpeaker,
+            -speeds.vyMetersPerSecond * timeToSpeaker,
+            new Rotation2d()));
   }
 
   public Field2d getField() {

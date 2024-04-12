@@ -5,7 +5,6 @@ import static frc.robot.Constants.Shooter.Settings.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,7 +57,15 @@ public class Shooter extends StateMachine<Shooter.State> {
     this.targetStageSideSupplier = targetStageSideSupplier;
     this.lobCornerSupplier = lobCornerSupplier;
 
-    arm = new Arm(armIO, this::armSpeakerAA, this::armLobAA, this::armMovingSpeakerAA, tuningInc, tuningDec, tuningStop);
+    arm =
+        new Arm(
+            armIO,
+            this::armSpeakerAA,
+            this::armLobAA,
+            this::armMovingSpeakerAA,
+            tuningInc,
+            tuningDec,
+            tuningStop);
 
     flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, tuningInc, tuningDec, tuningStop);
 
@@ -269,7 +276,8 @@ public class Shooter extends StateMachine<Shooter.State> {
   private double armMovingSpeakerAA() {
     double distance = getMovingSpeakerDistance();
 
-    return Math.atan2(SPEAKER_TARGET_HEIGHT, distance) + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
+    return Math.atan2(SPEAKER_TARGET_HEIGHT, distance)
+        + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
   }
 
   private double flywheelTrapAA() {
@@ -293,9 +301,9 @@ public class Shooter extends StateMachine<Shooter.State> {
   @AutoLogOutput(key = "Shooter/MovingSpeakerDistance")
   private double getMovingSpeakerDistance() {
     Pose2d speaker =
-            AllianceManager.getAlliance() == DriverStation.Alliance.Blue
-                    ? Constants.PhysicalConstants.BLUE_SPEAKER
-                    : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
+        AllianceManager.getAlliance() == DriverStation.Alliance.Blue
+            ? Constants.PhysicalConstants.BLUE_SPEAKER
+            : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
 
     return speaker.getTranslation().getDistance(movingBotTranslationProvider.get());
   }

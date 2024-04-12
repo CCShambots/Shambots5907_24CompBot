@@ -61,7 +61,8 @@ public class Arm extends StateMachine<Arm.State> {
 
     registerStateCommand(State.SHOT_ACTIVE_ADJUST, holdPositionCommand(distanceAAProvider));
 
-    registerStateCommand(State.MOVING_SHOT_ACTIVE_ADJUST, holdPositionCommand(movingDistanceAAProvider));
+    registerStateCommand(
+        State.MOVING_SHOT_ACTIVE_ADJUST, holdPositionCommand(movingDistanceAAProvider));
 
     registerStateCommand(
         State.VOLTAGE_CALC,

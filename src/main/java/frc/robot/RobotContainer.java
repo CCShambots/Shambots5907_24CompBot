@@ -327,10 +327,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     NamedCommands.registerCommand(
         "enableAimWhileMove",
-        drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING));
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING),
+            shooter.transitionCommand(Shooter.State.MOVING_SPEAKER_AA)));
     NamedCommands.registerCommand(
         "disableAimWhileMove",
-        drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
+            shooter.transitionCommand(Shooter.State.SPEAKER_AA)));
 
     drivetrain.configurePathplanner();
   }

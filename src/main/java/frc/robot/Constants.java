@@ -173,7 +173,7 @@ public class Constants {
       public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT =
           new InterpolatingDoubleTreeMap();
 
-      public static final double SPEAKER_TARGET_HEIGHT = 2.2 + Units.inchesToMeters(1);
+      public static final double SPEAKER_TARGET_HEIGHT = 2.2;
       public static final double TRAP_TARGET_HEIGHT = 1.52;
 
       static {
