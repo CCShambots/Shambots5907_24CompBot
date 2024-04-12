@@ -156,36 +156,25 @@ public class Constants {
 
       public static final frc.robot.subsystems.vision.Vision.CamSettings LEFT_SHOOTER_CAM_SETTINGS =
           new frc.robot.subsystems.vision.Vision.CamSettings(
-              Hardware.LEFT_SHOOTER_CAM_POSE, LEFT_SHOOTER_CAM_TRUST_CUTOFF,
-                  0.4,
-                  2.0,
-                  0.33,
-                  1.0);
+              Hardware.LEFT_SHOOTER_CAM_POSE, LEFT_SHOOTER_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
       public static final frc.robot.subsystems.vision.Vision.CamSettings
           RIGHT_SHOOTER_CAM_SETTINGS =
               new frc.robot.subsystems.vision.Vision.CamSettings(
-                  Hardware.RIGHT_SHOOTER_CAM_POSE, RIGHT_SHOOTER_CAM_TRUST_CUTOFF,
-                      0.4,
-                      2.0,
-                      0.33,
-                      1.0);
+                  Hardware.RIGHT_SHOOTER_CAM_POSE,
+                  RIGHT_SHOOTER_CAM_TRUST_CUTOFF,
+                  0.4,
+                  2.0,
+                  0.33,
+                  1.0);
 
       public static final frc.robot.subsystems.vision.Vision.CamSettings LEFT_INTAKE_CAM_SETTINGS =
           new frc.robot.subsystems.vision.Vision.CamSettings(
-              Hardware.LEFT_INTAKE_CAM_POSE, LEFT_INTAKE_CAM_TRUST_CUTOFF,
-                  0.4,
-                  2.0,
-                  0.33,
-                  1.0);
+              Hardware.LEFT_INTAKE_CAM_POSE, LEFT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
       public static final frc.robot.subsystems.vision.Vision.CamSettings RIGHT_INTAKE_CAM_SETTINGS =
           new frc.robot.subsystems.vision.Vision.CamSettings(
-              Hardware.RIGHT_INTAKE_CAM_POSE, RIGHT_INTAKE_CAM_TRUST_CUTOFF,
-                  0.4,
-                  2.0,
-                  0.33,
-                  1.0);
+              Hardware.RIGHT_INTAKE_CAM_POSE, RIGHT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
       public static final String TRAP_CAMERA = "pv_instance_4";
     }
