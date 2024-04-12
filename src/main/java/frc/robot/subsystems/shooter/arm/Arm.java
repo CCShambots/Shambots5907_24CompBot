@@ -56,6 +56,8 @@ public class Arm extends StateMachine<Arm.State> {
     registerStateCommand(State.FULL_STOW, holdPositionCommand(() -> FULL_STOW_POSITION));
     registerStateCommand(State.TRAP, holdPositionCommand(() -> TRAP_POSITION));
 
+    registerStateCommand(State.LOB_ACTIVE_ADJUST, holdPositionCommand(lobAASupplier));
+
     registerStateCommand(State.LOB_STRAIGHT, holdPositionCommand(() -> LOB_POSITION_STRAIGHT));
     registerStateCommand(State.LOB_ARC, holdPositionCommand(() -> LOB_POSITION_ARC));
 
@@ -95,6 +97,7 @@ public class Arm extends StateMachine<Arm.State> {
     addOmniTransition(State.LOB_ARC);
     addOmniTransition(State.SHOT_ACTIVE_ADJUST);
     addOmniTransition(State.MOVING_SHOT_ACTIVE_ADJUST);
+    addOmniTransition(State.LOB_ACTIVE_ADJUST);
   }
 
   private boolean needsSync() {
@@ -180,6 +183,7 @@ public class Arm extends StateMachine<Arm.State> {
     LOB_STRAIGHT,
     LOB_ARC,
     MOVING_SHOT_ACTIVE_ADJUST,
+    LOB_ACTIVE_ADJUST,
     // flags
     AT_TARGET
   }

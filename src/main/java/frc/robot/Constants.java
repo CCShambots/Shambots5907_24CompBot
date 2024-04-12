@@ -198,6 +198,12 @@ public class Constants {
       public static final InterpolatingDoubleTreeMap ARM_TRAP_DISTANCE_LUT =
           new InterpolatingDoubleTreeMap();
 
+      public static final InterpolatingDoubleTreeMap ARM_LOB_DISTANCE_LUT =
+              new InterpolatingDoubleTreeMap();
+
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_LOB_DISTANCE_LUT =
+              new InterpolatingDoubleTreeMap();
+
       public static final double SPEAKER_TARGET_HEIGHT = 2.2 + Units.inchesToMeters(1);
       public static final double TRAP_TARGET_HEIGHT = 1.52;
 
@@ -228,6 +234,14 @@ public class Constants {
         // ARM TRAP OFFSETS
         ARM_TRAP_DISTANCE_LUT.put(0.0, 0.0);
         ARM_TRAP_DISTANCE_LUT.put(20.0, 0.0);
+
+        //ARM LOB VALUEs
+        FLYWHEEL_LOB_DISTANCE_LUT.put(0.0, 0.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(50.0, 0.0);
+
+        //FLYWHEEL LOB VALUES
+        ARM_LOB_DISTANCE_LUT.put(0.0, Units.degreesToRadians(20.0));
+        ARM_LOB_DISTANCE_LUT.put(50.0, Units.degreesToRadians(20.0));
       }
     }
   }
