@@ -923,10 +923,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
 
-    if (selectedAutoKey == "4 Note ") runningDelayPathfindAuto.set(true);
-    System.out.println(selectedAutoKey);
-    System.out.println(selectedAutoKey == "4 Note");
-    System.out.println(selectedAutoKey == "4 Note ");
+    if (selectedAutoKey.equals("4 Note")) runningDelayPathfindAuto.set(true);
 
     AtomicBoolean runDefaultStartShot = new AtomicBoolean(false);
 
