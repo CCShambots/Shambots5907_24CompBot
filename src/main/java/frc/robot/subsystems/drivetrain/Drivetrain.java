@@ -38,11 +38,12 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final SwerveDrive drive;
-  private boolean flipPath = false;
+  @AutoLogOutput private boolean flipPath = false;
 
   private IntConsumer waypointConsumer = null;
   AtomicInteger currentWaypoint = new AtomicInteger(0);
@@ -142,6 +143,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerFaceCommands();
 
     syncTargetStageSide();
+
+    registerAutoPathfindCommand();
 
     System.out.println(AllianceManager.getAlliance());
     System.out.println("Path Flipping:" + flipPath);
@@ -398,11 +401,12 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED, true));
   }
 
-  private void registerPathFollowStateCommands() {
+  private void registerAutoPathfindCommand() {
     registerStateCommand(
-        State.AUTO_AMP,
-        getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
+        State.START_CLOSE_4, getPathfindCommandDontFollow("4 Start to 1", 0.25, State.IDLE));
+  }
 
+  private void registerPathFollowStateCommands() {
     registerStateCommand(
         State.AUTO_AMP,
         getPathfindCommand("AUTO_AMP", AMP_ROTATIONAL_DELAY, State.FIELD_ORIENTED_DRIVE));
@@ -505,6 +509,20 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         transitionCommand(endState, false));
   }
 
+  private Command getPathfindCommandDontFollow(
+      String nextPath, double rotationalDelay, State endState) {
+
+    Pose2d original = PathPlannerPath.fromPathFile(nextPath).getPreviewStartingHolonomicPose();
+
+    return new SequentialCommandGroup(
+        new InstantCommand(() -> setFlag(State.PATHFINDING)),
+        AutoBuilder.pathfindToPose(
+            flipPath ? Constants.mirror(original) : original,
+            getPathfindingConstraints(),
+            rotationalDelay),
+        transitionCommand(endState, false));
+  }
+
   private Command getPathFindCommand(Pose2d targetPose, double rotationalDelay, State endState) {
     return new SequentialCommandGroup(
         new InstantCommand(() -> setFlag(State.PATHFINDING)),
@@ -600,6 +618,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     drive.configurePathplanner();
 
     registerPathFollowStateCommands();
+
+    registerAutoPathfindCommand();
   }
 
   public void addVisionMeasurements(

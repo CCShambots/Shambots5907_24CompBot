@@ -7,8 +7,10 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.*;
@@ -79,6 +81,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private Shooter.State autoLobState = Shooter.State.LOB_ARC;
 
   private boolean hasBeenEnabled = false;
+
+  private double closeFourNoteDelay = 0;
+  private GenericEntry delaySlider;
 
   public RobotContainer(EventLoop checkModulesLoop, PowerDistribution pd) {
     super("RobotContainer", State.UNDETERMINED, State.class);
@@ -908,9 +913,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   @Override
   protected void onAutonomousStart() {
 
+    closeFourNoteDelay = delaySlider.getDouble(closeFourNoteDelay);
+
+    System.out.println("JUST READ DELAY: " + closeFourNoteDelay);
+
     Command selectedAutoCommand = autoChooser.get();
 
     String selectedAutoKey = autoChooser.getSendableChooser().getSelected();
+
+    AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
+
+    if (selectedAutoKey == "4 Note ") runningDelayPathfindAuto.set(true);
+    System.out.println(selectedAutoKey);
+    System.out.println(selectedAutoKey == "4 Note");
+    System.out.println(selectedAutoKey == "4 Note ");
 
     AtomicBoolean runDefaultStartShot = new AtomicBoolean(false);
 
@@ -939,6 +955,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 () -> runDefaultStartShot.get()),
             shooter.enableRapidSpinup(),
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
+            new ConditionalCommand(
+                new SequentialCommandGroup(
+                    new WaitCommand(closeFourNoteDelay),
+                    drivetrain.transitionCommand(Drivetrain.State.START_CLOSE_4),
+                    drivetrain.waitForState(Drivetrain.State.IDLE)),
+                new InstantCommand(),
+                () -> runningDelayPathfindAuto.get()),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
             new InstantCommand(
                 () -> {
@@ -1083,6 +1106,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     autoTab.addBoolean("GOOD TO GO", this::autoReady).withPosition(9, 0).withSize(3, 3);
 
     autoTab.add("Field", drivetrain.getField()).withPosition(2, 1).withSize(3, 2);
+
+    delaySlider =
+        autoTab
+            .add("Close 4 Delay", closeFourNoteDelay)
+            .withPosition(0, 3)
+            .withWidget(BuiltInWidgets.kNumberSlider)
+            .withProperties(Map.of("min", 0, "max", 5, "Block increment", 0.5))
+            .withSize(2, 1)
+            .getEntry();
 
     // Teleop tab stuff
 
