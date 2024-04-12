@@ -23,9 +23,10 @@ import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.util.StageSide;
+
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends StateMachine<Shooter.State> {
   private final Arm arm;
@@ -47,6 +48,8 @@ public class Shooter extends StateMachine<Shooter.State> {
       Supplier<Translation2d> movingBotTranslationProvider,
       Supplier<Pose2d> lobCornerSupplier,
       Supplier<StageSide> targetStageSideSupplier,
+      DoubleSupplier armTuneSupplier,
+      DoubleSupplier flywheelTuneSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
@@ -63,11 +66,12 @@ public class Shooter extends StateMachine<Shooter.State> {
             this::armSpeakerAA,
             this::armLobAA,
             this::armMovingSpeakerAA,
+            armTuneSupplier,
             tuningInc,
             tuningDec,
             tuningStop);
 
-    flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, tuningInc, tuningDec, tuningStop);
+    flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, this::flywheelLobAA, flywheelTuneSupplier, tuningInc, tuningDec, tuningStop);
 
     addChildSubsystem(arm);
     addChildSubsystem(flywheel);
@@ -106,6 +110,13 @@ public class Shooter extends StateMachine<Shooter.State> {
             flywheel.transitionCommand(Flywheel.State.BASE_SHOT_SPIN),
             arm.transitionCommand(Arm.State.AUTO_START_SHOT),
             watchReadyCommand()));
+
+    registerStateCommand(State.TUNE,
+            new ParallelCommandGroup(
+                    arm.transitionCommand(Arm.State.TUNE),
+                    flywheel.transitionCommand(Flywheel.State.TUNE),
+                    watchReadyCommand()
+            ));
 
     registerStateCommand(
         State.CHUTE_INTAKE,
@@ -174,6 +185,15 @@ public class Shooter extends StateMachine<Shooter.State> {
             watchReadyCommand()));
 
     registerStateCommand(
+            State.LOB_ACTIVE_ADJUST,
+            new ParallelCommandGroup(
+                    flywheel.transitionCommand(Flywheel.State.LOB_ACTIVE_ADJUST),
+                    arm.transitionCommand(Arm.State.LOB_ACTIVE_ADJUST),
+                    watchReadyCommand()
+            )
+    );
+
+    registerStateCommand(
         State.LOB_STRAIGHT,
         new ParallelCommandGroup(
             flywheel.transitionCommand(Flywheel.State.LOB_STRAIGHT),
@@ -218,6 +238,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.LOB_STRAIGHT);
     addOmniTransition(State.LOB_ARC);
     addOmniTransition(State.MOVING_SPEAKER_AA);
+    addOmniTransition(State.LOB_ACTIVE_ADJUST);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
@@ -254,6 +275,18 @@ public class Shooter extends StateMachine<Shooter.State> {
     return Math.atan2(TRAP_TARGET_HEIGHT, distance) + ARM_TRAP_DISTANCE_LUT.get(distance);
   }
 
+  private double armLobAA() {
+    double distance = getCornerDistance();
+
+    return ARM_LOB_DISTANCE_LUT.get(distance);
+  }
+
+  private double flywheelLobAA() {
+    double distance = getCornerDistance();
+
+    return FLYWHEEL_LOB_DISTANCE_LUT.get(distance);
+  }
+
   private double armSpeakerAA() {
     double distance = getSpeakerDistance();
 
@@ -262,7 +295,7 @@ public class Shooter extends StateMachine<Shooter.State> {
         + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
   }
 
-  private double armLobAA() {
+  /*private double armLobAA() {
     double distanceToTarget =
         botTranslationProvider.get().getDistance(lobCornerSupplier.get().getTranslation());
 
@@ -271,7 +304,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     Logger.recordOutput("Shooter/calculated-angle", angle);
 
     return angle;
-  }
+  }*/
 
   private double armMovingSpeakerAA() {
     double distance = getMovingSpeakerDistance();
@@ -296,6 +329,15 @@ public class Shooter extends StateMachine<Shooter.State> {
             : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
 
     return speaker.getTranslation().getDistance(botTranslationProvider.get());
+  }
+
+  @AutoLogOutput(key = "Shooter/CornerDistance")
+  private double getCornerDistance() {
+    Pose2d corner = AllianceManager.getAlliance() == DriverStation.Alliance.Blue
+            ? Constants.PhysicalConstants.BLUE_CORNER
+            : Constants.mirror(Constants.PhysicalConstants.BLUE_LOB_CORNER);
+
+    return corner.getTranslation().getDistance(botTranslationProvider.get());
   }
 
   @AutoLogOutput(key = "Shooter/MovingSpeakerDistance")
@@ -356,6 +398,8 @@ public class Shooter extends StateMachine<Shooter.State> {
     LOB_STRAIGHT,
     LOB_ARC,
     MOVING_SPEAKER_AA,
+    LOB_ACTIVE_ADJUST,
+    TUNE,
     // flags
     READY
   }

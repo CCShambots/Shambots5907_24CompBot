@@ -18,16 +18,23 @@ public class Flywheel extends StateMachine<Flywheel.State> {
   private final FlywheelInputsAutoLogged inputs = new FlywheelInputsAutoLogged();
 
   private final DoubleSupplier speakerAAProvider;
+  private final DoubleSupplier lobAASupplier;
+
+  private final DoubleSupplier tuneSupplier;
 
   public Flywheel(
       FlywheelIO io,
       DoubleSupplier speakerAAProvider,
+      DoubleSupplier lobAASupplier,
+      DoubleSupplier tuneSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
     super("Shooter Flywheel", State.UNDETERMINED, State.class);
 
     this.speakerAAProvider = speakerAAProvider;
+    this.tuneSupplier = tuneSupplier;
+    this.lobAASupplier = lobAASupplier;
     this.io = io;
 
     registerStateCommands(tuningInc, tuningDec, tuningStop);
@@ -61,6 +68,15 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     registerStateCommand(
         State.SPEAKER_ACTIVE_ADJUST_SPIN,
         new ParallelCommandGroup(
+            new RunCommand(() -> io.setFlywheelTarget(speakerAAProvider.getAsDouble())),
+            atSpeedCommand(speakerAAProvider, SPIN_UP_READY_TOLERANCE)));
+
+    registerStateCommand(State.LOB_ACTIVE_ADJUST, new ParallelCommandGroup(
+            new RunCommand(() -> io.setFlywheelTarget(lobAASupplier.getAsDouble())),
+            atSpeedCommand(lobAASupplier, SPIN_UP_READY_TOLERANCE)
+    ));
+
+    registerStateCommand(State.TUNE, new ParallelCommandGroup(
             new RunCommand(() -> io.setFlywheelTarget(speakerAAProvider.getAsDouble())),
             atSpeedCommand(speakerAAProvider, SPIN_UP_READY_TOLERANCE)));
 
@@ -118,6 +134,8 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.LOB_STRAIGHT);
     addOmniTransition(State.LOB_ARC);
     addOmniTransition(State.FULL_POWER);
+    addOmniTransition(State.LOB_ACTIVE_ADJUST);
+    addOmniTransition(State.TUNE);
 
     addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
@@ -164,6 +182,8 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     LOB_STRAIGHT,
     LOB_ARC,
     FULL_POWER,
+    LOB_ACTIVE_ADJUST,
+    TUNE,
 
     // flags
     AT_SPEED
