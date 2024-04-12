@@ -915,8 +915,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     closeFourNoteDelay = delaySlider.getDouble(closeFourNoteDelay);
 
-    System.out.println("JUST READ DELAY: " + closeFourNoteDelay);
-
     Command selectedAutoCommand = autoChooser.get();
 
     String selectedAutoKey = autoChooser.getSendableChooser().getSelected();
@@ -1109,7 +1107,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             .add("Close 4 Delay", closeFourNoteDelay)
             .withPosition(0, 3)
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 5, "Block increment", 0.5))
+            .withProperties(Map.of("min", 0, "max", 10, "Block increment", 0.5))
             .withSize(2, 1)
             .getEntry();
 
