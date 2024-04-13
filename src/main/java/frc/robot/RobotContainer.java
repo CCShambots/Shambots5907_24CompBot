@@ -176,8 +176,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () -> drivetrain.getMovingSpeakerShootPose().getTranslation(),
             drivetrain::getCurrentLobPose,
             () -> targetStageSide,
-                () -> 0.0,
-                () -> 0.0,
+            () -> Math.toRadians(tuningHoodAngle.getDouble(0)),
+            () -> tuningFlywheelSpeed.getDouble(0) / 60.0,
             tuningIncrement(),
             tuningDecrement(),
             tuningStop());
@@ -425,13 +425,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             // have shooter start to track
             new InstantCommand(
                 () -> {
-                  shooter.requestTransition(autoLobState);
+                  shooter.requestTransition(Shooter.State.TUNE);
                 }),
             new ParallelCommandGroup(
                 new RunCommand(
                     () -> {
                       if (shooter.getState() != autoLobState && !shooter.isTransitioning()) {
-                        shooter.requestTransition(autoLobState);
+                        shooter.requestTransition(Shooter.State.TUNE);
                       }
                     }),
                 // lights show green on ready and feed ring on press, transition to traversing after
@@ -1056,7 +1056,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     ShuffleboardTab autoTab = Shuffleboard.getTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
     ShuffleboardTab teleTab = Shuffleboard.getTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
     ShuffleboardTab testTab = Shuffleboard.getTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
-    ShuffleboardTab tuningTab = Shuffleboard.getTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
+    ShuffleboardTab tuningTab = Shuffleboard.getTab(Constants.Controller.TUNE_SHUFFLEBOARD_TAB_ID);
 
     autoTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(2, 0).withSize(2, 1);
 
@@ -1195,9 +1195,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(2, 1)
         .withPosition(6, 3);
 
-    //Tuning stuff
-    tuningHoodAngle = tuningTab.add("Hood Angle", Math.toRadians(20)).withSize(2, 1).withPosition(0, 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-    tuningFlywheelSpeed = tuningTab.add("Flywheel Speed", 10).withSize(2, 1).withPosition(2, 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+    // Tuning stuff
+    tuningHoodAngle =
+        tuningTab
+            .add("Hood Angle", 20)
+            .withSize(2, 1)
+            .withPosition(0, 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .getEntry();
+    tuningFlywheelSpeed =
+        tuningTab
+            .add("Flywheel Speed", 10)
+            .withSize(2, 1)
+            .withPosition(2, 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .getEntry();
 
     Shuffleboard.selectTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
   }

@@ -53,6 +53,7 @@ public class Constants {
     public static final String AUTO_SHUFFLEBOARD_TAB = "Auto";
     public static final String TELE_SHUFFLEBOARD_TAB_ID = "Tele";
     public static final String TEST_SHUFFLEBOARD_TAB_ID = "Test";
+    public static final String TUNE_SHUFFLEBOARD_TAB_ID = "Tune";
 
     public static final double VOLTAGE_WARNING = 9;
   }
@@ -71,7 +72,8 @@ public class Constants {
     // how far away climber is from shooter pivot on front/back axis
     public static double CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
 
-    public static Pose2d BLUE_CORNER = new Pose2d(new Translation2d(0, Units.feetToMeters(27)), new Rotation2d());
+    public static Pose2d BLUE_CORNER =
+        new Pose2d(new Translation2d(0, Units.feetToMeters(27)), new Rotation2d());
 
     public static Pose2d BLUE_SPEAKER =
         new Pose2d(new Translation2d(-0.039243, 5.557), Rotation2d.fromDegrees(0));
@@ -85,7 +87,7 @@ public class Constants {
         new Pose2d(new Translation2d(4.5969682, 3.717244813), Rotation2d.fromDegrees(-120));
 
     public static Pose2d BLUE_LOB_CORNER =
-        new Pose2d(2, Units.feetToMeters(27) - 2.25, new Rotation2d(0));
+        new Pose2d(2, Units.feetToMeters(27) - 1, new Rotation2d(0));
 
     public static double TRAP_SHOT_DISTANCE = 1; // Meters
 
@@ -202,10 +204,10 @@ public class Constants {
 
       public static final double SPEAKER_TARGET_HEIGHT = 2.2;
       public static final InterpolatingDoubleTreeMap ARM_LOB_DISTANCE_LUT =
-              new InterpolatingDoubleTreeMap();
+          new InterpolatingDoubleTreeMap();
 
       public static final InterpolatingDoubleTreeMap FLYWHEEL_LOB_DISTANCE_LUT =
-              new InterpolatingDoubleTreeMap();
+          new InterpolatingDoubleTreeMap();
 
       public static final double TRAP_TARGET_HEIGHT = 1.52;
 

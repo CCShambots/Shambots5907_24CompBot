@@ -23,7 +23,6 @@ import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
 import frc.robot.util.StageSide;
-
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -71,7 +70,15 @@ public class Shooter extends StateMachine<Shooter.State> {
             tuningDec,
             tuningStop);
 
-    flywheel = new Flywheel(flywheelIO, this::flywheelSpeakerAA, this::flywheelLobAA, flywheelTuneSupplier, tuningInc, tuningDec, tuningStop);
+    flywheel =
+        new Flywheel(
+            flywheelIO,
+            this::flywheelSpeakerAA,
+            this::flywheelLobAA,
+            flywheelTuneSupplier,
+            tuningInc,
+            tuningDec,
+            tuningStop);
 
     addChildSubsystem(arm);
     addChildSubsystem(flywheel);
@@ -111,12 +118,12 @@ public class Shooter extends StateMachine<Shooter.State> {
             arm.transitionCommand(Arm.State.AUTO_START_SHOT),
             watchReadyCommand()));
 
-    registerStateCommand(State.TUNE,
-            new ParallelCommandGroup(
-                    arm.transitionCommand(Arm.State.TUNE),
-                    flywheel.transitionCommand(Flywheel.State.TUNE),
-                    watchReadyCommand()
-            ));
+    registerStateCommand(
+        State.TUNE,
+        new ParallelCommandGroup(
+            arm.transitionCommand(Arm.State.TUNE),
+            flywheel.transitionCommand(Flywheel.State.TUNE),
+            watchReadyCommand()));
 
     registerStateCommand(
         State.CHUTE_INTAKE,
@@ -185,13 +192,11 @@ public class Shooter extends StateMachine<Shooter.State> {
             watchReadyCommand()));
 
     registerStateCommand(
-            State.LOB_ACTIVE_ADJUST,
-            new ParallelCommandGroup(
-                    flywheel.transitionCommand(Flywheel.State.LOB_ACTIVE_ADJUST),
-                    arm.transitionCommand(Arm.State.LOB_ACTIVE_ADJUST),
-                    watchReadyCommand()
-            )
-    );
+        State.LOB_ACTIVE_ADJUST,
+        new ParallelCommandGroup(
+            flywheel.transitionCommand(Flywheel.State.LOB_ACTIVE_ADJUST),
+            arm.transitionCommand(Arm.State.LOB_ACTIVE_ADJUST),
+            watchReadyCommand()));
 
     registerStateCommand(
         State.LOB_STRAIGHT,
@@ -239,6 +244,7 @@ public class Shooter extends StateMachine<Shooter.State> {
     addOmniTransition(State.LOB_ARC);
     addOmniTransition(State.MOVING_SPEAKER_AA);
     addOmniTransition(State.LOB_ACTIVE_ADJUST);
+    addOmniTransition(State.TUNE);
 
     addTransition(State.SOFT_E_STOP, State.BOTTOM_FLYWHEEL_VOLTAGE_CALC);
     addTransition(State.SOFT_E_STOP, State.FLYWHEEL_VOLTAGE_CALC);
@@ -333,7 +339,8 @@ public class Shooter extends StateMachine<Shooter.State> {
 
   @AutoLogOutput(key = "Shooter/CornerDistance")
   private double getCornerDistance() {
-    Pose2d corner = AllianceManager.getAlliance() == DriverStation.Alliance.Blue
+    Pose2d corner =
+        AllianceManager.getAlliance() == DriverStation.Alliance.Blue
             ? Constants.PhysicalConstants.BLUE_CORNER
             : Constants.mirror(Constants.PhysicalConstants.BLUE_LOB_CORNER);
 

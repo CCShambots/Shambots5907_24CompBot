@@ -71,14 +71,17 @@ public class Flywheel extends StateMachine<Flywheel.State> {
             new RunCommand(() -> io.setFlywheelTarget(speakerAAProvider.getAsDouble())),
             atSpeedCommand(speakerAAProvider, SPIN_UP_READY_TOLERANCE)));
 
-    registerStateCommand(State.LOB_ACTIVE_ADJUST, new ParallelCommandGroup(
+    registerStateCommand(
+        State.LOB_ACTIVE_ADJUST,
+        new ParallelCommandGroup(
             new RunCommand(() -> io.setFlywheelTarget(lobAASupplier.getAsDouble())),
-            atSpeedCommand(lobAASupplier, SPIN_UP_READY_TOLERANCE)
-    ));
+            atSpeedCommand(lobAASupplier, SPIN_UP_READY_TOLERANCE)));
 
-    registerStateCommand(State.TUNE, new ParallelCommandGroup(
-            new RunCommand(() -> io.setFlywheelTarget(speakerAAProvider.getAsDouble())),
-            atSpeedCommand(speakerAAProvider, SPIN_UP_READY_TOLERANCE)));
+    registerStateCommand(
+        State.TUNE,
+        new ParallelCommandGroup(
+            new RunCommand(() -> io.setFlywheelTarget(tuneSupplier.getAsDouble())),
+            atSpeedCommand(tuneSupplier, SPIN_UP_READY_TOLERANCE)));
 
     registerStateCommand(State.PASS_THROUGH, () -> io.setFlywheelTarget(PASS_THROUGH_SPEED));
 
