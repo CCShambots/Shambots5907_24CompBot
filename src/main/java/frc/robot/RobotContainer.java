@@ -425,13 +425,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             // have shooter start to track
             new InstantCommand(
                 () -> {
-                  shooter.requestTransition(Shooter.State.TUNE);
+                  shooter.requestTransition(autoLobState);
                 }),
             new ParallelCommandGroup(
                 new RunCommand(
                     () -> {
                       if (shooter.getState() != autoLobState && !shooter.isTransitioning()) {
-                        shooter.requestTransition(Shooter.State.TUNE);
+                        shooter.requestTransition(autoLobState);
                       }
                     }),
                 // lights show green on ready and feed ring on press, transition to traversing after
