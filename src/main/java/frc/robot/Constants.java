@@ -233,10 +233,18 @@ public class Constants {
 
         // FLYWHEEL LOB VALUES
         FLYWHEEL_LOB_DISTANCE_LUT.put(0.0, 3250 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(11.6, 3250 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(10.5, 3250 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(9.3, 2750 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(9.0, 2750 / 60.0);
         FLYWHEEL_LOB_DISTANCE_LUT.put(50.0, 3250 / 60.0);
 
         // ARM LOB OFFSETS
         ARM_LOB_DISTANCE_LUT.put(0.0, 50 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(11.6, 50 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(10.5, 50 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(9.3, 50 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(9.0, 53 * (Math.PI / 180));
         ARM_LOB_DISTANCE_LUT.put(50.0, 50 * (Math.PI / 180));
       }
     }
