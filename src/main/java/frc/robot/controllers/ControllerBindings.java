@@ -46,6 +46,10 @@ public interface ControllerBindings {
 
   Trigger trapScore();
 
+  default Trigger austinLob() {
+    return new Trigger(() -> false);
+  }
+
   default Trigger toggleLobMode() {
     return new Trigger(() -> false);
   }
