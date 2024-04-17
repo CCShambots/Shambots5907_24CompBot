@@ -367,7 +367,7 @@ public class Constants {
       public static final double CHUTE_INTAKE_SPEED = -1000 / 60.0; // RPS
 
       public static final double AMP_SPEED_TOP = 125 / 60.0; // RPS
-      public static final double AMP_SPEED_BOTTOM = 875 / 60.0; // RPS
+      public static final double AMP_SPEED_BOTTOM = 825 / 60.0; // RPS
 
       public static double TRAP_SPEED_TOP = 1500 / 60.0; // RPS
       public static double TRAP_SPEED_BOTTOM = 2600 / 60.0; // RPS
