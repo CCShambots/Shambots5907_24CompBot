@@ -55,7 +55,7 @@ public class Constants {
     public static final String TEST_SHUFFLEBOARD_TAB_ID = "Test";
     public static final String TUNE_SHUFFLEBOARD_TAB_ID = "Tune";
 
-    public static final double VOLTAGE_WARNING = 9;
+    public static final double VOLTAGE_WARNING = 7.5;
   }
 
   public static final class PhysicalConstants {
@@ -225,7 +225,7 @@ public class Constants {
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), Math.toRadians(2));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(6));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(5.5));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(8));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(22), Math.toRadians(9));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));

@@ -792,7 +792,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .onTrue(lights.transitionCommand(Lights.State.NO_RING));
 
     new Trigger(this::lowVoltage)
-        .debounce(2)
+        .debounce(1)
         .onTrue(new InstantCommand(() -> controllerBindings.setRumble(1)))
         .onFalse(new InstantCommand(() -> controllerBindings.setRumble(0)));
   }
