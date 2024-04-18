@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
@@ -78,6 +79,12 @@ public class Vision extends StateMachine<Vision.State> {
     cam.setPreProcess(
         (pipelineData) -> {
           if (!pipelineData.hasTargets()) return pipelineData;
+
+          pipelineData.setTimestampSeconds(pipelineData.getTimestampSeconds() + 0.1);
+
+          // manual timestamp
+          // pipelineData.setTimestampSeconds(
+              // Timer.getFPGATimestamp() /*- pipelineData.getLatencyMillis() * 1000*/);
 
           int idx = 0;
 
@@ -182,6 +189,7 @@ public class Vision extends StateMachine<Vision.State> {
                   updates.add(update);
 
                   Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimate", update.pose());
+                  Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimateTimestamp", update.timestamp());
                 });
       }
     }
