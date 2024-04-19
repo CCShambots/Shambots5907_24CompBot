@@ -225,7 +225,7 @@ public class Constants {
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), Math.toRadians(2));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(6));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(5.5));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(8));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(22), Math.toRadians(9));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
@@ -366,7 +366,7 @@ public class Constants {
 
       public static final double CHUTE_INTAKE_SPEED = -1000 / 60.0; // RPS
 
-      public static final double AMP_SPEED_TOP = 125 / 60.0; // RPS
+      public static final double AMP_SPEED_TOP = 150 / 60.0; // RPS
       public static final double AMP_SPEED_BOTTOM = 825 / 60.0; // RPS
 
       public static double TRAP_SPEED_TOP = 1500 / 60.0; // RPS

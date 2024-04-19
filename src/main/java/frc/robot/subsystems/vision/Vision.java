@@ -80,11 +80,12 @@ public class Vision extends StateMachine<Vision.State> {
         (pipelineData) -> {
           if (!pipelineData.hasTargets()) return pipelineData;
 
-          pipelineData.setTimestampSeconds(pipelineData.getTimestampSeconds() + 0.1);
+          pipelineData.setTimestampSeconds(
+              Math.min(Timer.getFPGATimestamp(), pipelineData.getTimestampSeconds()));
 
           // manual timestamp
           // pipelineData.setTimestampSeconds(
-              // Timer.getFPGATimestamp() /*- pipelineData.getLatencyMillis() * 1000*/);
+          // Timer.getFPGATimestamp() /*- pipelineData.getLatencyMillis() * 1000*/);
 
           int idx = 0;
 
@@ -189,7 +190,8 @@ public class Vision extends StateMachine<Vision.State> {
                   updates.add(update);
 
                   Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimate", update.pose());
-                  Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimateTimestamp", update.timestamp());
+                  Logger.recordOutput(
+                      "Vision/" + cam.getName() + "/latestEstimateTimestamp", update.timestamp());
                 });
       }
     }
