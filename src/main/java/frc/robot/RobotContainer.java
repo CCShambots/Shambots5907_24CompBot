@@ -944,6 +944,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
 
     if (selectedAutoKey.equals("4 Note")) runningDelayPathfindAuto.set(true);
+    if (selectedAutoKey.equals("5 Note Adaptive")) runningDelayPathfindAuto.set(true);
 
     AtomicBoolean runDefaultStartShot = new AtomicBoolean(false);
 
@@ -1099,6 +1100,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(1, 1);
 
     autoTab.addBoolean("shooter good", this::shooterGood).withPosition(7, 0).withSize(1, 1);
+
+    autoTab.add("SYNC ARM", shooter.syncAbsoluteAngle()).withPosition(4, 0).withSize(1, 1);
 
     autoTab.addBoolean("pv 1 good", () -> vision.isConnected(1)).withPosition(5, 1).withSize(1, 1);
     autoTab.addBoolean("pv 2 good", () -> vision.isConnected(2)).withPosition(6, 1).withSize(1, 1);
