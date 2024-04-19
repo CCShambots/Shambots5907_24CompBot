@@ -272,7 +272,8 @@ public class Constants {
       public static final boolean LEADER_INVERTED = true;
       public static final boolean FOLLOWER_INVERTED = true;
 
-      public static final double POTENTIOMETER_OFFSET = Math.toRadians(336.2) + Math.toRadians(20);
+      public static final double POTENTIOMETER_OFFSET = Math.toRadians(337) + Math.toRadians(19.5);
+      // public static final double POTENTIOMETER_OFFSET = 0;
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
@@ -366,8 +367,8 @@ public class Constants {
 
       public static final double CHUTE_INTAKE_SPEED = -1000 / 60.0; // RPS
 
-      public static final double AMP_SPEED_TOP = 150 / 60.0; // RPS
-      public static final double AMP_SPEED_BOTTOM = 825 / 60.0; // RPS
+      public static final double AMP_SPEED_TOP = 140 / 60.0; // RPS
+      public static final double AMP_SPEED_BOTTOM = 815 / 60.0; // RPS
 
       public static double TRAP_SPEED_TOP = 1500 / 60.0; // RPS
       public static double TRAP_SPEED_BOTTOM = 2600 / 60.0; // RPS
