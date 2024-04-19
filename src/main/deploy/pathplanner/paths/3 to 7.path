@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.103649785154241,
+        "y": 7.378410659935507
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.116196780752035,
+        "y": 7.437170934679048
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.850863030445784,
+        "y": 6.331035610168106
+      },
+      "prevControl": {
+        "x": 6.060061350891933,
+        "y": 6.689787225728298
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Note 7 Start"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.55,
+      "rotationDegrees": 155.0261140682404,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.25,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": 156.79024803410377,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "BETWEEN NOTES",
+  "previewStartingState": {
+    "rotation": -154.13140831962846,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
