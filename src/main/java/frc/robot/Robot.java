@@ -48,6 +48,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    // AdvantageKit default setup stuff, mostly standard
+
     if (isReal()) currentBuildMode = ShamLibConstants.BuildMode.REAL;
 
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
@@ -101,8 +103,7 @@ public class Robot extends LoggedRobot {
     SubsystemManagerFactory.getInstance().registerSubsystem(robotContainer, false);
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
 
-    // AKit shims the Driver Station using their logged driver station, so this shouldn't be a
-    // problem
+    // Wait for a connection to the driver station or FMS to load the alliance
     new Trigger(
             () -> {
               if (firstLoop) {
@@ -118,9 +119,7 @@ public class Robot extends LoggedRobot {
                 .andThen(
                     new WhileDisabledInstantCommand(
                         () -> {
-                          System.out.println("Getting alliance!");
                           AllianceManager.applyAlliance(DriverStation.getAlliance());
-                          System.out.println("Alliance got: " + AllianceManager.getAlliance());
                         })));
 
     // Log Camera Poses
@@ -141,6 +140,8 @@ public class Robot extends LoggedRobot {
 
     updatePoses();
 
+    // Since time loops don't work the same with AKit, just re-run the swerve module check every 500
+    // loops (~10 sec)
     moduleCheckCounter++;
     if (moduleCheckCounter >= 500) {
       moduleCheckCounter = 0;

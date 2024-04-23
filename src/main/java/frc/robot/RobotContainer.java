@@ -57,6 +57,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer extends StateMachine<RobotContainer.State> {
+
+  // Declare Subsystems
   private final Intake intake;
   private final Shooter shooter;
   private final Indexer indexer;
@@ -65,6 +67,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Drivetrain drivetrain;
   private final Lights lights;
 
+  // Declare power distribution for voltage and current monitoring/logging
   private PowerDistribution pd;
 
   // Controller bindings object that will be created to handle both real control and sim inputs
@@ -72,14 +75,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  @AutoLogOutput private StageSide targetStageSide = StageSide.CENTER;
-
+  // Store the previous drivetrain state so that x-shape command works properly
   private Drivetrain.State prevDTState = Drivetrain.State.FIELD_ORIENTED_DRIVE;
 
+  // Configuration variables that can be adjusted in game
+  @AutoLogOutput private StageSide targetStageSide = StageSide.CENTER;
   private boolean poseWorking = true;
   private boolean autoIntakeWorking = true;
   private Shooter.State autoLobState = Shooter.State.LOB_ACTIVE_ADJUST;
 
+  // Track whether the bot has been enabled for autonomous check lights
   private boolean hasBeenEnabled = false;
 
   private double closeFourNoteDelay = 0;
