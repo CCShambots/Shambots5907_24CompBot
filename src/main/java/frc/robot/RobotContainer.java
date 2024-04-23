@@ -205,6 +205,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     configureTriggerBindings();
 
     registerNamedCommands();
+    
+    //Pathplanner must be configured AFTER all the named commands are set, otherwise the code will crash
+    drivetrain.configurePathplanner();
 
     // Important to instatiate after drivetrain consructor is called so that auto builder is
     // configured
@@ -364,8 +367,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
             shooter.transitionCommand(Shooter.State.SPEAKER_AA)));
-
-    drivetrain.configurePathplanner();
   }
 
   private void registerStateCommands() {
@@ -632,6 +633,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         lights.transitionCommand(flashState), new WaitCommand(1), lights.transitionCommand(onEnd));
   }
 
+  /**
+   * Command to feed the note through the flywheels when the shooter is ready and a button is pressed
+   */
   private Command feedOnPress(State onEnd, boolean useDelay) {
     return new SequentialCommandGroup(
         new WaitUntilCommand(
@@ -779,6 +783,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .and(() -> !ringSomewhereInBot())
         .onTrue(lights.transitionCommand(Lights.State.NO_RING));
 
+        //Rumble the controller when the voltage drops below a certain value for too long
     new Trigger(this::lowVoltage)
         .debounce(1)
         .onTrue(new InstantCommand(() -> controllerBindings.setRumble(1)))
@@ -908,18 +913,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     requestTransition(State.TRAVERSING);
   }
 
-  public void scheduleEndgameBuzz() {
-    new WaitCommand(103.8).andThen(rumbleLoop(), rumbleLoop(), rumbleLoop()).schedule();
-  }
-
-  private Command rumbleLoop() {
-    return new SequentialCommandGroup(
-        new InstantCommand(() -> controllerBindings.setRumble(1)),
-        new WaitCommand(0.25),
-        new InstantCommand(() -> controllerBindings.setRumble(0)),
-        new WaitCommand(0.15));
-  }
-
   @Override
   protected void onAutonomousStart() {
 
@@ -935,16 +928,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     if (selectedAutoKey.equals("5 Note Adaptive")) runningDelayPathfindAuto.set(true);
 
     AtomicBoolean runDefaultStartShot = new AtomicBoolean(false);
-
-    switch (selectedAutoKey) {
-        // case "4.5 Note Center":
-        // runDefaultStartShot.set(true);
-        // break;
-
-      default:
-        // don't use normal default shot
-        break;
-    }
 
     Logger.recordOutput("RobotContainer/AutoKey", selectedAutoKey);
 
