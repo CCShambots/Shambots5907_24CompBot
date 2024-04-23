@@ -7,7 +7,10 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.*;
@@ -62,6 +65,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private final Drivetrain drivetrain;
   private final Lights lights;
 
+  private PowerDistribution pd;
+
   // Controller bindings object that will be created to handle both real control and sim inputs
   private final ControllerBindings controllerBindings;
 
@@ -73,12 +78,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private boolean poseWorking = true;
   private boolean autoIntakeWorking = true;
-  private Shooter.State autoLobState = Shooter.State.LOB_STRAIGHT;
+  private Shooter.State autoLobState = Shooter.State.LOB_ACTIVE_ADJUST;
 
   private boolean hasBeenEnabled = false;
 
-  public RobotContainer(EventLoop checkModulesLoop) {
+  private double closeFourNoteDelay = 0;
+  private GenericEntry delaySlider;
+
+  private GenericEntry tuningHoodAngle;
+  private GenericEntry tuningFlywheelSpeed;
+
+  public RobotContainer(EventLoop checkModulesLoop, PowerDistribution pd) {
     super("RobotContainer", State.UNDETERMINED, State.class);
+
+    this.pd = pd;
 
     if (Constants.currentBuildMode == ShamLibConstants.BuildMode.SIM) {
       controllerBindings = new BartaSimBindings();
@@ -103,18 +116,18 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    Map<String, Pose3d> photonMap =
+    Map<String, Vision.CamSettings> photonMap =
         Constants.currentBuildMode == BuildMode.SIM
             ? Map.of()
             : Map.of(
                 "pv_instance_1",
-                Constants.Vision.Hardware.LEFT_SHOOTER_CAM_POSE,
+                Constants.Vision.Settings.LEFT_SHOOTER_CAM_SETTINGS,
                 "pv_instance_4",
-                Constants.Vision.Hardware.RIGHT_SHOOTER_CAM_POSE,
+                Constants.Vision.Settings.RIGHT_SHOOTER_CAM_SETTINGS,
                 "pv_instance_3",
-                Constants.Vision.Hardware.RIGHT_INTAKE_CAM_POSE,
+                Constants.Vision.Settings.RIGHT_INTAKE_CAM_SETTINGS,
                 "pv_instance_2",
-                Constants.Vision.Hardware.LEFT_INTAKE_CAM_POSE);
+                Constants.Vision.Settings.LEFT_INTAKE_CAM_SETTINGS);
 
     vision = new Vision("limelight", photonMap);
 
@@ -160,8 +173,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             getArmIO(),
             getFlywheelIO(),
             () -> drivetrain.getBotPose().getTranslation(),
-            () -> drivetrain.getCurrentLobPose(),
+            () -> drivetrain.getMovingSpeakerShootPose().getTranslation(),
+            drivetrain::getCurrentLobPose,
             () -> targetStageSide,
+            () -> Math.toRadians(tuningHoodAngle.getDouble(0)),
+            () -> tuningFlywheelSpeed.getDouble(0) / 60.0,
             tuningIncrement(),
             tuningDecrement(),
             tuningStop());
@@ -188,6 +204,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     initializeDriveTab();
+
+    controllerBindings.setRumble(0);
   }
 
   private void registerNamedCommands() {
@@ -229,6 +247,28 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             shooter.transitionCommand(Shooter.State.SPEAKER_AA)));
 
     NamedCommands.registerCommand(
+        "rawVisionIntake",
+        new ParallelCommandGroup(indexer.transitionCommand(Indexer.State.BLIND_FEED)));
+
+    NamedCommands.registerCommand(
+        "disablePassThrough",
+        new ParallelCommandGroup(indexer.transitionCommand(Indexer.State.IDLE)));
+
+    NamedCommands.registerCommand(
+        "enableLob", shooter.transitionCommand(Shooter.State.LOB_STRAIGHT));
+    NamedCommands.registerCommand(
+        "disableLob", shooter.transitionCommand(Shooter.State.SPEAKER_AA));
+
+    NamedCommands.registerCommand(
+        "shortDrop",
+        new SequentialCommandGroup(
+            shooter.transitionCommand(Shooter.State.PASS_THROUGH),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER)));
+
+    NamedCommands.registerCommand(
+        "spinUpAgain", shooter.transitionCommand(Shooter.State.SPEAKER_AA));
+
+    NamedCommands.registerCommand(
         "fireSequence",
         new ConditionalCommand(
             new SequentialCommandGroup(
@@ -257,6 +297,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
                 .raceWith(
                     new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
+                .withTimeout(3),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
+
+    NamedCommands.registerCommand(
+        "feedVisionIntake",
+        new SequentialCommandGroup(
+            indexer.waitForState(Indexer.State.IDLE),
+            indexer.transitionCommand(Indexer.State.PASS_THROUGH),
+            intake.transitionCommand(Intake.State.INTAKE),
+            drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+            drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
+            new SequentialCommandGroup(
+                    new WaitUntilCommand(() -> intake.ringPresent()),
+                    new WaitUntilCommand(() -> !indexer.ringPresent()))
                 .withTimeout(3),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
@@ -296,10 +351,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     NamedCommands.registerCommand(
         "enableAimWhileMove",
-        drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING));
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING),
+            shooter.transitionCommand(Shooter.State.MOVING_SPEAKER_AA)));
     NamedCommands.registerCommand(
         "disableAimWhileMove",
-        drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
+            shooter.transitionCommand(Shooter.State.SPEAKER_AA)));
 
     drivetrain.configurePathplanner();
   }
@@ -353,6 +412,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
 
     registerStateCommand(
+        State.AUSTIN_LOB,
+        new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
+            intake.transitionCommand(Intake.State.IDLE),
+            new DetermineRingStatusCommand(shooter, indexer, lights),
+            shooter.transitionCommand(Shooter.State.AUSTIN_LOB, false),
+            new ParallelCommandGroup(
+                lightsOnReadyCommand(Lights.State.TARGETING),
+                feedOnPress(State.TRAVERSING, false))));
+
+    registerStateCommand(
         State.LOB,
         new SequentialCommandGroup(
             // face speaker and idle intake
@@ -378,7 +448,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 // lights show green on ready and feed ring on press, transition to traversing after
                 // ring is fed
                 lightsOnReadyCommand(Lights.State.TARGETING),
-                feedOnPress(State.TRAVERSING))));
+                feedOnPress(State.TRAVERSING, false))));
 
     registerStateCommand(
         State.GROUND_INTAKE,
@@ -542,6 +612,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.AUTO_GROUND_INTAKE);
     addOmniTransition(State.AUTO_HP_INTAKE);
     addOmniTransition(State.LOB);
+    addOmniTransition(State.AUSTIN_LOB);
 
     // Make sure we can't enter other states from the climb state
     removeAllTransitionsFromState(State.CLIMB);
@@ -607,6 +678,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private Trigger tuningStop() {
     return controllerBindings.tuningStop();
+  }
+
+  public void alignSwerveModules() {
+    drivetrain.alignModules();
   }
 
   private void configureBindings() {
@@ -691,6 +766,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .onFalse(transitionCommand(State.TRAVERSING, false));
 
     controllerBindings
+        .austinLob()
+        .onTrue(transitionCommand(State.AUSTIN_LOB, false))
+        .onFalse(transitionCommand(State.TRAVERSING, false));
+
+    controllerBindings
         .toggleLobMode()
         .onTrue(
             new ParallelCommandGroup(
@@ -710,6 +790,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .and(() -> getState() == State.TRAVERSING)
         .and(() -> !ringSomewhereInBot())
         .onTrue(lights.transitionCommand(Lights.State.NO_RING));
+
+    new Trigger(this::lowVoltage)
+        .debounce(1)
+        .onTrue(new InstantCommand(() -> controllerBindings.setRumble(1)))
+        .onFalse(new InstantCommand(() -> controllerBindings.setRumble(0)));
+  }
+
+  public boolean lowVoltage() {
+    return pd != null && pd.getVoltage() <= Constants.Controller.VOLTAGE_WARNING;
   }
 
   private void setTargetStageSide(StageSide newSide) {
@@ -822,32 +911,50 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   @Override
+  protected void onDisable() {
+    controllerBindings.setRumble(0);
+  }
+
+  @Override
   protected void onTeleopStart() {
     requestTransition(State.TRAVERSING);
+  }
+
+  public void scheduleEndgameBuzz() {
+    new WaitCommand(103.8).andThen(rumbleLoop(), rumbleLoop(), rumbleLoop()).schedule();
+  }
+
+  private Command rumbleLoop() {
+    return new SequentialCommandGroup(
+        new InstantCommand(() -> controllerBindings.setRumble(1)),
+        new WaitCommand(0.25),
+        new InstantCommand(() -> controllerBindings.setRumble(0)),
+        new WaitCommand(0.15));
   }
 
   @Override
   protected void onAutonomousStart() {
 
+    closeFourNoteDelay = delaySlider.getDouble(closeFourNoteDelay);
+
     Command selectedAutoCommand = autoChooser.get();
 
     String selectedAutoKey = autoChooser.getSendableChooser().getSelected();
 
-    AtomicBoolean runDefaultStartShot = new AtomicBoolean(true);
+    AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
+
+    if (selectedAutoKey.equals("4 Note")) runningDelayPathfindAuto.set(true);
+    if (selectedAutoKey.equals("5 Note Adaptive")) runningDelayPathfindAuto.set(true);
+
+    AtomicBoolean runDefaultStartShot = new AtomicBoolean(false);
 
     switch (selectedAutoKey) {
-      case "Clown Route":
-      case "3.5 Note Far":
-      case "3.5 Far OTM":
-      case "4.5 Note Far-Ish":
-      case "5.5 Note":
-      case "3.5 Note Bypass":
-      case "3 Note Bypass":
-        runDefaultStartShot.set(false);
-        break;
+        // case "4.5 Note Center":
+        // runDefaultStartShot.set(true);
+        // break;
 
       default:
-        // use normal default shot
+        // don't use normal default shot
         break;
     }
 
@@ -864,7 +971,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false)),
                 new InstantCommand(),
                 () -> runDefaultStartShot.get()),
+            shooter.enableRapidSpinup(),
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
+            new ConditionalCommand(
+                new SequentialCommandGroup(
+                    new WaitCommand(closeFourNoteDelay),
+                    drivetrain.transitionCommand(Drivetrain.State.START_CLOSE_4),
+                    drivetrain.waitForState(Drivetrain.State.IDLE)),
+                new InstantCommand(),
+                () -> runningDelayPathfindAuto.get()),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY),
             new InstantCommand(
                 () -> {
@@ -904,7 +1019,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public boolean autoReady() {
-    return shooterGood() && photonVisionGood() && prox1Good() && prox2Good() && prox3Good();
+    return shooterGood()
+        && photonVisionGood()
+        && prox1Good()
+        && prox2Good()
+        && prox3Good()
+        && llGood();
   }
 
   private Command toggleLobMode() {
@@ -912,7 +1032,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         () ->
             autoLobState =
                 autoLobState == Shooter.State.LOB_STRAIGHT
-                    ? Shooter.State.LOB_ARC
+                    ? Shooter.State.LOB_ACTIVE_ADJUST
                     : Shooter.State.LOB_STRAIGHT);
   }
 
@@ -946,10 +1066,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     return !indexer.isProx3Active();
   }
 
+  private boolean llGood() {
+    return vision.getLimelightLatency() > 25 && vision.getLimelightLatency() < 100;
+  }
+
   private void initializeDriveTab() {
     ShuffleboardTab autoTab = Shuffleboard.getTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
     ShuffleboardTab teleTab = Shuffleboard.getTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
     ShuffleboardTab testTab = Shuffleboard.getTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
+    ShuffleboardTab tuningTab = Shuffleboard.getTab(Constants.Controller.TUNE_SHUFFLEBOARD_TAB_ID);
 
     autoTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(2, 0).withSize(2, 1);
 
@@ -976,7 +1101,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     autoTab.addBoolean("shooter good", this::shooterGood).withPosition(7, 0).withSize(1, 1);
 
-    autoTab.addBoolean("pv good", this::photonVisionGood).withPosition(7, 1).withSize(1, 1);
+    autoTab.add("SYNC ARM", shooter.syncAbsoluteAngle()).withPosition(4, 0).withSize(1, 1);
+
+    autoTab.addBoolean("pv 1 good", () -> vision.isConnected(1)).withPosition(5, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 2 good", () -> vision.isConnected(2)).withPosition(6, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 3 good", () -> vision.isConnected(3)).withPosition(7, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 4 good", () -> vision.isConnected(4)).withPosition(8, 1).withSize(1, 1);
 
     autoTab
         .addNumber("ll latency", () -> vision.getLimelightLatency())
@@ -988,16 +1118,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(6, 2)
         .withSize(1, 1);
 
-    autoTab
-        .addBoolean(
-            "ll good",
-            () ->
-                Constants.doubleEqual(
-                    vision.getLimelightTargetOffset().getDegrees(),
-                    0,
-                    Constants.Vision.Settings.AUTO_START_TOLERANCE))
-        .withPosition(7, 2)
-        .withSize(1, 1);
+    autoTab.addBoolean("ll good", this::llGood).withPosition(7, 2).withSize(1, 1);
 
     autoTab.addBoolean("prox 1 good", this::prox1Good).withPosition(5, 3).withSize(1, 1);
     autoTab.addBoolean("prox 2 good", this::prox2Good).withPosition(6, 3).withSize(1, 1);
@@ -1006,6 +1127,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     autoTab.addBoolean("GOOD TO GO", this::autoReady).withPosition(9, 0).withSize(3, 3);
 
     autoTab.add("Field", drivetrain.getField()).withPosition(2, 1).withSize(3, 2);
+
+    delaySlider =
+        autoTab
+            .add("Close 4 Delay", closeFourNoteDelay)
+            .withPosition(0, 3)
+            .withWidget(BuiltInWidgets.kNumberSlider)
+            .withProperties(Map.of("min", 0, "max", 10, "Block increment", 0.5))
+            .withSize(2, 1)
+            .getEntry();
 
     // Teleop tab stuff
 
@@ -1031,10 +1161,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(2, 2)
         .withSize(2, 1);
 
-    teleTab
-        .addBoolean("SHOOTER READY", () -> shooter.isFlag(Shooter.State.READY))
-        .withSize(3, 3)
-        .withPosition(8, 1);
+    teleTab.add("FIELD", drivetrain.getFieldTele()).withSize(3, 3).withPosition(8, 1);
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
     teleTab
@@ -1088,6 +1215,22 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(2, 1)
         .withPosition(6, 3);
 
+    // Tuning stuff
+    tuningHoodAngle =
+        tuningTab
+            .add("Hood Angle", 20)
+            .withSize(2, 1)
+            .withPosition(0, 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .getEntry();
+    tuningFlywheelSpeed =
+        tuningTab
+            .add("Flywheel Speed", 10)
+            .withSize(2, 1)
+            .withPosition(2, 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .getEntry();
+
     Shuffleboard.selectTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
   }
 
@@ -1109,6 +1252,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     LOB,
     CLEANSE,
     EJECT_INTAKE,
+    AUSTIN_LOB,
     TEST
   }
 }

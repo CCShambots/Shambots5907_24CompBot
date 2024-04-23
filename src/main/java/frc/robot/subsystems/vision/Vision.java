@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
@@ -29,7 +30,7 @@ public class Vision extends StateMachine<Vision.State> {
 
   Supplier<Pose2d> overallEstimateSupplier = null;
 
-  public Vision(String limelight, Map<String, Pose3d> photonVisionInstances) {
+  public Vision(String limelight, Map<String, CamSettings> photonVisionInstances) {
     super("Vision", State.UNDETERMINED, State.class);
 
     this.limelight = new Limelight(limelight, Constants.currentBuildMode);
@@ -37,21 +38,29 @@ public class Vision extends StateMachine<Vision.State> {
     pvApriltagCams =
         photonVisionInstances.entrySet().stream()
             .map(
-                entry ->
-                    new PVApriltagCam(
-                        entry.getKey(),
-                        Constants.currentBuildMode,
-                        new Transform3d(new Pose3d(), entry.getValue()),
-                        Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT,
-                        VISION_TRUST_CUTOFF))
+                (entry) -> {
+                  var settings = entry.getValue();
+                  var cam =
+                      new PVApriltagCam(
+                          entry.getKey(),
+                          Constants.currentBuildMode,
+                          new Transform3d(new Pose3d(), settings.camPose()),
+                          Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT,
+                          settings.trustCutoff());
+
+                  cam.setPoseEstimationStrategy(
+                      PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
+                  cam.setMultiTagFallbackEstimationStrategy(
+                      PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+
+                  applyPreAndPostProcesses(
+                      cam,
+                      settings.ambiguityThreshold(),
+                      settings.distanceFromLastEstimateScalar());
+
+                  return cam;
+                })
             .toArray(PVApriltagCam[]::new);
-
-    for (var cam : pvApriltagCams) {
-      cam.setPoseEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
-      cam.setMultiTagFallbackEstimationStrategy(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
-
-      applyPreAndPostProcesses(cam);
-    }
 
     registerTransitions();
   }
@@ -60,15 +69,23 @@ public class Vision extends StateMachine<Vision.State> {
     overallEstimateSupplier = supplier;
   }
 
-  private void applyPreAndPostProcesses(PVApriltagCam cam) {
+  private void applyPreAndPostProcesses(
+      PVApriltagCam cam, double ambiguityThreshold, double distanceFromLastEstimateScalar) {
     HashMap<Integer, Double[]> ambiguityAverages = new HashMap<>();
     int avgLength = 100;
-    double ambiguityThreshold = 0.4;
-    double distanceFromLastEstimateScalar = 2.0;
+    /*double ambiguityThreshold = 0.4;
+    double distanceFromLastEstimateScalar = 2.0;*/
 
     cam.setPreProcess(
         (pipelineData) -> {
           if (!pipelineData.hasTargets()) return pipelineData;
+
+          pipelineData.setTimestampSeconds(
+              Math.min(Timer.getFPGATimestamp(), pipelineData.getTimestampSeconds()));
+
+          // manual timestamp
+          // pipelineData.setTimestampSeconds(
+          // Timer.getFPGATimestamp() /*- pipelineData.getLatencyMillis() * 1000*/);
 
           int idx = 0;
 
@@ -173,6 +190,8 @@ public class Vision extends StateMachine<Vision.State> {
                   updates.add(update);
 
                   Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimate", update.pose());
+                  Logger.recordOutput(
+                      "Vision/" + cam.getName() + "/latestEstimateTimestamp", update.timestamp());
                 });
       }
     }
@@ -256,6 +275,10 @@ public class Vision extends StateMachine<Vision.State> {
     else return new Rotation2d();
   }
 
+  public boolean isConnected(int index) {
+    return pvApriltagCams[index - 1].isConnected();
+  }
+
   public enum State {
     UNDETERMINED,
     ENABLED,
@@ -268,4 +291,12 @@ public class Vision extends StateMachine<Vision.State> {
   }
 
   public record RingVisionUpdate(Rotation2d centerOffsetX, Rotation2d centerOffsetY, double size) {}
+
+  public record CamSettings(
+      Pose3d camPose,
+      double trustCutoff,
+      double ambiguityThreshold,
+      double distanceFromLastEstimateScalar,
+      double tagDistanceTrustPower,
+      double tagDistanceTrustScalar) {}
 }

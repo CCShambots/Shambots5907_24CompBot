@@ -6,9 +6,27 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Amp Start to Preload"
+            "pathName": "4 Start to 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 to 2"
           }
         },
         {
@@ -38,19 +56,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3 to 8"
+            "pathName": "2 to 3"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "visionIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot 8"
           }
         },
         {
@@ -68,7 +80,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "8 to 7 "
+            "pathName": "3 to 7"
           }
         },
         {
@@ -92,19 +104,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "end run"
+            "name": "fireSequence"
           }
         }
       ]

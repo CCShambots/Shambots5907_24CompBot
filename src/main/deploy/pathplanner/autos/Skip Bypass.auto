@@ -1,20 +1,26 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.419393510067297,
-      "y": 3.3434412059135536
-    },
-    "rotation": 179.53037298031037
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Far Start to 4"
+            "pathName": "Skip Bypass Start"
           }
         },
         {
@@ -26,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 Shoot"
+            "pathName": "7 Shoot"
           }
         },
         {
@@ -44,7 +50,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 to 5"
+            "pathName": "7 Amp Side to 6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6 Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6 to 5"
           }
         },
         {
@@ -68,19 +104,13 @@
         {
           "type": "named",
           "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "5 to 6"
+            "name": "shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "visionIntake"
+            "name": "stopIntake"
           }
         }
       ]

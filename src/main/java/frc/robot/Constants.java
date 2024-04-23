@@ -31,7 +31,7 @@ import java.util.function.UnaryOperator;
 public class Constants {
   public static final double LOOP_PERIOD = 0.02;
 
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REPLAY;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
@@ -53,6 +53,9 @@ public class Constants {
     public static final String AUTO_SHUFFLEBOARD_TAB = "Auto";
     public static final String TELE_SHUFFLEBOARD_TAB_ID = "Tele";
     public static final String TEST_SHUFFLEBOARD_TAB_ID = "Test";
+    public static final String TUNE_SHUFFLEBOARD_TAB_ID = "Tune";
+
+    public static final double VOLTAGE_WARNING = 7.5;
   }
 
   public static final class PhysicalConstants {
@@ -69,6 +72,9 @@ public class Constants {
     // how far away climber is from shooter pivot on front/back axis
     public static double CLIMBER_X_DISTANCE_FROM_SHOOTER_PIVOT = 0.0;
 
+    public static Pose2d BLUE_CORNER =
+        new Pose2d(new Translation2d(0, Units.feetToMeters(27)), new Rotation2d());
+
     public static Pose2d BLUE_SPEAKER =
         new Pose2d(new Translation2d(-0.039243, 5.557), Rotation2d.fromDegrees(0));
     public static Pose2d BLUE_AMP =
@@ -81,7 +87,7 @@ public class Constants {
         new Pose2d(new Translation2d(4.5969682, 3.717244813), Rotation2d.fromDegrees(-120));
 
     public static Pose2d BLUE_LOB_CORNER =
-        new Pose2d(2, Units.feetToMeters(27) - 2.25, new Rotation2d(0));
+        new Pose2d(2, Units.feetToMeters(27) - 1, new Rotation2d(0));
 
     public static double TRAP_SHOT_DISTANCE = 1; // Meters
 
@@ -147,7 +153,32 @@ public class Constants {
 
       public static final double AUTO_START_TOLERANCE = 0.5;
 
-      public static final double VISION_TRUST_CUTOFF = Units.feetToMeters(18);
+      public static final double LEFT_SHOOTER_CAM_TRUST_CUTOFF = Units.feetToMeters(18);
+      public static final double RIGHT_SHOOTER_CAM_TRUST_CUTOFF = Units.feetToMeters(18);
+      public static final double LEFT_INTAKE_CAM_TRUST_CUTOFF = Units.feetToMeters(18);
+      public static final double RIGHT_INTAKE_CAM_TRUST_CUTOFF = Units.feetToMeters(18);
+
+      public static final frc.robot.subsystems.vision.Vision.CamSettings LEFT_SHOOTER_CAM_SETTINGS =
+          new frc.robot.subsystems.vision.Vision.CamSettings(
+              Hardware.LEFT_SHOOTER_CAM_POSE, LEFT_SHOOTER_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
+
+      public static final frc.robot.subsystems.vision.Vision.CamSettings
+          RIGHT_SHOOTER_CAM_SETTINGS =
+              new frc.robot.subsystems.vision.Vision.CamSettings(
+                  Hardware.RIGHT_SHOOTER_CAM_POSE,
+                  RIGHT_SHOOTER_CAM_TRUST_CUTOFF,
+                  0.4,
+                  2.0,
+                  0.33,
+                  1.0);
+
+      public static final frc.robot.subsystems.vision.Vision.CamSettings LEFT_INTAKE_CAM_SETTINGS =
+          new frc.robot.subsystems.vision.Vision.CamSettings(
+              Hardware.LEFT_INTAKE_CAM_POSE, LEFT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
+
+      public static final frc.robot.subsystems.vision.Vision.CamSettings RIGHT_INTAKE_CAM_SETTINGS =
+          new frc.robot.subsystems.vision.Vision.CamSettings(
+              Hardware.RIGHT_INTAKE_CAM_POSE, RIGHT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
       public static final String TRAP_CAMERA = "pv_instance_4";
     }
@@ -172,6 +203,12 @@ public class Constants {
           new InterpolatingDoubleTreeMap();
 
       public static final double SPEAKER_TARGET_HEIGHT = 2.2;
+      public static final InterpolatingDoubleTreeMap ARM_LOB_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
+
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_LOB_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
+
       public static final double TRAP_TARGET_HEIGHT = 1.52;
 
       static {
@@ -188,18 +225,30 @@ public class Constants {
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), Math.toRadians(2));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(6));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(7));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(5.5));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(8));
+        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(22), Math.toRadians(9));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
         ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(10));
 
-        // FLYWHEEL TRAP VALUES
-        FLYWHEEL_TRAP_DISTANCE_LUT.put(0.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
-        FLYWHEEL_TRAP_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
+        // FLYWHEEL LOB VALUES
+        FLYWHEEL_LOB_DISTANCE_LUT.put(50.0, 3500 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(13.0, 3500 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(11.6, 3250 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(10.5, 3250 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(9.3, 2750 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(9.0, 2750 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(7.5, 2750 / 60.0);
+        FLYWHEEL_LOB_DISTANCE_LUT.put(0.0, 3250 / 60.0);
 
-        // ARM TRAP OFFSETS
-        ARM_TRAP_DISTANCE_LUT.put(0.0, 0.0);
-        ARM_TRAP_DISTANCE_LUT.put(20.0, 0.0);
+        // ARM LOB OFFSETS
+        ARM_LOB_DISTANCE_LUT.put(50.0, 50 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(11.6, 50 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(10.5, 50 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(9.3, 50 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(9.0, 53 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(7.5, 59 * (Math.PI / 180));
+        ARM_LOB_DISTANCE_LUT.put(0.0, 50 * (Math.PI / 180));
       }
     }
   }
@@ -223,9 +272,7 @@ public class Constants {
       public static final boolean LEADER_INVERTED = true;
       public static final boolean FOLLOWER_INVERTED = true;
 
-      public static final double POTENTIOMETER_OFFSET =
-          Math.toRadians(21.1) + Math.toRadians(213.4);
-      // Math.toRadians(213.2) + Math.toRadians(20);
+      public static final double POTENTIOMETER_OFFSET = Math.toRadians(336.2) + Math.toRadians(20);
 
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
@@ -287,7 +334,10 @@ public class Constants {
       public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Coast;
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
-          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true);
+          new CurrentLimitsConfigs()
+              .withSupplyCurrentLimit(40)
+              .withSupplyCurrentLimitEnable(true)
+              .withSupplyTimeThreshold(1.275);
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
@@ -299,8 +349,10 @@ public class Constants {
               new PIDSVGains(0.3, 0, 0, 0.3664, 0.107),
               () -> ALLOW_TUNING);
 
-      public static final double ACCELERATION = 10000;
-      public static final double JERK = 1500;
+      public static final double ACCELERATION = 3200;
+      public static final double JERK = 500;
+
+      public static final boolean ENABLE_FOC = true;
     }
 
     public static final class Settings {
@@ -314,14 +366,17 @@ public class Constants {
 
       public static final double CHUTE_INTAKE_SPEED = -1000 / 60.0; // RPS
 
-      public static final double AMP_SPEED_TOP = 250 / 60.0; // RPS
-      public static final double AMP_SPEED_BOTTOM = 1025 / 60.0; // RPS
+      public static final double AMP_SPEED_TOP = 140 / 60.0; // RPS
+      public static final double AMP_SPEED_BOTTOM = 815 / 60.0; // RPS
 
       public static double TRAP_SPEED_TOP = 1500 / 60.0; // RPS
       public static double TRAP_SPEED_BOTTOM = 2600 / 60.0; // RPS
 
       public static final double LOB_SPEED_STRAIGHT_TOP = 5200 / 60.0;
       public static final double LOB_SPEED_STRAIGHT_BOTTOM = 2250 / 60.0;
+
+      public static final double AUSTIN_LOB_SPEED_TOP = 2000 / 60.0;
+      public static final double AUSTIN_LOB_SPEED_BOTTOM = 2000 / 60.0;
 
       public static final double LOB_SPEED_ARC = 3250 / 60.0;
 
@@ -553,8 +608,8 @@ public class Constants {
       public static final double ROTATION_RADIUS =
           Math.sqrt(Math.pow(TRACK_WIDTH / 2.0, 2) + Math.pow(WHEEL_BASE / 2.0, 2)) * 2 * Math.PI;
 
-      public static final String MODULE_CAN_BUS = "drivetrain";
-      public static final String GYRO_CAN_BUS = "";
+      public static final String MODULE_CAN_BUS = "*";
+      public static final String GYRO_CAN_BUS = "*";
 
       public static final ModuleInfo MODULE_1_INFO = // FRONT LEFT
           ModuleInfo.generateModuleInfo(
@@ -566,8 +621,9 @@ public class Constants {
               -109.4, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              true // DRIVE MOTOR INVERTED
-              );
+              true, // DRIVE MOTOR INVERTED
+              true,
+              true);
 
       public static final ModuleInfo MODULE_2_INFO = // BACK LEFT
           ModuleInfo.generateModuleInfo(
@@ -579,8 +635,9 @@ public class Constants {
               -92.3, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              true // DRIVE MOTOR INVERTED
-              );
+              true, // DRIVE MOTOR INVERTED
+              true,
+              true);
 
       public static final ModuleInfo MODULE_3_INFO = // BACK RIGHT
           ModuleInfo.generateModuleInfo(
@@ -592,8 +649,9 @@ public class Constants {
               20, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              true // DRIVE MOTOR INVERTED
-              );
+              true, // DRIVE MOTOR INVERTED
+              true,
+              true);
 
       public static final ModuleInfo MODULE_4_INFO = // FRONT RIGHT
           ModuleInfo.generateModuleInfo(
@@ -605,11 +663,15 @@ public class Constants {
               125.3, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
-              true // DRIVE MOTOR INVERTED
-              );
+              true, // DRIVE MOTOR INVERTED
+              true,
+              true);
 
       public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS =
-          new CurrentLimitsConfigs().withSupplyCurrentLimit(40).withSupplyCurrentLimitEnable(true);
+          new CurrentLimitsConfigs()
+              .withSupplyCurrentLimit(60)
+              .withSupplyCurrentLimitEnable(true)
+              .withSupplyTimeThreshold(0.5);
       ;
     }
 
@@ -628,7 +690,7 @@ public class Constants {
 
       // m/s
       public static final double MAX_CHASSIS_SPEED = 5;
-      public static final double MAX_CHASSIS_ACCELERATION = 10;
+      public static final double MAX_CHASSIS_ACCELERATION = 15;
       public static final double MAX_CHASSIS_ROTATIONAL_SPEED =
           (MAX_CHASSIS_SPEED / Hardware.ROTATION_RADIUS) * (2 * Math.PI);
       public static final double MAX_CHASSIS_ROTATIONAL_ACCELERATION =
@@ -712,7 +774,7 @@ public class Constants {
       // seconds
       public static double LOST_RING_TARGET_TIMEOUT = 0.5;
 
-      public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(1);
+      public static Rotation2d SHOT_OFFSET = Rotation2d.fromDegrees(5);
 
       public static final Translation2d TRAP_OFFSET =
           new Translation2d(Units.inchesToMeters(29.75), Units.inchesToMeters(6.0));

@@ -6,65 +6,21 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Far Start to 4"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.5
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "slowDownShooterForClown"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "name": "aim"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "visionIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "backToNormalShooting"
+            "name": "fireSequence"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Clown Sweep"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
+            "pathName": "Bypass Start"
           }
         },
         {
@@ -77,6 +33,66 @@
           "type": "path",
           "data": {
             "pathName": "Shoot 8"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "8 to 7 "
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7 Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7 Amp Side to 6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6 Shoot"
           }
         },
         {

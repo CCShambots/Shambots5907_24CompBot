@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.419393510067297,
-        "y": 3.3434412059135536
+        "x": 1.2305225994535034,
+        "y": 3.2175272655043576
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.237834122727069,
-        "y": 3.1488469343720693
+        "x": 2.048963212113275,
+        "y": 3.0229329939628733
       },
       "isLocked": false,
       "linkedName": "Far Start"
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 3.25,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

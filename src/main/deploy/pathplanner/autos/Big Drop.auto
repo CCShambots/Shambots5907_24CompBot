@@ -8,7 +8,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bypass Start"
+            "pathName": "Drop Start To 4"
           }
         },
         {
@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot 8"
+            "pathName": "4 Shoot"
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "8 to 7 "
+            "pathName": "4 to 5"
           }
         },
         {
@@ -50,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7 Shoot"
+            "pathName": "5 Shoot"
           }
         },
         {
@@ -68,7 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5 Amp Side to 6"
+            "pathName": "5 to 6"
           }
         },
         {
@@ -92,13 +92,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
+            "name": "fireSequence"
           }
         }
       ]

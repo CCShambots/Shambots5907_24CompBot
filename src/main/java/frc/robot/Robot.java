@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
@@ -55,6 +56,8 @@ public class Robot extends LoggedRobot {
     Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
     Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
 
+    PowerDistribution powerDist = null;
+
     switch (BuildConstants.DIRTY) {
       case 0:
         Logger.recordMetadata("GitDirty", "All changes committed");
@@ -71,7 +74,7 @@ public class Robot extends LoggedRobot {
       case REAL:
         Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs"));
         Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-        new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+        powerDist = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
         Logger.setReplaySource(null);
         break;
       case SIM:
@@ -93,7 +96,7 @@ public class Robot extends LoggedRobot {
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
     // be added.
 
-    robotContainer = new RobotContainer(checkModulesLoop);
+    robotContainer = new RobotContainer(checkModulesLoop, powerDist);
 
     SubsystemManagerFactory.getInstance().registerSubsystem(robotContainer, false);
     SubsystemManagerFactory.getInstance().disableAllSubsystems();
@@ -217,6 +220,14 @@ public class Robot extends LoggedRobot {
     SubsystemManagerFactory.getInstance().notifyTestStart();
 
     Shuffleboard.selectTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
+
+    new WaitCommand(.5)
+        .andThen(
+            new InstantCommand(
+                () -> {
+                  robotContainer.alignSwerveModules();
+                }))
+        .schedule();
   }
 
   @Override

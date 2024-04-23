@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -37,11 +38,12 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final SwerveDrive drive;
-  private boolean flipPath = false;
+  @AutoLogOutput private boolean flipPath = false;
 
   private IntConsumer waypointConsumer = null;
   AtomicInteger currentWaypoint = new AtomicInteger(0);
@@ -58,6 +60,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final BooleanSupplier indexerReceivedRing;
 
   private final Field2d field = new Field2d();
+  private final Field2d fieldTele = new Field2d();
 
   public Drivetrain(
       DoubleSupplier x,
@@ -141,6 +144,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     syncTargetStageSide();
 
+    registerAutoPathfindCommand();
+
     System.out.println(AllianceManager.getAlliance());
     System.out.println("Path Flipping:" + flipPath);
   }
@@ -169,6 +174,13 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerStateCommand(State.X_SHAPE, () -> drive.setModuleStates(X_SHAPE));
 
     registerStateCommand(State.IDLE, drive::stopModules);
+
+    registerStateCommand(
+        State.CALCULATE_WHEEL_RADIUS,
+        new SequentialCommandGroup(
+            drive.getCalculateWheelRadiusCommand(
+                0.04942946369018648 /*wheel radius in mk4i as of this commit*/),
+            transitionCommand(State.IDLE)));
 
     registerStateCommand(
         State.FIELD_ORIENTED_DRIVE,
@@ -252,6 +264,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     drive.update();
 
     field.setRobotPose(drive.getPose());
+    fieldTele.setRobotPose(drive.getPose());
 
     Logger.recordOutput(
         "Drivetrain/trap-distance",
@@ -303,8 +316,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.FACE_SPEAKER_AUTO);
 
     addOmniTransition(State.LOB);
+    addOmniTransition(State.START_CLOSE_4);
 
     addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
+
+    addTransition(State.IDLE, State.CALCULATE_WHEEL_RADIUS);
   }
 
   private void ppRotationOverride() {
@@ -322,6 +338,19 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private Rotation2d getTartgetRotationWhileMove() {
+    Pose2d functionalShootPose = getMovingSpeakerShootPose();
+
+    Logger.recordOutput("Drivetrain/Functional Pose", functionalShootPose);
+
+    return Constants.rotationBetween(
+            functionalShootPose,
+            !flipPath
+                ? Constants.PhysicalConstants.BLUE_SPEAKER
+                : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
+        .minus(Constants.Drivetrain.Settings.SHOT_OFFSET);
+  }
+
+  public Pose2d getMovingSpeakerShootPose() {
     double speakerDist = getDistanceToSpeaker();
 
     Pose2d robotPose = drive.getPose();
@@ -338,25 +367,19 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     Logger.recordOutput("Dirvetrain/Field Relative Speeds", speeds);
 
     // Where we would functionally be shooting from
-    Pose2d functionalShootPose =
-        robotPose.transformBy(
-            new Transform2d(
-                -speeds.vxMetersPerSecond * timeToSpeaker,
-                -speeds.vyMetersPerSecond * timeToSpeaker,
-                new Rotation2d()));
-
-    Logger.recordOutput("Drivetrain/Functional Pose", functionalShootPose);
-
-    return Constants.rotationBetween(
-            functionalShootPose,
-            !flipPath
-                ? Constants.PhysicalConstants.BLUE_SPEAKER
-                : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
-        .minus(Constants.Drivetrain.Settings.SHOT_OFFSET);
+    return robotPose.transformBy(
+        new Transform2d(
+            -speeds.vxMetersPerSecond * timeToSpeaker,
+            -speeds.vyMetersPerSecond * timeToSpeaker,
+            new Rotation2d()));
   }
 
   public Field2d getField() {
     return field;
+  }
+
+  public Field2d getFieldTele() {
+    return fieldTele;
   }
 
   private void registerFaceCommands() {
@@ -376,6 +399,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         State.FACE_SPEAKER_AUTO,
         getFacePointCommand(
             flipPath ? Constants.mirror(BLUE_SPEAKER) : BLUE_SPEAKER, SPEAKER_SPEED, true));
+  }
+
+  private void registerAutoPathfindCommand() {
+    registerStateCommand(
+        State.START_CLOSE_4, getPathfindCommandDontFollow("4 Start to 1", 0.25, State.IDLE));
   }
 
   private void registerPathFollowStateCommands() {
@@ -481,11 +509,29 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         transitionCommand(endState, false));
   }
 
+  private Command getPathfindCommandDontFollow(
+      String nextPath, double rotationalDelay, State endState) {
+
+    Pose2d original = PathPlannerPath.fromPathFile(nextPath).getPreviewStartingHolonomicPose();
+
+    return new SequentialCommandGroup(
+        new InstantCommand(() -> setFlag(State.PATHFINDING)),
+        AutoBuilder.pathfindToPose(
+            flipPath ? Constants.mirror(original) : original,
+            getPathfindingConstraints(),
+            rotationalDelay),
+        transitionCommand(endState, false));
+  }
+
   private Command getPathFindCommand(Pose2d targetPose, double rotationalDelay, State endState) {
     return new SequentialCommandGroup(
         new InstantCommand(() -> setFlag(State.PATHFINDING)),
         AutoBuilder.pathfindToPose(targetPose, getPathfindingConstraints(), rotationalDelay),
         transitionCommand(endState, false));
+  }
+
+  public void alignModules() {
+    drive.setAllModules(new SwerveModuleState(0, new Rotation2d()));
   }
 
   private Pose2d getTrapTarget() {
@@ -572,6 +618,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     drive.configurePathplanner();
 
     registerPathFollowStateCommands();
+
+    registerAutoPathfindCommand();
   }
 
   public void addVisionMeasurements(
@@ -624,11 +672,13 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     GROUND_INTAKE,
     HUMAN_PLAYER_INTAKE,
     LOB,
+    START_CLOSE_4,
 
     // flags for non-autonomous operations
     PATHFINDING,
     AT_ANGLE,
     AT_TRAP_POSE,
-    AUTO_INTAKING
+    AUTO_INTAKING,
+    CALCULATE_WHEEL_RADIUS
   }
 }

@@ -3,53 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.97677697085498,
-        "y": 4.093201487441037
+        "x": 2.8674038247730476,
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.812387666297824,
-        "y": 4.030244517236439
+        "x": 2.398088228702409,
+        "y": 5.586998689568313
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Note 2 End"
     },
     {
       "anchor": {
-        "x": 7.566283146407123,
-        "y": 4.093201487441037
+        "x": 2.071856655824038,
+        "y": 6.565693408203425
       },
       "prevControl": {
-        "x": 9.01197350843028,
-        "y": 4.0754991564774885
-      },
-      "nextControl": {
-        "x": 6.164059719122899,
-        "y": 4.1103715702241095
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.115096507009623,
-        "y": 4.934535543811572
-      },
-      "prevControl": {
-        "x": 5.311278940896983,
-        "y": 3.973010907959533
+        "x": 1.3163730133688643,
+        "y": 6.239461835325055
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": -166.2699778395918,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
-      "waypointRelativePos": 0,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "parallel",
         "data": {
@@ -57,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "intake"
+                "name": "fireSequence"
               }
             }
           ]
@@ -72,14 +62,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 163.81079374297303,
+    "velocity": 2.0,
+    "rotation": -148.70033854888604,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "NOTES",
+  "folder": "BETWEEN NOTES",
   "previewStartingState": {
-    "rotation": -179.39049342332478,
+    "rotation": -179.618033795271,
     "velocity": 0
   },
   "useDefaultConstraints": true

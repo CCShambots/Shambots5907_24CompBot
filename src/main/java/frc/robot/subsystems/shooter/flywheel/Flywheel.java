@@ -18,16 +18,23 @@ public class Flywheel extends StateMachine<Flywheel.State> {
   private final FlywheelInputsAutoLogged inputs = new FlywheelInputsAutoLogged();
 
   private final DoubleSupplier speakerAAProvider;
+  private final DoubleSupplier lobAASupplier;
+
+  private final DoubleSupplier tuneSupplier;
 
   public Flywheel(
       FlywheelIO io,
       DoubleSupplier speakerAAProvider,
+      DoubleSupplier lobAASupplier,
+      DoubleSupplier tuneSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
     super("Shooter Flywheel", State.UNDETERMINED, State.class);
 
     this.speakerAAProvider = speakerAAProvider;
+    this.tuneSupplier = tuneSupplier;
+    this.lobAASupplier = lobAASupplier;
     this.io = io;
 
     registerStateCommands(tuningInc, tuningDec, tuningStop);
@@ -64,6 +71,18 @@ public class Flywheel extends StateMachine<Flywheel.State> {
             new RunCommand(() -> io.setFlywheelTarget(speakerAAProvider.getAsDouble())),
             atSpeedCommand(speakerAAProvider, SPIN_UP_READY_TOLERANCE)));
 
+    registerStateCommand(
+        State.LOB_ACTIVE_ADJUST,
+        new ParallelCommandGroup(
+            new RunCommand(() -> io.setFlywheelTarget(lobAASupplier.getAsDouble())),
+            atSpeedCommand(lobAASupplier, SPIN_UP_READY_TOLERANCE)));
+
+    registerStateCommand(
+        State.TUNE,
+        new ParallelCommandGroup(
+            new RunCommand(() -> io.setFlywheelTarget(tuneSupplier.getAsDouble())),
+            atSpeedCommand(tuneSupplier, SPIN_UP_READY_TOLERANCE)));
+
     registerStateCommand(State.PASS_THROUGH, () -> io.setFlywheelTarget(PASS_THROUGH_SPEED));
 
     registerStateCommand(State.CHUTE_INTAKE, () -> io.setFlywheelTarget(CHUTE_INTAKE_SPEED));
@@ -92,10 +111,24 @@ public class Flywheel extends StateMachine<Flywheel.State> {
             atSpeedCommand(() -> LOB_SPEED_STRAIGHT_TOP, SPIN_UP_READY_TOLERANCE)));
 
     registerStateCommand(
+        State.AUSTIN_LOB,
+        new ParallelCommandGroup(
+            new InstantCommand(
+                () -> io.setFlywheelTargets(AUSTIN_LOB_SPEED_TOP, AUSTIN_LOB_SPEED_BOTTOM)),
+            atSpeedCommand(() -> AUSTIN_LOB_SPEED_TOP, SPIN_UP_READY_TOLERANCE)));
+
+    registerStateCommand(
         State.LOB_ARC,
         new ParallelCommandGroup(
             new InstantCommand(() -> io.setFlywheelTarget(LOB_SPEED_ARC)),
             atSpeedCommand(() -> LOB_SPEED_ARC, SPIN_UP_READY_TOLERANCE)));
+
+    registerStateCommand(
+        State.FULL_POWER,
+        new InstantCommand(
+            () -> {
+              io.setDutyCycle(1);
+            }));
   }
 
   private void registerTransitions() {
@@ -110,6 +143,10 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.PARTIAL_SPINUP);
     addOmniTransition(State.LOB_STRAIGHT);
     addOmniTransition(State.LOB_ARC);
+    addOmniTransition(State.FULL_POWER);
+    addOmniTransition(State.LOB_ACTIVE_ADJUST);
+    addOmniTransition(State.TUNE);
+    addOmniTransition(State.AUSTIN_LOB);
 
     addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
@@ -138,6 +175,10 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     setState(State.IDLE);
   }
 
+  public double getCurrentTopSpeed() {
+    return inputs.velocity;
+  }
+
   public enum State {
     UNDETERMINED,
     BASE_SHOT_SPIN,
@@ -151,6 +192,10 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     VOLTAGE_CALC,
     LOB_STRAIGHT,
     LOB_ARC,
+    FULL_POWER,
+    LOB_ACTIVE_ADJUST,
+    TUNE,
+    AUSTIN_LOB,
 
     // flags
     AT_SPEED

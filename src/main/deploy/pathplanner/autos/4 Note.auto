@@ -1,26 +1,14 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.419393510067297,
-      "y": 3.3434412059135536
-    },
-    "rotation": 179.53037298031037
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Far Start to Preload"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "aimLong"
+            "name": "aim"
           }
         },
         {
@@ -32,19 +20,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Source Preload to 4"
+            "pathName": "4 Start to 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 to 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fireSequence"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "visionIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4 Shoot"
           }
         },
         {
@@ -62,19 +56,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 to 5"
+            "pathName": "2 to 3"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "visionIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "5 Shoot"
           }
         },
         {
@@ -86,19 +74,13 @@
         {
           "type": "named",
           "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "5 to 6"
+            "name": "shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "visionIntake"
+            "name": "stopIntake"
           }
         }
       ]

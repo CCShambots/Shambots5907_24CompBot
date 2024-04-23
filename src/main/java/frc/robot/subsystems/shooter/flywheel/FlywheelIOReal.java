@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter.flywheel;
 import static frc.robot.Constants.Flywheel.Hardware.*;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.talonfx.VelocityMotionMagicTalonFX;
 
@@ -23,6 +24,9 @@ public class FlywheelIOReal implements FlywheelIO {
     configureHardware();
 
     GAINS.setOnChange(this::setGains);
+
+    topMotor.setFOC(ENABLE_FOC);
+    bottomMotor.setFOC(ENABLE_FOC);
   }
 
   @Override
@@ -51,6 +55,12 @@ public class FlywheelIOReal implements FlywheelIO {
   @Override
   public void setVoltage(double voltage) {
     topMotor.setVoltage(voltage);
+  }
+
+  @Override
+  public void setDutyCycle(double dutyCycle) {
+    topMotor.setControl(new DutyCycleOut(dutyCycle).withEnableFOC(ENABLE_FOC));
+    bottomMotor.setControl(new DutyCycleOut(dutyCycle).withEnableFOC(ENABLE_FOC));
   }
 
   @Override

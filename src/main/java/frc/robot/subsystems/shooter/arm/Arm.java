@@ -23,12 +23,16 @@ public class Arm extends StateMachine<Arm.State> {
 
   // AA stands for active adjust
   private final DoubleSupplier distanceAAProvider;
+  private final DoubleSupplier movingDistanceAAProvider;
   private final DoubleSupplier lobAASupplier;
+  private final DoubleSupplier tuneSupplier;
 
   public Arm(
       ArmIO io,
       DoubleSupplier distanceAAProvider,
       DoubleSupplier lobAASupplier,
+      DoubleSupplier movingDistanceAAProvider,
+      DoubleSupplier tuneSupplier,
       Trigger tuningInc,
       Trigger tuningDec,
       Trigger tuningStop) {
@@ -37,6 +41,8 @@ public class Arm extends StateMachine<Arm.State> {
     this.io = io;
     this.distanceAAProvider = distanceAAProvider;
     this.lobAASupplier = lobAASupplier;
+    this.movingDistanceAAProvider = movingDistanceAAProvider;
+    this.tuneSupplier = tuneSupplier;
 
     registerStateCommands(tuningInc, tuningDec, tuningStop);
     registerTransitions();
@@ -53,10 +59,19 @@ public class Arm extends StateMachine<Arm.State> {
     registerStateCommand(State.FULL_STOW, holdPositionCommand(() -> FULL_STOW_POSITION));
     registerStateCommand(State.TRAP, holdPositionCommand(() -> TRAP_POSITION));
 
+    registerStateCommand(State.LOB_ACTIVE_ADJUST, holdPositionCommand(lobAASupplier));
+
     registerStateCommand(State.LOB_STRAIGHT, holdPositionCommand(() -> LOB_POSITION_STRAIGHT));
     registerStateCommand(State.LOB_ARC, holdPositionCommand(() -> LOB_POSITION_ARC));
 
     registerStateCommand(State.SHOT_ACTIVE_ADJUST, holdPositionCommand(distanceAAProvider));
+
+    registerStateCommand(
+        State.MOVING_SHOT_ACTIVE_ADJUST, holdPositionCommand(movingDistanceAAProvider));
+
+    registerStateCommand(State.AUSTIN_LOB, holdPositionCommand(() -> LOB_POSITION_STRAIGHT));
+
+    registerStateCommand(State.TUNE, holdPositionCommand(tuneSupplier));
 
     registerStateCommand(
         State.VOLTAGE_CALC,
@@ -88,6 +103,10 @@ public class Arm extends StateMachine<Arm.State> {
     addOmniTransition(State.LOB_STRAIGHT);
     addOmniTransition(State.LOB_ARC);
     addOmniTransition(State.SHOT_ACTIVE_ADJUST);
+    addOmniTransition(State.MOVING_SHOT_ACTIVE_ADJUST);
+    addOmniTransition(State.LOB_ACTIVE_ADJUST);
+    addOmniTransition(State.TUNE);
+    addOmniTransition(State.AUSTIN_LOB);
   }
 
   private boolean needsSync() {
@@ -146,6 +165,10 @@ public class Arm extends StateMachine<Arm.State> {
     return inputs.encoderPosition;
   }
 
+  public void syncAbsoluteAngle() {
+    io.syncToAbsoluteEncoder();
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
@@ -172,6 +195,10 @@ public class Arm extends StateMachine<Arm.State> {
     VOLTAGE_CALC,
     LOB_STRAIGHT,
     LOB_ARC,
+    MOVING_SHOT_ACTIVE_ADJUST,
+    LOB_ACTIVE_ADJUST,
+    TUNE,
+    AUSTIN_LOB,
     // flags
     AT_TARGET
   }

@@ -6,24 +6,6 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Amp Start to Preload"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "visionIntake"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "aim"
@@ -38,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3 to 8"
+            "pathName": "Bypass Start"
           }
         },
         {
@@ -68,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "8 to 7 "
+            "pathName": "8 Amp Side to 6"
           }
         },
         {
@@ -80,7 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7 Shoot"
+            "pathName": "6 Shoot"
           }
         },
         {
@@ -92,19 +74,25 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
+            "name": "fireSequence"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "end run"
+            "pathName": "6 to 5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5 Shoot"
           }
         }
       ]

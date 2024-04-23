@@ -23,6 +23,8 @@ public interface FlywheelIO {
 
   public default void setVoltage(double voltage) {}
 
+  public default void setDutyCycle(double dutyCycle) {}
+
   public default void setGains(PIDSVGains gains) {}
 
   public default void resetFollower() {}

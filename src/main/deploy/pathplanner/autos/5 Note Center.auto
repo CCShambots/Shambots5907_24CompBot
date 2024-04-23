@@ -8,13 +8,19 @@
         {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "aim"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Start to Note 2"
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionIntake"
           }
         },
         {
@@ -36,21 +42,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "aim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "fireSequence"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "3 to 8"
+            "pathName": "3 to 8 OTM"
           }
         },
         {
@@ -104,13 +98,19 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "fireSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7 Amp Side to 6"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopIntake"
+            "name": "visionIntake"
           }
         }
       ]

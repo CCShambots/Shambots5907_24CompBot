@@ -8,19 +8,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Amp Start to Preload"
+            "pathName": "Little Drop Start to 4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "fireSequence"
+            "name": "intake"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "visionIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 Shoot"
           }
         },
         {
@@ -38,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3 to 8"
+            "pathName": "4 to 5"
           }
         },
         {
@@ -50,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot 8"
+            "pathName": "Drop 5 Shoot"
           }
         },
         {
@@ -68,7 +74,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "8 to 7 "
+            "pathName": "Retrieve Preload"
           }
         },
         {
@@ -80,7 +86,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7 Shoot"
+            "pathName": "Shoot Drop Preload"
           }
         },
         {
@@ -92,19 +98,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "end run"
+            "name": "fireSequence"
           }
         }
       ]
