@@ -26,6 +26,7 @@ import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
 import frc.robot.ShamLib.swerve.odometry.OdometryBoundingBox;
+import frc.robot.subsystems.vision.Vision.CamSettings;
 import java.util.function.UnaryOperator;
 
 public class Constants {
@@ -158,26 +159,20 @@ public class Constants {
       public static final double LEFT_INTAKE_CAM_TRUST_CUTOFF = Units.feetToMeters(18);
       public static final double RIGHT_INTAKE_CAM_TRUST_CUTOFF = Units.feetToMeters(18);
 
-      public static final frc.robot.subsystems.vision.Vision.CamSettings LEFT_SHOOTER_CAM_SETTINGS =
-          new frc.robot.subsystems.vision.Vision.CamSettings(
+      public static final CamSettings LEFT_SHOOTER_CAM_SETTINGS =
+          new CamSettings(
               Hardware.LEFT_SHOOTER_CAM_POSE, LEFT_SHOOTER_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
-      public static final frc.robot.subsystems.vision.Vision.CamSettings
-          RIGHT_SHOOTER_CAM_SETTINGS =
-              new frc.robot.subsystems.vision.Vision.CamSettings(
-                  Hardware.RIGHT_SHOOTER_CAM_POSE,
-                  RIGHT_SHOOTER_CAM_TRUST_CUTOFF,
-                  0.4,
-                  2.0,
-                  0.33,
-                  1.0);
+      public static final CamSettings RIGHT_SHOOTER_CAM_SETTINGS =
+          new CamSettings(
+              Hardware.RIGHT_SHOOTER_CAM_POSE, RIGHT_SHOOTER_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
-      public static final frc.robot.subsystems.vision.Vision.CamSettings LEFT_INTAKE_CAM_SETTINGS =
-          new frc.robot.subsystems.vision.Vision.CamSettings(
+      public static final CamSettings LEFT_INTAKE_CAM_SETTINGS =
+          new CamSettings(
               Hardware.LEFT_INTAKE_CAM_POSE, LEFT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
-      public static final frc.robot.subsystems.vision.Vision.CamSettings RIGHT_INTAKE_CAM_SETTINGS =
-          new frc.robot.subsystems.vision.Vision.CamSettings(
+      public static final CamSettings RIGHT_INTAKE_CAM_SETTINGS =
+          new CamSettings(
               Hardware.RIGHT_INTAKE_CAM_POSE, RIGHT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
       public static final String TRAP_CAMERA = "pv_instance_4";
