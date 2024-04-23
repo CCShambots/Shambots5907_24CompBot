@@ -927,7 +927,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     if (selectedAutoKey.equals("4 Note")) runningDelayPathfindAuto.set(true);
     if (selectedAutoKey.equals("5 Note Adaptive")) runningDelayPathfindAuto.set(true);
 
-    AtomicBoolean runDefaultStartShot = new AtomicBoolean(false);
 
     Logger.recordOutput("RobotContainer/AutoKey", selectedAutoKey);
 
@@ -935,13 +934,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         State.AUTONOMOUS,
         new SequentialCommandGroup(
             lights.transitionCommand(Lights.State.AUTO),
-            new ConditionalCommand(
-                new SequentialCommandGroup(
-                    shooter.transitionCommand(Shooter.State.AUTO_START_SHOT),
-                    shooter.waitForFlag(Shooter.State.READY).withTimeout(1.25),
-                    indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false)),
-                new InstantCommand(),
-                () -> runDefaultStartShot.get()),
             shooter.enableRapidSpinup(),
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
             new ConditionalCommand(
