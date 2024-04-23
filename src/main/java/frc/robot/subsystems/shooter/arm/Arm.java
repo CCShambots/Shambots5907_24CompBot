@@ -69,8 +69,6 @@ public class Arm extends StateMachine<Arm.State> {
     registerStateCommand(
         State.MOVING_SHOT_ACTIVE_ADJUST, holdPositionCommand(movingDistanceAAProvider));
 
-    registerStateCommand(State.AUSTIN_LOB, holdPositionCommand(() -> LOB_POSITION_STRAIGHT));
-
     registerStateCommand(State.TUNE, holdPositionCommand(tuneSupplier));
 
     registerStateCommand(
@@ -106,7 +104,6 @@ public class Arm extends StateMachine<Arm.State> {
     addOmniTransition(State.MOVING_SHOT_ACTIVE_ADJUST);
     addOmniTransition(State.LOB_ACTIVE_ADJUST);
     addOmniTransition(State.TUNE);
-    addOmniTransition(State.AUSTIN_LOB);
   }
 
   private boolean needsSync() {
@@ -198,7 +195,6 @@ public class Arm extends StateMachine<Arm.State> {
     MOVING_SHOT_ACTIVE_ADJUST,
     LOB_ACTIVE_ADJUST,
     TUNE,
-    AUSTIN_LOB,
     // flags
     AT_TARGET
   }

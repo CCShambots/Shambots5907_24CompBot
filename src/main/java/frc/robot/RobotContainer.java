@@ -412,17 +412,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
 
     registerStateCommand(
-        State.AUSTIN_LOB,
-        new SequentialCommandGroup(
-            drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
-            intake.transitionCommand(Intake.State.IDLE),
-            new DetermineRingStatusCommand(shooter, indexer, lights),
-            shooter.transitionCommand(Shooter.State.AUSTIN_LOB, false),
-            new ParallelCommandGroup(
-                lightsOnReadyCommand(Lights.State.TARGETING),
-                feedOnPress(State.TRAVERSING, false))));
-
-    registerStateCommand(
         State.LOB,
         new SequentialCommandGroup(
             // face speaker and idle intake
@@ -612,7 +601,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addOmniTransition(State.AUTO_GROUND_INTAKE);
     addOmniTransition(State.AUTO_HP_INTAKE);
     addOmniTransition(State.LOB);
-    addOmniTransition(State.AUSTIN_LOB);
 
     // Make sure we can't enter other states from the climb state
     removeAllTransitionsFromState(State.CLIMB);
@@ -763,11 +751,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings
         .lobShot()
         .onTrue(transitionCommand(State.LOB, false))
-        .onFalse(transitionCommand(State.TRAVERSING, false));
-
-    controllerBindings
-        .austinLob()
-        .onTrue(transitionCommand(State.AUSTIN_LOB, false))
         .onFalse(transitionCommand(State.TRAVERSING, false));
 
     controllerBindings
@@ -1252,7 +1235,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     LOB,
     CLEANSE,
     EJECT_INTAKE,
-    AUSTIN_LOB,
     TEST
   }
 }

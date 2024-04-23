@@ -111,13 +111,6 @@ public class Flywheel extends StateMachine<Flywheel.State> {
             atSpeedCommand(() -> LOB_SPEED_STRAIGHT_TOP, SPIN_UP_READY_TOLERANCE)));
 
     registerStateCommand(
-        State.AUSTIN_LOB,
-        new ParallelCommandGroup(
-            new InstantCommand(
-                () -> io.setFlywheelTargets(AUSTIN_LOB_SPEED_TOP, AUSTIN_LOB_SPEED_BOTTOM)),
-            atSpeedCommand(() -> AUSTIN_LOB_SPEED_TOP, SPIN_UP_READY_TOLERANCE)));
-
-    registerStateCommand(
         State.LOB_ARC,
         new ParallelCommandGroup(
             new InstantCommand(() -> io.setFlywheelTarget(LOB_SPEED_ARC)),
@@ -146,7 +139,6 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     addOmniTransition(State.FULL_POWER);
     addOmniTransition(State.LOB_ACTIVE_ADJUST);
     addOmniTransition(State.TUNE);
-    addOmniTransition(State.AUSTIN_LOB);
 
     addTransition(State.IDLE, State.VOLTAGE_CALC);
   }
@@ -195,7 +187,6 @@ public class Flywheel extends StateMachine<Flywheel.State> {
     FULL_POWER,
     LOB_ACTIVE_ADJUST,
     TUNE,
-    AUSTIN_LOB,
 
     // flags
     AT_SPEED

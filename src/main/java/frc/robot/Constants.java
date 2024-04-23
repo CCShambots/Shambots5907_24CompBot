@@ -375,9 +375,6 @@ public class Constants {
       public static final double LOB_SPEED_STRAIGHT_TOP = 5200 / 60.0;
       public static final double LOB_SPEED_STRAIGHT_BOTTOM = 2250 / 60.0;
 
-      public static final double AUSTIN_LOB_SPEED_TOP = 2000 / 60.0;
-      public static final double AUSTIN_LOB_SPEED_BOTTOM = 2000 / 60.0;
-
       public static final double LOB_SPEED_ARC = 3250 / 60.0;
 
       public static final double VOLTAGE_INCREMENT = 0.25;
