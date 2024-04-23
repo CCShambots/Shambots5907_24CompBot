@@ -165,6 +165,10 @@ public class Arm extends StateMachine<Arm.State> {
     return inputs.encoderPosition;
   }
 
+  public void syncAbsoluteAngle() {
+    io.syncToAbsoluteEncoder();
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
