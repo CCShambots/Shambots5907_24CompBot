@@ -194,12 +194,15 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addChildSubsystem(indexer);
     addChildSubsystem(climbers);
 
+    //Since the lights subsystem should always be able to change state, it should be enabled immediately
+    //That means it's also not a child subsystem of the RobotContainer, because otherwise it would get disabled 
+    //when it shouldn't
     lights.enable();
 
     registerStateCommands();
     registerTransitions();
 
-    configureBindings();
+    configureTriggerBindings();
 
     registerNamedCommands();
 
@@ -208,15 +211,14 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     autoChooser =
         new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
-    initializeDriveTab();
+    initializeShuffleboardTabs();
 
+    //Make sure to turn off controller rumble in case it is still rumbling by chance
     controllerBindings.setRumble(0);
   }
 
   private void registerNamedCommands() {
-    // TODO: set up if we ever use automatic climbing
-    NamedCommands.registerCommand("raiseClimber", new InstantCommand());
-
+    
     NamedCommands.registerCommand(
         "intake",
         new ParallelCommandGroup(
@@ -677,7 +679,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     drivetrain.alignModules();
   }
 
-  private void configureBindings() {
+  private void configureTriggerBindings() {
 
     controllerBindings.resetGyro().onTrue(drivetrain.resetGyro());
 
@@ -1058,7 +1060,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     return vision.getLimelightLatency() > 25 && vision.getLimelightLatency() < 100;
   }
 
-  private void initializeDriveTab() {
+  private void initializeShuffleboardTabs() {
     ShuffleboardTab autoTab = Shuffleboard.getTab(Constants.Controller.AUTO_SHUFFLEBOARD_TAB);
     ShuffleboardTab teleTab = Shuffleboard.getTab(Constants.Controller.TELE_SHUFFLEBOARD_TAB_ID);
     ShuffleboardTab testTab = Shuffleboard.getTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
