@@ -218,7 +218,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void registerNamedCommands() {
-    
+
     NamedCommands.registerCommand(
         "intake",
         new ParallelCommandGroup(
@@ -333,8 +333,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new WaitUntilCommand(() -> !indexer.ringPresent()),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
-
-    NamedCommands.registerCommand("", new SequentialCommandGroup());
 
     NamedCommands.registerCommand(
         "aim",
