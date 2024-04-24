@@ -7,9 +7,11 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
-import frc.robot.ShamLib.Candle.TimedColorFlowCommand;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.WhileDisabledInstantCommand;
+import frc.robot.ShamLib.Candle.commands.AutoStatusCommand;
+import frc.robot.ShamLib.Candle.commands.TimedColorFlowCommand;
+
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -17,30 +19,34 @@ public class Lights extends StateMachine<Lights.State> {
   private final LightsIO io;
   private final LightsInputsAutoLogged inputs = new LightsInputsAutoLogged();
 
-  private final BooleanSupplier flashAutoError;
   private final BooleanSupplier displayAutoInfo;
 
   private final BooleanSupplier intakeTripped;
   private final BooleanSupplier leftClimbTripped;
   private final BooleanSupplier rightClimbTripped;
 
+  private final BooleanSupplier[] autoStartConditions;
+
   public Lights(
       LightsIO io,
-      BooleanSupplier flashAutoError,
       BooleanSupplier displayAutoInfo,
       BooleanSupplier intakeTripped,
       BooleanSupplier leftClimbTripped,
-      BooleanSupplier rightClimbTripped) {
+      BooleanSupplier rightClimbTripped,
+      BooleanSupplier... autoStartConditions
+    ) {
+
     super("Lights", State.UNDETERMINED, State.class);
 
     this.io = io;
 
-    this.flashAutoError = flashAutoError;
     this.displayAutoInfo = displayAutoInfo;
     this.intakeTripped = intakeTripped;
 
     this.leftClimbTripped = leftClimbTripped;
     this.rightClimbTripped = rightClimbTripped;
+
+    this.autoStartConditions = autoStartConditions;
 
     registerStateCommmands();
     registerTransitions();
@@ -96,15 +102,15 @@ public class Lights extends StateMachine<Lights.State> {
         new ParallelCommandGroup(
             setLights(State.PRE_AUTO_REST),
             new SequentialCommandGroup(
-                new WaitUntilCommand(flashAutoError),
+                new WaitUntilCommand(() -> !autoReady()),
                 new WhileDisabledInstantCommand(() -> requestTransition(State.AUTO_ERROR)))));
 
     registerStateCommand(
         State.AUTO_ERROR,
         new ParallelCommandGroup(
-            setLights(State.AUTO_ERROR),
+            new AutoStatusCommand((segs) -> io.setMultipleSegs(segs), AUTO_RGB, ERROR_RGB, NUM_LIGHTS_WITHOUT_CANDLE, 8, autoStartConditions),
             new SequentialCommandGroup(
-                new WaitUntilCommand(() -> !flashAutoError.getAsBoolean()),
+                new WaitUntilCommand(() -> autoReady()),
                 new WhileDisabledInstantCommand(() -> requestTransition(State.PRE_AUTO_REST)))));
 
     registerStateCommand(
@@ -141,6 +147,15 @@ public class Lights extends StateMachine<Lights.State> {
           Logger.recordOutput("Lights/currentRGB", state.name());
           state.data.applyToCANdle(io);
         });
+  }
+
+  private boolean autoReady() {
+    
+    for(BooleanSupplier condition : autoStartConditions) {
+      if(!condition.getAsBoolean()) return false; 
+    }
+
+    return true;
   }
 
   @Override

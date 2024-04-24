@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -167,11 +168,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     lights =
         new Lights(
             getLightsIO(),
-            () -> !autoReady() && !hasBeenEnabled,
             () -> !hasBeenEnabled,
             intake::ringPresent,
             climbers::isLeftTouchTripped,
-            climbers::isRightTouchTripped);
+            climbers::isRightTouchTripped,
+            autoConditions()
+            );
 
     shooter =
         new Shooter(
@@ -988,6 +990,22 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 autoLobState == Shooter.State.LOB_STRAIGHT
                     ? Shooter.State.LOB_ACTIVE_ADJUST
                     : Shooter.State.LOB_STRAIGHT);
+  }
+
+  public BooleanSupplier[] autoConditions() {
+    return new BooleanSupplier[]{
+      () -> !hasBeenEnabled,
+      () -> shooterGood(),
+      () -> llGood(),
+      () -> vision.isConnected(1),
+      () -> vision.isConnected(2),
+      () -> vision.isConnected(3),
+      () -> vision.isConnected(4),
+      () -> prox1Good(),
+      () -> prox2Good(),
+      () -> prox3Good(),
+      () -> DriverStation.isDSAttached()
+    };
   }
 
   public boolean autoReady() {
