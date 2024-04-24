@@ -181,7 +181,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             getFlywheelIO(),
             () -> drivetrain.getBotPose().getTranslation(),
             () -> drivetrain.getMovingSpeakerShootPose().getTranslation(),
-            () -> targetStageSide,
             () -> Math.toRadians(tuningHoodAngle.getDouble(0)),
             () -> tuningFlywheelSpeed.getDouble(0) / 60.0,
             tuningIncrement(),

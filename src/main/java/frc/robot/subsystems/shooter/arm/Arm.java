@@ -142,6 +142,7 @@ public class Arm extends StateMachine<Arm.State> {
     io.updateInputs(inputs);
     Logger.processInputs(getName(), inputs);
 
+    //We left auto-sync disabled because the mechanism was actually tight enough to control without issues
     if (needsSync() && ENABLE_AUTO_SYNC && syncTimeout.hasElapsed(MIN_TIME_BETWEEN_SYNC)) {
       io.syncToAbsoluteEncoder();
       syncTimeout.restart();

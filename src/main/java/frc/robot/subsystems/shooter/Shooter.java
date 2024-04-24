@@ -35,7 +35,6 @@ public class Shooter extends StateMachine<Shooter.State> {
   private final Supplier<Translation2d> botTranslationProvider;
   private final Supplier<Translation2d> movingBotTranslationProvider;
 
-  private final Supplier<StageSide> targetStageSideSupplier;
 
   private boolean doRapidSpinup = false;
 
@@ -44,7 +43,6 @@ public class Shooter extends StateMachine<Shooter.State> {
       FlywheelIO flywheelIO,
       Supplier<Translation2d> botTranslationProvider,
       Supplier<Translation2d> movingBotTranslationProvider,
-      Supplier<StageSide> targetStageSideSupplier,
       DoubleSupplier armTuneSupplier,
       DoubleSupplier flywheelTuneSupplier,
       Trigger tuningInc,
@@ -54,7 +52,6 @@ public class Shooter extends StateMachine<Shooter.State> {
 
     this.botTranslationProvider = botTranslationProvider;
     this.movingBotTranslationProvider = movingBotTranslationProvider;
-    this.targetStageSideSupplier = targetStageSideSupplier;
 
     arm =
         new Arm(
@@ -172,6 +169,8 @@ public class Shooter extends StateMachine<Shooter.State> {
             flywheel.transitionCommand(Flywheel.State.PASS_THROUGH),
             arm.transitionCommand(Arm.State.PARTIAL_STOW)));
 
+    //This is where we do rapid spinup stuff in the auton mode where we blast the flywheels with full power
+    //just to get them up to speed
     registerStateCommand(
         State.SPEAKER_AA,
         new ParallelCommandGroup(
@@ -298,26 +297,11 @@ public class Shooter extends StateMachine<Shooter.State> {
         + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
   }
 
-  /*private double armLobAA() {
-    double distanceToTarget =
-        botTranslationProvider.get().getDistance(lobCornerSupplier.get().getTranslation());
-
-    double angle = .5 * Math.asin((9.8 * distanceToTarget) / Math.pow(9.698, 2));
-
-    Logger.recordOutput("Shooter/calculated-angle", angle);
-
-    return angle;
-  }*/
-
   private double armMovingSpeakerAA() {
     double distance = getMovingSpeakerDistance();
 
     return Math.atan2(SPEAKER_TARGET_HEIGHT, distance)
         + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
-  }
-
-  private double flywheelTrapAA() {
-    return FLYWHEEL_TRAP_DISTANCE_LUT.get(getTrapDistance());
   }
 
   private double flywheelSpeakerAA() {
@@ -352,22 +336,6 @@ public class Shooter extends StateMachine<Shooter.State> {
             : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER);
 
     return speaker.getTranslation().getDistance(movingBotTranslationProvider.get());
-  }
-
-  private double getTrapDistance() {
-    Pose2d targetTrap =
-        switch (targetStageSideSupplier.get()) {
-          case CENTER -> Constants.PhysicalConstants.BLUE_CENTER_TRAP;
-          case LEFT -> Constants.PhysicalConstants.BLUE_LEFT_TRAP;
-          case RIGHT -> Constants.PhysicalConstants.BLUE_RIGHT_TRAP;
-        };
-
-    targetTrap =
-        AllianceManager.getAlliance() == DriverStation.Alliance.Blue
-            ? targetTrap
-            : Constants.mirror(targetTrap);
-
-    return targetTrap.getTranslation().getDistance(botTranslationProvider.get());
   }
 
   public double getArmAngle() {
