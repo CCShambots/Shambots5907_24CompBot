@@ -22,7 +22,6 @@ import frc.robot.subsystems.shooter.arm.Arm;
 import frc.robot.subsystems.shooter.arm.ArmIO;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIO;
-import frc.robot.util.StageSide;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -34,7 +33,6 @@ public class Shooter extends StateMachine<Shooter.State> {
   // odom
   private final Supplier<Translation2d> botTranslationProvider;
   private final Supplier<Translation2d> movingBotTranslationProvider;
-
 
   private boolean doRapidSpinup = false;
 
@@ -169,8 +167,9 @@ public class Shooter extends StateMachine<Shooter.State> {
             flywheel.transitionCommand(Flywheel.State.PASS_THROUGH),
             arm.transitionCommand(Arm.State.PARTIAL_STOW)));
 
-    //This is where we do rapid spinup stuff in the auton mode where we blast the flywheels with full power
-    //just to get them up to speed
+    // This is where we do rapid spinup stuff in the auton mode where we blast the flywheels with
+    // full power
+    // just to get them up to speed
     registerStateCommand(
         State.SPEAKER_AA,
         new ParallelCommandGroup(

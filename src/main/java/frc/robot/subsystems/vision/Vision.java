@@ -48,10 +48,11 @@ public class Vision extends StateMachine<Vision.State> {
                           Constants.PhysicalConstants.APRIL_TAG_FIELD_LAYOUT,
                           settings.trustCutoff());
 
-                  //Multi tag provides much more stable estimates at farther distances
+                  // Multi tag provides much more stable estimates at farther distances
                   cam.setPoseEstimationStrategy(
                       PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
-                  //Lowest ambiguity is the second most reliable when there aren't multiple tags visible
+                  // Lowest ambiguity is the second most reliable when there aren't multiple tags
+                  // visible
                   cam.setMultiTagFallbackEstimationStrategy(
                       PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
 
@@ -75,21 +76,18 @@ public class Vision extends StateMachine<Vision.State> {
       PVApriltagCam cam, double ambiguityThreshold, double distanceFromLastEstimateScalar) {
     HashMap<Integer, Double[]> ambiguityAverages = new HashMap<>();
     int avgLength = 100;
-    /*double ambiguityThreshold = 0.4;
-    double distanceFromLastEstimateScalar = 2.0;*/
 
     cam.setPreProcess(
         (pipelineData) -> {
           if (!pipelineData.hasTargets()) return pipelineData;
 
-          /* VERY IMPORTANT: 
+          /* VERY IMPORTANT:
            * Clamp received vision timestamps to not pass the RIO time
            * If vision timestamps desync from the RIO, the pose estimate will have huge spasms
            * Issue for almost all of 2024 season - fixed at Champs 2024
            */
           pipelineData.setTimestampSeconds(
               Math.min(Timer.getFPGATimestamp(), pipelineData.getTimestampSeconds()));
-
 
           /*
            * Log the ambiguity of each tag the camera can see
@@ -134,8 +132,9 @@ public class Vision extends StateMachine<Vision.State> {
                     tag.getDetectedCorners());
 
             pipelineData.targets.set(idx, target);
-            
-            //Logging the ambiguity for each target can help with debugging potentially problematic tag views
+
+            // Logging the ambiguity for each target can help with debugging potentially problematic
+            // tag views
             Logger.recordOutput(
                 "Vision/" + cam.getName() + "/target-" + target.getFiducialId() + "-avg-ambiguity",
                 target.getPoseAmbiguity());
@@ -143,7 +142,7 @@ public class Vision extends StateMachine<Vision.State> {
             idx++;
           }
 
-          //Cut out targets with too high ambiguity
+          // Cut out targets with too high ambiguity
           pipelineData.targets.removeIf(target -> target.getPoseAmbiguity() > ambiguityThreshold);
 
           return pipelineData;
@@ -152,8 +151,9 @@ public class Vision extends StateMachine<Vision.State> {
     cam.setPostProcess(
         (estimate) -> {
           var defaultProcess = cam.defaultPostProcess(estimate);
-          
-          //Scale the standard deviations of the pose estimate based on its distance from the current pose estimate
+
+          // Scale the standard deviations of the pose estimate based on its distance from the
+          // current pose estimate
           if (overallEstimateSupplier != null) {
             return new TimestampedPoseEstimator.TimestampedVisionUpdate(
                 defaultProcess.timestamp(),
@@ -173,7 +173,9 @@ public class Vision extends StateMachine<Vision.State> {
   }
 
   /**
-   * Add consumers (like the overall robot pose estimator) to receive data about apriltag pose estimations
+   * Add consumers (like the overall robot pose estimator) to receive data about apriltag pose
+   * estimations
+   *
    * @param consumers consumers to receive pose estimate updates
    */
   public void addVisionUpdateConsumers(
@@ -183,6 +185,7 @@ public class Vision extends StateMachine<Vision.State> {
 
   /**
    * Add consumers (like the drivetrian) to receive data about any rings the limelight can see
+   *
    * @param consumers consumers to receive ring data updates
    */
   public void addRingVisionUpdateConsumers(Consumer<RingVisionUpdate>... consumers) {
@@ -198,7 +201,8 @@ public class Vision extends StateMachine<Vision.State> {
   private List<TimestampedPoseEstimator.TimestampedVisionUpdate> getLatestVisionUpdates() {
     List<TimestampedPoseEstimator.TimestampedVisionUpdate> updates = new ArrayList<>();
 
-    //We only used data from one camera while scoring the trap because it helped align to the stage more consistently
+    // We only used data from one camera while scoring the trap because it helped align to the stage
+    // more consistently
     boolean onlyOneForTrap = getState() == State.TRAP;
 
     for (PVApriltagCam cam : pvApriltagCams) {

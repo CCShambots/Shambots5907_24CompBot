@@ -7,11 +7,10 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
-import frc.robot.ShamLib.SMF.StateMachine;
-import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import frc.robot.ShamLib.Candle.commands.AutoStatusCommand;
 import frc.robot.ShamLib.Candle.commands.TimedColorFlowCommand;
-
+import frc.robot.ShamLib.SMF.StateMachine;
+import frc.robot.ShamLib.WhileDisabledInstantCommand;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -33,8 +32,7 @@ public class Lights extends StateMachine<Lights.State> {
       BooleanSupplier intakeTripped,
       BooleanSupplier leftClimbTripped,
       BooleanSupplier rightClimbTripped,
-      BooleanSupplier... autoStartConditions
-    ) {
+      BooleanSupplier... autoStartConditions) {
 
     super("Lights", State.UNDETERMINED, State.class);
 
@@ -108,7 +106,13 @@ public class Lights extends StateMachine<Lights.State> {
     registerStateCommand(
         State.AUTO_ERROR,
         new ParallelCommandGroup(
-            new AutoStatusCommand((segs) -> io.setMultipleSegs(segs), AUTO_RGB, ERROR_RGB, NUM_LIGHTS_WITHOUT_CANDLE, 8, autoStartConditions),
+            new AutoStatusCommand(
+                (segs) -> io.setMultipleSegs(segs),
+                AUTO_RGB,
+                ERROR_RGB,
+                NUM_LIGHTS_WITHOUT_CANDLE,
+                8,
+                autoStartConditions),
             new SequentialCommandGroup(
                 new WaitUntilCommand(() -> autoReady()),
                 new WhileDisabledInstantCommand(() -> requestTransition(State.PRE_AUTO_REST)))));
@@ -150,9 +154,9 @@ public class Lights extends StateMachine<Lights.State> {
   }
 
   private boolean autoReady() {
-    
-    for(BooleanSupplier condition : autoStartConditions) {
-      if(!condition.getAsBoolean()) return false; 
+
+    for (BooleanSupplier condition : autoStartConditions) {
+      if (!condition.getAsBoolean()) return false;
     }
 
     return true;

@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -59,7 +58,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final BooleanSupplier intakeProxTripped;
   private final BooleanSupplier indexerReceivedRing;
 
-  //Two field objects necessary because they bug out if there is only one
+  // Two field objects necessary because they bug out if there is only one
   private final Field2d field = new Field2d();
   private final Field2d fieldTele = new Field2d();
 
@@ -116,7 +115,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             MODULE_3_INFO,
             MODULE_4_INFO);
 
-    //Ensure the odometry estimate can't leave the field
+    // Ensure the odometry estimate can't leave the field
     drive.setOdometryBoundingBox(FIELD_BOUNDING_BOX);
 
     registerStateCommands(stop, incrementUp, incrementDown);
@@ -146,7 +145,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
     registerAutoPathfindCommand();
 
-    //Helpful output to give drivers assurance that things are working properly
+    // Helpful output to give drivers assurance that things are working properly
     System.out.println(AllianceManager.getAlliance());
     System.out.println("Path Flipping:" + flipPath);
   }
@@ -487,11 +486,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   public boolean closeEnoughForAmpAlign() {
     return distanceToAmp() < AMP_ANGLE_DISTANCE;
   }
-  
 
-/**
- *  Pathfind to a point and then follow a path afterwards
- */
+  /** Pathfind to a point and then follow a path afterwards */
   private Command getPathfindCommand(String nextPath, double rotationalDelay, State endState) {
     return new SequentialCommandGroup(
         new InstantCommand(() -> setFlag(State.PATHFINDING)),
@@ -501,7 +497,8 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   /**
-   * Pathfind as if we were going to follow a path, but only route to the pose instead of running the path as well
+   * Pathfind as if we were going to follow a path, but only route to the pose instead of running
+   * the path as well
    */
   private Command getPathfindCommandDontFollow(
       String nextPath, double rotationalDelay, State endState) {
@@ -524,9 +521,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         transitionCommand(endState, false));
   }
 
-  /**
-   * Face all the modules directly forwards
-   */
+  /** Face all the modules directly forwards */
   public void alignModules() {
     drive.alignModules();
   }

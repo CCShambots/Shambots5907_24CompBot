@@ -172,8 +172,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             intake::ringPresent,
             climbers::isLeftTouchTripped,
             climbers::isRightTouchTripped,
-            autoConditions()
-            );
+            autoConditions());
 
     shooter =
         new Shooter(
@@ -992,7 +991,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public BooleanSupplier[] autoConditions() {
-    return new BooleanSupplier[]{
+    return new BooleanSupplier[] {
       () -> !hasBeenEnabled,
       () -> shooterGood(),
       () -> llGood(),
