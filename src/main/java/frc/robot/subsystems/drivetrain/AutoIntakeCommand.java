@@ -118,8 +118,8 @@ public class AutoIntakeCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    // drive.stopModules();
-    // drive.drive(new ChassisSpeeds(0, 0, 0));
+    // No need to stop the robot because it would cause a huge currrent draw
+    // Any state the bot can go from here will automatically stop the robot correctl.
 
     lostTargetTimeout.stop();
   }

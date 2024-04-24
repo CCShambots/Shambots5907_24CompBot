@@ -34,7 +34,6 @@ public class Shooter extends StateMachine<Shooter.State> {
   // odom
   private final Supplier<Translation2d> botTranslationProvider;
   private final Supplier<Translation2d> movingBotTranslationProvider;
-  private final Supplier<Pose2d> lobCornerSupplier;
 
   private final Supplier<StageSide> targetStageSideSupplier;
 
@@ -45,7 +44,6 @@ public class Shooter extends StateMachine<Shooter.State> {
       FlywheelIO flywheelIO,
       Supplier<Translation2d> botTranslationProvider,
       Supplier<Translation2d> movingBotTranslationProvider,
-      Supplier<Pose2d> lobCornerSupplier,
       Supplier<StageSide> targetStageSideSupplier,
       DoubleSupplier armTuneSupplier,
       DoubleSupplier flywheelTuneSupplier,
@@ -57,7 +55,6 @@ public class Shooter extends StateMachine<Shooter.State> {
     this.botTranslationProvider = botTranslationProvider;
     this.movingBotTranslationProvider = movingBotTranslationProvider;
     this.targetStageSideSupplier = targetStageSideSupplier;
-    this.lobCornerSupplier = lobCornerSupplier;
 
     arm =
         new Arm(
@@ -279,13 +276,6 @@ public class Shooter extends StateMachine<Shooter.State> {
             clearFlag(State.READY);
           }
         });
-  }
-
-  private double armTrapAA() {
-    double distance = getTrapDistance();
-
-    // angle of shooter to face directly at trap target height plus lut offset
-    return Math.atan2(TRAP_TARGET_HEIGHT, distance) + ARM_TRAP_DISTANCE_LUT.get(distance);
   }
 
   private double armLobAA() {

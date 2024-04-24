@@ -86,7 +86,6 @@ public class ChainRelativeDriveCommand extends Command {
 
     speeds.vxMetersPerSecond = xLimiter.calculate(speeds.vxMetersPerSecond);
     speeds.vyMetersPerSecond = yLimiter.calculate(speeds.vyMetersPerSecond);
-    // speeds.omegaRadiansPerSecond = thetaLimiter.calculate(speeds.omegaRadiansPerSecond);
 
     drive.drive(speeds);
   }

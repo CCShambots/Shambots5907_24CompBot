@@ -179,7 +179,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             getFlywheelIO(),
             () -> drivetrain.getBotPose().getTranslation(),
             () -> drivetrain.getMovingSpeakerShootPose().getTranslation(),
-            drivetrain::getCurrentLobPose,
             () -> targetStageSide,
             () -> Math.toRadians(tuningHoodAngle.getDouble(0)),
             () -> tuningFlywheelSpeed.getDouble(0) / 60.0,
@@ -194,9 +193,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addChildSubsystem(indexer);
     addChildSubsystem(climbers);
 
-    //Since the lights subsystem should always be able to change state, it should be enabled immediately
-    //That means it's also not a child subsystem of the RobotContainer, because otherwise it would get disabled 
-    //when it shouldn't
+    // Since the lights subsystem should always be able to change state, it should be enabled
+    // immediately
+    // That means it's also not a child subsystem of the RobotContainer, because otherwise it would
+    // get disabled
+    // when it shouldn't
     lights.enable();
 
     registerStateCommands();
@@ -205,8 +206,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     configureTriggerBindings();
 
     registerNamedCommands();
-    
-    //Pathplanner must be configured AFTER all the named commands are set, otherwise the code will crash
+
+    // Pathplanner must be configured AFTER all the named commands are set, otherwise the code will
+    // crash
     drivetrain.configurePathplanner();
 
     // Important to instatiate after drivetrain consructor is called so that auto builder is
@@ -216,7 +218,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     initializeShuffleboardTabs();
 
-    //Make sure to turn off controller rumble in case it is still rumbling by chance
+    // Make sure to turn off controller rumble in case it is still rumbling by chance
     controllerBindings.setRumble(0);
   }
 
@@ -634,7 +636,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   /**
-   * Command to feed the note through the flywheels when the shooter is ready and a button is pressed
+   * Command to feed the note through the flywheels when the shooter is ready and a button is
+   * pressed
    */
   private Command feedOnPress(State onEnd, boolean useDelay) {
     return new SequentialCommandGroup(
@@ -683,6 +686,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private void configureTriggerBindings() {
 
+    // TODO: Correct this to use normal field oriented reset
     controllerBindings.resetGyro().onTrue(drivetrain.resetGyro());
 
     controllerBindings
@@ -783,7 +787,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .and(() -> !ringSomewhereInBot())
         .onTrue(lights.transitionCommand(Lights.State.NO_RING));
 
-        //Rumble the controller when the voltage drops below a certain value for too long
+    // Rumble the controller when the voltage drops below a certain value for too long
     new Trigger(this::lowVoltage)
         .debounce(1)
         .onTrue(new InstantCommand(() -> controllerBindings.setRumble(1)))
@@ -795,10 +799,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void setTargetStageSide(StageSide newSide) {
-
     targetStageSide = newSide;
-
-    drivetrain.syncTargetStageSide();
   }
 
   private ClimberIO getLeftClimberIO() {
@@ -927,7 +928,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     if (selectedAutoKey.equals("4 Note")) runningDelayPathfindAuto.set(true);
     if (selectedAutoKey.equals("5 Note Adaptive")) runningDelayPathfindAuto.set(true);
 
-
     Logger.recordOutput("RobotContainer/AutoKey", selectedAutoKey);
 
     registerStateCommand(
@@ -981,15 +981,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         new Rotation3d(0, 0, pose.getRotation().getRadians()));
   }
 
-  public boolean autoReady() {
-    return shooterGood()
-        && photonVisionGood()
-        && prox1Good()
-        && prox2Good()
-        && prox3Good()
-        && llGood();
-  }
-
   private Command toggleLobMode() {
     return new InstantCommand(
         () ->
@@ -999,11 +990,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     : Shooter.State.LOB_STRAIGHT);
   }
 
-  private boolean shooterGood() {
-    return Constants.doubleEqual(
-        shooter.getArmAbsoluteAngle(),
-        shooter.getArmAngle(),
-        Constants.Arm.Settings.AUTO_SYNC_TOLERANCE);
+  public boolean autoReady() {
+    return shooterGood()
+        && photonVisionGood()
+        && prox1Good()
+        && prox2Good()
+        && prox3Good()
+        && llGood();
   }
 
   private boolean ringSomewhereInBot() {
@@ -1013,10 +1006,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         || indexer.isProx3Active();
   }
 
+  /** Shooter absolute and relative angle are close */
+  private boolean shooterGood() {
+    return Constants.doubleEqual(
+        shooter.getArmAbsoluteAngle(),
+        shooter.getArmAngle(),
+        Constants.Arm.Settings.AUTO_SYNC_TOLERANCE);
+  }
+
+  /** All photon vision instances are connected */
   private boolean photonVisionGood() {
     return !vision.isFlag(Vision.State.PV_INSTANCE_DISCONNECT);
   }
 
+  /** */
   private boolean prox1Good() {
     return indexer.isProx1Active();
   }

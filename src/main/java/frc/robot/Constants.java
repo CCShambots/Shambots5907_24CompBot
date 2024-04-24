@@ -778,7 +778,7 @@ public class Constants {
   }
 
   public static boolean doubleEqual(double a, double b) {
-    return doubleEqual(a, b, 0.00001); // TODO: idk if this is fine or not
+    return doubleEqual(a, b, 0.00001);
   }
 
   public static Pose2d mirror(Pose2d pose) {

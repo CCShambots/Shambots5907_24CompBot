@@ -59,6 +59,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   private final BooleanSupplier intakeProxTripped;
   private final BooleanSupplier indexerReceivedRing;
 
+  //Two field objects necessary because they bug out if there is only one
   private final Field2d field = new Field2d();
   private final Field2d fieldTele = new Field2d();
 
@@ -115,6 +116,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             MODULE_3_INFO,
             MODULE_4_INFO);
 
+    //Ensure the odometry estimate can't leave the field
     drive.setOdometryBoundingBox(FIELD_BOUNDING_BOX);
 
     registerStateCommands(stop, incrementUp, incrementDown);
@@ -142,10 +144,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     // default)
     registerFaceCommands();
 
-    syncTargetStageSide();
-
     registerAutoPathfindCommand();
 
+    //Helpful output to give drivers assurance that things are working properly
     System.out.println(AllianceManager.getAlliance());
     System.out.println("Path Flipping:" + flipPath);
   }
@@ -159,11 +160,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
       default:
         return !flipPath ? BLUE_CENTER_TRAP : Constants.mirror(BLUE_CENTER_TRAP);
     }
-  }
-
-  public void syncTargetStageSide() {
-    // registerStateCommand(
-    // State.TRAP, getPathFindCommand(getTrapTarget(), TRAP_ROTATIONAL_DELAY, State.X_SHAPE));
   }
 
   public void setAutonomousCommand(Command command) {
@@ -326,15 +322,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   private void ppRotationOverride() {
     PPHolonomicDriveController.setRotationTargetOverride(
         () -> Optional.of(getTartgetRotationWhileMove()));
-  }
-
-  private Rotation2d getTargetRotationToSpeaker() {
-    return Constants.rotationBetween(
-            drive.getPose(),
-            !flipPath
-                ? Constants.PhysicalConstants.BLUE_SPEAKER
-                : Constants.mirror(Constants.PhysicalConstants.BLUE_SPEAKER))
-        .minus(Constants.Drivetrain.Settings.SHOT_OFFSET);
   }
 
   private Rotation2d getTartgetRotationWhileMove() {
@@ -500,7 +487,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   public boolean closeEnoughForAmpAlign() {
     return distanceToAmp() < AMP_ANGLE_DISTANCE;
   }
+  
 
+/**
+ *  Pathfind to a point and then follow a path afterwards
+ */
   private Command getPathfindCommand(String nextPath, double rotationalDelay, State endState) {
     return new SequentialCommandGroup(
         new InstantCommand(() -> setFlag(State.PATHFINDING)),
@@ -509,6 +500,9 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         transitionCommand(endState, false));
   }
 
+  /**
+   * Pathfind as if we were going to follow a path, but only route to the pose instead of running the path as well
+   */
   private Command getPathfindCommandDontFollow(
       String nextPath, double rotationalDelay, State endState) {
 
@@ -530,35 +524,11 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         transitionCommand(endState, false));
   }
 
+  /**
+   * Face all the modules directly forwards
+   */
   public void alignModules() {
-    drive.setAllModules(new SwerveModuleState(0, new Rotation2d()));
-  }
-
-  private Pose2d getTrapTarget() {
-    Pose2d trapPose;
-
-    switch (targetStageSideSupplier.get()) {
-      case LEFT:
-        trapPose = !flipPath ? BLUE_LEFT_TRAP : BLUE_RIGHT_TRAP;
-        break;
-      case RIGHT:
-        trapPose = !flipPath ? BLUE_RIGHT_TRAP : BLUE_LEFT_TRAP;
-        break;
-      default:
-        trapPose = BLUE_CENTER_TRAP;
-        break;
-    }
-
-    Pose2d targetPose =
-        trapPose.transformBy(
-            new Transform2d(
-                new Pose2d(), new Pose2d(TRAP_SHOT_DISTANCE, 0, Rotation2d.fromDegrees(180))));
-
-    System.out.println("FLIPPED: " + flipPath);
-    System.out.println("alliance at time of run: " + DriverStation.getAlliance());
-    targetPose = flipPath ? Constants.mirror(targetPose) : targetPose;
-
-    return targetPose;
+    drive.alignModules();
   }
 
   private PathConstraints getPathfindingConstraints() {
