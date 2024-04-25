@@ -299,6 +299,7 @@ public class Vision extends StateMachine<Vision.State> {
   }
 
   public boolean isConnected(int index) {
+    if(index > pvApriltagCams.length) return false;
     return pvApriltagCams[index - 1].isConnected();
   }
 
