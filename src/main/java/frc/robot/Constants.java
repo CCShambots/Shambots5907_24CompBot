@@ -687,6 +687,14 @@ public class Constants {
           (MAX_CHASSIS_SPEED / Hardware.ROTATION_RADIUS) * (2 * Math.PI);
       public static final double MAX_CHASSIS_ROTATIONAL_ACCELERATION =
           MAX_CHASSIS_ROTATIONAL_SPEED * 3;
+
+      public static final SwerveSpeedLimits MAX_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED,
+              MAX_CHASSIS_ACCELERATION);
+
       public static final double MAX_MODULE_TURN_SPEED = 1000;
       public static final double MAX_MODULE_TURN_ACCELERATION = 1000;
 

@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.ShamLib.PIDGains;
 import frc.robot.ShamLib.swerve.SwerveDrive;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -24,17 +22,14 @@ public class FaceAmpCommand extends Command {
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
 
-  private final List<SlewRateLimiter> xLimiters = new ArrayList<>();
-  private final List<SlewRateLimiter> yLimiters = new ArrayList<>();
-  private final List<SlewRateLimiter> thetaLimiters = new ArrayList<>();
+  private final SlewRateLimiter xLimiter;
+  private final SlewRateLimiter yLimiter;
+  private final SlewRateLimiter thetaLimiter;
 
-  private final List<Double> maxLinearSpeeds = new ArrayList<>();
-  private final List<Double> maxRotationalSpeeds = new ArrayList<>();
+  private final Double maxLinearSpeed;
 
   private final double deadband;
   private final UnaryOperator<Double> controllerConversion;
-
-  private int prevSpeedMode;
 
   public FaceAmpCommand(
       SwerveDrive drivetrain,
@@ -45,7 +40,7 @@ public class FaceAmpCommand extends Command {
       double deadband,
       UnaryOperator<Double> controllerConversion,
       Subsystem subsystem,
-      SwerveSpeedLimits... speedLimits) {
+      SwerveSpeedLimits speedLimits) {
     this.poseSupplier = poseSupplier;
 
     this.drivetrain = drivetrain;
@@ -55,14 +50,11 @@ public class FaceAmpCommand extends Command {
     thetaController = new PIDController(holdGains.p, holdGains.i, holdGains.d);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    for (SwerveSpeedLimits l : speedLimits) {
-      xLimiters.add(new SlewRateLimiter(l.getMaxAcceleration()));
-      yLimiters.add(new SlewRateLimiter(l.getMaxAcceleration()));
-      thetaLimiters.add(new SlewRateLimiter(l.getMaxRotationalAcceleration()));
+    xLimiter = new SlewRateLimiter(speedLimits.getMaxAcceleration());
+    yLimiter = new SlewRateLimiter(speedLimits.getMaxAcceleration());
+    thetaLimiter = new SlewRateLimiter(speedLimits.getMaxRotationalAcceleration());
 
-      maxLinearSpeeds.add(l.getMaxSpeed());
-      maxRotationalSpeeds.add(l.getMaxRotationalSpeed());
-    }
+    maxLinearSpeed = speedLimits.getMaxSpeed();
 
     this.deadband = deadband;
     this.controllerConversion = controllerConversion;
@@ -77,8 +69,6 @@ public class FaceAmpCommand extends Command {
   public void initialize() {
     resetSpeedLimiters();
 
-    prevSpeedMode = drivetrain.getSpeedMode();
-
     thetaController.setSetpoint(Math.PI / 2);
   }
 
@@ -86,16 +76,8 @@ public class FaceAmpCommand extends Command {
   public void execute() {
     thetaController.setSetpoint(Math.PI / 2);
 
-    int currentSpeedMode = drivetrain.getSpeedMode();
-
-    if (currentSpeedMode != prevSpeedMode) {
-      resetSpeedLimiters();
-    }
-
-    double correctedX =
-        convertRawInput(xSupplier.getAsDouble()) * maxLinearSpeeds.get(currentSpeedMode);
-    double correctedY =
-        convertRawInput(ySupplier.getAsDouble()) * maxLinearSpeeds.get(currentSpeedMode);
+    double correctedX = convertRawInput(xSupplier.getAsDouble()) * maxLinearSpeed;
+    double correctedY = convertRawInput(ySupplier.getAsDouble()) * maxLinearSpeed;
     double correctedRot = thetaController.calculate(poseSupplier.get().getRotation().getRadians());
 
     ChassisSpeeds speeds;
@@ -108,14 +90,11 @@ public class FaceAmpCommand extends Command {
       speeds = new ChassisSpeeds(correctedX, correctedY, correctedRot);
     }
 
-    speeds.vxMetersPerSecond = xLimiters.get(currentSpeedMode).calculate(speeds.vxMetersPerSecond);
-    speeds.vyMetersPerSecond = yLimiters.get(currentSpeedMode).calculate(speeds.vyMetersPerSecond);
-    speeds.omegaRadiansPerSecond =
-        thetaLimiters.get(currentSpeedMode).calculate(speeds.omegaRadiansPerSecond);
+    speeds.vxMetersPerSecond = xLimiter.calculate(speeds.vxMetersPerSecond);
+    speeds.vyMetersPerSecond = yLimiter.calculate(speeds.vyMetersPerSecond);
+    speeds.omegaRadiansPerSecond = thetaLimiter.calculate(speeds.omegaRadiansPerSecond);
 
-    drivetrain.drive(speeds, maxLinearSpeeds.get(currentSpeedMode));
-
-    prevSpeedMode = currentSpeedMode;
+    drivetrain.drive(speeds, maxLinearSpeed);
   }
 
   @Override
@@ -137,8 +116,8 @@ public class FaceAmpCommand extends Command {
 
   private void resetSpeedLimiters() {
     ChassisSpeeds currentSpeeds = drivetrain.getChassisSpeeds();
-    xLimiters.forEach((e) -> e.reset(currentSpeeds.vxMetersPerSecond));
-    yLimiters.forEach((e) -> e.reset(currentSpeeds.vyMetersPerSecond));
-    thetaLimiters.forEach((e) -> e.reset(currentSpeeds.omegaRadiansPerSecond));
+    xLimiter.reset(currentSpeeds.vxMetersPerSecond);
+    yLimiter.reset(currentSpeeds.vyMetersPerSecond);
+    thetaLimiter.reset(currentSpeeds.omegaRadiansPerSecond);
   }
 }
