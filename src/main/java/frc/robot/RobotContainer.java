@@ -223,6 +223,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void registerNamedCommands() {
+    NamedCommands.registerCommand("raiseClimber", new InstantCommand());
 
     NamedCommands.registerCommand(
         "intake",
@@ -990,15 +991,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     : Shooter.State.LOB_STRAIGHT);
   }
 
+  /**
+   * The conditions required for autonomous to be ready to start
+   */
   public BooleanSupplier[] autoConditions() {
+    //Cameras are initialized in the order 1,4,3,2 for some reason
+    //This should be fixed in future years but I didn't want to modify it
     return new BooleanSupplier[] {
       () -> !hasBeenEnabled,
       () -> shooterGood(),
       () -> llGood(),
       () -> vision.isConnected(1),
-      () -> vision.isConnected(2),
-      () -> vision.isConnected(3),
       () -> vision.isConnected(4),
+      () -> vision.isConnected(3),
+      () -> vision.isConnected(2),
       () -> prox1Good(),
       () -> prox2Good(),
       () -> prox3Good(),
@@ -1012,7 +1018,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         && prox1Good()
         && prox2Good()
         && prox3Good()
-        && llGood();
+        && llGood()
+        && DriverStation.isDSAttached();
   }
 
   private boolean ringSomewhereInBot() {
@@ -1085,10 +1092,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     autoTab.add("SYNC ARM", shooter.syncAbsoluteAngle()).withPosition(4, 0).withSize(1, 1);
 
+    //Cameras are initialized in the order 1,4,3,2 for some reason
     autoTab.addBoolean("pv 1 good", () -> vision.isConnected(1)).withPosition(5, 1).withSize(1, 1);
-    autoTab.addBoolean("pv 2 good", () -> vision.isConnected(2)).withPosition(6, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 2 good", () -> vision.isConnected(4)).withPosition(6, 1).withSize(1, 1);
     autoTab.addBoolean("pv 3 good", () -> vision.isConnected(3)).withPosition(7, 1).withSize(1, 1);
-    autoTab.addBoolean("pv 4 good", () -> vision.isConnected(4)).withPosition(8, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 4 good", () -> vision.isConnected(2)).withPosition(8, 1).withSize(1, 1);
 
     autoTab
         .addNumber("ll latency", () -> vision.getLimelightLatency())

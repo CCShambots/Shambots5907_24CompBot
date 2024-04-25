@@ -302,6 +302,14 @@ public class Vision extends StateMachine<Vision.State> {
     return pvApriltagCams[index - 1].isConnected();
   }
 
+  public boolean isConnected(String name) {
+    for(PVApriltagCam cam : pvApriltagCams) {
+        if(cam.getName() == name) return cam.isConnected();
+    }
+
+    return false;
+  }
+
   public enum State {
     UNDETERMINED,
     ENABLED,
