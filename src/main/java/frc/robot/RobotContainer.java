@@ -991,12 +991,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     : Shooter.State.LOB_STRAIGHT);
   }
 
-  /**
-   * The conditions required for autonomous to be ready to start
-   */
+  /** The conditions required for autonomous to be ready to start */
   public BooleanSupplier[] autoConditions() {
-    //Cameras are initialized in the order 1,4,3,2 for some reason
-    //This should be fixed in future years but I didn't want to modify it
+    // Cameras are initialized in the order 1,4,3,2 for some reason
+    // This should be fixed in future years but I didn't want to modify it
     return new BooleanSupplier[] {
       () -> !hasBeenEnabled,
       () -> shooterGood(),
@@ -1092,7 +1090,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     autoTab.add("SYNC ARM", shooter.syncAbsoluteAngle()).withPosition(4, 0).withSize(1, 1);
 
-    //Cameras are initialized in the order 1,4,3,2 for some reason
+    // Cameras are initialized in the order 1,4,3,2 for some reason
     autoTab.addBoolean("pv 1 good", () -> vision.isConnected(1)).withPosition(5, 1).withSize(1, 1);
     autoTab.addBoolean("pv 2 good", () -> vision.isConnected(4)).withPosition(6, 1).withSize(1, 1);
     autoTab.addBoolean("pv 3 good", () -> vision.isConnected(3)).withPosition(7, 1).withSize(1, 1);
