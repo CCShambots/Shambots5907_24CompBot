@@ -98,7 +98,6 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             MAX_MODULE_TURN_ACCELERATION,
             AUTO_THETA_GAINS,
             AUTO_TRANSLATION_GAINS,
-            false,
             MODULE_CAN_BUS,
             GYRO_CAN_BUS,
             CURRENT_LIMITS_CONFIGS,
