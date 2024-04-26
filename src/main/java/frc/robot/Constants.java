@@ -161,18 +161,22 @@ public class Constants {
 
       public static final CamSettings LEFT_SHOOTER_CAM_SETTINGS =
           new CamSettings(
+            "pv_instance_1",
               Hardware.LEFT_SHOOTER_CAM_POSE, LEFT_SHOOTER_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
       public static final CamSettings RIGHT_SHOOTER_CAM_SETTINGS =
           new CamSettings(
+            "pv_instance_4",
               Hardware.RIGHT_SHOOTER_CAM_POSE, RIGHT_SHOOTER_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
       public static final CamSettings LEFT_INTAKE_CAM_SETTINGS =
           new CamSettings(
+            "pv_instance_2",
               Hardware.LEFT_INTAKE_CAM_POSE, LEFT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
       public static final CamSettings RIGHT_INTAKE_CAM_SETTINGS =
           new CamSettings(
+            "pv_instance_3",
               Hardware.RIGHT_INTAKE_CAM_POSE, RIGHT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
 
       public static final String TRAP_CAMERA = "pv_instance_4";

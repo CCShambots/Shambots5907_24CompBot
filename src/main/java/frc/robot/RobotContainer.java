@@ -50,6 +50,13 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
+
+import static frc.robot.Constants.Vision.Settings.LEFT_INTAKE_CAM_SETTINGS;
+import static frc.robot.Constants.Vision.Settings.LEFT_SHOOTER_CAM_SETTINGS;
+import static frc.robot.Constants.Vision.Settings.RIGHT_INTAKE_CAM_SETTINGS;
+import static frc.robot.Constants.Vision.Settings.RIGHT_SHOOTER_CAM_SETTINGS;
+
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
@@ -122,20 +129,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    Map<String, Vision.CamSettings> photonMap =
+    List<Vision.CamSettings> photonArray =
         Constants.currentBuildMode == BuildMode.SIM
-            ? Map.of()
-            : Map.of(
-                "pv_instance_1",
+            ? List.of()
+            : List.of(
                 Constants.Vision.Settings.LEFT_SHOOTER_CAM_SETTINGS,
-                "pv_instance_4",
                 Constants.Vision.Settings.RIGHT_SHOOTER_CAM_SETTINGS,
-                "pv_instance_3",
                 Constants.Vision.Settings.RIGHT_INTAKE_CAM_SETTINGS,
-                "pv_instance_2",
                 Constants.Vision.Settings.LEFT_INTAKE_CAM_SETTINGS);
 
-    vision = new Vision("limelight", photonMap);
+    vision = new Vision("limelight", photonArray);
 
     drivetrain =
         new Drivetrain(
@@ -999,10 +1002,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       () -> !hasBeenEnabled,
       () -> shooterGood(),
       () -> llGood(),
-      () -> vision.isConnected(1),
-      () -> vision.isConnected(4),
-      () -> vision.isConnected(3),
-      () -> vision.isConnected(2),
+      () -> vision.isConnected(LEFT_SHOOTER_CAM_SETTINGS.name()),
+      () -> vision.isConnected(LEFT_INTAKE_CAM_SETTINGS.name()),
+      () -> vision.isConnected(RIGHT_INTAKE_CAM_SETTINGS.name()),
+      () -> vision.isConnected(RIGHT_SHOOTER_CAM_SETTINGS.name()),
       () -> prox1Good(),
       () -> prox2Good(),
       () -> prox3Good(),
@@ -1091,10 +1094,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     autoTab.add("SYNC ARM", shooter.syncAbsoluteAngle()).withPosition(4, 0).withSize(1, 1);
 
     // Cameras are initialized in the order 1,4,3,2 for some reason
-    autoTab.addBoolean("pv 1 good", () -> vision.isConnected(1)).withPosition(5, 1).withSize(1, 1);
-    autoTab.addBoolean("pv 2 good", () -> vision.isConnected(4)).withPosition(6, 1).withSize(1, 1);
-    autoTab.addBoolean("pv 3 good", () -> vision.isConnected(3)).withPosition(7, 1).withSize(1, 1);
-    autoTab.addBoolean("pv 4 good", () -> vision.isConnected(2)).withPosition(8, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 1 good", () -> vision.isConnected(LEFT_SHOOTER_CAM_SETTINGS.name())).withPosition(5, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 2 good", () -> vision.isConnected(LEFT_INTAKE_CAM_SETTINGS.name())).withPosition(6, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 3 good", () -> vision.isConnected(RIGHT_INTAKE_CAM_SETTINGS.name())).withPosition(7, 1).withSize(1, 1);
+    autoTab.addBoolean("pv 4 good", () -> vision.isConnected(RIGHT_SHOOTER_CAM_SETTINGS.name())).withPosition(8, 1).withSize(1, 1);
 
     autoTab
         .addNumber("ll latency", () -> vision.getLimelightLatency())
