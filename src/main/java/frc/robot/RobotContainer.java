@@ -688,7 +688,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private void configureTriggerBindings() {
 
     // TODO: Correct this to use normal field oriented reset
-    controllerBindings.resetGyro().onTrue(drivetrain.resetGyro());
+    controllerBindings.resetGyro().onTrue(drivetrain.resetFieldOrientedTele());
 
     controllerBindings
         .xShape()
