@@ -72,17 +72,14 @@ public interface ControllerBindings {
   default Trigger simProx2() {
     return new Trigger(() -> false);
   }
-  ;
 
   default Trigger simProx3() {
     return new Trigger(() -> false);
   }
-  ;
 
   default Trigger simProx4() {
     return new Trigger(() -> false);
   }
-  ;
 
   default void setRumble(double rumbleValue) {}
 }
