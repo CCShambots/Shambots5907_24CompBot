@@ -1117,7 +1117,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     autoTab.addBoolean("GOOD TO GO", this::autoReady).withPosition(9, 0).withSize(3, 3);
 
-    autoTab.add("Field", drivetrain.getField()).withPosition(2, 1).withSize(3, 2);
+    autoTab.add("Field", drivetrain.getField()).withPosition(2, 1).withSize(3, 2).withProperties(Map.of("robot_width", 0.9144, "robot_length", 0.9144));
 
     delaySlider =
         autoTab
@@ -1152,7 +1152,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(2, 2)
         .withSize(2, 1);
 
-    teleTab.add("FIELD", drivetrain.getFieldTele()).withSize(3, 3).withPosition(8, 1);
+    teleTab.add("FIELD", drivetrain.getFieldTele()).withSize(3, 3).withPosition(8, 1).withProperties(Map.of("robot_width", 0.9144, "robot_length", 0.9144));
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
     teleTab
