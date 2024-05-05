@@ -892,13 +892,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private LightsIO getLightsIO() {
     switch (Constants.currentBuildMode) {
-      case REAL -> {
+      default -> {
         return new LightsIOReal();
       }
 
-      default -> {
-        return new LightsIO() {};
-      }
+        // default -> {
+        // return new LightsIO() {};
+        // }
     }
   }
 
