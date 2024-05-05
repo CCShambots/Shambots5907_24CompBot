@@ -300,22 +300,24 @@ public class Vision extends StateMachine<Vision.State> {
 
   /**
    * Check for a camera's connection by index (NOT RECOMMENDED)
+   *
    * @param index Camera index to check (1-indexed)
    * @return if the camera is connected
    */
   public boolean isConnected(int index) {
-    if(index > pvApriltagCams.length) return false;
+    if (index > pvApriltagCams.length) return false;
     return pvApriltagCams[index - 1].isConnected();
   }
 
   /**
    * Check for a camera's connection by it's name
+   *
    * @param name Camera name to check
    * @return if the camera is connected
    */
   public boolean isConnected(String name) {
-    for(PVApriltagCam cam : pvApriltagCams) {
-        if(cam.getName() == name) return cam.isConnected();
+    for (PVApriltagCam cam : pvApriltagCams) {
+      if (cam.getName() == name) return cam.isConnected();
     }
 
     return false;
