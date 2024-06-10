@@ -46,6 +46,8 @@ public class Lights extends StateMachine<Lights.State> {
 
     this.autoStartConditions = autoStartConditions;
 
+    Logger.recordOutput("Lights/numLights", Constants.Lights.Hardware.NUM_LIGHTS);
+
     registerStateCommmands();
     registerTransitions();
   }

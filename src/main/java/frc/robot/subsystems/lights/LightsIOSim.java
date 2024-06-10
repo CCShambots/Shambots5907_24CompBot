@@ -1,6 +1,6 @@
 package frc.robot.subsystems.lights;
 
-public class LightsIOSim implements LightsIO {
+public class LightsIOSim extends LightsIOReal {
 
   public LightsIOSim() {}
 }

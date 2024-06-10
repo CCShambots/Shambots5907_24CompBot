@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.Vision.Settings.LEFT_INTAKE_CAM_SETTINGS;
+import static frc.robot.Constants.Vision.Settings.LEFT_SHOOTER_CAM_SETTINGS;
+import static frc.robot.Constants.Vision.Settings.RIGHT_INTAKE_CAM_SETTINGS;
+import static frc.robot.Constants.Vision.Settings.RIGHT_SHOOTER_CAM_SETTINGS;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.*;
@@ -50,6 +55,7 @@ import frc.robot.subsystems.shooter.flywheel.FlywheelIOReal;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
@@ -122,20 +128,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             tuningDecrement(),
             tuningStop());
 
-    Map<String, Vision.CamSettings> photonMap =
+    List<Vision.CamSettings> photonArray =
         Constants.currentBuildMode == BuildMode.SIM
-            ? Map.of()
-            : Map.of(
-                "pv_instance_1",
+            ? List.of()
+            : List.of(
                 Constants.Vision.Settings.LEFT_SHOOTER_CAM_SETTINGS,
-                "pv_instance_4",
                 Constants.Vision.Settings.RIGHT_SHOOTER_CAM_SETTINGS,
-                "pv_instance_3",
                 Constants.Vision.Settings.RIGHT_INTAKE_CAM_SETTINGS,
-                "pv_instance_2",
                 Constants.Vision.Settings.LEFT_INTAKE_CAM_SETTINGS);
 
-    vision = new Vision("limelight", photonMap);
+    vision = new Vision("limelight", photonArray);
 
     drivetrain =
         new Drivetrain(
@@ -687,8 +689,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private void configureTriggerBindings() {
 
-    // TODO: Correct this to use normal field oriented reset
-    controllerBindings.resetGyro().onTrue(drivetrain.resetGyro());
+    controllerBindings.resetGyro().onTrue(drivetrain.resetFieldOrientedTele());
 
     controllerBindings
         .xShape()
@@ -896,13 +897,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private LightsIO getLightsIO() {
     switch (Constants.currentBuildMode) {
-      case REAL -> {
+      default -> {
         return new LightsIOReal();
       }
 
-      default -> {
-        return new LightsIO() {};
-      }
+        // default -> {
+        // return new LightsIO() {};
+        // }
     }
   }
 
@@ -1005,10 +1006,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       () -> !hasBeenEnabled,
       () -> shooterGood(),
       () -> llGood(),
-      () -> vision.isConnected(1),
-      () -> vision.isConnected(4),
-      () -> vision.isConnected(3),
-      () -> vision.isConnected(2),
+      () -> vision.isConnected(LEFT_SHOOTER_CAM_SETTINGS.name()),
+      () -> vision.isConnected(LEFT_INTAKE_CAM_SETTINGS.name()),
+      () -> vision.isConnected(RIGHT_INTAKE_CAM_SETTINGS.name()),
+      () -> vision.isConnected(RIGHT_SHOOTER_CAM_SETTINGS.name()),
       () -> prox1Good(),
       () -> prox2Good(),
       () -> prox3Good(),
@@ -1096,11 +1097,22 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     autoTab.add("SYNC ARM", shooter.syncAbsoluteAngle()).withPosition(4, 0).withSize(1, 1);
 
-    // Cameras are initialized in the order 1,4,3,2 for some reason
-    autoTab.addBoolean("pv 1 good", () -> vision.isConnected(1)).withPosition(5, 1).withSize(1, 1);
-    autoTab.addBoolean("pv 2 good", () -> vision.isConnected(4)).withPosition(6, 1).withSize(1, 1);
-    autoTab.addBoolean("pv 3 good", () -> vision.isConnected(3)).withPosition(7, 1).withSize(1, 1);
-    autoTab.addBoolean("pv 4 good", () -> vision.isConnected(2)).withPosition(8, 1).withSize(1, 1);
+    autoTab
+        .addBoolean("pv 1 good", () -> vision.isConnected(LEFT_SHOOTER_CAM_SETTINGS.name()))
+        .withPosition(5, 1)
+        .withSize(1, 1);
+    autoTab
+        .addBoolean("pv 2 good", () -> vision.isConnected(LEFT_INTAKE_CAM_SETTINGS.name()))
+        .withPosition(6, 1)
+        .withSize(1, 1);
+    autoTab
+        .addBoolean("pv 3 good", () -> vision.isConnected(RIGHT_INTAKE_CAM_SETTINGS.name()))
+        .withPosition(7, 1)
+        .withSize(1, 1);
+    autoTab
+        .addBoolean("pv 4 good", () -> vision.isConnected(RIGHT_SHOOTER_CAM_SETTINGS.name()))
+        .withPosition(8, 1)
+        .withSize(1, 1);
 
     autoTab
         .addNumber("ll latency", () -> vision.getLimelightLatency())
@@ -1120,7 +1132,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     autoTab.addBoolean("GOOD TO GO", this::autoReady).withPosition(9, 0).withSize(3, 3);
 
-    autoTab.add("Field", drivetrain.getField()).withPosition(2, 1).withSize(3, 2);
+    autoTab
+        .add("Field", drivetrain.getField())
+        .withPosition(2, 1)
+        .withSize(3, 2)
+        .withProperties(Map.of("robot_width", 0.9144, "robot_length", 0.9144));
 
     delaySlider =
         autoTab
@@ -1155,7 +1171,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withPosition(2, 2)
         .withSize(2, 1);
 
-    teleTab.add("FIELD", drivetrain.getFieldTele()).withSize(3, 3).withPosition(8, 1);
+    teleTab
+        .add("FIELD", drivetrain.getFieldTele())
+        .withSize(3, 3)
+        .withPosition(8, 1)
+        .withProperties(Map.of("robot_width", 0.9144, "robot_length", 0.9144));
 
     teleTab.addBoolean("HAVE RING", () -> indexer.ringPresent()).withSize(3, 3).withPosition(5, 1);
     teleTab
@@ -1163,7 +1183,30 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .withSize(3, 1)
         .withPosition(5, 0);
 
-    teleTab.addBoolean("pv good", this::photonVisionGood).withPosition(0, 3).withSize(4, 1);
+    teleTab
+        .addBoolean("pv 1 good", () -> vision.isConnected(LEFT_SHOOTER_CAM_SETTINGS.name()))
+        .withPosition(2, 3)
+        .withSize(1, 1);
+    teleTab
+        .addBoolean("pv 2 good", () -> vision.isConnected(LEFT_INTAKE_CAM_SETTINGS.name()))
+        .withPosition(3, 3)
+        .withSize(1, 1);
+    teleTab
+        .addBoolean("pv 3 good", () -> vision.isConnected(RIGHT_INTAKE_CAM_SETTINGS.name()))
+        .withPosition(4, 2)
+        .withSize(1, 1);
+    teleTab
+        .addBoolean("pv 4 good", () -> vision.isConnected(RIGHT_SHOOTER_CAM_SETTINGS.name()))
+        .withPosition(4, 3)
+        .withSize(1, 1);
+
+    teleTab
+        .addNumber("Match Time", () -> DriverStation.getMatchTime())
+        .withWidget("Match Time")
+        .withPosition(0, 3)
+        .withSize(2, 1)
+        .withProperties(Map.of("red_start_time", 10, "yellow_start_time", 20));
+
     teleTab
         .addBoolean("STRAIGHT LOB", () -> autoLobState == Shooter.State.LOB_STRAIGHT)
         .withPosition(4, 0)

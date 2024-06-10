@@ -1,6 +1,8 @@
 package frc.robot;
 
 import static com.ctre.phoenix.led.LarsonAnimation.BounceMode.Front;
+import static frc.robot.Constants.Drivetrain.Hardware.*;
+import static frc.robot.Constants.Drivetrain.Settings.*;
 import static frc.robot.Constants.Lights.Hardware.NUM_LIGHTS;
 
 import com.ctre.phoenix.led.*;
@@ -23,6 +25,7 @@ import frc.robot.ShamLib.PIDGains;
 import frc.robot.ShamLib.ShamLibConstants;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
 import frc.robot.ShamLib.motors.tuning.LoggedTunablePIDSV;
+import frc.robot.ShamLib.swerve.SwerveDriveConfig;
 import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.module.ModuleInfo;
 import frc.robot.ShamLib.swerve.odometry.OdometryBoundingBox;
@@ -161,19 +164,43 @@ public class Constants {
 
       public static final CamSettings LEFT_SHOOTER_CAM_SETTINGS =
           new CamSettings(
-              Hardware.LEFT_SHOOTER_CAM_POSE, LEFT_SHOOTER_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
+              "pv_instance_1",
+              Hardware.LEFT_SHOOTER_CAM_POSE,
+              LEFT_SHOOTER_CAM_TRUST_CUTOFF,
+              0.4,
+              2.0,
+              0.33,
+              1.0);
 
       public static final CamSettings RIGHT_SHOOTER_CAM_SETTINGS =
           new CamSettings(
-              Hardware.RIGHT_SHOOTER_CAM_POSE, RIGHT_SHOOTER_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
+              "pv_instance_4",
+              Hardware.RIGHT_SHOOTER_CAM_POSE,
+              RIGHT_SHOOTER_CAM_TRUST_CUTOFF,
+              0.4,
+              2.0,
+              0.33,
+              1.0);
 
       public static final CamSettings LEFT_INTAKE_CAM_SETTINGS =
           new CamSettings(
-              Hardware.LEFT_INTAKE_CAM_POSE, LEFT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
+              "pv_instance_2",
+              Hardware.LEFT_INTAKE_CAM_POSE,
+              LEFT_INTAKE_CAM_TRUST_CUTOFF,
+              0.4,
+              2.0,
+              0.33,
+              1.0);
 
       public static final CamSettings RIGHT_INTAKE_CAM_SETTINGS =
           new CamSettings(
-              Hardware.RIGHT_INTAKE_CAM_POSE, RIGHT_INTAKE_CAM_TRUST_CUTOFF, 0.4, 2.0, 0.33, 1.0);
+              "pv_instance_3",
+              Hardware.RIGHT_INTAKE_CAM_POSE,
+              RIGHT_INTAKE_CAM_TRUST_CUTOFF,
+              0.4,
+              2.0,
+              0.33,
+              1.0);
 
       public static final String TRAP_CAMERA = "pv_instance_4";
     }
@@ -690,6 +717,14 @@ public class Constants {
           (MAX_CHASSIS_SPEED / Hardware.ROTATION_RADIUS) * (2 * Math.PI);
       public static final double MAX_CHASSIS_ROTATIONAL_ACCELERATION =
           MAX_CHASSIS_ROTATIONAL_SPEED * 3;
+
+      public static final SwerveSpeedLimits MAX_SPEED =
+          new SwerveSpeedLimits(
+              MAX_CHASSIS_SPEED,
+              MAX_CHASSIS_ACCELERATION,
+              MAX_CHASSIS_ROTATIONAL_SPEED,
+              MAX_CHASSIS_ACCELERATION);
+
       public static final double MAX_MODULE_TURN_SPEED = 1000;
       public static final double MAX_MODULE_TURN_ACCELERATION = 1000;
 
@@ -773,6 +808,34 @@ public class Constants {
 
       public static final Translation2d TRAP_OFFSET =
           new Translation2d(Units.inchesToMeters(29.75), Units.inchesToMeters(6.0));
+    }
+
+    // Don't forget to set the subsystem in the Drivetrain Subsystem!
+    public static final SwerveDriveConfig SWERVE_CONFIG = new SwerveDriveConfig();
+
+    static {
+      SWERVE_CONFIG.buildMode = currentBuildMode;
+
+      SWERVE_CONFIG.pigeon2ID = GYRO_ID;
+      SWERVE_CONFIG.gyroCanbus = GYRO_CAN_BUS;
+
+      SWERVE_CONFIG.moduleDriveGains = MODULE_DRIVE_GAINS;
+      SWERVE_CONFIG.moduleTurnGains = MODULE_TURN_GAINS;
+      SWERVE_CONFIG.maxModuleTurnVelo = MAX_MODULE_TURN_SPEED;
+      SWERVE_CONFIG.maxModuleTurnAccel = MAX_MODULE_TURN_ACCELERATION;
+      SWERVE_CONFIG.moduleCanbus = MODULE_CAN_BUS;
+
+      SWERVE_CONFIG.standardSpeedLimits = MAX_SPEED;
+
+      SWERVE_CONFIG.autoThetaGains = AUTO_THETA_GAINS;
+      SWERVE_CONFIG.translationGains = AUTO_TRANSLATION_GAINS;
+
+      SWERVE_CONFIG.currentLimit = CURRENT_LIMITS_CONFIGS;
+
+      SWERVE_CONFIG.standardDeviations = STATE_STD_DEVIATIONS;
+      SWERVE_CONFIG.loopPeriod = LOOP_PERIOD;
+
+      SWERVE_CONFIG.setModuleInfos(MODULE_1_INFO, MODULE_2_INFO, MODULE_3_INFO, MODULE_4_INFO);
     }
   }
 

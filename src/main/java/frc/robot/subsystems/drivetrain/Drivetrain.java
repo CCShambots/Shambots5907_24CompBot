@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import static frc.robot.Constants.Drivetrain.*;
 import static frc.robot.Constants.Drivetrain.Hardware.*;
 import static frc.robot.Constants.Drivetrain.Settings.*;
 import static frc.robot.Constants.PhysicalConstants.*;
@@ -87,33 +88,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     NamedCommands.registerCommand(
         "clearPathfindingFlag", new InstantCommand(() -> clearFlag(State.PATHFINDING)));
 
-    drive =
-        new SwerveDrive(
-            Constants.currentBuildMode,
-            GYRO_ID,
-            MODULE_DRIVE_GAINS,
-            MODULE_TURN_GAINS,
-            MAX_CHASSIS_SPEED,
-            MAX_CHASSIS_ACCELERATION,
-            MAX_CHASSIS_ROTATIONAL_SPEED,
-            MAX_CHASSIS_ROTATIONAL_ACCELERATION,
-            MAX_MODULE_TURN_SPEED,
-            MAX_MODULE_TURN_ACCELERATION,
-            AUTO_THETA_GAINS,
-            AUTO_TRANSLATION_GAINS,
-            false,
-            MODULE_CAN_BUS,
-            GYRO_CAN_BUS,
-            CURRENT_LIMITS_CONFIGS,
-            this,
-            false,
-            () -> flipPath,
-            STATE_STD_DEVIATIONS,
-            Constants.LOOP_PERIOD,
-            MODULE_1_INFO,
-            MODULE_2_INFO,
-            MODULE_3_INFO,
-            MODULE_4_INFO);
+    SWERVE_CONFIG.flipTrajectory = () -> flipPath;
+    SWERVE_CONFIG.subsystem = this;
+
+    drive = new SwerveDrive(SWERVE_CONFIG);
 
     // Ensure the odometry estimate can't leave the field
     drive.setOdometryBoundingBox(FIELD_BOUNDING_BOX);
