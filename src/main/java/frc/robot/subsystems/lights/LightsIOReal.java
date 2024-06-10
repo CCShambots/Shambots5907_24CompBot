@@ -9,12 +9,14 @@ import frc.robot.ShamLib.Candle.RGB;
 
 public class LightsIOReal implements LightsIO {
 
-  private final CANdleEX candle = new CANdleEX(CANDLE_ID, BRIGHTNESS, NUM_LIGHTS);
+  private final CANdleEX candle = new CANdleEX(CANDLE_ID, BRIGHTNESS, NUM_LIGHTS, true);
 
   public LightsIOReal() {}
 
   @Override
   public void updateInputs(LightsInputs inputs) {
+    candle.periodic();
+
     inputs.rail5VVoltage1 = candle.get5VRailVoltage();
     inputs.busVoltage1 = candle.getBusVoltage();
   }
