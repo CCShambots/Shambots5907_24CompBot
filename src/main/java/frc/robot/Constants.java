@@ -32,7 +32,7 @@ import java.util.function.UnaryOperator;
 public class Constants {
   public static final double LOOP_PERIOD = 0.02;
 
-  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.REPLAY;
+  public static ShamLibConstants.BuildMode currentBuildMode = ShamLibConstants.BuildMode.SIM;
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
@@ -673,6 +673,9 @@ public class Constants {
 
       public static final PIDGains TRAP_THETA_GAINS = new PIDGains(5, 0, 0);
       public static final PIDGains TRAP_TRANSLATION_GAINS = new PIDGains(2.5, 0, 0);
+
+      public static final PIDGains CLIMB_TRANSLATION_GAINS = new PIDGains(2.5, 0, 0);
+
 
       public static final PIDSVGains MODULE_DRIVE_GAINS =
           new PIDSVGains(.25, 0, 0.0, 0.08045, 0.118675);

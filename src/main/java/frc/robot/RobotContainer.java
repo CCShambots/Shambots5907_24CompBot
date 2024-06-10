@@ -750,7 +750,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
     controllerBindings.ejectIntake().onTrue(transitionCommand(State.EJECT_INTAKE, false));
 
-    controllerBindings.startClimb().onTrue(transitionCommand(State.CLIMB, false));
+    controllerBindings
+        .startClimb()
+        .onTrue(
+            new ConditionalCommand(
+                transitionCommand(State.CLIMB, false),
+                drivetrain.transitionCommand(Drivetrain.State.CHAIN_ALIGNED_DRIVE, false),
+                () -> getState() != State.CLIMB));
 
     controllerBindings
         .targetLeftStage()

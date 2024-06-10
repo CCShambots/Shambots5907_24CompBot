@@ -229,6 +229,18 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             HUMAN_PLAYER_PICKUP_SPEED));
 
     registerStateCommand(
+        State.CHAIN_ALIGNED_DRIVE,
+        new ChainAlignedDriveCommand(
+            drive,
+            AUTO_THETA_GAINS,
+            targetStageSideSupplier,
+            xSupplier,
+            CLIMB_TRANSLATION_GAINS,
+            Constants.Controller.DEADBAND,
+            Constants.Controller.DRIVE_CONVERSION,
+            AMP_SPEED));
+
+    registerStateCommand(
         State.CHAIN_ORIENTED_DRIVE,
         new ChainRelativeDriveCommand(
             drive,
@@ -314,6 +326,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.START_CLOSE_4);
 
     addOmniTransition(State.CHAIN_ORIENTED_DRIVE);
+    addOmniTransition(State.CHAIN_ALIGNED_DRIVE);
 
     addTransition(State.IDLE, State.CALCULATE_WHEEL_RADIUS);
   }
@@ -622,6 +635,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     X_SHAPE,
     FIELD_ORIENTED_DRIVE,
     CHAIN_ORIENTED_DRIVE,
+    CHAIN_ALIGNED_DRIVE,
     FOLLOWING_AUTONOMOUS_TRAJECTORY,
     FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING,
     FACE_SPEAKER,
