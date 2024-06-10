@@ -703,7 +703,6 @@ public class Constants {
 
       public static final PIDGains CLIMB_TRANSLATION_GAINS = new PIDGains(2.5, 0, 0);
 
-
       public static final PIDSVGains MODULE_DRIVE_GAINS =
           new PIDSVGains(.25, 0, 0.0, 0.08045, 0.118675);
       public static final PIDSVGains MODULE_TURN_GAINS = new PIDSVGains(10, 0, 0, 0.1176, 0.1182);
