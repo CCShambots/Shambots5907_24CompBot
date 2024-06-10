@@ -807,7 +807,7 @@ public class Constants {
           new Translation2d(Units.inchesToMeters(29.75), Units.inchesToMeters(6.0));
     }
 
-    //Don't forget to set the subsystem in the Drivetrain Subsystem!
+    // Don't forget to set the subsystem in the Drivetrain Subsystem!
     public static final SwerveDriveConfig SWERVE_CONFIG = new SwerveDriveConfig();
 
     static {
@@ -826,7 +826,6 @@ public class Constants {
 
       SWERVE_CONFIG.autoThetaGains = AUTO_THETA_GAINS;
       SWERVE_CONFIG.translationGains = AUTO_TRANSLATION_GAINS;
-
 
       SWERVE_CONFIG.currentLimit = CURRENT_LIMITS_CONFIGS;
 

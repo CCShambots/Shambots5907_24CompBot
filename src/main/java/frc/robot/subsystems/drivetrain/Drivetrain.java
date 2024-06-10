@@ -1,8 +1,8 @@
 package frc.robot.subsystems.drivetrain;
 
+import static frc.robot.Constants.Drivetrain.*;
 import static frc.robot.Constants.Drivetrain.Hardware.*;
 import static frc.robot.Constants.Drivetrain.Settings.*;
-import static frc.robot.Constants.Drivetrain.*;
 import static frc.robot.Constants.PhysicalConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -87,7 +87,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     NamedCommands.registerCommand("notifyNextWaypoint", notifyWaypointCommand());
     NamedCommands.registerCommand(
         "clearPathfindingFlag", new InstantCommand(() -> clearFlag(State.PATHFINDING)));
-    
+
     SWERVE_CONFIG.flipTrajectory = () -> flipPath;
     SWERVE_CONFIG.subsystem = this;
 
