@@ -57,6 +57,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StageSide;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -800,6 +801,26 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .debounce(1)
         .onTrue(new InstantCommand(() -> controllerBindings.setRumble(1)))
         .onFalse(new InstantCommand(() -> controllerBindings.setRumble(0)));
+
+    controllerBindings
+        .resetVisionPose()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  System.out.println("RUNNING ATTEMPT TO RESET");
+                  Optional<Pose2d> pose =
+                      vision.getCurrentVisionPoseEstimate(
+                          Constants.Vision.Settings.LEFT_SHOOTER_CAM_SETTINGS.name());
+
+                  // Print the estimate details to the console
+                  System.out.println("Pose:" + pose.toString());
+
+                  if (pose.isPresent()) {
+                    drivetrain.setPose(pose.get());
+                  } else {
+                    flashError(lights.getState());
+                  }
+                }));
   }
 
   public boolean lowVoltage() {

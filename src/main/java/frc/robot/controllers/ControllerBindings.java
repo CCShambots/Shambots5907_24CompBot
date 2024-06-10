@@ -50,6 +50,10 @@ public interface ControllerBindings {
     return new Trigger(() -> false);
   }
 
+  default Trigger resetVisionPose() {
+    return new Trigger(() -> false);
+  }
+
   Trigger startClimb();
 
   Trigger retractClimb();

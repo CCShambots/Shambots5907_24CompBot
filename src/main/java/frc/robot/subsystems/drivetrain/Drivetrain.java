@@ -309,6 +309,10 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addTransition(State.IDLE, State.CALCULATE_WHEEL_RADIUS);
   }
 
+  public void setPose(Pose2d pose) {
+    drive.resetOdometryPose(pose);
+  }
+
   private void ppRotationOverride() {
     PPHolonomicDriveController.setRotationTargetOverride(
         () -> Optional.of(getTartgetRotationWhileMove()));

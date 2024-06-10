@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.ShamLib.SMF.StateMachine;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
+import frc.robot.ShamLib.swerve.TimestampedPoseEstimator.TimestampedVisionUpdate;
 import frc.robot.ShamLib.vision.Limelight.Limelight;
 import frc.robot.ShamLib.vision.PhotonVision.Apriltag.PVApriltagCam;
 import java.util.*;
@@ -27,6 +28,8 @@ public class Vision extends StateMachine<Vision.State> {
   private final List<Consumer<RingVisionUpdate>> ringVisionUpdateConsumers = new ArrayList<>();
   private final Limelight limelight;
   private final PVApriltagCam[] pvApriltagCams;
+
+  private TimestampedVisionUpdate latestCam1 = null;
 
   Supplier<Pose2d> overallEstimateSupplier = null;
 
@@ -209,6 +212,9 @@ public class Vision extends StateMachine<Vision.State> {
         cam.getLatestEstimate()
             .ifPresent(
                 (update) -> {
+                  if (cam.getName() == Constants.Vision.Settings.LEFT_SHOOTER_CAM_SETTINGS.name()) {
+                    latestCam1 = update;
+                  }
                   updates.add(update);
 
                   Logger.recordOutput("Vision/" + cam.getName() + "/latestEstimate", update.pose());
@@ -219,6 +225,17 @@ public class Vision extends StateMachine<Vision.State> {
     }
 
     return updates;
+  }
+
+  public Optional<Pose2d> getCurrentVisionPoseEstimate(String camName) {
+
+    if (latestCam1 != null) {
+      if (Math.abs(latestCam1.timestamp() - Timer.getFPGATimestamp()) < 0.25) {
+        return Optional.of(latestCam1.pose());
+      }
+    }
+
+    return Optional.empty();
   }
 
   @AutoLogOutput(key = "Vision/RingTarget")
@@ -343,4 +360,6 @@ public class Vision extends StateMachine<Vision.State> {
       double distanceFromLastEstimateScalar,
       double tagDistanceTrustPower,
       double tagDistanceTrustScalar) {}
+
+  public record EstimatedPose(boolean trust, Pose2d pose) {}
 }

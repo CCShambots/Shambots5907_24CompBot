@@ -96,6 +96,11 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger resetVisionPose() {
+    return leftFlightStick.topRight();
+  }
+
+  @Override
   public Trigger trapScore() {
     return leftFlightStick.pov(0).or(leftFlightStick.pov(45)).or(leftFlightStick.pov(315));
   }
