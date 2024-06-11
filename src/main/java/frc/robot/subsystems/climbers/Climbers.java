@@ -73,6 +73,13 @@ public class Climbers extends StateMachine<Climbers.State> {
             .andThen(watchSetpointCommand()));
 
     registerStateCommand(
+        State.MINIMUM_EXTEND,
+        new ParallelCommandGroup(
+                leftClimber.transitionCommand(Climber.State.MINIMUM_EXTEND),
+                rightClimber.transitionCommand(Climber.State.MINIMUM_EXTEND))
+            .andThen(watchSetpointCommand()));
+
+    registerStateCommand(
         State.FREE_RETRACT,
         new ParallelCommandGroup(
                 leftClimber.transitionCommand(Climber.State.FREE_RETRACT),
@@ -97,6 +104,7 @@ public class Climbers extends StateMachine<Climbers.State> {
     addOmniTransition(State.SOFT_E_STOP);
     addOmniTransition(State.FREE_RETRACT);
     addOmniTransition(State.FREE_EXTEND);
+    addOmniTransition(State.MINIMUM_EXTEND);
     addOmniTransition(State.LOADED_RETRACT);
 
     addTransition(State.SOFT_E_STOP, State.VOLTAGE_CALC);
@@ -131,6 +139,7 @@ public class Climbers extends StateMachine<Climbers.State> {
     UNDETERMINED,
     SOFT_E_STOP,
     FREE_EXTEND,
+    MINIMUM_EXTEND,
     FREE_RETRACT,
     LOADED_RETRACT,
     VOLTAGE_CALC,

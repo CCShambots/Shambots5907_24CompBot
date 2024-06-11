@@ -43,6 +43,17 @@ public class Climber extends StateMachine<Climber.State> {
             watchSetpointCommand()));
 
     registerStateCommand(
+        State.MINIMUM_EXTEND,
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () -> {
+                  io.setSpeed(FREE_VELOCITY, FREE_ACCELERATION, FREE_JERK);
+                  io.setControlSlot(FREE_SLOT);
+                  io.setTarget(MINIMUM_EXTENSION_SETPOINT);
+                }),
+            watchSetpointCommand()));
+
+    registerStateCommand(
         State.FREE_RETRACT,
         new SequentialCommandGroup(
             new InstantCommand(
@@ -84,6 +95,7 @@ public class Climber extends StateMachine<Climber.State> {
     addOmniTransition(State.SOFT_E_STOP);
     addOmniTransition(State.FREE_RETRACT);
     addOmniTransition(State.FREE_EXTEND);
+    addOmniTransition(State.MINIMUM_EXTEND);
     addOmniTransition(State.LOADED_RETRACT);
 
     addTransition(State.SOFT_E_STOP, State.AUTOMATIC_ZERO);
@@ -128,6 +140,7 @@ public class Climber extends StateMachine<Climber.State> {
   public enum State {
     UNDETERMINED,
     FREE_EXTEND,
+    MINIMUM_EXTEND,
     FREE_RETRACT,
     LOADED_RETRACT,
     SOFT_E_STOP,

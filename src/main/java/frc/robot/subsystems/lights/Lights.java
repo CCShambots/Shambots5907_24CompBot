@@ -84,6 +84,7 @@ public class Lights extends StateMachine<Lights.State> {
     registerStandardState(State.AUTOMATIC_SCORE);
     registerStandardState(State.EJECT);
     registerStandardState(State.CLIMB);
+    registerStandardState(State.CENTERED_CLIMB);
     registerStandardState(State.GRAB_RANDOM_NOTE);
     registerStandardState(State.LOB_TOGGLE);
 
@@ -182,6 +183,7 @@ public class Lights extends StateMachine<Lights.State> {
     AUTOMATIC_SCORE(new LEDData(AUTOMATIC_SCORE_ANIMATION)),
     EJECT(new LEDData(EJECT_ANIMATION)),
     CLIMB(new LEDData(CLIMB_RGB)),
+    CENTERED_CLIMB(new LEDData(CENTERED_CLIMB_ANIMATION)),
     GRAB_RANDOM_NOTE(new LEDData(GRAB_RANDOM_NOTE_ANIMATION)),
     TEST(new LEDData(OFF_RGB)),
     ERROR(new LEDData(ERROR_RGB)),

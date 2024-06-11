@@ -489,12 +489,13 @@ public class Constants {
       public static int LOADED_SLOT = 1;
 
       public static double EXTENSION_SETPOINT = 0.54;
+      public static double MINIMUM_EXTENSION_SETPOINT = 0.54;
 
       public static double RETRACT_SETPOINT = 0.0;
 
       public static double VOLTAGE_INCREMENT = 0.125;
 
-      // 0, 1
+      // [-1, 0]
       public static double AUTO_ZERO_POWER = -0.25;
 
       // m/s
@@ -597,6 +598,9 @@ public class Constants {
 
       public static final Animation INTAKE_ANIMATION =
           new StrobeAnimation(0, 255, 255, 0, BLINK_SPEED, NUM_LIGHTS);
+
+      public static final Animation CENTERED_CLIMB_ANIMATION =
+          new StrobeAnimation(255, 0, 255, 0, BLINK_SPEED, NUM_LIGHTS);
 
       public static final Animation PARTIAL_INTAKE_ANIAMTION =
           new StrobeAnimation(255, 255, 255, 0, BLINK_SPEED, NUM_LIGHTS);

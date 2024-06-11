@@ -557,7 +557,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     registerStateCommand(
         State.CLIMB,
-        new SequentialCommandGroup(
+        new ParallelCommandGroup(
             new ConditionalCommand(
                 drivetrain.transitionCommand(Drivetrain.State.CHAIN_ORIENTED_DRIVE),
                 Commands.none(),
@@ -565,9 +565,33 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             lights.transitionCommand(Lights.State.CLIMB),
             shooter.flywheelSpinDown(),
             climbers.transitionCommand(Climbers.State.FREE_EXTEND),
-            new WaitUntilCommand(controllerBindings.retractClimb()),
-            climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
-            drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)));
+            new SequentialCommandGroup(
+                new WaitUntilCommand(controllerBindings.retractClimb()),
+                climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
+                drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)),
+            new SequentialCommandGroup(
+                new WaitUntilCommand(controllerBindings.startClimb().negate()),
+                new WaitUntilCommand(controllerBindings.startClimb()),
+                transitionCommand(State.CENTERED_CLIMB, false))));
+
+    registerStateCommand(
+        State.CENTERED_CLIMB,
+        new ParallelCommandGroup(
+            new ConditionalCommand(
+                drivetrain.transitionCommand(Drivetrain.State.CHAIN_ALIGNED_DRIVE),
+                Commands.none(),
+                () -> poseWorking),
+            lights.transitionCommand(Lights.State.CENTERED_CLIMB),
+            shooter.flywheelSpinDown(),
+            climbers.transitionCommand(Climbers.State.MINIMUM_EXTEND),
+            new SequentialCommandGroup(
+                new WaitUntilCommand(controllerBindings.retractClimb()),
+                climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
+                drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)),
+            new SequentialCommandGroup(
+                new WaitUntilCommand(controllerBindings.startClimb().negate()),
+                new WaitUntilCommand(controllerBindings.startClimb()),
+                transitionCommand(State.CLIMB, false))));
 
     registerStateCommand(
         State.AUTO_AMP,
@@ -752,13 +776,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings.cleanse().onTrue(transitionCommand(State.CLEANSE, false));
     controllerBindings.ejectIntake().onTrue(transitionCommand(State.EJECT_INTAKE, false));
 
-    controllerBindings
-        .startClimb()
-        .onTrue(
-            new ConditionalCommand(
-                transitionCommand(State.CLIMB, false),
-                drivetrain.transitionCommand(Drivetrain.State.CHAIN_ALIGNED_DRIVE, false),
-                () -> getState() != State.CLIMB));
+    controllerBindings.startClimb().onTrue(transitionCommand(State.CLIMB, false));
 
     controllerBindings
         .targetLeftStage()
@@ -1300,6 +1318,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     BASE_SHOT,
     SOFT_E_STOP,
     CLIMB,
+    CENTERED_CLIMB,
     AMP,
     AUTO_AMP,
     GROUND_INTAKE,
