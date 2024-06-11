@@ -126,6 +126,11 @@ public class RealControllerBindings implements ControllerBindings {
   }
 
   @Override
+  public Trigger preExtendClimbers() {
+    return operatorController.rightStick();
+  }
+
+  @Override
   public Trigger startClimb() {
     return leftFlightStick.topBase();
   }

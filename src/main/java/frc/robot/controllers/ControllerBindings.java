@@ -54,6 +54,10 @@ public interface ControllerBindings {
     return new Trigger(() -> false);
   }
 
+  default Trigger preExtendClimbers() {
+    return new Trigger(() -> false);
+  }
+
   Trigger startClimb();
 
   Trigger retractClimb();

@@ -779,6 +779,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     controllerBindings.startClimb().onTrue(transitionCommand(State.CLIMB, false));
 
     controllerBindings
+        .preExtendClimbers()
+        .onTrue(climbers.transitionCommand(Climbers.State.FREE_EXTEND));
+
+    controllerBindings
         .targetLeftStage()
         .onTrue(new InstantCommand(() -> setTargetStageSide(StageSide.LEFT)));
     controllerBindings
