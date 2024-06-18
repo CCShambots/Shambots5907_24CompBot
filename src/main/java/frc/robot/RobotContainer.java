@@ -78,7 +78,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   // Declare power distribution for voltage and current monitoring/logging
   private PowerDistribution pd;
 
-  // Controller bindings object that will be created to handle both real control and sim inputs
+  // Controller bindings object that will be created to handle both real control
+  // and sim inputs
   private final ControllerBindings controllerBindings;
 
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -196,9 +197,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     addChildSubsystem(indexer);
     addChildSubsystem(climbers);
 
-    // Since the lights subsystem should always be able to change state, it should be enabled
+    // Since the lights subsystem should always be able to change state, it should
+    // be enabled
     // immediately
-    // That means it's also not a child subsystem of the RobotContainer, because otherwise it would
+    // That means it's also not a child subsystem of the RobotContainer, because
+    // otherwise it would
     // get disabled
     // when it shouldn't
     lights.enable();
@@ -210,18 +213,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     registerNamedCommands();
 
-    // Pathplanner must be configured AFTER all the named commands are set, otherwise the code will
+    // Pathplanner must be configured AFTER all the named commands are set,
+    // otherwise the code will
     // crash
     drivetrain.configurePathplanner();
 
-    // Important to instatiate after drivetrain consructor is called so that auto builder is
+    // Important to instatiate after drivetrain consructor is called so that auto
+    // builder is
     // configured
     autoChooser =
         new LoggedDashboardChooser<>("Logged Autonomous Chooser", AutoBuilder.buildAutoChooser());
 
     initializeShuffleboardTabs();
 
-    // Make sure to turn off controller rumble in case it is still rumbling by chance
+    // Make sure to turn off controller rumble in case it is still rumbling by
+    // chance
     controllerBindings.setRumble(0);
   }
 
@@ -418,7 +424,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new DetermineRingStatusCommand(shooter, indexer, lights),
             // have shooter start to track
             shooter.transitionCommand(Shooter.State.SPEAKER_AA),
-            // lights show green on ready and feed ring on press, transition to traversing after
+            // lights show green on ready and feed ring on press, transition to traversing
+            // after
             // ring is fed
             new ParallelCommandGroup(
                 lightsOnReadyCommand(Lights.State.TARGETING), feedOnPress(State.TRAVERSING))));
@@ -446,7 +453,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                         shooter.requestTransition(autoLobState);
                       }
                     }),
-                // lights show green on ready and feed ring on press, transition to traversing after
+                // lights show green on ready and feed ring on press, transition to traversing
+                // after
                 // ring is fed
                 lightsOnReadyCommand(Lights.State.TARGETING),
                 feedOnPress(State.TRAVERSING, false))));
@@ -570,8 +578,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
                 drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)),
             new SequentialCommandGroup(
+                new PrintCommand("Hello"),
                 new WaitUntilCommand(controllerBindings.startClimb().negate()),
+                new PrintCommand("Hello2"),
                 new WaitUntilCommand(controllerBindings.startClimb()),
+                new PrintCommand("Hello3"),
                 transitionCommand(State.CENTERED_CLIMB, false))));
 
     registerStateCommand(
@@ -589,8 +600,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
                 drivetrain.transitionCommand(Drivetrain.State.X_SHAPE)),
             new SequentialCommandGroup(
+                new PrintCommand("Hello"),
                 new WaitUntilCommand(controllerBindings.startClimb().negate()),
+                new PrintCommand("Hello2"),
                 new WaitUntilCommand(controllerBindings.startClimb()),
+                new PrintCommand("Hello3"),
                 transitionCommand(State.CLIMB, false))));
 
     registerStateCommand(
@@ -641,6 +655,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     // Make sure we can't enter other states from the climb state
     removeAllTransitionsFromState(State.CLIMB);
     addTransition(State.TRAVERSING, State.CLIMB);
+    addTransition(State.CLIMB, State.CENTERED_CLIMB);
+    addTransition(State.CENTERED_CLIMB, State.CLIMB);
 
     // Make sure we can't enter other states from the trap state
     removeAllTransitionsFromState(State.TRAP);
@@ -818,7 +834,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         .and(() -> !ringSomewhereInBot())
         .onTrue(lights.transitionCommand(Lights.State.NO_RING));
 
-    // Rumble the controller when the voltage drops below a certain value for too long
+    // Rumble the controller when the voltage drops below a certain value for too
+    // long
     new Trigger(this::lowVoltage)
         .debounce(1)
         .onTrue(new InstantCommand(() -> controllerBindings.setRumble(1)))

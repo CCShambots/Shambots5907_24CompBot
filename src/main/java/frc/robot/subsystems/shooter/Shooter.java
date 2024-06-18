@@ -292,15 +292,13 @@ public class Shooter extends StateMachine<Shooter.State> {
     double distance = getSpeakerDistance();
 
     // angle of shooter to face directly at speaker target height plus lut offset
-    return Math.atan2(SPEAKER_TARGET_HEIGHT, distance)
-        + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
+    return Math.atan2(SPEAKER_TARGET_HEIGHT, distance) + HARD_SPEAKER_LUT.get(distance);
   }
 
   private double armMovingSpeakerAA() {
     double distance = getMovingSpeakerDistance();
 
-    return Math.atan2(SPEAKER_TARGET_HEIGHT, distance)
-        + ARM_SPEAKER_DISTANCE_OFFSET_LUT.get(distance);
+    return Math.atan2(SPEAKER_TARGET_HEIGHT, distance) + HARD_SPEAKER_LUT.get(distance);
   }
 
   private double flywheelSpeakerAA() {

@@ -216,7 +216,10 @@ public class Constants {
       public static final InterpolatingDoubleTreeMap FLYWHEEL_SPEAKER_DISTANCE_LUT =
           new InterpolatingDoubleTreeMap();
 
-      public static final InterpolatingDoubleTreeMap ARM_SPEAKER_DISTANCE_OFFSET_LUT =
+      public static final InterpolatingDoubleTreeMap ORIGINAL_SPEAKER_LUT =
+          new InterpolatingDoubleTreeMap();
+
+      public static final InterpolatingDoubleTreeMap HARD_SPEAKER_LUT =
           new InterpolatingDoubleTreeMap();
 
       public static final InterpolatingDoubleTreeMap FLYWHEEL_TRAP_DISTANCE_LUT =
@@ -242,16 +245,29 @@ public class Constants {
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
 
         // ARM SPEAKER OFFSETS
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(0.0, 0.0);
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(8), Math.toRadians(1));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(12), Math.toRadians(2));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(18), Math.toRadians(5.5));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(20), Math.toRadians(8));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(22), Math.toRadians(9));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
-        ARM_SPEAKER_DISTANCE_OFFSET_LUT.put(100.0, Math.toRadians(10));
+        ORIGINAL_SPEAKER_LUT.put(0.0, 0.0);
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(8), Math.toRadians(1));
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(12), Math.toRadians(2));
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(18), Math.toRadians(5.5));
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(20), Math.toRadians(8));
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(22), Math.toRadians(9));
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
+        ORIGINAL_SPEAKER_LUT.put(100.0, Math.toRadians(10));
+
+        // HARD NOTE TUNING
+        HARD_SPEAKER_LUT.put(0.0, 0.0);
+        HARD_SPEAKER_LUT.put(Units.feetToMeters(8), Math.toRadians(0.75));
+        HARD_SPEAKER_LUT.put(Units.feetToMeters(10), Math.toRadians(0.75));
+        HARD_SPEAKER_LUT.put(Units.feetToMeters(12), Math.toRadians(1.25));
+        HARD_SPEAKER_LUT.put(Units.feetToMeters(14), Math.toRadians(1.75));
+        HARD_SPEAKER_LUT.put(Units.feetToMeters(16), Math.toRadians(3));
+        HARD_SPEAKER_LUT.put(Units.feetToMeters(18), Math.toRadians(3.75));
+        HARD_SPEAKER_LUT.put(Units.feetToMeters(20), Math.toRadians(4.5));
+        HARD_SPEAKER_LUT.put(Units.feetToMeters(22), Math.toRadians(5.25));
+        HARD_SPEAKER_LUT.put(Units.feetToMeters(24), Math.toRadians(6));
+        HARD_SPEAKER_LUT.put(100.0, Math.toRadians(6));
 
         // FLYWHEEL LOB VALUES
         FLYWHEEL_LOB_DISTANCE_LUT.put(50.0, 3500 / 60.0);
@@ -489,7 +505,7 @@ public class Constants {
       public static int LOADED_SLOT = 1;
 
       public static double EXTENSION_SETPOINT = 0.54;
-      public static double MINIMUM_EXTENSION_SETPOINT = 0.54;
+      public static double MINIMUM_EXTENSION_SETPOINT = 0.54 - Units.inchesToMeters(8);
 
       public static double RETRACT_SETPOINT = 0.0;
 
