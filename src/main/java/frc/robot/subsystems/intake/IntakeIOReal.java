@@ -5,14 +5,14 @@ import static frc.robot.Constants.Intake.Hardware.*;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import frc.robot.ShamLib.motors.talonfx.PIDSVGains;
-import frc.robot.ShamLib.motors.talonfx.VelocityTalonFX;
+import frc.robot.ShamLib.motors.talonfx.VelocityTorqueTalonFX;
 import frc.robot.util.ProxSensor;
 
 public class IntakeIOReal implements IntakeIO {
-  protected final VelocityTalonFX topMotor =
-      new VelocityTalonFX(TOP_ID, TOP_GAINS.get(), TOP_RATIO);
-  protected final VelocityTalonFX bottomMotor =
-      new VelocityTalonFX(BOTTOM_ID, TOP_GAINS.get(), BOTTOM_RATIO);
+  protected final VelocityTorqueTalonFX topMotor =
+      new VelocityTorqueTalonFX(TOP_ID, TOP_GAINS.get(), TOP_FEEDFORWARD, TOP_RATIO);
+  protected final VelocityTorqueTalonFX bottomMotor =
+      new VelocityTorqueTalonFX(BOTTOM_ID, TOP_GAINS.get(), TOP_FEEDFORWARD, BOTTOM_RATIO);
 
   protected final ProxSensor prox = new ProxSensor(PROX_ID);
 

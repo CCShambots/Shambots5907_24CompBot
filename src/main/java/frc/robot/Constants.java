@@ -441,6 +441,9 @@ public class Constants {
       public static final LoggedTunablePIDSV TOP_GAINS =
           new LoggedTunablePIDSV(
               "Intake Belt Gains", new PIDSVGains(0.5, 0, 0, 0.2469, 0.1237), () -> ALLOW_TUNING);
+
+      //Amperes
+      public static final double TOP_FEEDFORWARD = 10.0;
     }
 
     public static final class Sim {
