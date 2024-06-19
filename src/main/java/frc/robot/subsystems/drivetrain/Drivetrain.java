@@ -29,6 +29,7 @@ import frc.robot.ShamLib.swerve.SwerveSpeedLimits;
 import frc.robot.ShamLib.swerve.TimestampedPoseEstimator;
 import frc.robot.ShamLib.swerve.module.RealignModuleCommand;
 import frc.robot.ShamLib.swerve.module.SwerveModule;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.Vision.RingVisionUpdate;
 import frc.robot.util.StageSide;
 import java.util.List;
@@ -361,6 +362,17 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
 
   public Field2d getFieldTele() {
     return fieldTele;
+  }
+
+  public boolean isCLoseEnoughToBypassWait(Vision vision) {
+    Optional<Pose2d> pose =
+        vision.getCurrentVisionPoseEstimate(
+            Constants.Vision.Settings.LEFT_SHOOTER_CAM_SETTINGS.name());
+
+    if (pose.isEmpty()) return false;
+
+    return getBotPose().getTranslation().getDistance(pose.get().getTranslation())
+        < SHOT_DELAY_DISTANCE_OFFSET;
   }
 
   private void registerFaceCommands() {

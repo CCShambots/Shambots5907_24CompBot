@@ -695,7 +695,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () ->
                 controllerBindings.feedOnPress().getAsBoolean()
                     && shooter.isFlag(Shooter.State.READY)),
-        new ConditionalCommand(new WaitCommand(0.5), new InstantCommand(), () -> useDelay),
+        new ConditionalCommand(
+            new ConditionalCommand(
+                Commands.none(),
+                new WaitCommand(0.5),
+                () -> drivetrain.isCLoseEnoughToBypassWait(vision)),
+            new InstantCommand(),
+            () -> useDelay),
         indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER),
         indexer.waitForState(Indexer.State.IDLE),
         transitionCommand(onEnd));
@@ -766,12 +772,20 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 transitionCommand(State.AUTO_GROUND_INTAKE, false),
                 transitionCommand(State.GROUND_INTAKE, false),
                 () -> autoIntakeWorking))
-        .onFalse(new ConditionalCommand(transitionCommand(State.TRAVERSING, false), Commands.none(), () -> getState() == State.AUTO_GROUND_INTAKE || getState() == State.GROUND_INTAKE));
+        .onFalse(
+            new ConditionalCommand(
+                transitionCommand(State.TRAVERSING, false),
+                Commands.none(),
+                () -> getState() == State.AUTO_GROUND_INTAKE || getState() == State.GROUND_INTAKE));
 
     controllerBindings
         .manualGroundIntake()
         .onTrue(transitionCommand(State.GROUND_INTAKE, false))
-        .onFalse(new ConditionalCommand(transitionCommand(State.TRAVERSING, false), Commands.none(), () -> getState() == State.GROUND_INTAKE));
+        .onFalse(
+            new ConditionalCommand(
+                transitionCommand(State.TRAVERSING, false),
+                Commands.none(),
+                () -> getState() == State.GROUND_INTAKE));
 
     controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING, false));
 

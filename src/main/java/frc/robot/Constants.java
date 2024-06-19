@@ -738,6 +738,8 @@ public class Constants {
 
       public static final PIDGains HOLD_ANGLE_GAINS = new PIDGains(6, 0, 0);
 
+      public static final double SHOT_DELAY_DISTANCE_OFFSET = Units.inchesToMeters(5);
+
       // m/s
       public static final double MAX_CHASSIS_SPEED = 5;
       public static final double MAX_CHASSIS_ACCELERATION = 15;
