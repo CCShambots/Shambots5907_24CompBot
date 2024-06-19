@@ -469,7 +469,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 lights.transitionCommand(Lights.State.INTAKE),
                 intake.transitionCommand(Intake.State.INTAKE)),
             indexer.waitForState(Indexer.State.INDEXING),
-            transitionCommand(State.TRAVERSING)));
+            new ConditionalCommand(
+                transitionCommand(State.TRAVERSING),
+                Commands.none(),
+                () -> getState() == State.GROUND_INTAKE)));
 
     registerStateCommand(
         State.BASE_SHOT,
@@ -763,12 +766,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 transitionCommand(State.AUTO_GROUND_INTAKE, false),
                 transitionCommand(State.GROUND_INTAKE, false),
                 () -> autoIntakeWorking))
-        .onFalse(transitionCommand(State.TRAVERSING, false));
+        .onFalse(new ConditionalCommand(transitionCommand(State.TRAVERSING, false), Commands.none(), () -> getState() == State.AUTO_GROUND_INTAKE || getState() == State.GROUND_INTAKE));
 
     controllerBindings
         .manualGroundIntake()
         .onTrue(transitionCommand(State.GROUND_INTAKE, false))
-        .onFalse(transitionCommand(State.TRAVERSING, false));
+        .onFalse(new ConditionalCommand(transitionCommand(State.TRAVERSING, false), Commands.none(), () -> getState() == State.GROUND_INTAKE));
 
     controllerBindings.traversing().onTrue(transitionCommand(State.TRAVERSING, false));
 
