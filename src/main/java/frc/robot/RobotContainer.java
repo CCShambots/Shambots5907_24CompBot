@@ -636,7 +636,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
                     intake.transitionCommand(Intake.State.INTAKE)),
                 indexer.waitForState(Indexer.State.INDEXING),
-                transitionCommand(State.TRAVERSING))));
+                new ConditionalCommand(
+                    transitionCommand(State.TRAVERSING),
+                    new InstantCommand(),
+                    () -> getState() == State.AUTO_GROUND_INTAKE))));
   }
 
   private void registerTransitions() {

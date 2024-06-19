@@ -41,7 +41,7 @@ public class Constants {
 
   public static final boolean ALLOW_TUNING = true;
 
-  //Whether to use the old tuning (soft, original notes) or the new tuning (hard, new notes)
+  // Whether to use the old tuning (soft, original notes) or the new tuning (hard, new notes)
   public static final boolean USE_ORIGINAL_TUNING = false;
 
   public static final double AUTO_TIME = 15;
@@ -225,7 +225,8 @@ public class Constants {
       public static final InterpolatingDoubleTreeMap HARD_SPEAKER_LUT =
           new InterpolatingDoubleTreeMap();
 
-      public static final InterpolatingDoubleTreeMap SPEAKER_LUT = USE_ORIGINAL_TUNING ? ORIGINAL_SPEAKER_LUT : HARD_SPEAKER_LUT;
+      public static final InterpolatingDoubleTreeMap SPEAKER_LUT =
+          USE_ORIGINAL_TUNING ? ORIGINAL_SPEAKER_LUT : HARD_SPEAKER_LUT;
 
       public static final InterpolatingDoubleTreeMap FLYWHEEL_TRAP_DISTANCE_LUT =
           new InterpolatingDoubleTreeMap();
@@ -447,7 +448,7 @@ public class Constants {
           new LoggedTunablePIDSV(
               "Intake Belt Gains", new PIDSVGains(0.5, 0, 0, 0.2469, 0.1237), () -> ALLOW_TUNING);
 
-      //Amperes
+      // Amperes
       public static final double TOP_FEEDFORWARD = 10.0;
     }
 
