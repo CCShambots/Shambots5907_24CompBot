@@ -234,11 +234,22 @@ public class Constants {
           new InterpolatingDoubleTreeMap();
 
       public static final double SPEAKER_TARGET_HEIGHT = 2.2;
-      public static final InterpolatingDoubleTreeMap ARM_LOB_DISTANCE_LUT =
+      public static final InterpolatingDoubleTreeMap ORIGINAL_ARM_LOB_DISTANCE_LUT =
           new InterpolatingDoubleTreeMap();
 
-      public static final InterpolatingDoubleTreeMap FLYWHEEL_LOB_DISTANCE_LUT =
+      public static final InterpolatingDoubleTreeMap HARD_ARM_LOB_DISTANCE_LUT =
           new InterpolatingDoubleTreeMap();
+
+      public static final InterpolatingDoubleTreeMap ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
+
+      public static final InterpolatingDoubleTreeMap HARD_FLYWHEEL_LOB_DISTANCE_LUT =
+          new InterpolatingDoubleTreeMap();
+
+      public static final InterpolatingDoubleTreeMap ARM_LOB_DISTANCE_LUT =
+          USE_ORIGINAL_TUNING ? ORIGINAL_ARM_LOB_DISTANCE_LUT : HARD_ARM_LOB_DISTANCE_LUT;
+      public static final InterpolatingDoubleTreeMap FLYWHEEL_LOB_DISTANCE_LUT =
+          USE_ORIGINAL_TUNING ? ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT : HARD_FLYWHEEL_LOB_DISTANCE_LUT;
 
       public static final double TRAP_TARGET_HEIGHT = 1.52;
 
@@ -276,23 +287,42 @@ public class Constants {
         HARD_SPEAKER_LUT.put(100.0, Math.toRadians(6));
 
         // FLYWHEEL LOB VALUES
-        FLYWHEEL_LOB_DISTANCE_LUT.put(50.0, 3500 / 60.0);
-        FLYWHEEL_LOB_DISTANCE_LUT.put(13.0, 3500 / 60.0);
-        FLYWHEEL_LOB_DISTANCE_LUT.put(11.6, 3250 / 60.0);
-        FLYWHEEL_LOB_DISTANCE_LUT.put(10.5, 3250 / 60.0);
-        FLYWHEEL_LOB_DISTANCE_LUT.put(9.3, 2750 / 60.0);
-        FLYWHEEL_LOB_DISTANCE_LUT.put(9.0, 2750 / 60.0);
-        FLYWHEEL_LOB_DISTANCE_LUT.put(7.5, 2750 / 60.0);
-        FLYWHEEL_LOB_DISTANCE_LUT.put(0.0, 3250 / 60.0);
+        ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT.put(50.0, 3500 / 60.0);
+        ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT.put(13.0, 3500 / 60.0);
+        ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT.put(11.6, 3250 / 60.0);
+        ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT.put(10.5, 3250 / 60.0);
+        ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT.put(9.3, 2750 / 60.0);
+        ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT.put(9.0, 2750 / 60.0);
+        ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT.put(7.5, 2750 / 60.0);
+        ORIGINAL_FLYWHEEL_LOB_DISTANCE_LUT.put(0.0, 3250 / 60.0);
 
         // ARM LOB OFFSETS
-        ARM_LOB_DISTANCE_LUT.put(50.0, 50 * (Math.PI / 180));
-        ARM_LOB_DISTANCE_LUT.put(11.6, 50 * (Math.PI / 180));
-        ARM_LOB_DISTANCE_LUT.put(10.5, 50 * (Math.PI / 180));
-        ARM_LOB_DISTANCE_LUT.put(9.3, 50 * (Math.PI / 180));
-        ARM_LOB_DISTANCE_LUT.put(9.0, 53 * (Math.PI / 180));
-        ARM_LOB_DISTANCE_LUT.put(7.5, 59 * (Math.PI / 180));
-        ARM_LOB_DISTANCE_LUT.put(0.0, 50 * (Math.PI / 180));
+        ORIGINAL_ARM_LOB_DISTANCE_LUT.put(50.0, 50 * (Math.PI / 180));
+        ORIGINAL_ARM_LOB_DISTANCE_LUT.put(11.6, 50 * (Math.PI / 180));
+        ORIGINAL_ARM_LOB_DISTANCE_LUT.put(10.5, 50 * (Math.PI / 180));
+        ORIGINAL_ARM_LOB_DISTANCE_LUT.put(9.3, 50 * (Math.PI / 180));
+        ORIGINAL_ARM_LOB_DISTANCE_LUT.put(9.0, 53 * (Math.PI / 180));
+        ORIGINAL_ARM_LOB_DISTANCE_LUT.put(7.5, 59 * (Math.PI / 180));
+        ORIGINAL_ARM_LOB_DISTANCE_LUT.put(0.0, 50 * (Math.PI / 180));
+
+        // FLYWHEEL LOB VALUES
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(50.0, 3500 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(13.0, 3500 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(11.6, 3250 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(10.5, 3250 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(9.3, 2750 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(9.0, 2750 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(7.5, 2750 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(0.0, 3250 / 60.0);
+
+        // ARM LOB OFFSETS
+        HARD_ARM_LOB_DISTANCE_LUT.put(50.0, 50 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(11.6, 50 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(10.5, 50 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(9.3, 50 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(9.0, 53 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(7.5, 59 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(0.0, 50 * (Math.PI / 180));
       }
     }
   }
