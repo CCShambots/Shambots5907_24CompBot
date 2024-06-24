@@ -463,7 +463,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         State.GROUND_INTAKE,
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                drivetrain.transitionCommand(Drivetrain.State.GROUND_INTAKE),
+                // drivetrain.transitionCommand(Drivetrain.State.GROUND_INTAKE),
                 shooter.transitionCommand(Shooter.State.STOW),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK),
                 lights.transitionCommand(Lights.State.INTAKE),
