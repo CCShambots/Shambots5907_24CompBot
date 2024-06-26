@@ -493,24 +493,25 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 lights.transitionCommand(Lights.State.INTAKE),
                 shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT)),
-            new ParallelRaceGroup(
+            new ParallelCommandGroup(
                 new ConditionalCommand(
                     new SequentialCommandGroup(
                         new WaitUntilCommand(drivetrain::closeEnoughForSourceAlign),
                         drivetrain.transitionCommand(Drivetrain.State.SOURCE_INTAKE)),
                     new InstantCommand(),
                     () -> poseWorking),
-                new WaitUntilCommand(
-                    () ->
-                        indexer.getState() == Indexer.State.HOLDING_RING
-                            || indexer.getState() == Indexer.State.LOST_RING)),
-            new InstantCommand(
-                () -> {
-                  new WaitCommand(1)
-                      .andThen(indexer.transitionCommand(Indexer.State.INDEXING, false))
-                      .schedule();
-                }),
-            transitionCommand(State.TRAVERSING)));
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(
+                        () ->
+                            indexer.getState() == Indexer.State.HOLDING_RING
+                                || indexer.getState() == Indexer.State.LOST_RING),
+                    new InstantCommand(
+                        () -> {
+                          new WaitCommand(1)
+                              .andThen(indexer.transitionCommand(Indexer.State.INDEXING, false))
+                              .schedule();
+                        }),
+                    transitionCommand(State.TRAVERSING)))));
 
     registerStateCommand(
         State.AUTO_HP_INTAKE,
