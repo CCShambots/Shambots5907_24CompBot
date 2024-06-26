@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -13,10 +14,11 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-public class FaceAmpCommand extends Command {
+public class FaceConstantAngleCommand extends Command {
   private final PIDController thetaController;
 
   private final Supplier<Pose2d> poseSupplier;
+  private final Supplier<Rotation2d> targetAngleSupplier;
 
   private final SwerveDrive drivetrain;
   private final DoubleSupplier xSupplier;
@@ -31,10 +33,11 @@ public class FaceAmpCommand extends Command {
   private final double deadband;
   private final UnaryOperator<Double> controllerConversion;
 
-  public FaceAmpCommand(
+  public FaceConstantAngleCommand(
       SwerveDrive drivetrain,
       PIDGains holdGains,
       Supplier<Pose2d> poseSupplier,
+      Supplier<Rotation2d> targetAngleSupplier,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       double deadband,
@@ -42,6 +45,7 @@ public class FaceAmpCommand extends Command {
       Subsystem subsystem,
       SwerveSpeedLimits speedLimits) {
     this.poseSupplier = poseSupplier;
+    this.targetAngleSupplier = targetAngleSupplier;
 
     this.drivetrain = drivetrain;
     this.xSupplier = xSupplier;
@@ -69,12 +73,12 @@ public class FaceAmpCommand extends Command {
   public void initialize() {
     resetSpeedLimiters();
 
-    thetaController.setSetpoint(Math.PI / 2);
+    thetaController.setSetpoint(targetAngleSupplier.get().getRadians());
   }
 
   @Override
   public void execute() {
-    thetaController.setSetpoint(Math.PI / 2);
+    thetaController.setSetpoint(targetAngleSupplier.get().getRadians());
 
     double correctedX = convertRawInput(xSupplier.getAsDouble()) * maxLinearSpeed;
     double correctedY = convertRawInput(ySupplier.getAsDouble()) * maxLinearSpeed;
