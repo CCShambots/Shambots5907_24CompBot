@@ -486,25 +486,31 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     registerStateCommand(
         State.HUMAN_PLAYER_INTAKE,
-        new ParallelCommandGroup(
-                drivetrain.transitionCommand(Drivetrain.State.HUMAN_PLAYER_INTAKE),
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
                 intake.transitionCommand(Intake.State.IDLE),
                 lights.transitionCommand(Lights.State.INTAKE),
                 shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
-                indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT))
-            .andThen(
+                indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT)),
+            new ParallelRaceGroup(
+                new ConditionalCommand(
+                    new SequentialCommandGroup(
+                        new WaitUntilCommand(drivetrain::closeEnoughForSourceAlign),
+                        drivetrain.transitionCommand(Drivetrain.State.SOURCE_INTAKE)),
+                    new InstantCommand(),
+                    () -> poseWorking),
                 new WaitUntilCommand(
                     () ->
                         indexer.getState() == Indexer.State.HOLDING_RING
-                            || indexer.getState() == Indexer.State.LOST_RING))
-            .andThen(
-                new InstantCommand(
-                    () -> {
-                      new WaitCommand(1)
-                          .andThen(indexer.transitionCommand(Indexer.State.INDEXING, false))
-                          .schedule();
-                    }))
-            .andThen(transitionCommand(State.TRAVERSING)));
+                            || indexer.getState() == Indexer.State.LOST_RING)),
+            new InstantCommand(
+                () -> {
+                  new WaitCommand(1)
+                      .andThen(indexer.transitionCommand(Indexer.State.INDEXING, false))
+                      .schedule();
+                }),
+            transitionCommand(State.TRAVERSING)));
 
     registerStateCommand(
         State.AUTO_HP_INTAKE,

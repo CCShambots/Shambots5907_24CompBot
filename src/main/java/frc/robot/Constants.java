@@ -86,6 +86,8 @@ public class Constants {
         new Pose2d(new Translation2d(-0.039243, 5.557), Rotation2d.fromDegrees(0));
     public static Pose2d BLUE_AMP =
         new Pose2d(new Translation2d(1.799, Units.feetToMeters(27)), Rotation2d.fromDegrees(-90));
+    public static Pose2d BLUE_SOURCE =
+        new Pose2d(new Translation2d(0.863, 7.662), Rotation2d.fromDegrees(150.020368));
     public static Pose2d BLUE_CENTER_TRAP =
         new Pose2d(new Translation2d(5.286, 4.115), Rotation2d.fromDegrees(0));
     public static Pose2d BLUE_LEFT_TRAP =
@@ -803,9 +805,9 @@ public class Constants {
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits AMP_SPEED =
           new SwerveSpeedLimits(
-              MAX_CHASSIS_SPEED / 1.25,
+              MAX_CHASSIS_SPEED,
               MAX_CHASSIS_ACCELERATION,
-              MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
+              MAX_CHASSIS_ROTATIONAL_SPEED,
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits INTAKE_SPEED =
           new SwerveSpeedLimits(
@@ -826,11 +828,11 @@ public class Constants {
               MAX_CHASSIS_ACCELERATION,
               MAX_CHASSIS_ROTATIONAL_SPEED,
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
-      public static final SwerveSpeedLimits HUMAN_PLAYER_PICKUP_SPEED =
+      public static final SwerveSpeedLimits SOURCE_PICKUP_SPEED =
           new SwerveSpeedLimits(
-              MAX_CHASSIS_SPEED / 1.75,
+              MAX_CHASSIS_SPEED / 1.25,
               MAX_CHASSIS_ACCELERATION,
-              MAX_CHASSIS_ROTATIONAL_SPEED / 1.75,
+              MAX_CHASSIS_ROTATIONAL_SPEED / 1.25,
               MAX_CHASSIS_ROTATIONAL_ACCELERATION);
       public static final SwerveSpeedLimits TRAP_SPEED =
           new SwerveSpeedLimits(
@@ -854,6 +856,7 @@ public class Constants {
       public static final double HUMAN_PLAYER_SCORE_ROTATIONAL_DELAY = 0;
 
       public static final double AMP_ANGLE_DISTANCE = 4;
+      public static final double SOURCE_ANGLE_DISTANCE = 4;
 
       // radians
       public static final double FACE_ANGLE_TOLERANCE = 0.02;

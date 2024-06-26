@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
 import static frc.robot.Constants.Drivetrain.*;
-import static frc.robot.Constants.Drivetrain.Hardware.*;
 import static frc.robot.Constants.Drivetrain.Settings.*;
 import static frc.robot.Constants.PhysicalConstants.*;
 
@@ -195,17 +194,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
                 indexerReceivedRing),
             clearFlagCommand(State.AUTO_INTAKING)));
 
-    registerStateCommand(
-        State.HUMAN_PLAYER_INTAKE,
-        new DriveCommand(
-            drive,
-            xSupplier,
-            ySupplier,
-            thetaSupplier,
-            Constants.Controller.DEADBAND,
-            Constants.Controller.DRIVE_CONVERSION,
-            this,
-            HUMAN_PLAYER_PICKUP_SPEED));
+    registerStateCommand(State.SOURCE_INTAKE, getFaceSourceCommand(SOURCE_PICKUP_SPEED));
 
     registerStateCommand(
         State.CHAIN_ALIGNED_DRIVE,
@@ -275,7 +264,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     addOmniTransition(State.FIELD_ORIENTED_DRIVE);
     addOmniTransition(State.GROUND_INTAKE);
     addOmniTransition(State.AUTO_GROUND_INTAKE);
-    addOmniTransition(State.HUMAN_PLAYER_INTAKE);
+    addOmniTransition(State.SOURCE_INTAKE);
 
     addTransition(State.IDLE, State.FOLLOWING_AUTONOMOUS_TRAJECTORY);
     addTransition(
@@ -445,11 +434,12 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
   }
 
   private Command getFaceAmpCommand(SwerveSpeedLimits limits) {
-    FaceAmpCommand faceAmpCommand =
-        new FaceAmpCommand(
+    FaceConstantAngleCommand faceAmpCommand =
+        new FaceConstantAngleCommand(
             drive,
             AUTO_THETA_GAINS,
             drive::getPose,
+            () -> getAmpPose().getRotation().plus(new Rotation2d(Math.PI)),
             xSupplier,
             ySupplier,
             Constants.Controller.DEADBAND,
@@ -469,6 +459,32 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
             }));
   }
 
+  private Command getFaceSourceCommand(SwerveSpeedLimits limits) {
+    FaceConstantAngleCommand faceSourceCommand =
+        new FaceConstantAngleCommand(
+            drive,
+            AUTO_THETA_GAINS,
+            drive::getPose,
+            () -> getSourcePose().getRotation().plus(new Rotation2d(Math.PI)),
+            xSupplier,
+            ySupplier,
+            Constants.Controller.DEADBAND,
+            Constants.Controller.DRIVE_CONVERSION,
+            this,
+            limits);
+
+    return new ParallelCommandGroup(
+        faceSourceCommand,
+        new RunCommand(
+            () -> {
+              if (faceSourceCommand.atAngle(FACE_ANGLE_TOLERANCE)) {
+                setFlag(State.AT_ANGLE);
+              } else {
+                clearFlag(State.AT_ANGLE);
+              }
+            }));
+  }
+
   public double getDistanceToSpeaker() {
     Pose2d speakerPose = getSpeakerPosition();
 
@@ -481,17 +497,34 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
         : Constants.PhysicalConstants.BLUE_SPEAKER;
   }
 
-  public double distanceToAmp() {
-    Pose2d ampPose =
-        flipPath
-            ? Constants.mirror(Constants.PhysicalConstants.BLUE_AMP)
-            : Constants.PhysicalConstants.BLUE_AMP;
+  public Pose2d getAmpPose() {
+    return flipPath
+        ? Constants.mirror(Constants.PhysicalConstants.BLUE_AMP)
+        : Constants.PhysicalConstants.BLUE_AMP;
+  }
 
-    return drive.getPose().getTranslation().getDistance(ampPose.getTranslation());
+  public double distanceToAmp() {
+
+    return drive.getPose().getTranslation().getDistance(getAmpPose().getTranslation());
   }
 
   public boolean closeEnoughForAmpAlign() {
     return distanceToAmp() < AMP_ANGLE_DISTANCE;
+  }
+
+  public Pose2d getSourcePose() {
+    return flipPath
+        ? Constants.mirror(Constants.PhysicalConstants.BLUE_SOURCE)
+        : Constants.PhysicalConstants.BLUE_SOURCE;
+  }
+
+  public double distanceToSource() {
+
+    return drive.getPose().getTranslation().getDistance(getSourcePose().getTranslation());
+  }
+
+  public boolean closeEnoughForSourceAlign() {
+    return distanceToSource() < SOURCE_ANGLE_DISTANCE;
   }
 
   /** Pathfind to a point and then follow a path afterwards */
@@ -628,24 +661,36 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     IDLE,
     X_SHAPE,
     FIELD_ORIENTED_DRIVE,
-    CHAIN_ORIENTED_DRIVE,
-    CHAIN_ALIGNED_DRIVE,
-    FOLLOWING_AUTONOMOUS_TRAJECTORY,
-    FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING,
-    FACE_SPEAKER,
-    FACE_SPEAKER_AUTO,
-    FACE_AMP,
-    TRAP,
-    AUTO_AMP,
-    AUTO_CLIMB,
+    LOB,
+
+    // Intake
+    GROUND_INTAKE,
+    SOURCE_INTAKE,
     AUTO_GROUND_INTAKE,
     AUTO_HUMAN_PLAYER_INTAKE,
+
+    // Scoring
+    FACE_SPEAKER,
+    FACE_AMP,
+
+    // Climb and Trap
+    TRAP,
+    CHAIN_ORIENTED_DRIVE,
+    CHAIN_ALIGNED_DRIVE,
+
+    // Auto stuff
+    START_CLOSE_4,
+    AUTO_AMP,
+    FOLLOWING_AUTONOMOUS_TRAJECTORY,
+    FOLLOWING_AUTONOMOUS_TRAJECTORY_AIMING,
+    FACE_SPEAKER_AUTO,
+
+    // Tuning
     TURN_VOLTAGE_CALC,
     DRIVE_VOLTAGE_CALC,
-    GROUND_INTAKE,
-    HUMAN_PLAYER_INTAKE,
-    LOB,
-    START_CLOSE_4,
+
+    // Unused
+    AUTO_CLIMB,
 
     // flags for non-autonomous operations
     PATHFINDING,

@@ -60,7 +60,7 @@ public class BartaSimBindings implements ControllerBindings {
 
   @Override
   public Trigger humanPlayerIntake() {
-    return new Trigger(() -> false);
+    return operatorController.x();
   }
 
   @Override
@@ -130,7 +130,7 @@ public class BartaSimBindings implements ControllerBindings {
 
   @Override
   public Trigger startClimb() {
-    return operatorController.x();
+    return new Trigger(() -> false);
   }
 
   @Override
