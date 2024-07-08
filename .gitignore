@@ -180,3 +180,5 @@ ctre_sim/
 /networktables.json
 /simgui.json
 /simgui-ds.json
+
+.Glass/glass.json

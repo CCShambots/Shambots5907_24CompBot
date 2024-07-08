@@ -887,6 +887,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     flashError(lights.getState());
                   }
                 }));
+
+    controllerBindings.enterTune().onTrue(shooter.enableTune());
   }
 
   public boolean lowVoltage() {
