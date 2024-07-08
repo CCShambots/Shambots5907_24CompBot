@@ -490,7 +490,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new ParallelCommandGroup(
                 drivetrain.transitionCommand(Drivetrain.State.FIELD_ORIENTED_DRIVE),
                 intake.transitionCommand(Intake.State.IDLE),
-                lights.transitionCommand(Lights.State.INTAKE),
+                lights.transitionCommand(Lights.State.GRAB_RANDOM_NOTE),
                 shooter.transitionCommand(Shooter.State.CHUTE_INTAKE),
                 indexer.transitionCommand(Indexer.State.EXPECT_RING_FRONT)),
             new ParallelCommandGroup(
