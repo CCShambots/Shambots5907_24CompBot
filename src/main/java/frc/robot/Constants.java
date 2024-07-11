@@ -42,7 +42,7 @@ public class Constants {
   public static final boolean ALLOW_TUNING = true;
 
   // Whether to use the old tuning (soft, original notes) or the new tuning (hard, new notes)
-  public static final boolean USE_ORIGINAL_TUNING = false;
+  public static final boolean USE_ORIGINAL_TUNING = true;
 
   public static final double AUTO_TIME = 15;
   public static final double GAP_TIME = 3;
