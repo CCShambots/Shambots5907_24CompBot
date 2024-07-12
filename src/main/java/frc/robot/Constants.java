@@ -274,7 +274,7 @@ public class Constants {
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(18), Math.toRadians(5.5));
-        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(20), Math.toRadians(8));
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(20), Math.toRadians(7.5));
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(22), Math.toRadians(9));
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
         ORIGINAL_SPEAKER_LUT.put(100.0, Math.toRadians(10));
