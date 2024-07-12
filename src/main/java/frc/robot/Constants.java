@@ -549,7 +549,8 @@ public class Constants {
       public static int LOADED_SLOT = 1;
 
       public static double EXTENSION_SETPOINT = 0.54;
-      public static double MINIMUM_EXTENSION_SETPOINT = 0.54 - Units.inchesToMeters(8) + Units.inchesToMeters(2);
+      public static double MINIMUM_EXTENSION_SETPOINT =
+          0.54 - Units.inchesToMeters(8) + Units.inchesToMeters(2);
 
       public static double RETRACT_SETPOINT = 0.0;
 
