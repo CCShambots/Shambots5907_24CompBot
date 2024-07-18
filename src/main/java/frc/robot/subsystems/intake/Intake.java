@@ -38,10 +38,10 @@ public class Intake extends StateMachine<Intake.State> {
             new InstantCommand(() -> io.setBeltTargetVelocity(BELT_SPEED)),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
-                        new WaitCommand(0.5),
-                        new WaitUntilCommand(() -> inputs.velocity < 0.5 * inputs.targetVelocity),
+                        new WaitCommand(1),
+                        new WaitUntilCommand(() -> inputs.velocity < 0.15 * inputs.targetVelocity),
                         new InstantCommand(() -> io.setBeltTargetVelocity(0)),
-                        new WaitCommand(0.2),
+                        new WaitCommand(0.1),
                         new InstantCommand(() -> io.setBeltTargetVelocity(BELT_SPEED)))
                     .repeatedly(),
                 watchProxCommand())));

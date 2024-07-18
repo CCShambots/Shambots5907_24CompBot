@@ -48,7 +48,7 @@ public class Constants {
   }
 
   // Whether to use the old tuning (soft, original notes) or the new tuning (hard, new notes)
-  public static final boolean USE_ORIGINAL_TUNING = false;
+  public static final boolean USE_ORIGINAL_TUNING = true;
 
   public static final double AUTO_TIME = 15;
   public static final double GAP_TIME = 3;
@@ -319,22 +319,21 @@ public class Constants {
 
         // FLYWHEEL LOB VALUES
         HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(50.0, 3500 / 60.0);
-        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(13.0, 3500 / 60.0);
-        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(11.6, 3250 / 60.0);
-        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(10.5, 3250 / 60.0);
-        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(9.3, 2750 / 60.0);
-        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(9.0, 2750 / 60.0);
-        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(7.5, 2750 / 60.0);
-        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(0.0, 3250 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(10.25, 3000 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(9.5, 3000 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(8.75, 2600 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(8.0, 2500 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(7.25, 2400 / 60.0);
+        HARD_FLYWHEEL_LOB_DISTANCE_LUT.put(0.0, 2000 / 60.0);
 
-        // ARM LOB OFFSETS
+        // HARD ARM LOB OFFSETS
         HARD_ARM_LOB_DISTANCE_LUT.put(50.0, 50 * (Math.PI / 180));
-        HARD_ARM_LOB_DISTANCE_LUT.put(11.6, 50 * (Math.PI / 180));
-        HARD_ARM_LOB_DISTANCE_LUT.put(10.5, 50 * (Math.PI / 180));
-        HARD_ARM_LOB_DISTANCE_LUT.put(9.3, 50 * (Math.PI / 180));
-        HARD_ARM_LOB_DISTANCE_LUT.put(9.0, 53 * (Math.PI / 180));
-        HARD_ARM_LOB_DISTANCE_LUT.put(7.5, 59 * (Math.PI / 180));
-        HARD_ARM_LOB_DISTANCE_LUT.put(0.0, 50 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(10.25, 50 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(9.5, 50 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(8.75, 48 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(8.0, 45 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(7.25, 45 * (Math.PI / 180));
+        HARD_ARM_LOB_DISTANCE_LUT.put(0.0, 45 * (Math.PI / 180));
       }
     }
   }
@@ -572,7 +571,8 @@ public class Constants {
       public static int LOADED_SLOT = 1;
 
       public static double EXTENSION_SETPOINT = 0.54;
-      public static double MINIMUM_EXTENSION_SETPOINT = 0.54 - Units.inchesToMeters(8);
+      public static double MINIMUM_EXTENSION_SETPOINT =
+          0.54 - Units.inchesToMeters(8) + Units.inchesToMeters(2);
 
       public static double RETRACT_SETPOINT = 0.0;
 

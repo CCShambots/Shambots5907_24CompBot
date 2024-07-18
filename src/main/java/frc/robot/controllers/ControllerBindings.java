@@ -10,6 +10,11 @@ public interface ControllerBindings {
 
   double getDriveTurnValue();
 
+  default Trigger enterTune() {
+    return new Trigger(() -> false);
+  }
+  ;
+
   Trigger tuningIncrement();
 
   Trigger tuningDecrement();

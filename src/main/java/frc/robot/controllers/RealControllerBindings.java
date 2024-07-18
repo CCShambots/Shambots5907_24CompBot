@@ -174,4 +174,9 @@ public class RealControllerBindings implements ControllerBindings {
   public void setRumble(double rumbleValue) {
     operatorController.getHID().setRumble(RumbleType.kBothRumble, rumbleValue);
   }
+
+  @Override
+  public Trigger enterTune() {
+    return rightFlightStick.button(13);
+  }
 }

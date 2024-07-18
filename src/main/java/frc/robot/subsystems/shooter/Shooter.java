@@ -249,6 +249,11 @@ public class Shooter extends StateMachine<Shooter.State> {
         });
   }
 
+  public Command enableTune() {
+    return new ParallelCommandGroup(
+        arm.transitionCommand(Arm.State.TUNE), flywheel.transitionCommand(Flywheel.State.TUNE));
+  }
+
   public Command partialFlywheelSpinup() {
     return flywheel.transitionCommand(Flywheel.State.PARTIAL_SPINUP);
   }
