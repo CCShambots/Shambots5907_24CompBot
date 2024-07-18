@@ -335,7 +335,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     ChassisSpeeds speeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), robotPose.getRotation());
 
-    Logger.recordOutput("Dirvetrain/Field Relative Speeds", speeds);
+    Logger.recordOutput("Drivetrain/Field Relative Speeds", speeds);
 
     // Where we would functionally be shooting from
     return robotPose.transformBy(

@@ -39,7 +39,13 @@ public class Constants {
   public static final CurrentLimitsConfigs DEFAULT_CURRENT_LIMIT =
       new CurrentLimitsConfigs().withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true);
 
-  public static final boolean ALLOW_TUNING = true;
+  public static final boolean ALLOW_TUNING = false;
+  // Whether to send out all info over NT for logging
+  public static final boolean NT_DEBUGGING = false;
+
+  static {
+    ShamLibConstants.SMF.SEND_STATE_CHOOSERS = NT_DEBUGGING;
+  }
 
   // Whether to use the old tuning (soft, original notes) or the new tuning (hard, new notes)
   public static final boolean USE_ORIGINAL_TUNING = false;
@@ -360,7 +366,10 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Shooter Arm Gains", new PIDSVGains(3, 0, 0, 0.0869, 0.3299), () -> ALLOW_TUNING);
+              "Shooter Arm Gains",
+              new PIDSVGains(3, 0, 0, 0.0869, 0.3299),
+              () -> ALLOW_TUNING,
+              NT_DEBUGGING);
     }
 
     public static final class Settings {
@@ -421,13 +430,17 @@ public class Constants {
 
       public static final LoggedTunablePIDSV GAINS =
           new LoggedTunablePIDSV(
-              "Top Flywheel Gains", new PIDSVGains(0.3, 0, 0, 0.3664, 0.115), () -> ALLOW_TUNING);
+              "Top Flywheel Gains",
+              new PIDSVGains(0.3, 0, 0, 0.3664, 0.115),
+              () -> ALLOW_TUNING,
+              NT_DEBUGGING);
 
       public static final LoggedTunablePIDSV BOTTOM_MOTOR_GAINS =
           new LoggedTunablePIDSV(
               "Bottom Flywheel Gains",
               new PIDSVGains(0.3, 0, 0, 0.3664, 0.107),
-              () -> ALLOW_TUNING);
+              () -> ALLOW_TUNING,
+              NT_DEBUGGING);
 
       public static final double ACCELERATION = 3200;
       public static final double JERK = 500;
@@ -482,7 +495,10 @@ public class Constants {
 
       public static final LoggedTunablePIDSV TOP_GAINS =
           new LoggedTunablePIDSV(
-              "Intake Belt Gains", new PIDSVGains(0.5, 0, 0, 0.2469, 0.1237), () -> ALLOW_TUNING);
+              "Intake Belt Gains",
+              new PIDSVGains(0.5, 0, 0, 0.2469, 0.1237),
+              () -> ALLOW_TUNING,
+              NT_DEBUGGING);
 
       // Amperes
       public static final double TOP_FEEDFORWARD = 10.0;
@@ -528,11 +544,17 @@ public class Constants {
 
       public static final LoggedTunablePIDSV FREE_GAINS =
           new LoggedTunablePIDSV(
-              "Climber Free Gains", new PIDSVGains(.5, 0, 0, 0.1055, 0.11535), () -> ALLOW_TUNING);
+              "Climber Free Gains",
+              new PIDSVGains(.5, 0, 0, 0.1055, 0.11535),
+              () -> ALLOW_TUNING,
+              NT_DEBUGGING);
 
       public static final LoggedTunablePIDSV LOADED_GAINS =
           new LoggedTunablePIDSV(
-              "Climber Loaded Gains", new PIDSVGains(.5, 0, 0, 0.0138, 0.1225), () -> ALLOW_TUNING);
+              "Climber Loaded Gains",
+              new PIDSVGains(.5, 0, 0, 0.0138, 0.1225),
+              () -> ALLOW_TUNING,
+              NT_DEBUGGING);
 
       // all in meters
       public static double FREE_VELOCITY = 5500 / 60.0;
@@ -584,7 +606,10 @@ public class Constants {
 
       public static final LoggedTunablePIDSV BELT_GAINS =
           new LoggedTunablePIDSV(
-              "Indexer Belt Gains", new PIDSVGains(0.25, 0, 0, 0.1454, 0.1204), () -> ALLOW_TUNING);
+              "Indexer Belt Gains",
+              new PIDSVGains(0.25, 0, 0, 0.1454, 0.1204),
+              () -> ALLOW_TUNING,
+              NT_DEBUGGING);
     }
 
     public static final class Settings {

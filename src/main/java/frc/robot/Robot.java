@@ -75,13 +75,17 @@ public class Robot extends LoggedRobot {
     switch (Constants.currentBuildMode) {
       case REAL:
         Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs"));
-        Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+        if (Constants.NT_DEBUGGING) {
+          Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+        }
         powerDist = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
         Logger.setReplaySource(null);
         break;
       case SIM:
         // Running a physics simulator, log to NT
-        Logger.addDataReceiver(new NT4Publisher());
+        if (Constants.NT_DEBUGGING) {
+          Logger.addDataReceiver(new NT4Publisher());
+        }
         break;
       case REPLAY:
         setUseTiming(false); // Run as fast as possible

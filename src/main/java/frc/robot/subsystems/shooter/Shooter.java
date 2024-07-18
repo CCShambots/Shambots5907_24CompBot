@@ -6,7 +6,6 @@ import static frc.robot.Constants.Shooter.Settings.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -77,9 +76,6 @@ public class Shooter extends StateMachine<Shooter.State> {
 
     registerStateCommands();
     registerTransitions();
-
-    SmartDashboard.putData(arm);
-    SmartDashboard.putData(flywheel);
   }
 
   private void registerStateCommands() {
