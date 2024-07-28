@@ -1022,8 +1022,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
 
-    if (selectedAutoKey.equals("4 Note")) runningDelayPathfindAuto.set(true);
+    if (selectedAutoKey.equals("4 Note Adaptive")) runningDelayPathfindAuto.set(true);
     if (selectedAutoKey.equals("5 Note Adaptive")) runningDelayPathfindAuto.set(true);
+    if (selectedAutoKey.equals("2 Spike Center Adaptive")) runningDelayPathfindAuto.set(true);
 
     Logger.recordOutput("RobotContainer/AutoKey", selectedAutoKey);
 
