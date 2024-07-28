@@ -42,11 +42,13 @@ public class AutoStageSelectCommand extends Command {
   }
 
   private Translation2d getTrapPos(StageSide side) {
+
+    boolean flip = AllianceManager.getAlliance() == Alliance.Red;
     switch (side) {
       case LEFT:
-        return handleFlip(Constants.PhysicalConstants.BLUE_LEFT_TRAP).getTranslation();
+        return handleFlip(!flip ? Constants.PhysicalConstants.BLUE_LEFT_TRAP : Constants.PhysicalConstants.BLUE_RIGHT_TRAP).getTranslation();
       case RIGHT:
-        return handleFlip(Constants.PhysicalConstants.BLUE_RIGHT_TRAP).getTranslation();
+        return handleFlip(!flip ? Constants.PhysicalConstants.BLUE_RIGHT_TRAP : Constants.PhysicalConstants.BLUE_LEFT_TRAP).getTranslation();
       case CENTER:
         return handleFlip(Constants.PhysicalConstants.BLUE_CENTER_TRAP).getTranslation();
       default:
