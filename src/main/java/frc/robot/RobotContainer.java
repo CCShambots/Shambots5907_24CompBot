@@ -34,6 +34,7 @@ import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOReal;
 import frc.robot.subsystems.climbers.ClimberIOSim;
 import frc.robot.subsystems.climbers.Climbers;
+import frc.robot.subsystems.drivetrain.AutoStageSelectCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
@@ -89,6 +90,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   // Configuration variables that can be adjusted in game
   @AutoLogOutput private StageSide targetStageSide = StageSide.CENTER;
+  private boolean hasSetStageSideManually = false;
   private boolean poseWorking = true;
   private boolean autoIntakeWorking = true;
   private Shooter.State autoLobState = Shooter.State.LOB_ACTIVE_ADJUST;
@@ -583,6 +585,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             lights.transitionCommand(Lights.State.CLIMB),
             shooter.flywheelSpinDown(),
             climbers.transitionCommand(Climbers.State.FREE_EXTEND),
+            new ConditionalCommand(
+                new AutoStageSelectCommand(
+                    (StageSide side) -> setTargetStageSide(side, false),
+                    drivetrain::getBotPose,
+                    () -> hasSetStageSideManually || !poseWorking),
+                new InstantCommand(),
+                () -> poseWorking),
             new SequentialCommandGroup(
                 new WaitUntilCommand(controllerBindings.retractClimb()),
                 climbers.transitionCommand(Climbers.State.LOADED_RETRACT),
@@ -896,7 +905,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   private void setTargetStageSide(StageSide newSide) {
+    setTargetStageSide(newSide, true);
+  }
+
+  private void setTargetStageSide(StageSide newSide, boolean manual) {
     targetStageSide = newSide;
+    if (manual) hasSetStageSideManually = true;
   }
 
   private ClimberIO getLeftClimberIO() {
