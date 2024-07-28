@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.199067125406978,
+        "y": 4.0989248483687275
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.1990671254069794,
+        "y": 4.0989248483687275
+      },
+      "isLocked": false,
+      "linkedName": "New Source Start"
+    },
+    {
+      "anchor": {
+        "x": 6.524631457567414,
+        "y": 0.710695179175825
+      },
+      "prevControl": {
+        "x": 5.524631457567414,
+        "y": 0.710695179175825
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Note 4 Vision Start"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.25,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 2.5,
+    "rotation": 180.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "BETWEEN NOTES",
+  "previewStartingState": {
+    "rotation": 140.01311375503585,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

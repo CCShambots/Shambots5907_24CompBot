@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.199067125406978,
+        "y": 4.0989248483687275
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.2864775575481617,
+        "y": 3.9852912865851886
+      },
+      "isLocked": false,
+      "linkedName": "New Source Start"
+    },
+    {
+      "anchor": {
+        "x": 2.695702996942326,
+        "y": 4.0989248483687275
+      },
+      "prevControl": {
+        "x": 2.264478198379153,
+        "y": 4.087270124083236
+      },
+      "nextControl": {
+        "x": 3.1269277955054986,
+        "y": 4.110579572654219
+      },
+      "isLocked": false,
+      "linkedName": "Note 1 Start"
+    },
+    {
+      "anchor": {
+        "x": 2.2998591451728356,
+        "y": 4.0989248483687275
+      },
+      "prevControl": {
+        "x": 2.549255355189198,
+        "y": 4.081560216801245
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Source Spike End"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3,
+      "rotationDegrees": 177.86687379817874,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.25,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 161.93490253403414,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "BETWEEN NOTES",
+  "previewStartingState": {
+    "rotation": 147.18863320193194,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
