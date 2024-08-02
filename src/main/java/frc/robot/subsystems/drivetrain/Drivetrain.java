@@ -151,8 +151,7 @@ public class Drivetrain extends StateMachine<Drivetrain.State> {
     registerStateCommand(
         State.CALCULATE_WHEEL_RADIUS,
         new SequentialCommandGroup(
-            drive.getCalculateWheelRadiusCommand(
-                0.04942946369018648 /*wheel radius in mk4i as of this commit*/),
+            drive.getCalculateWheelRadiusCommand(),
             transitionCommand(State.IDLE)));
 
     registerStateCommand(

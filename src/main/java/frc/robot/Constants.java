@@ -692,6 +692,8 @@ public class Constants {
       public static final double ROTATION_RADIUS =
           Math.sqrt(Math.pow(TRACK_WIDTH / 2.0, 2) + Math.pow(WHEEL_BASE / 2.0, 2)) * 2 * Math.PI;
 
+      public static final double WHEEL_RADIUS = 0.05032236975010011;
+
       public static final String MODULE_CAN_BUS = "*";
       public static final String GYRO_CAN_BUS = "*";
 
@@ -699,6 +701,7 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
+              WHEEL_RADIUS,
               20, // DRIVE MOTOR ID
               21, // TURN MOTOR ID
               20, // ENCODER ID
@@ -713,6 +716,7 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
+              WHEEL_RADIUS,
               22, // DRIVE MOTOR ID
               23, // TURN MOTOR ID
               21, // ENCODER ID
@@ -727,6 +731,7 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
+              WHEEL_RADIUS,
               24, // DRIVE MOTOR ID
               25, // TURN MOTOR ID
               22, // ENCODER ID
@@ -741,6 +746,7 @@ public class Constants {
           ModuleInfo.generateModuleInfo(
               ModuleInfo.SwerveModuleType.MK4i,
               ModuleInfo.SwerveModuleSpeedLevel.L3,
+              WHEEL_RADIUS,
               26, // DRIVE MOTOR ID
               27, // TURN MOTOR ID
               23, // ENCODER ID
@@ -891,6 +897,7 @@ public class Constants {
       SWERVE_CONFIG.maxModuleTurnVelo = MAX_MODULE_TURN_SPEED;
       SWERVE_CONFIG.maxModuleTurnAccel = MAX_MODULE_TURN_ACCELERATION;
       SWERVE_CONFIG.moduleCanbus = MODULE_CAN_BUS;
+      SWERVE_CONFIG.wheelRadius = WHEEL_RADIUS;
 
       SWERVE_CONFIG.standardSpeedLimits = MAX_SPEED;
 
