@@ -369,7 +369,7 @@ public class Constants {
 
       public static final double POSITION_READY_TOLERANCE = 2 * (Math.PI / 180); // RAD
 
-      public static final double BASE_SHOT_POSITION = 59 * (Math.PI / 180); // RAD
+      public static final double BASE_SHOT_POSITION = 55 * (Math.PI / 180); // RAD - originally 59
       public static final double AUTO_START_POSITION = 55 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
