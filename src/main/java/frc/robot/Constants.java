@@ -42,7 +42,7 @@ public class Constants {
   public static final boolean ALLOW_TUNING = true;
 
   // Whether to use the old tuning (soft, original notes) or the new tuning (hard, new notes)
-  public static final boolean USE_ORIGINAL_TUNING = true;
+  public static final boolean USE_ORIGINAL_TUNING = false;
 
   public static final double AUTO_TIME = 15;
   public static final double GAP_TIME = 3;
@@ -264,8 +264,8 @@ public class Constants {
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 4000 / 60.0);
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(Units.feetToMeters(5), 4000 / 60.0);
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(
-            Units.feetToMeters(10), Flywheel.Settings.BASE_SHOT_VELOCITY);
-        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
+            Units.feetToMeters(10), Flywheel.Settings.PARTIAL_SPINUP_VELOCITY);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(20.0, Flywheel.Settings.PARTIAL_SPINUP_VELOCITY);
 
         // ARM SPEAKER OFFSETS
         ORIGINAL_SPEAKER_LUT.put(0.0, 0.0);
@@ -435,9 +435,9 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BASE_SHOT_VELOCITY = 5520 / 60.0; // RPS
+      public static final double BASE_SHOT_VELOCITY = 3970 / 60.0; // RPS
 
-      public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 1;
+      public static final double PARTIAL_SPINUP_VELOCITY = 5520 / 60.0; // RPS
 
       public static final double SPIN_UP_READY_TOLERANCE = 5; // RPS
 
@@ -702,7 +702,7 @@ public class Constants {
               20, // DRIVE MOTOR ID
               21, // TURN MOTOR ID
               20, // ENCODER ID
-              -109.4, // ENCODER OFFSET
+              -109.25, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true, // DRIVE MOTOR INVERTED
