@@ -17,17 +17,17 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public double getDriveXValue() {
-    return -leftFlightStick.getY();
+    return -rightFlightStick.getY();
   }
 
   @Override
   public double getDriveYValue() {
-    return -leftFlightStick.getX();
+    return -rightFlightStick.getX();
   }
 
   @Override
   public double getDriveTurnValue() {
-    return -rightFlightStick.getRawAxis(0);
+    return -leftFlightStick.getRawAxis(0);
   }
 
   @Override
@@ -97,7 +97,7 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger resetVisionPose() {
-    return leftFlightStick.topRight();
+    return rightFlightStick.topRight();
   }
 
   @Override
@@ -167,7 +167,7 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public Trigger resetGyro() {
-    return leftFlightStick.topLeft();
+    return rightFlightStick.topLeft();
   }
 
   @Override
