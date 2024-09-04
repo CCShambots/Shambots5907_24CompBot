@@ -136,6 +136,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         () -> ringSomewhereInBot());
   }
 
+  public void aim() {
   public RobotContainer(EventLoop checkModulesLoop, PowerDistribution pd) {
     super("RobotContainer", State.UNDETERMINED, State.class);
 
@@ -364,6 +365,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 Shoot")),
                     new InstantCommand(
+                    new InstantCommand(
                         () -> {
                           fireSequence();
                         }),
@@ -377,6 +379,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new ConditionalCommand(
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 Shoot")),
+                    new InstantCommand(
                     new InstantCommand(
                         () -> {
                           fireSequence();
