@@ -11,6 +11,7 @@ import static frc.robot.Constants.Vision.Settings.RIGHT_SHOOTER_CAM_SETTINGS;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -101,6 +102,39 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   private GenericEntry tuningHoodAngle;
   private GenericEntry tuningFlywheelSpeed;
+
+  public void visionIntake() {
+    new SequentialCommandGroup(
+        drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+        drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
+        indexer
+            .waitForState(Indexer.State.INDEXING)
+            .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
+            .raceWith(
+                new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
+            .withTimeout(3),
+        drivetrain.transitionCommand(Drivetrain.State.IDLE),
+        drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
+  }
+
+  public void fireSequence() {
+    new ConditionalCommand(
+        new SequentialCommandGroup(
+            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
+            intake.transitionCommand(Intake.State.IDLE, false),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
+            new ParallelCommandGroup(
+                intake.transitionCommand(Intake.State.INTAKE, false),
+                new InstantCommand(
+                    () -> {
+                      new SequentialCommandGroup(
+                              indexer.waitForState(Indexer.State.IDLE),
+                              indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
+                          .schedule();
+                    }))),
+        new InstantCommand(),
+        () -> ringSomewhereInBot());
+  }
 
   public RobotContainer(EventLoop checkModulesLoop, PowerDistribution pd) {
     super("RobotContainer", State.UNDETERMINED, State.class);
@@ -322,6 +356,38 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 .withTimeout(3),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
+
+    NamedCommands.registerCommand(
+        "farSkip1",
+        new SequentialCommandGroup(
+            new ConditionalCommand(
+                new SequentialCommandGroup(
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 Shoot")),
+                    new InstantCommand(
+                        () -> {
+                          fireSequence();
+                        }),
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5"))),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5 Skip")),
+                () -> indexer.getState() == Indexer.State.HOLDING_RING),
+            new InstantCommand(
+                () -> {
+                  visionIntake();
+                }),
+            new ConditionalCommand(
+                new SequentialCommandGroup(
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 Shoot")),
+                    new InstantCommand(
+                        () -> {
+                          fireSequence();
+                        }),
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6"))),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6 Skip")),
+                () -> indexer.getState() == Indexer.State.HOLDING_RING),
+            new InstantCommand(
+                () -> {
+                  visionIntake();
+                })));
 
     NamedCommands.registerCommand(
         "feedVisionIntake",
