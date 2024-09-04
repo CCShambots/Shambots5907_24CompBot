@@ -41,7 +41,7 @@ public class Intake extends StateMachine<Intake.State> {
                         new WaitCommand(1),
                         new WaitUntilCommand(() -> inputs.velocity < 0.15 * inputs.targetVelocity),
                         new InstantCommand(() -> io.setBeltTargetVelocity(0)),
-                        new WaitCommand(0.1),
+                        new WaitCommand(0.25),
                         new InstantCommand(() -> io.setBeltTargetVelocity(BELT_SPEED)))
                     .repeatedly(),
                 watchProxCommand())));
