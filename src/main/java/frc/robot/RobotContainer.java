@@ -103,51 +103,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private GenericEntry tuningHoodAngle;
   private GenericEntry tuningFlywheelSpeed;
 
-  public void visionIntake() {
-    new SequentialCommandGroup(
-        drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
-        drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
-        indexer
-            .waitForState(Indexer.State.INDEXING)
-            .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
-            .raceWith(
-                new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
-            .withTimeout(3),
-        drivetrain.transitionCommand(Drivetrain.State.IDLE),
-        drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
-  }
-
-  public void fireSequence() {
-    new ConditionalCommand(
-        new SequentialCommandGroup(
-            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
-            intake.transitionCommand(Intake.State.IDLE, false),
-            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
-            new ParallelCommandGroup(
-                intake.transitionCommand(Intake.State.INTAKE, false),
-                new InstantCommand(
-                    () -> {
-                      new SequentialCommandGroup(
-                              indexer.waitForState(Indexer.State.IDLE),
-                              indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
-                          .schedule();
-                    }))),
-        new InstantCommand(),
-        () -> ringSomewhereInBot());
-  }
-
-  public void aim() {
-    new SequentialCommandGroup(
-            drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
-            new WaitCommand(0.25),
-            new ParallelCommandGroup(
-                    drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE),
-                    shooter.waitForFlag(Shooter.State.READY))
-                .withTimeout(0.25),
-            drivetrain.transitionCommand(Drivetrain.State.IDLE),
-            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
-  }
-
   public RobotContainer(EventLoop checkModulesLoop, PowerDistribution pd) {
     super("RobotContainer", State.UNDETERMINED, State.class);
 
@@ -369,6 +324,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
+    //We create a command that we can run in PathPlanner. The command contains logic to allow for a skip sequence. This is the source side, used for the source side autons.
+    
     NamedCommands.registerCommand(
         "sourceSideSkip",
         new SequentialCommandGroup(
@@ -408,6 +365,68 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 () -> {
                   visionIntake();
                 })));
+
+    //We create a command that we can run in PathPlanner. The command contains logic to allow for a skip sequence. This is the amp side, used for both the Bypass and Amp side autons.
+
+    NamedCommands.registerCommand(
+        "ampSideSkip", 
+        new SequentialCommandGroup(
+            new ConditionalCommand(
+                new SequentialCommandGroup(
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("Shoot 8")),
+                    new InstantCommand(
+                        () -> {
+                            aim();
+                        }),
+                    new InstantCommand(
+                        () -> {
+                            fireSequence();
+                        }),
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))
+                ), 
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")), 
+                () -> indexer.getState() == Indexer.State.HOLDING_RING),
+            
+            new InstantCommand(
+                () -> {
+                    visionIntake();
+                }),
+            new ConditionalCommand(
+                new SequentialCommandGroup(
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Shoot")),
+                    new InstantCommand(
+                        () -> {
+                            aim();
+                        }),
+                    new InstantCommand(
+                        () -> {
+                            fireSequence();
+                        }),
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Amp Side to 6")),
+                    new InstantCommand(
+                        () -> {
+                            visionIntake();
+                        })
+                ), 
+                new SequentialCommandGroup(
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
+                    new InstantCommand(
+                        () -> {
+                            visionIntake();
+                        }),
+                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
+                    new InstantCommand(
+                        () -> {
+                            aim();
+                        }),
+                    new InstantCommand(
+                        () -> {
+                            fireSequence();
+                        })
+                ), 
+                () -> indexer.getState() == Indexer.State.HOLDING_RING)
+        )
+    );
 
     NamedCommands.registerCommand(
         "feedVisionIntake",
@@ -831,6 +850,51 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   public void alignSwerveModules() {
     drivetrain.alignModules();
+  }
+
+  private void visionIntake() {
+    new SequentialCommandGroup(
+        drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+        drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
+        indexer
+            .waitForState(Indexer.State.INDEXING)
+            .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
+            .raceWith(
+                new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
+            .withTimeout(3),
+        drivetrain.transitionCommand(Drivetrain.State.IDLE),
+        drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
+  }
+
+  private void fireSequence() {
+    new ConditionalCommand(
+        new SequentialCommandGroup(
+            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
+            intake.transitionCommand(Intake.State.IDLE, false),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
+            new ParallelCommandGroup(
+                intake.transitionCommand(Intake.State.INTAKE, false),
+                new InstantCommand(
+                    () -> {
+                      new SequentialCommandGroup(
+                              indexer.waitForState(Indexer.State.IDLE),
+                              indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
+                          .schedule();
+                    }))),
+        new InstantCommand(),
+        () -> ringSomewhereInBot());
+  }
+
+  private void aim() {
+    new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
+            new WaitCommand(0.25),
+            new ParallelCommandGroup(
+                    drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE),
+                    shooter.waitForFlag(Shooter.State.READY))
+                .withTimeout(0.25),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
   }
 
   private void configureTriggerBindings() {
