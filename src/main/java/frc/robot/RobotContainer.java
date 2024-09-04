@@ -324,8 +324,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
-    //We create a command that we can run in PathPlanner. The command contains logic to allow for a skip sequence. This is the source side, used for the source side autons.
-    
+    // We create a command that we can run in PathPlanner. The command contains logic to allow for a
+    // skip sequence. This is the source side, used for the source side autons.
+
     NamedCommands.registerCommand(
         "sourceSideSkip",
         new SequentialCommandGroup(
@@ -346,38 +347,57 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6"))),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6 Skip")),
                 () -> indexer.getState() == Indexer.State.HOLDING_RING),
-            visionIntake()));
+            new InstantCommand(
+                () -> {
+                  visionIntake();
+                })));
 
-    //We create a command that we can run in PathPlanner. The command contains logic to allow for a skip sequence. This is the amp side, used for both the Bypass and Amp side autons.
+    // We create a command that we can run in PathPlanner. The command contains logic to allow for a
+    // skip sequence. This is the amp side, used for both the Bypass and Amp side autons.
 
     NamedCommands.registerCommand(
-        "ampSideSkip", 
+        "ampSideSkip",
         new SequentialCommandGroup(
             new ConditionalCommand(
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("Shoot 8")),
-                    aim(),
-                    fireSequence(),
+                    new InstantCommand(
+                        () -> {
+                            aim();
+                        }),
+                    new InstantCommand(
+                        () -> {
+                            fireSequence();
+                        }),
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))
                 ), 
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")), 
                 () -> indexer.getState() == Indexer.State.HOLDING_RING),
             
-            visionIntake(),
+            new InstantCommand(
+                () -> {
+                    visionIntake();
+                }),
             new ConditionalCommand(
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Shoot")),
                     aim(),
                     fireSequence(),
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Amp Side to 6")),
-                    visionIntake(),
+                    visionIntake()
                 ), 
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
                     visionIntake(),
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
-                    aim(),
-                    fireSequence(),
+                    new InstantCommand(
+                        () -> {
+                            aim();
+                        }),
+                    new InstantCommand(
+                        () -> {
+                            fireSequence();
+                        })
                 ), 
                 () -> indexer.getState() == Indexer.State.HOLDING_RING)
         )
