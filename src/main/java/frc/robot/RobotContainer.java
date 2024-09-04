@@ -358,7 +358,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
 
     NamedCommands.registerCommand(
-        "farSkip1",
+        "sourceSideSkip",
         new SequentialCommandGroup(
             new ConditionalCommand(
                 new SequentialCommandGroup(
