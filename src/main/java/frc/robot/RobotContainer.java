@@ -332,39 +332,21 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new ConditionalCommand(
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 Shoot")),
-                    new InstantCommand(
-                        () -> {
-                          aim();
-                        }),
-                    new InstantCommand(
-                        () -> {
-                          fireSequence();
-                        }),
+                    aim(),
+                    fireSequence(),
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5"))),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5 Skip")),
                 () -> indexer.getState() == Indexer.State.HOLDING_RING),
-            new InstantCommand(
-                () -> {
-                  visionIntake();
-                }),
+            visionIntake(),
             new ConditionalCommand(
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 Shoot")),
-                    new InstantCommand(
-                        () -> {
-                          aim();
-                        }),
-                    new InstantCommand(
-                        () -> {
-                          fireSequence();
-                        }),
+                    aim(),
+                    fireSequence(),
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6"))),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6 Skip")),
                 () -> indexer.getState() == Indexer.State.HOLDING_RING),
-            new InstantCommand(
-                () -> {
-                  visionIntake();
-                })));
+            visionIntake()));
 
     //We create a command that we can run in PathPlanner. The command contains logic to allow for a skip sequence. This is the amp side, used for both the Bypass and Amp side autons.
 
@@ -374,55 +356,28 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new ConditionalCommand(
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("Shoot 8")),
-                    new InstantCommand(
-                        () -> {
-                            aim();
-                        }),
-                    new InstantCommand(
-                        () -> {
-                            fireSequence();
-                        }),
+                    aim(),
+                    fireSequence(),
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))
                 ), 
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")), 
                 () -> indexer.getState() == Indexer.State.HOLDING_RING),
             
-            new InstantCommand(
-                () -> {
-                    visionIntake();
-                }),
+            visionIntake(),
             new ConditionalCommand(
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Shoot")),
-                    new InstantCommand(
-                        () -> {
-                            aim();
-                        }),
-                    new InstantCommand(
-                        () -> {
-                            fireSequence();
-                        }),
+                    aim(),
+                    fireSequence(),
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Amp Side to 6")),
-                    new InstantCommand(
-                        () -> {
-                            visionIntake();
-                        })
+                    visionIntake(),
                 ), 
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
-                    new InstantCommand(
-                        () -> {
-                            visionIntake();
-                        }),
+                    visionIntake(),
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
-                    new InstantCommand(
-                        () -> {
-                            aim();
-                        }),
-                    new InstantCommand(
-                        () -> {
-                            fireSequence();
-                        })
+                    aim(),
+                    fireSequence(),
                 ), 
                 () -> indexer.getState() == Indexer.State.HOLDING_RING)
         )
@@ -852,8 +807,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     drivetrain.alignModules();
   }
 
-  private void visionIntake() {
-    new SequentialCommandGroup(
+  private Command visionIntake() {
+    return new SequentialCommandGroup(
         drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
         drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
         indexer
@@ -866,8 +821,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
   }
 
-  private void fireSequence() {
-    new ConditionalCommand(
+  private Command fireSequence() {
+    return new ConditionalCommand(
         new SequentialCommandGroup(
             indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
             intake.transitionCommand(Intake.State.IDLE, false),
@@ -885,8 +840,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         () -> ringSomewhereInBot());
   }
 
-  private void aim() {
-    new SequentialCommandGroup(
+  private Command aim() {
+    return new SequentialCommandGroup(
             drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
             new WaitCommand(0.25),
             new ParallelCommandGroup(
