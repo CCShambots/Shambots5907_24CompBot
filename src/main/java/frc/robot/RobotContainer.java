@@ -137,6 +137,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   public void aim() {
+    new SequentialCommandGroup(
+            drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
+            new WaitCommand(0.25),
+            new ParallelCommandGroup(
+                    drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE),
+                    shooter.waitForFlag(Shooter.State.READY))
+                .withTimeout(0.25),
+            drivetrain.transitionCommand(Drivetrain.State.IDLE),
+            drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
+  }
+
   public RobotContainer(EventLoop checkModulesLoop, PowerDistribution pd) {
     super("RobotContainer", State.UNDETERMINED, State.class);
 
@@ -365,6 +376,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 Shoot")),
                     new InstantCommand(
+                        () -> {
+                          aim();
+                        }),
                     new InstantCommand(
                         () -> {
                           fireSequence();
@@ -380,6 +394,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 new SequentialCommandGroup(
                     AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 Shoot")),
                     new InstantCommand(
+                        () -> {
+                          aim();
+                        }),
                     new InstantCommand(
                         () -> {
                           fireSequence();
