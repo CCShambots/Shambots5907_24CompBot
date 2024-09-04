@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
@@ -93,6 +94,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private boolean poseWorking = true;
   private boolean autoIntakeWorking = true;
   private Shooter.State autoLobState = Shooter.State.LOB_ACTIVE_ADJUST;
+  private SendableChooser<Command> skipCommandChooser;
 
   // Track whether the bot has been enabled for autonomous check lights
   private boolean hasBeenEnabled = false;
@@ -323,61 +325,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 .withTimeout(3),
             drivetrain.transitionCommand(Drivetrain.State.IDLE),
             drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY)));
-
-    // We create a command that we can run in PathPlanner. The command contains logic to allow for a
-    // skip sequence. This is the source side, used for the source side autons.
-
-    NamedCommands.registerCommand(
-        "sourceSideSkip",
-        new SequentialCommandGroup(
-            new ConditionalCommand(
-                new SequentialCommandGroup(
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 Shoot")),
-                    aim(),
-                    fireSequence(),
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5"))),
-                AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5 Skip")),
-                () -> indexer.getState() == Indexer.State.HOLDING_RING),
-            visionIntake(),
-            new ConditionalCommand(
-                new SequentialCommandGroup(
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 Shoot")),
-                    aim(),
-                    fireSequence(),
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6"))),
-                AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6 Skip")),
-                () -> indexer.getState() == Indexer.State.HOLDING_RING),
-            visionIntake()));
-
-    // We create a command that we can run in PathPlanner. The command contains logic to allow for a
-    // skip sequence. This is the amp side, used for both the Bypass and Amp side autons.
-
-    NamedCommands.registerCommand(
-        "ampSideSkip",
-        new SequentialCommandGroup(
-            new ConditionalCommand(
-                new SequentialCommandGroup(
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("Shoot 8")),
-                    aim(),
-                    fireSequence(),
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))),
-                AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")),
-                () -> indexer.getState() == Indexer.State.HOLDING_RING),
-            visionIntake(),
-            new ConditionalCommand(
-                new SequentialCommandGroup(
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Shoot")),
-                    aim(),
-                    fireSequence(),
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Amp Side to 6")),
-                    visionIntake()),
-                new SequentialCommandGroup(
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
-                    visionIntake(),
-                    AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
-                    aim(),
-                    fireSequence()),
-                () -> indexer.getState() == Indexer.State.HOLDING_RING)));
 
     NamedCommands.registerCommand(
         "feedVisionIntake",
@@ -848,6 +795,69 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
   }
 
+  // Skip Autonomous commands to be run seperate from pathplanner
+  
+  // Far Side Skip original route title
+  // This command contains logic to allow for a skip sequence. This is the source side, used for the
+  // source side autons.
+  private Command sourceSideSkip() {
+    return new SequentialCommandGroup(
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Far Start to Preload")),
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Source Preload to 4")),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 Shoot")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5"))),
+            AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5 Skip")),
+            () -> indexer.getState() == Indexer.State.HOLDING_RING),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 Shoot")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6"))),
+            AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6 Skip")),
+            () -> indexer.getState() == Indexer.State.HOLDING_RING),
+        visionIntake());
+  }
+
+  // Bypass Skip original route title
+  // This command contains logic to allow for a skip sequence. This is the amp side, used for both
+  // the Bypass and Amp side autons.
+  private Command ampSideSkip() {
+    return new SequentialCommandGroup(
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Bypass Start")),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("Shoot 8")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))),
+            AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")),
+            () -> indexer.getState() == Indexer.State.HOLDING_RING),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Shoot")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Amp Side to 6")),
+                visionIntake()),
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
+                visionIntake(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
+                aim(),
+                fireSequence()),
+            () -> indexer.getState() == Indexer.State.HOLDING_RING));
+  }
+
   private void configureTriggerBindings() {
 
     controllerBindings.resetGyro().onTrue(drivetrain.resetFieldOrientedTele());
@@ -1117,7 +1127,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     closeFourNoteDelay = delaySlider.getDouble(closeFourNoteDelay);
 
-    Command selectedAutoCommand = autoChooser.get();
+    // get selected auto type, pathplanner or skip
+    Boolean pathplannerSelected = skipCommandChooser.getSelected().equals(new InstantCommand());
+
+    Command selectedAutoCommand;
+    if(pathplannerSelected){
+        selectedAutoCommand = autoChooser.get();
+    }
+    else{
+        selectedAutoCommand = skipCommandChooser.getSelected();
+    }
 
     String selectedAutoKey = autoChooser.getSendableChooser().getSelected();
 
@@ -1260,7 +1279,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     ShuffleboardTab testTab = Shuffleboard.getTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
     ShuffleboardTab tuningTab = Shuffleboard.getTab(Constants.Controller.TUNE_SHUFFLEBOARD_TAB_ID);
 
-    autoTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(2, 0).withSize(2, 1);
+    // set up skipCommandChooser
+    skipCommandChooser.addOption("Pathplanner Route", new InstantCommand());
+    skipCommandChooser.addOption("Far Side Skip", sourceSideSkip());
+    skipCommandChooser.addOption("Bypass Skip", ampSideSkip());
+
+    autoTab.add("Pathplanner Auto Route", autoChooser.getSendableChooser()).withPosition(2, 0).withSize(2, 1);
+    autoTab
+        .add("Base Auto", skipCommandChooser)
+        .withPosition(2, 3)
+        .withSize(2, 1);
 
     autoTab
         .addString("ALLIANCE", () -> AllianceManager.getAlliance().name())
