@@ -116,6 +116,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
       controllerBindings = new RealControllerBindings();
     }
 
+    skipCommandChooser = new SendableChooser<Command>();
+
     intake =
         new Intake(
             getIntakeIO(controllerBindings.simProx1()),
