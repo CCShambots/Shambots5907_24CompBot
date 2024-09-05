@@ -800,9 +800,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   // Skip Autonomous commands to be run seperate from pathplanner
   
   // Far Side Skip original route title
-  // This command contains logic to allow for a skip sequence. This is the source side, used for the
-  // source side autons.
-  private Command sourceSideSkip() {
+  private Command farSideSkip() {
     return new SequentialCommandGroup(
         AutoBuilder.followPath(PathPlannerPath.fromPathFile("Far Start to Preload")),
         fireSequence(),
@@ -829,11 +827,44 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   // Bypass Skip original route title
-  // This command contains logic to allow for a skip sequence. This is the amp side, used for both
-  // the Bypass and Amp side autons.
-  private Command ampSideSkip() {
+  private Command bypassSkip() {
     return new SequentialCommandGroup(
         AutoBuilder.followPath(PathPlannerPath.fromPathFile("Bypass Start")),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("Shoot 8")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))),
+            AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")),
+            () -> indexer.getState() == Indexer.State.HOLDING_RING),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Shoot")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Amp Side to 6")),
+                visionIntake()),
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
+                visionIntake(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
+                aim(),
+                fireSequence()),
+            () -> indexer.getState() == Indexer.State.HOLDING_RING));
+  }
+
+  // Amp Side Skip original route
+  private Command ampSideSkip() {
+    return new SequentialCommandGroup(
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp Start to Preload")),
+        fireSequence(),
+        visionIntake(),
+        aim(),
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("3 to 8")),
         visionIntake(),
         new ConditionalCommand(
             new SequentialCommandGroup(
@@ -1283,8 +1314,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     // set up skipCommandChooser
     skipCommandChooser.addOption("Pathplanner Route", new InstantCommand());
-    skipCommandChooser.addOption("Far Side Skip", sourceSideSkip());
-    skipCommandChooser.addOption("Bypass Skip", ampSideSkip());
+    skipCommandChooser.addOption("Far Side Skip", farSideSkip());
+    skipCommandChooser.addOption("Amp Side Skip", ampSideSkip());
+    skipCommandChooser.addOption("Bypass Skip", bypassSkip());
 
     autoTab.add("Pathplanner Auto Route", autoChooser.getSendableChooser()).withPosition(2, 0).withSize(2, 1);
     autoTab
