@@ -509,6 +509,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     new WaitUntilCommand(
                         () ->
                             indexer.getState() == Indexer.State.HOLDING_RING
+                                || indexer.getState() == Indexer.State.PASS_THROUGH
+                                || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+                                || intake.ringPresent()
                                 || indexer.getState() == Indexer.State.LOST_RING),
                     new InstantCommand(
                         () -> {
@@ -530,6 +533,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 new WaitUntilCommand(
                     () ->
                         indexer.getState() == Indexer.State.HOLDING_RING
+                            || indexer.getState() == Indexer.State.PASS_THROUGH
+                            || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+                            || intake.ringPresent()
                             || indexer.getState() == Indexer.State.LOST_RING))
             .andThen(transitionCommand(State.TRAVERSING)));
 
@@ -727,8 +733,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     return new RunCommand(
         () -> {
           if (shooter.isFlag(Shooter.State.READY)
-              && drivetrain.isFlag(Drivetrain.State.AT_ANGLE)
-              && indexer.getState() == Indexer.State.HOLDING_RING) {
+                  && drivetrain.isFlag(Drivetrain.State.AT_ANGLE)
+                  && indexer.getState() == Indexer.State.HOLDING_RING
+              || indexer.getState() == Indexer.State.PASS_THROUGH
+              || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+              || intake.ringPresent()) {
             lights.requestTransition(Lights.State.READY);
           } else {
             lights.requestTransition(alt);
@@ -798,7 +807,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   }
 
   // Skip Autonomous commands to be run seperate from pathplanner
-  
+
   // Far Side Skip original route title
   private Command farSideSkip() {
     return new SequentialCommandGroup(
@@ -813,7 +822,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 fireSequence(),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5"))),
             AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5 Skip")),
-            () -> indexer.getState() == Indexer.State.HOLDING_RING),
+            () ->
+                indexer.getState() == Indexer.State.HOLDING_RING
+                    || indexer.getState() == Indexer.State.PASS_THROUGH
+                    || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+                    || intake.ringPresent()),
         visionIntake(),
         new ConditionalCommand(
             new SequentialCommandGroup(
@@ -822,7 +835,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 fireSequence(),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6"))),
             AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6 Skip")),
-            () -> indexer.getState() == Indexer.State.HOLDING_RING),
+            () ->
+                indexer.getState() == Indexer.State.HOLDING_RING
+                    || indexer.getState() == Indexer.State.PASS_THROUGH
+                    || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+                    || intake.ringPresent()),
         visionIntake());
   }
 
@@ -838,7 +855,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 fireSequence(),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))),
             AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")),
-            () -> indexer.getState() == Indexer.State.HOLDING_RING),
+            () ->
+                indexer.getState() == Indexer.State.HOLDING_RING
+                    || indexer.getState() == Indexer.State.PASS_THROUGH
+                    || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+                    || intake.ringPresent()),
         visionIntake(),
         new ConditionalCommand(
             new SequentialCommandGroup(
@@ -853,7 +874,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
                 aim(),
                 fireSequence()),
-            () -> indexer.getState() == Indexer.State.HOLDING_RING));
+            () ->
+                indexer.getState() == Indexer.State.HOLDING_RING
+                    || indexer.getState() == Indexer.State.PASS_THROUGH
+                    || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+                    || intake.ringPresent()));
   }
 
   // Amp Side Skip original route
@@ -873,7 +898,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 fireSequence(),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))),
             AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")),
-            () -> indexer.getState() == Indexer.State.HOLDING_RING),
+            () ->
+                indexer.getState() == Indexer.State.HOLDING_RING
+                    || indexer.getState() == Indexer.State.PASS_THROUGH
+                    || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+                    || intake.ringPresent()),
         visionIntake(),
         new ConditionalCommand(
             new SequentialCommandGroup(
@@ -888,7 +917,11 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
                 aim(),
                 fireSequence()),
-            () -> indexer.getState() == Indexer.State.HOLDING_RING));
+            () ->
+                indexer.getState() == Indexer.State.HOLDING_RING
+                    || indexer.getState() == Indexer.State.PASS_THROUGH
+                    || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+                    || intake.ringPresent()));
   }
 
   private void configureTriggerBindings() {
@@ -1161,17 +1194,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     closeFourNoteDelay = delaySlider.getDouble(closeFourNoteDelay);
 
     // get selected auto type, pathplanner or skip
-    Boolean pathplannerSelected = skipCommandChooser.getSelected().equals(new InstantCommand());
+    Boolean pathplannerSelected = skipCommandChooser.getSelected().equals(null);
 
     Command selectedAutoCommand;
-    if(pathplannerSelected){
-        selectedAutoCommand = autoChooser.get();
-    }
-    else{
-        selectedAutoCommand = skipCommandChooser.getSelected();
-    }
+    String selectedAutoKey = "";
 
-    String selectedAutoKey = autoChooser.getSendableChooser().getSelected();
+    if (pathplannerSelected) {
+      selectedAutoCommand = autoChooser.get();
+      selectedAutoKey = autoChooser.getSendableChooser().getSelected();
+    } else {
+      selectedAutoCommand = skipCommandChooser.getSelected();
+    }
 
     AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
 
@@ -1313,16 +1346,16 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     ShuffleboardTab tuningTab = Shuffleboard.getTab(Constants.Controller.TUNE_SHUFFLEBOARD_TAB_ID);
 
     // set up skipCommandChooser
-    skipCommandChooser.addOption("Pathplanner Route", new InstantCommand());
+    skipCommandChooser.addOption("Pathplanner Route", null);
     skipCommandChooser.addOption("Far Side Skip", farSideSkip());
     skipCommandChooser.addOption("Amp Side Skip", ampSideSkip());
     skipCommandChooser.addOption("Bypass Skip", bypassSkip());
 
-    autoTab.add("Pathplanner Auto Route", autoChooser.getSendableChooser()).withPosition(2, 0).withSize(2, 1);
     autoTab
-        .add("Base Auto", skipCommandChooser)
-        .withPosition(2, 3)
+        .add("Pathplanner Auto Route", autoChooser.getSendableChooser())
+        .withPosition(2, 0)
         .withSize(2, 1);
+    autoTab.add("Base Auto", skipCommandChooser).withPosition(2, 3).withSize(2, 1);
 
     autoTab
         .addString("ALLIANCE", () -> AllianceManager.getAlliance().name())
