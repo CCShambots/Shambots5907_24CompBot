@@ -509,9 +509,6 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                     new WaitUntilCommand(
                         () ->
                             indexer.getState() == Indexer.State.HOLDING_RING
-                                || indexer.getState() == Indexer.State.PASS_THROUGH
-                                || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
-                                || intake.ringPresent()
                                 || indexer.getState() == Indexer.State.LOST_RING),
                     new InstantCommand(
                         () -> {
@@ -734,10 +731,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         () -> {
           if (shooter.isFlag(Shooter.State.READY)
                   && drivetrain.isFlag(Drivetrain.State.AT_ANGLE)
-                  && indexer.getState() == Indexer.State.HOLDING_RING
-              || indexer.getState() == Indexer.State.PASS_THROUGH
-              || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
-              || intake.ringPresent()) {
+                  && indexer.getState() == Indexer.State.HOLDING_RING) {
             lights.requestTransition(Lights.State.READY);
           } else {
             lights.requestTransition(alt);
