@@ -894,6 +894,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () -> indexer.isProx1Active() || indexer.isProx2Active()));
   }
 
+  private Command pathPlannerCommand(){
+    return autoChooser.get();
+  }
+
   private void configureTriggerBindings() {
 
     controllerBindings.resetGyro().onTrue(drivetrain.resetFieldOrientedTele());
@@ -1164,17 +1168,12 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     closeFourNoteDelay = delaySlider.getDouble(closeFourNoteDelay);
 
     // get selected auto type, pathplanner or skip
-    Boolean pathplannerSelected = skipCommandChooser.getSelected().equals(new InstantCommand());
 
     Command selectedAutoCommand;
     String selectedAutoKey = "";
 
-    if (pathplannerSelected) {
-      selectedAutoCommand = autoChooser.get();
-      selectedAutoKey = autoChooser.getSendableChooser().getSelected();
-    } else {
-      selectedAutoCommand = skipCommandChooser.getSelected();
-    }
+    selectedAutoKey = autoChooser.getSendableChooser().getSelected();
+    selectedAutoCommand = skipCommandChooser.getSelected();
 
     AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
 
@@ -1316,7 +1315,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     ShuffleboardTab tuningTab = Shuffleboard.getTab(Constants.Controller.TUNE_SHUFFLEBOARD_TAB_ID);
 
     // set up skipCommandChooser
-    skipCommandChooser.addOption("Pathplanner Route", new InstantCommand());
+    skipCommandChooser.addOption("Pathplanner Route", pathPlannerCommand());
     skipCommandChooser.addOption("Far Side Skip", farSideSkip());
     skipCommandChooser.addOption("Amp Side Skip", ampSideSkip());
     skipCommandChooser.addOption("Bypass Skip", bypassSkip());
