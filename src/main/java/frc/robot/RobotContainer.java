@@ -894,7 +894,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () -> indexer.isProx1Active() || indexer.isProx2Active()));
   }
 
-  private Command pathPlannerCommand(){
+  private Command pathPlannerCommand() {
     return autoChooser.get();
   }
 
@@ -1170,10 +1170,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     // get selected auto type, pathplanner or skip
 
     Command selectedAutoCommand;
-    String selectedAutoKey = "";
+    if (skipCommandChooser.getSelected() == null) {
+      selectedAutoCommand = autoChooser.get();
+    } else {
+      selectedAutoCommand = skipCommandChooser.getSelected();
+    }
 
-    selectedAutoKey = autoChooser.getSendableChooser().getSelected();
-    selectedAutoCommand = skipCommandChooser.getSelected();
+    String selectedAutoKey = autoChooser.getSendableChooser().getSelected();
 
     AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
 
