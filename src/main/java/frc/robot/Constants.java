@@ -264,8 +264,8 @@ public class Constants {
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(0.0, 4000 / 60.0);
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(Units.feetToMeters(5), 4000 / 60.0);
         FLYWHEEL_SPEAKER_DISTANCE_LUT.put(
-            Units.feetToMeters(10), Flywheel.Settings.PARTIAL_SPINUP_VELOCITY);
-        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(20.0, Flywheel.Settings.PARTIAL_SPINUP_VELOCITY);
+            Units.feetToMeters(10), Flywheel.Settings.BASE_SHOT_VELOCITY);
+        FLYWHEEL_SPEAKER_DISTANCE_LUT.put(20.0, Flywheel.Settings.BASE_SHOT_VELOCITY);
 
         // ARM SPEAKER OFFSETS
         ORIGINAL_SPEAKER_LUT.put(0.0, 0.0);
@@ -274,7 +274,7 @@ public class Constants {
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(14), Math.toRadians(3));
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(16), Math.toRadians(4.5));
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(18), Math.toRadians(5.5));
-        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(20), Math.toRadians(7.75));
+        ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(20), Math.toRadians(8));
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(22), Math.toRadians(9));
         ORIGINAL_SPEAKER_LUT.put(Units.feetToMeters(24), Math.toRadians(10));
         ORIGINAL_SPEAKER_LUT.put(100.0, Math.toRadians(10));
@@ -369,7 +369,7 @@ public class Constants {
 
       public static final double POSITION_READY_TOLERANCE = 2 * (Math.PI / 180); // RAD
 
-      public static final double BASE_SHOT_POSITION = 55 * (Math.PI / 180); // RAD - originally 59
+      public static final double BASE_SHOT_POSITION = 55 * (Math.PI / 180); // RAD - Originally 59
       public static final double AUTO_START_POSITION = 55 * (Math.PI / 180); // RAD
       public static final double AMP_POSITION = 50 * (Math.PI / 180); // RAD
       public static final double FULL_STOW_POSITION = 20.5 * (Math.PI / 180); // RAD
@@ -435,9 +435,9 @@ public class Constants {
     }
 
     public static final class Settings {
-      public static final double BASE_SHOT_VELOCITY = 3970 / 60.0; // RPS
+      public static final double BASE_SHOT_VELOCITY = 5520 / 60.0; // RPS
 
-      public static final double PARTIAL_SPINUP_VELOCITY = 5520 / 60.0; // RPS
+      public static final double PARTIAL_SPINUP_VELOCITY = BASE_SHOT_VELOCITY / 1;
 
       public static final double SPIN_UP_READY_TOLERANCE = 5; // RPS
 
