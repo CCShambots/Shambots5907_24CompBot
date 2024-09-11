@@ -806,6 +806,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private Command farSideSkip() {
     return new SequentialCommandGroup(
         AutoBuilder.followPath(PathPlannerPath.fromPathFile("Far Start to Preload")),
+        aim(),
         fireSequence(),
         AutoBuilder.followPath(PathPlannerPath.fromPathFile("Source Preload to 4")),
         visionIntake(),
@@ -829,7 +830,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
         visionIntake(),
         AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
         aim(),
-        fireSequence());
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp Side Escape")));
   }
 
   // Bypass Skip original route title
@@ -861,7 +863,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () -> indexer.isProx1Active() || indexer.isProx2Active()),
         AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
         aim(),
-        fireSequence());
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp Side Escape")));
   }
 
   // Amp Side Skip original route
@@ -896,7 +899,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             () -> indexer.isProx1Active() || indexer.isProx2Active()),
         AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
         aim(),
-        fireSequence());
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp Side Escape")));
   }
 
   private Command pathPlannerCommand() {
