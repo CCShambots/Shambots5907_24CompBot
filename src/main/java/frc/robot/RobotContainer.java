@@ -730,8 +730,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     return new RunCommand(
         () -> {
           if (shooter.isFlag(Shooter.State.READY)
-                  && drivetrain.isFlag(Drivetrain.State.AT_ANGLE)
-                  && indexer.getState() == Indexer.State.HOLDING_RING) {
+              && drivetrain.isFlag(Drivetrain.State.AT_ANGLE)
+              && indexer.getState() == Indexer.State.HOLDING_RING) {
             lights.requestTransition(Lights.State.READY);
           } else {
             lights.requestTransition(alt);
@@ -816,9 +816,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 fireSequence(),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5"))),
             AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5 Skip")),
-            () ->
-                indexer.isProx1Active()
-                || indexer.isProx2Active()),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
         visionIntake(),
         new ConditionalCommand(
             new SequentialCommandGroup(
@@ -827,25 +825,18 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 fireSequence(),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6"))),
             AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6 Skip")),
-            () ->
-                indexer.isProx1Active()
-                || indexer.isProx2Active()),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
         visionIntake(),
-        new ConditionalCommand(
-            new SequentialCommandGroup(
-                AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
-                aim(),
-                fireSequence()
-            ),
-            new InstantCommand(),
-            () ->
-                indexer.isProx1Active()
-                || indexer.isProx2Active()));
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
+        aim(),
+        fireSequence());
   }
 
   // Bypass Skip original route title
   private Command bypassSkip() {
     return new SequentialCommandGroup(
+        aim(),
+        fireSequence(),
         AutoBuilder.followPath(PathPlannerPath.fromPathFile("Bypass Start")),
         visionIntake(),
         new ConditionalCommand(
@@ -855,9 +846,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 fireSequence(),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))),
             AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")),
-            () ->
-                indexer.isProx1Active()
-                || indexer.isProx2Active()),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
         visionIntake(),
         new ConditionalCommand(
             new SequentialCommandGroup(
@@ -869,19 +858,10 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new SequentialCommandGroup(
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
                 visionIntake()),
-            () ->
-                indexer.isProx1Active()
-                || indexer.isProx2Active()),
-        new ConditionalCommand(
-            new SequentialCommandGroup(
-                AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
-                aim(),
-                fireSequence()
-            ),
-            new InstantCommand(),
-            () ->
-                indexer.isProx1Active()
-                || indexer.isProx2Active()));
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
+        aim(),
+        fireSequence());
   }
 
   // Amp Side Skip original route
@@ -901,9 +881,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 fireSequence(),
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))),
             AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")),
-            () ->
-                indexer.isProx1Active()
-                || indexer.isProx2Active()),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
         visionIntake(),
         new ConditionalCommand(
             new SequentialCommandGroup(
@@ -915,23 +893,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
             new SequentialCommandGroup(
                 AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
                 visionIntake()),
-            () ->
-                indexer.isProx1Active()
-                || indexer.isProx2Active()),
-        new ConditionalCommand(
-            new SequentialCommandGroup(
-                AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
-                aim(),
-                fireSequence()
-            ),
-            new InstantCommand(),
-            () ->
-                indexer.isProx1Active()
-                || indexer.isProx2Active())
-        );
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
+        aim(),
+        fireSequence());
   }
 
-  private Command pathPlannerCommand(){
+  private Command pathPlannerCommand() {
     return autoChooser.get();
   }
 
