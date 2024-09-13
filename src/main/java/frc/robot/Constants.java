@@ -777,8 +777,8 @@ public class Constants {
       public static final double SHOT_DELAY_DISTANCE_OFFSET = Units.inchesToMeters(5);
 
       // m/s
-      public static final double MAX_CHASSIS_SPEED = 5;
-      public static final double MAX_CHASSIS_ACCELERATION = 15;
+      public static final double MAX_CHASSIS_SPEED = 1;
+      public static final double MAX_CHASSIS_ACCELERATION = 3;
       public static final double MAX_CHASSIS_ROTATIONAL_SPEED =
           (MAX_CHASSIS_SPEED / Hardware.ROTATION_RADIUS) * (2 * Math.PI);
       public static final double MAX_CHASSIS_ROTATIONAL_ACCELERATION =
