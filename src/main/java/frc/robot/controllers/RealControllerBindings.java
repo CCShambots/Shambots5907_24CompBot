@@ -17,17 +17,17 @@ public class RealControllerBindings implements ControllerBindings {
 
   @Override
   public double getDriveXValue() {
-    return -rightFlightStick.getY();
+    return -leftFlightStick.getY();
   }
 
   @Override
   public double getDriveYValue() {
-    return -rightFlightStick.getX();
+    return -leftFlightStick.getX();
   }
 
   @Override
   public double getDriveTurnValue() {
-    return -leftFlightStick.getRawAxis(0);
+    return -rightFlightStick.getRawAxis(0);
   }
 
   @Override
