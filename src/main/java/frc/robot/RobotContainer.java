@@ -1182,14 +1182,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     String selectedAutoKey = "";
 
     selectedAutoKey = autoChooser.getSendableChooser().getSelected();
-    selectedAutoCommand = skipCommandChooser.getSelected();
 
     AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
 
-    if(selectedAutoCommand == null){
-        selectedAutoCommand = autoChooser.get();
-        if (selectedAutoKey.equals("4 Note")) runningDelayPathfindAuto.set(true);
-        if (selectedAutoKey.equals("5 Note Adaptive")) runningDelayPathfindAuto.set(true);
+    if (skipCommandChooser.getSelected() == null) {
+      selectedAutoCommand = autoChooser.get();
+    } else {
+      selectedAutoCommand = skipCommandChooser.getSelected();
     }
 
     Logger.recordOutput("RobotContainer/AutoKey", selectedAutoKey);
