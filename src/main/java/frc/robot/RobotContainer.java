@@ -11,6 +11,7 @@ import static frc.robot.Constants.Vision.Settings.RIGHT_SHOOTER_CAM_SETTINGS;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ShamLib.AllianceManager;
@@ -92,6 +94,7 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
   private boolean poseWorking = true;
   private boolean autoIntakeWorking = true;
   private Shooter.State autoLobState = Shooter.State.LOB_ACTIVE_ADJUST;
+  private SendableChooser<Command> skipCommandChooser;
 
   // Track whether the bot has been enabled for autonomous check lights
   private boolean hasBeenEnabled = false;
@@ -112,6 +115,8 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     } else {
       controllerBindings = new RealControllerBindings();
     }
+
+    skipCommandChooser = new SendableChooser<Command>();
 
     intake =
         new Intake(
@@ -525,6 +530,9 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
                 new WaitUntilCommand(
                     () ->
                         indexer.getState() == Indexer.State.HOLDING_RING
+                            || indexer.getState() == Indexer.State.PASS_THROUGH
+                            || indexer.getState() == Indexer.State.FEED_TO_SHOOTER
+                            || intake.ringPresent()
                             || indexer.getState() == Indexer.State.LOST_RING))
             .andThen(transitionCommand(State.TRAVERSING)));
 
@@ -745,6 +753,158 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
   public void alignSwerveModules() {
     drivetrain.alignModules();
+  }
+
+  private Command visionIntake() {
+    return new SequentialCommandGroup(
+        drivetrain.transitionCommand(Drivetrain.State.AUTO_GROUND_INTAKE),
+        drivetrain.waitForFlag(Drivetrain.State.AUTO_INTAKING),
+        indexer
+            .waitForState(Indexer.State.INDEXING)
+            .raceWith(indexer.waitForState(Indexer.State.HOLDING_RING))
+            .raceWith(
+                new WaitUntilCommand(() -> !drivetrain.isFlag(Drivetrain.State.AUTO_INTAKING)))
+            .withTimeout(3),
+        drivetrain.transitionCommand(Drivetrain.State.IDLE),
+        drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
+  }
+
+  private Command fireSequence() {
+    return new ConditionalCommand(
+        new SequentialCommandGroup(
+            indexer.waitForState(Indexer.State.HOLDING_RING).withTimeout(1.5),
+            intake.transitionCommand(Intake.State.IDLE, false),
+            indexer.transitionCommand(Indexer.State.FEED_TO_SHOOTER, false),
+            new ParallelCommandGroup(
+                intake.transitionCommand(Intake.State.INTAKE, false),
+                new InstantCommand(
+                    () -> {
+                      new SequentialCommandGroup(
+                              indexer.waitForState(Indexer.State.IDLE),
+                              indexer.transitionCommand(Indexer.State.EXPECT_RING_BACK))
+                          .schedule();
+                    }))),
+        new InstantCommand(),
+        () -> ringSomewhereInBot());
+  }
+
+  private Command aim() {
+    return new SequentialCommandGroup(
+        drivetrain.transitionCommand(Drivetrain.State.FACE_SPEAKER_AUTO),
+        new WaitCommand(0.25),
+        new ParallelCommandGroup(
+                drivetrain.waitForFlag(Drivetrain.State.AT_ANGLE),
+                shooter.waitForFlag(Shooter.State.READY))
+            .withTimeout(0.25),
+        drivetrain.transitionCommand(Drivetrain.State.IDLE),
+        drivetrain.transitionCommand(Drivetrain.State.FOLLOWING_AUTONOMOUS_TRAJECTORY));
+  }
+
+  // Skip Autonomous commands to be run seperate from pathplanner
+
+  // Far Side Skip original route title
+  private Command farSideSkip() {
+    return new SequentialCommandGroup(
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Far Start to Preload")),
+        aim(),
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Source Preload to 4")),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 Shoot")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5"))),
+            AutoBuilder.followPath(PathPlannerPath.fromPathFile("4 to 5 Skip")),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 Shoot")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6"))),
+            AutoBuilder.followPath(PathPlannerPath.fromPathFile("5 to 6 Skip")),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
+        visionIntake(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
+        aim(),
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp Side Escape")));
+  }
+
+  // Bypass Skip original route title
+  private Command bypassSkip() {
+    return new SequentialCommandGroup(
+        aim(),
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Bypass Start")),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("Shoot 8")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))),
+            AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Shoot")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Amp Side to 6")),
+                visionIntake()),
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
+                visionIntake()),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
+        aim(),
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp Side Escape")));
+  }
+
+  // Amp Side Skip original route
+  private Command ampSideSkip() {
+    return new SequentialCommandGroup(
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp Start to Preload")),
+        fireSequence(),
+        visionIntake(),
+        aim(),
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("3 to 8")),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("Shoot 8")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7"))),
+            AutoBuilder.followPath(PathPlannerPath.fromPathFile("8 to 7 Skip")),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
+        visionIntake(),
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Shoot")),
+                aim(),
+                fireSequence(),
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 Amp Side to 6")),
+                visionIntake()),
+            new SequentialCommandGroup(
+                AutoBuilder.followPath(PathPlannerPath.fromPathFile("7 to 6 Skip")),
+                visionIntake()),
+            () -> indexer.isProx1Active() || indexer.isProx2Active()),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("6 Shoot")),
+        aim(),
+        fireSequence(),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp Side Escape")));
+  }
+
+  private Command pathPlannerCommand() {
+    return autoChooser.get();
   }
 
   private void configureTriggerBindings() {
@@ -1016,9 +1176,13 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
 
     closeFourNoteDelay = delaySlider.getDouble(closeFourNoteDelay);
 
-    Command selectedAutoCommand = autoChooser.get();
+    // get selected auto type, pathplanner or skip
 
-    String selectedAutoKey = autoChooser.getSendableChooser().getSelected();
+    Command selectedAutoCommand;
+    String selectedAutoKey = "";
+
+    selectedAutoKey = autoChooser.getSendableChooser().getSelected();
+    selectedAutoCommand = skipCommandChooser.getSelected();
 
     AtomicBoolean runningDelayPathfindAuto = new AtomicBoolean(false);
 
@@ -1159,7 +1323,17 @@ public class RobotContainer extends StateMachine<RobotContainer.State> {
     ShuffleboardTab testTab = Shuffleboard.getTab(Constants.Controller.TEST_SHUFFLEBOARD_TAB_ID);
     ShuffleboardTab tuningTab = Shuffleboard.getTab(Constants.Controller.TUNE_SHUFFLEBOARD_TAB_ID);
 
-    autoTab.add("Auto Route", autoChooser.getSendableChooser()).withPosition(2, 0).withSize(2, 1);
+    // set up skipCommandChooser
+    skipCommandChooser.addOption("Pathplanner Route", pathPlannerCommand());
+    skipCommandChooser.addOption("Far Side Skip", farSideSkip());
+    skipCommandChooser.addOption("Amp Side Skip", ampSideSkip());
+    skipCommandChooser.addOption("Bypass Skip", bypassSkip());
+
+    autoTab
+        .add("Pathplanner Auto Route", autoChooser.getSendableChooser())
+        .withPosition(2, 0)
+        .withSize(2, 1);
+    autoTab.add("Base Auto", skipCommandChooser).withPosition(2, 3).withSize(2, 1);
 
     autoTab
         .addString("ALLIANCE", () -> AllianceManager.getAlliance().name())
