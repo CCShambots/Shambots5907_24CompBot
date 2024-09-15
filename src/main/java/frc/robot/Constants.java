@@ -42,7 +42,7 @@ public class Constants {
   public static final boolean ALLOW_TUNING = true;
 
   // Whether to use the old tuning (soft, original notes) or the new tuning (hard, new notes)
-  public static final boolean USE_ORIGINAL_TUNING = true;
+  public static final boolean USE_ORIGINAL_TUNING = false;
 
   public static final double AUTO_TIME = 15;
   public static final double GAP_TIME = 3;
@@ -702,7 +702,7 @@ public class Constants {
               20, // DRIVE MOTOR ID
               21, // TURN MOTOR ID
               20, // ENCODER ID
-              -109.25, // ENCODER OFFSET
+              -108.19, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true, // DRIVE MOTOR INVERTED
@@ -716,7 +716,7 @@ public class Constants {
               22, // DRIVE MOTOR ID
               23, // TURN MOTOR ID
               21, // ENCODER ID
-              -92.3, // ENCODER OFFSET
+              -92.0214, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true, // DRIVE MOTOR INVERTED
@@ -730,7 +730,7 @@ public class Constants {
               24, // DRIVE MOTOR ID
               25, // TURN MOTOR ID
               22, // ENCODER ID
-              16.24, // ENCODER OFFSET
+              15.2928, // ENCODER OFFSET
               new Translation2d(
                   -WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true, // DRIVE MOTOR INVERTED
@@ -744,7 +744,7 @@ public class Constants {
               26, // DRIVE MOTOR ID
               27, // TURN MOTOR ID
               23, // ENCODER ID
-              125.3, // ENCODER OFFSET
+              125.51, // ENCODER OFFSET
               new Translation2d(
                   WHEEL_BASE / 2, -TRACK_WIDTH / 2), // MODULE OFFSET FROM CENTER OF BOT
               true, // DRIVE MOTOR INVERTED
