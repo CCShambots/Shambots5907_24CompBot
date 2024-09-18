@@ -99,6 +99,7 @@ public class Constants {
     public static Pose2d BLUE_RIGHT_TRAP =
         new Pose2d(new Translation2d(4.5969682, 3.717244813), Rotation2d.fromDegrees(-120));
 
+    // hard note value: 32 ft
     public static Pose2d BLUE_LOB_CORNER =
         new Pose2d(2, Units.feetToMeters(27) - 1, new Rotation2d(0));
 
